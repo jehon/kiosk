@@ -34,7 +34,7 @@ export default async function exivReadAll(filePath) {
 	const data = runExiv('-g', 'Exif.*', filePath);
 	const result = {
 		'comment': '',
-		'date': null,
+		'date': '',
 		'orientation': 0
 	};
 	data.split('\n').forEach(line => {
@@ -52,10 +52,8 @@ export default async function exivReadAll(filePath) {
 			result[k] = v;
 			if (v.match(/[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/)) {
 				// Match the date element
-				const nd = new Date(v.replace(':', '-').replace(':', '-'));
-				if (!isNaN(nd)) {
-					result[k] = nd;
-				}
+				const nd = v.replace(':', '-').replace(':', '-');
+				result[k] = nd;
 			}
 		}
 
