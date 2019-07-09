@@ -8,13 +8,13 @@ describeHere(() => {
 		expect(data['comment']).toBe('Test comment here');
 
 		expect(data['date']).not.toBeUndefined();
-		expect(data['date']).toEqual(new Date(2019, 6, 1, 2, 3, 4));
+		expect(data['date']).toEqual('2019-07-01 02:03:04');
 	});
 
 	it('should not fail when no data is present', async () => {
 		const data = await exifParser('tests/server/data/photo-frame/f1/i2.jpg');
 
 		expect(data['comment']).toBe('');
-		expect(data['date']).toBeNull();
+		expect(data['date']).toBe('');
 	});
 });
