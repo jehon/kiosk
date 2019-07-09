@@ -1,0 +1,18 @@
+# Project
+unused/
+kiosk.yml
+
+# GUI
+.vscode
+.idea
+
+# Temp anywhere
+*.tmp
+tmp/
+
+# Nodejs / NPM
+node_modules
+
+# Others
+.vagrant
+/test.sh

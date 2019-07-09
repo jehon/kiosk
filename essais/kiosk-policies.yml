@@ -1,0 +1,9 @@
+// /etc/chromium-browser/policies/managed/kiosk.json
+{
+  "VideoCaptureAllowedUrls": [
+	"https://appear.in/"
+  ],
+  "AudioCaptureAllowedUrls": [
+ 	"https://appear.in/"
+  ]
+}

@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=Browser
+Exec=/usr/share/xsessions/kiosk.sh
+Type=Application

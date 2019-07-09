@@ -1,0 +1,95 @@
+
+.fit {
+	object-fit: contain;
+	box-sizing: border-box;
+}
+
+.full {
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border-width: 0;
+	object-fit: contain;
+	box-sizing: border-box;
+}
+
+.full-background-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border-width: 0;
+	box-sizing: border-box;
+
+	background-color:        black;
+	background-image:        url("/img/error.svg");
+	background-position:     center;
+	background-repeat:       no-repeat;
+	background-size:         contain;
+	color:                   white;
+}
+
+.centered {
+	display: flex;
+    align-items: center;
+	justify-content: center;
+}
+
+.button {
+	margin-bottom: 10px;
+	/* border: 5px white solid; */
+	background-color: #2d2d2d6b;
+
+	display: flex;
+    align-items: center;
+	justify-content: center;
+
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.button > img {
+	height: 100%;
+	object-fit: contain;
+	margin-right: 5px;
+}
+
+.button > span {
+	background-color: rgba(127, 127, 127, 0.75);
+	padding: var(--generic-space);
+	border-radius: var(--generic-space);
+}
+
+.grid {
+	width: 100%;
+	height: 100%;
+
+	display: grid;
+
+	/* justify-content: center;
+	align-content: center; */
+
+	align-items: stretch;
+	justify-items: stretch;
+
+	grid-template-columns: repeat(5, 20%);
+	/* grid-auto-rows: 150px; */
+
+	grid-gap: 20px;
+}
+
+.thumb {
+	padding: 10px;
+}
+
+img[loading] {
+	background-image:        url("loading.gif");
+	background-position:     center;
+	background-repeat:       no-repeat;
+	background-size:         contain;
+	min-height: 			 20px;
+	min-width: 			     20px;
+}
