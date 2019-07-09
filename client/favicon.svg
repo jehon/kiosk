@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="620" viewBox="0 0 62 62">
+  <defs>
+    <radialGradient id="a">
+      <stop offset="0" stop-color="silver"/>
+      <stop offset=".88" stop-color="silver"/>
+      <stop offset="1" stop-color="silver" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="b" x1="42.986" x2="22.014" y1="7.013" y2="51.987" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9ecefe"/>
+      <stop offset="1" stop-color="#1388ee"/>
+    </linearGradient>
+    <linearGradient id="c" x1="54.51" x2="9.547" y1="41.179" y2="16.249" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1976d9"/>
+      <stop offset="1" stop-color="#3e73d3"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32.5" cy="29.5" r="26.5" fill="url(#a)" transform="matrix(1.0648 0 0 1.06482 -2.1 1.086)"/>
+  <circle cx="31" cy="31" r="25.8" fill="url(#b)" stroke="url(#c)" stroke-width="2"/>
+  <path fill="#fff" d="M23 25h12v19h4v4H23v-4h4V28h-4v-3z"/>
+  <circle cx="31" cy="17" r="4" fill="#fff"/>
+  <path fill="#fff" d="M54.02 40.251a24.823 24.824 0 1 1 .181-.463" opacity=".08"/>
+</svg>

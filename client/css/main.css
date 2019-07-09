@@ -1,0 +1,19 @@
+@import 'elements.css';
+@import 'corners.css';
+@import 'body.css';
+
+kiosk-links .button {
+	height: 100px;
+	width: 200px;
+	background-color: gray;
+	color: white;
+	margin: 10px;
+}
+
+html {
+	--generic-space: 10px;
+}
+
+#main-application {
+	overflow-y: auto;
+}

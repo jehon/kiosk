@@ -1,0 +1,5 @@
+{
+  "api": 1,
+  "server": "photo-frame-server.mjs",
+  "client": "photo-frame-client.js"
+}
