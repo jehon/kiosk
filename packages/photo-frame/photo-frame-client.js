@@ -129,11 +129,11 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			return;
 		}
 		this.mySwiper.removeAllSlides();
-		// TODO: add legend !
+		// TODO: date legend: should be clean up for not significant numbers!
 		this.mySwiper.appendSlide(picturesList.map(v =>
 			`<div class="swiper-slide">
 				<img src="${v.webname}" />
-				<div class="tag"><span>${v.data.comment} ${v.data.date ? mydate2str(v.data.date.toLocaleString()): ''}</span></div>
+				<div class="tag"><span>${v.data.comment} ${v.data.date ? v.data.date: ''}</span></div>
 			</div>
 			`
 		));
