@@ -66,12 +66,3 @@ export function getMountedList() {
 }
 
 // test
-
-
-const photoMount = serverAPI.getConfig('.photo');
-
-mount('test', photoMount.path, photoMount.type, {
-	...photoMount
-})
-	.then(d => console.log('global - then ok: ', d), e => console.error('global - then error:', e))
-	.catch(e => console.error('global - final error:', e));
