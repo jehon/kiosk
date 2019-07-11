@@ -5,13 +5,12 @@ import { spawn, exec } from 'child_process';
 import { promisify } from 'util';
 
 import serverAPIFactory, { rootDir } from '../../server/server-api.mjs';
-const serverAPI = serverAPIFactory('mount');
+const serverAPI = serverAPIFactory('shares');
 const logger = serverAPI.logger;
 
 const mountedList = {};
 
 const sharesRoot = path.join(rootDir, 'media');
-const config = serverAPI.getConfig('shares', {});
 
 export async function mount(name, source, type, options = {}) {
 	const target = path.join(sharesRoot, name);
@@ -68,10 +67,11 @@ export function getMountedList() {
 
 // test
 
-mount('video', '//192.168.1.9/photo', 'cifs', {
-	username: 'kiosk',
-	password: 'jean2018',
-	domain: 'WORKGROUP'
+
+const photoMount = serverAPI.getConfig('.photo');
+
+mount('test', photoMount.path, photoMount.type, {
+	...photoMount
 })
 	.then(d => console.log('global - then ok: ', d), e => console.error('global - then error:', e))
 	.catch(e => console.error('global - final error:', e));
