@@ -18,7 +18,6 @@ const logger = loggerFactory('core.config');
 
 const configFiles = [
 	// Later override earlier
-	'/etc/kiosk.yml',
 	'kiosk.yml'
 ];
 
