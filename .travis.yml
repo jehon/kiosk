@@ -1,7 +1,12 @@
+addons:
+  apt:
+    packages:
+    - exiv2
+  chrome: stable
+
 language: node_js
 node_js:
   - "12"
 
 script:
   - npm run test-server
-  - npm run test-client
