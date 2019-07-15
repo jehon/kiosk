@@ -1,3 +1,7 @@
+language: node_js
+node_js:
+  - "12"
+
 addons:
   apt:
     packages:
@@ -5,12 +9,15 @@ addons:
     - libexiv2-dev
     - cifs-utils
     - chromium-browser
+    - libgconf-2-4
 
   chrome: stable
 
-language: node_js
-node_js:
-  - "12"
+
+cache:
+  npm: true
+  directories:
+  - ~/.cache
 
 script:
   - npm run test-server
