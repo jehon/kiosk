@@ -1,0 +1,49 @@
+---
+core:
+  dev: true
+  path:
+    var: /tmp/
+
+photo-frame:
+  folders:
+    photo:
+      folder: tests/server/data/photo-frame
+      publishedAt: /tests/server/data/photo-frame
+      quantity: 3
+
+camera:
+  host: "http://127.0.0.1"
+  username: any
+  password: any
+
+clock:
+  tickers:
+    depart-ecole: # At 7:50am, every weekday
+      cron: "50 7 * * 1-5"
+      duration: 30
+    test: # Every two minutes
+      cron: "0 */2 * * * *"
+      duration: 1
+
+menu:
+  Appear.in:
+    priority: 5025,
+    url: "https://appear.in/marielineetjean"
+    icon: "https://d32wid4gq0d4kh.cloudfront.net/favicon_v2-196x196.png"
+    label: "Appear.in"
+
+  Meteo:
+    priority: 5100
+    url: "http://www.meteo.be"
+    icon: "http://www.meteo.be/meteo/html/2011/img/weather_klein/300.png"
+    label: "Météo"
+
+  BuienAlarm:
+    priority: 5100
+    url: "https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083"
+    icon: "https://www.buienalarm.be/favicon.ico"
+    label: "Buien Alarm"  
+
+# gallery:
+#   folders:
+#     photos: /mounts/photos
