@@ -4,6 +4,7 @@ addons:
     - exiv2
     - libexiv2-dev
     - cifs-utils
+    - chromium-browser
 
   chrome: stable
 
