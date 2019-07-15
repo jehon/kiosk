@@ -2,7 +2,10 @@ addons:
   apt:
     packages:
     - exiv2
-  chrome: stable
+    - libexiv2-dev
+    - cifs-utils
+
+chrome: stable
 
 language: node_js
 node_js:
@@ -10,3 +13,4 @@ node_js:
 
 script:
   - npm run test-server
+  - npm run test-client
