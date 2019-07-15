@@ -7,7 +7,7 @@ import Bus from '../common/bus.js';
 import contextualize from '../common/contextualize.js';
 import loggerFactory from '../common/logger.js';
 import Scheduler from '../common/scheduler.js';
-export { rootDir } from '../common/esm-polyfill.js';
+export { rootDir } from './server-api-config.mjs';
 
 // Server
 import getConfig, * as configAPI from './server-api-config.mjs';

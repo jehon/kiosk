@@ -1,7 +1,7 @@
 
 import Bus from '../../common/bus.js';
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	it('should notify', async function() {
 		const bus = new Bus();
 		let i = 0;

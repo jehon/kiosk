@@ -1,5 +1,5 @@
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	it('should be true', () => {
 		expect(true).toBeTruthy();
 	});

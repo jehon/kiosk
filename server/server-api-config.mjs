@@ -2,15 +2,17 @@
 import fs from 'fs';
 import path from 'path';
 import yargs from 'yargs';
+import url from 'url';
 
 import yaml from 'js-yaml';
 import deepMerge  from 'deepmerge';
 import objectPath from 'object-path';
 
-import { getModuleDirname } from '../common/esm-polyfill.js';
 import loggerFactory, { setGlobalLevel as loggersSetGlobalLevel } from '../common/logger.js';
 const logger = loggerFactory('core.config');
 
+
+export const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));
 
 //
 // Parameters
@@ -79,7 +81,7 @@ if (cmdLineOptions.file) {
 
 let config = {
 	core: {
-		root: path.dirname(getModuleDirname()),
+		root: rootDir,
 		port: 3000
 	}
 };

@@ -1,7 +1,7 @@
 
 import * as packageManager from '../../server/server-packages-manager.mjs';
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	it('should detect packages', async () => {
 		const pkgList = await packageManager.getManifests();
 		expect(pkgList.length).toBeGreaterThanOrEqual(3);

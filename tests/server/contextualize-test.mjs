@@ -1,7 +1,7 @@
 
 import contextualize, { ctxForFunction } from '../../common/contextualize.js';
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	it('should contextualize relative keys', () => {
 		const ctx = contextualize('test');
 		expect(ctx('.brol')).toBe('test.brol');
