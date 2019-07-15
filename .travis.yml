@@ -20,6 +20,4 @@ cache:
   - ~/.cache
 
 script:
-  - npm run test-server
-  - npm run test-client
-  - npm run test-gui
+  - npm run test
