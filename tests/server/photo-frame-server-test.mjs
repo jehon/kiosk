@@ -7,7 +7,7 @@ function baseConfig() {
 	return JSON.parse(JSON.stringify(mockableAPI.getConfig()));
 }
 
-describeHere(() => {
+describe(import.meta.url, () => {
 
 	beforeEach(() => {
 		spyOn(mockableAPI, 'dispatchToBrowser');

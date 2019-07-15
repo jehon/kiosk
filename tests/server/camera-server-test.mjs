@@ -7,7 +7,7 @@ import { mockableAPI } from '../../server/server-api.mjs';
 import * as cameraAPI from'../../packages/camera/camera-server.mjs';
 import { expectBrowserEvent } from './helpers.mjs';
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	beforeAll(() => {
 		mockableAPI.testingConfigOverride({
 			camera: {

@@ -5,7 +5,7 @@ import { promisify } from 'util';
 
 import mime from 'mime-types';
 
-import { rootDir } from '../../common/esm-polyfill.js';
+import { rootDir } from '../../server-api.mjs';
 
 export function getCurrentPath(req, absolute = true) {
 	const dir = decodeURI(req.originalUrl).split('?')[0];

@@ -1,7 +1,7 @@
 
 import getConfig, { testingConfigOverride, testingConfigRestore } from '../../server/server-api-config.mjs';
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	beforeEach(() => {
 		testingConfigOverride({
 			test: {

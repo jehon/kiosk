@@ -5,8 +5,6 @@ import glob from 'glob';
 import Jasmine from 'jasmine';
 import '../../node_modules/colors/lib/index.js';
 
-import { getModuleBasename } from '../../common/esm-polyfill.js';
-
 // Configure default logger
 import loggerFactory, { setGlobalLevel } from '../../common/logger.js';
 const logger = loggerFactory('jasmine');
@@ -15,19 +13,6 @@ setGlobalLevel('DEBUG');
 
 const jasmine = new Jasmine();
 jasmine.loadConfigFile( './tests/server/jasmine.json' );
-
-// Export to global scope
-global.describeHere = (fn) => {
-	return describe(getModuleBasename(1), fn);
-};
-
-global.fdescribeHere = (fn) => {
-	return fdescribe(getModuleBasename(1), fn);
-};
-
-global.xdescribeHere = (fn) => {
-	return xdescribe(getModuleBasename(1), fn);
-};
 
 jasmine.jasmine.clock().install();
 jasmine.jasmine.clock().mockDate(new Date(2019, 1, 1, 12, 0, 0));

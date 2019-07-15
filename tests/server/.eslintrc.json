@@ -2,8 +2,5 @@
   "env": {
     "jasmine": true,
     "node": true
-  },
-  "globals": {
-    "describeHere": "readable"
   }
 }

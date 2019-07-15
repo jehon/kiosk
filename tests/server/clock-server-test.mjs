@@ -4,7 +4,7 @@ import { expectBrowserEvent } from './helpers.mjs';
 
 import '../../packages/clock/clock-server.mjs';
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	beforeEach(function() {
 		spyOn(mockableAPI, 'dispatchToBrowser').and.callThrough();
 		mockableAPI.testingConfigOverride({});

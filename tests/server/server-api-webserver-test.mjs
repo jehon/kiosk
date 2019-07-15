@@ -14,7 +14,7 @@ function serverFetch(url, ...args) {
 
 let port = 0;
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	beforeAll(async () => {
 		port = await startServer(0);
 	});

@@ -1,5 +1,5 @@
 
-describeHere(() => {
+describe(__dirname, () => {
 	it('should be true', () => {
 		expect(true).toBeTruthy();
 	});

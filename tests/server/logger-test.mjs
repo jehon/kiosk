@@ -5,7 +5,7 @@ const msgList = [];
 const loggerTest = commonLoggerFactory('common-logger-test-test');
 const loggerTest2 = commonLoggerFactory('common-logger-test-test2');
 
-describeHere(() => {
+describe(import.meta.url, () => {
 	beforeEach(() => {
 		msgList.length = 0;
 		spyOn(process.stdout, 'write').and.callFake((msg) => msgList.push(msg));

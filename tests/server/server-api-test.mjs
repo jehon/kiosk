@@ -1,7 +1,14 @@
 
-import serverAPIFactory, { mockableAPI as mockableAPI } from '../../server/server-api.mjs';
+import serverAPIFactory, { mockableAPI as mockableAPI, rootDir } from '../../server/server-api.mjs';
 
-describeHere(() => {
+describe(import.meta.url, () => {
+	describe(import.meta.url, () => {
+		it('should give the root dir', () => {
+			console.log(process.cwd());
+			expect(rootDir).toBe(process.cwd());
+		});
+	});
+
 	describe('should serverAPI without context', () => {
 		it('should have a bus', async () => {
 			let i = 0;

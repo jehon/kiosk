@@ -1,7 +1,7 @@
 
 import Scheduler from '../../common/scheduler.js';
 
-describeHere(function() {
+describe(import.meta.url, function() {
 	it('should trigger events', function() {
 		let i = 0;
 		let scheduler = new Scheduler(() => i++);
