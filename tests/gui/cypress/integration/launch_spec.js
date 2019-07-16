@@ -11,11 +11,11 @@ describe('The application is launching', function() {
 		cy.get('#main-menu > *:nth-child(3)').should('be.visible');
 
 		// // Go to clock (2d element)
-		// cy.get('#main-menu > *:nth-child(2)').click();
-		// cy.get('#main-application kiosk-clock').should('be.present');
+		cy.get('#main-menu > *:nth-child(2)').click();
+		cy.get('#main-application kiosk-clock');
 
-		// // Go to links (3d element)
-		// cy.get('#main-menu > *:nth-child(3)').click();
-		// cy.get('#main-application kiosk-menu').should('be.visible');
+		// Go to links (3d element)
+		cy.get('#main-menu > *:nth-child(3)').click();
+		cy.get('#main-application kiosk-menu');
 	});
 });
