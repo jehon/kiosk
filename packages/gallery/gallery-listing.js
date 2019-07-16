@@ -42,9 +42,7 @@ export default class GalleryListing extends PolymerElement {
 		this.thumbHeight = '100';
 	}
 
-	updateListing(url) {
-		console.info('Updating from ', url);
-
+	updateListing(_url) {
 	}
 }
 

@@ -4,7 +4,7 @@ import '/node_modules/swiper/dist/js/swiper.min.js';
 
 import AppFactory, { renderMixin } from '../../client/client-api.js';
 
-import { mydate2str } from '../../client/client-helpers.js';
+// import { mydate2str } from '../../client/client-helpers.js';
 
 const app = AppFactory('photo-frame');
 

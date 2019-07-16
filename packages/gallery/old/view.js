@@ -31,7 +31,7 @@ export default class View extends PolymerElement {
 	ready() {
 		let constructor = customElements.get('x-view-' + this.type);
 		if (constructor == null) {
-			console.warn(`No constructor found for ${this.type}`);
+			// console.warn(`No constructor found for ${this.type}`);
 			constructor = customElements.get('x-view-generic');
 		}
 		const el = new (constructor)();

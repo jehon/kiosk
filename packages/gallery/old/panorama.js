@@ -35,14 +35,14 @@ export default class Panorama extends PolymerElement {
 
 	onSelected(event) {
 		event.stopPropagation();
-		console.log('Panorama selected: ', event.detail);
+		// console.log('Panorama selected: ', event.detail);
 		this.current = event.detail.key;
 		this.focus = true;
 	}
 
 	onUnselected(event) {
 		event.stopPropagation();
-		console.log('Panorama unselected: ', event.detail);
+		// console.log('Panorama unselected: ', event.detail);
 		this.focus = false;
 		this.current = event.detail.id;
 	}
