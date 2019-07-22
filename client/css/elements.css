@@ -19,7 +19,6 @@
 }
 
 .with-side-bar-menu > div:nth-child(2) {
-	background-color: green;
 	flex-basis: 15%;
 	flex-grow: 0;
 }
