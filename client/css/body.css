@@ -73,7 +73,7 @@ body > #main-menu > [selected] {
  * Main content
  */
 
-body > div:nth-child(2) > * {
+body > #main-application > * {
 	max-height: 100%;
 	width: 100%;
 
