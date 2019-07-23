@@ -50,7 +50,7 @@
     "karma-jasmine": "2.0.1",
     "nock": "10.0.6",
     "npm-check": "5.9.0",
-    "puppeteer": "1.18.1",
+    "puppeteer": "1.19.0",
     "randomport": "0.1.1",
     "start-server-and-test": "1.9.1",
     "watch-then-execute": "1.1.1"
