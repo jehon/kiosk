@@ -1,6 +1,5 @@
 
-// http://idangero.us/swiper/api/
-import '/node_modules/swiper/dist/js/swiper.min.js';
+import '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import AppFactory, { renderMixin } from '../../client/client-api.js';
 
@@ -47,103 +46,86 @@ function updatePicture() {
 }
 
 class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
+	carousel = false
+
 	get kioskEventListeners() {
 		return {
-			'.list.changed': () => this.adaptList(),
-			'.picture.changed': (i) => this.adaptPicture(i)
+			'.list.changed': () => this.adaptList()
 		};
 	}
 
 	render() {
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.innerHTML = `
-			<link rel="stylesheet" href="/node_modules/swiper/dist/css/swiper.min.css">
-			<style>
-				.swiper-container {
-					height: 100%;
-				}
+		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
+		<div class="container py-2">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2" id="slider">
+					<div id="myCarousel" class="carousel slide">
 
-				.swiper-slide {
-					height: 100%;
-					position: relative;
-				}
+						<!-- main slider carousel items -->
+						<div class="carousel-inner" id="content">
+							<div class="active carousel-item" data-slide-number="0">
+								<img src="http://placehold.it/1200x480&amp;text=one" class="img-fluid">
+							</div>
+							<div class="carousel-item" data-slide-number="1">
+								Waiting for pictures
+							</div>
+							<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="sr-only">Previous</span>
+							</a>
+							<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="sr-only">Next</span>
+							</a>
+						</div>
+						<!-- main slider carousel nav controls -->
 
-				.swiper-slide img {
-					object-fit: contain;
-					height: 100%;
-					width: 100%;
-				}
 
-				.swiper-slide .tag {
-					position: absolute;
-					z-index: 999;
-					margin: 0 auto;
-					left: 0;
-					right: 0;
-					top: 0;
-					text-align: center;
-				}
-				.tag span {
-					background-color: gray;
-					padding: 15px;
-					border-top: 15px gray solid;
-					border-bottom-left-radius: 10px;
-					border-bottom-right-radius: 10px;
-				}
-			</style>
-			<div class="swiper-container">
-				<div class="swiper-wrapper" id="slides">
-					<div class="swiper-slide">Waiting for pictures</div>
+						<ul class="carousel-indicators list-inline mx-auto border px-2">
+							<li class="list-inline-item active">
+								<a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#myCarousel">
+									<img src="http://placehold.it/80x60&amp;text=one" class="img-fluid">
+								</a>
+							</li>
+						</ul>
+					</div>
 				</div>
-				<div class="swiper-pagination"></div>
-				<div class="swiper-button-prev"></div>
-				<div class="swiper-button-next"></div>
 			</div>
-		`;
+		</div>`;
 
-		/* global Swiper */
-		this.mySwiper = new Swiper(this.shadowRoot.querySelector('.swiper-container'), {
-			loop: true,
+		this.carousel = {
+			content: this.shadowRoot.querySelector('#content')
+		};
+		console.log('carousel: ', this.carousel);
 
-			pagination: {
-				el: this.shadowRoot.querySelector('.swiper-pagination'),
-			},
-
-			navigation: {
-				nextEl: this.shadowRoot.querySelector('.swiper-button-next'),
-				prevEl: this.shadowRoot.querySelector('.swiper-button-prev'),
-			},
-		});
-
-		this.mySwiper.on('slideChange', () => {
-			let i = this.mySwiper.realIndex;
-			if (i != pictureIndex) {
-				pictureIndex = i;
-				app.dispatch('.picture.changed');
-			}
-		});
+		// https://getbootstrap.com/docs/4.0/components/carousel/
 	}
 
 	adaptList() {
 		if (picturesList.length < 1) {
 			return;
 		}
-		this.mySwiper.removeAllSlides();
-		// TODO: date legend: should be clean up for not significant numbers!
-		this.mySwiper.appendSlide(picturesList.map(v =>
-			`<div class="swiper-slide">
-				<img src="${v.webname}" />
-				<div class="tag"><span>${v.data.comment} ${v.data.date ? v.data.date: ''}</span></div>
-			</div>
-			`
-		));
-	}
-
-	adaptPicture() {
-		let i = this.mySwiper.realIndex;
-		if (i != pictureIndex) {
-			this.mySwiper.slideToLoop(pictureIndex);
+		if (!this.carousel) {
+			return;
 		}
+		this.carousel.content.innerHTML = '';
+		for(let i = 0; i < picturesList.length; i++) {
+			const v = picturesList[i];
+			console.log(i, v);
+			// TODO: date legend: should be clean up for not significant numbers!
+			this.carousel.content.insertAdjacentHTML('beforeend',
+				`<div class="carousel-item" data-slide-number="${i}">
+					<img src="${v.webname}" class="img-fluid">
+				</div>`);
+
+			// <div class="carousel-caption d-none d-md-block">
+			// 	<h5>v.data.comment</h5>
+			// 	<p>v.data.date</p>
+			// </div>
+		}
+		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
 	}
 }
 
