@@ -19,6 +19,10 @@ export const renderMixin = (cls) => class extends cls {
 		}
 	}
 
+	isRendered() {
+		return this[isRendered];
+	}
+
 	// Abstract
 	render() {}
 };
