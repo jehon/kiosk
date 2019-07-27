@@ -72,7 +72,7 @@ const cmdLineOptions = yargs
 
 if (cmdLineOptions.file) {
 	logger.trace('Adding configuration file at the end:', cmdLineOptions.file);
-	configFiles.push(cmdLineOptions.file);
+	configFiles.unshift(cmdLineOptions.file);
 }
 
 //
