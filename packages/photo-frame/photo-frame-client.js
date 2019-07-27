@@ -72,6 +72,10 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			.contain {
 				object-fit: contain;
 			}
+			.carousel-caption {
+				text-shadow: 0 1px 0 black;
+				mix-blend-mode: difference;
+			}
 
 		</style>
 		<div id="myCarousel" class="carousel slide">
