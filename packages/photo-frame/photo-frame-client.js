@@ -56,76 +56,94 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 	render() {
 		this.attachShadow({ mode: 'open' });
+		// See https://getbootstrap.com/docs/4.0/components/carousel/
 		this.shadowRoot.innerHTML = `
 		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
-		<div class="container py-2">
-			<div class="row">
-				<div class="col-lg-8 offset-lg-2" id="slider">
-					<div id="myCarousel" class="carousel slide">
+		<style>
+			#myCarousel {
+				height: 100%;
+			}
+			.carousel-inner {
+				height: 100%;
+			}
+			.carousel-item {
+				height: 100%
+			}
+			.contain {
+				object-fit: contain;
+			}
 
-						<!-- main slider carousel items -->
-						<div class="carousel-inner" id="content">
-							<div class="active carousel-item" data-slide-number="0">
-								<img src="http://placehold.it/1200x480&amp;text=one" class="img-fluid">
-							</div>
-							<div class="carousel-item" data-slide-number="1">
-								Waiting for pictures
-							</div>
-							<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-								<span class="sr-only">Previous</span>
-							</a>
-							<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-								<span class="carousel-control-next-icon" aria-hidden="true"></span>
-								<span class="sr-only">Next</span>
-							</a>
-						</div>
-						<!-- main slider carousel nav controls -->
+		</style>
+		<div id="myCarousel" class="carousel slide">
+			<!-- main slider carousel items -->
+			<div class="carousel-inner" id="content"></div>
 
+			<!-- main slider carousel indicators -->
+			<ol class="carousel-indicators" id="thumbs"></ol>
 
-						<ul class="carousel-indicators list-inline mx-auto border px-2">
-							<li class="list-inline-item active">
-								<a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#myCarousel">
-									<img src="http://placehold.it/80x60&amp;text=one" class="img-fluid">
-								</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
+			<!-- carousel navigation -->
+			<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next" role="button" data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
 		</div>`;
 
 		this.carousel = {
-			content: this.shadowRoot.querySelector('#content')
+			main: this.shadowRoot.querySelector('#myCarousel'),
+			main$: $(this.carousel.main),
+			mainFn: (cmd) => $(this.carousel.main).carousel(cmd),
+			content: this.shadowRoot.querySelector('#content'),
+			thumbs: this.shadowRoot.querySelector('#thumbs'),
+			next: this.shadowRoot.querySelector('[data-slide="next"]'),
+			prev: this.shadowRoot.querySelector('[data-slide="prev"]'),
 		};
-		console.log('carousel: ', this.carousel);
+
+		this.carousel.next.addEventListener('click', () => this.carousel.mainFn('next'));
+		this.carousel.prev.addEventListener('click', () => this.carousel.mainFn('prev'));
+
+		/* global $ */
+		this.carousel.mainFn({
+			interval: 5 * 1000 * 1000
+		});
 
 		// https://getbootstrap.com/docs/4.0/components/carousel/
+		this.adaptList();
 	}
 
 	adaptList() {
+		if (!this.isRendered()) {
+			return;
+		}
 		if (picturesList.length < 1) {
 			return;
 		}
-		if (!this.carousel) {
-			return;
-		}
 		this.carousel.content.innerHTML = '';
+		this.carousel.thumbs.innerHTML = '';
+
 		for(let i = 0; i < picturesList.length; i++) {
 			const v = picturesList[i];
-			console.log(i, v);
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
-				`<div class="carousel-item" data-slide-number="${i}">
-					<img src="${v.webname}" class="img-fluid">
+				`<div class="carousel-item " data-slide-number="${i}">
+					<img class="d-block w-100 h-100 contain" src="${v.webname}">
+					<div class="carousel-caption d-none d-md-block">
+						<h5>${v.data.comment}</h5>
+						<p>${v.data.date}</p>
+					</div>
 				</div>`);
 
-			// <div class="carousel-caption d-none d-md-block">
-			// 	<h5>v.data.comment</h5>
-			// 	<p>v.data.date</p>
-			// </div>
+			this.carousel.thumbs.insertAdjacentHTML('beforeend',
+				`<li data-target="#myCarousel" data-slide-to="${i}">
+				</li>`);
 		}
 		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
+		this.carousel.thumbs.querySelector('[data-slide-to="0"]').classList.add('active');
+		this.carousel.thumbs.querySelectorAll('[data-slide-to]').forEach(el =>
+			el.addEventListener('click', () => this.carousel.mainFn(parseInt(el.dataset.slideTo))));
 	}
 }
 
