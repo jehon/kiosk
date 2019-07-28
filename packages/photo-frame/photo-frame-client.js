@@ -1,6 +1,5 @@
 
-// http://idangero.us/swiper/api/
-import '/node_modules/swiper/dist/js/swiper.min.js';
+import '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import AppFactory, { renderMixin } from '../../client/client-api.js';
 
@@ -47,103 +46,126 @@ function updatePicture() {
 }
 
 class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
+	carousel = false
+
 	get kioskEventListeners() {
 		return {
 			'.list.changed': () => this.adaptList(),
-			'.picture.changed': (i) => this.adaptPicture(i)
+			'.picture.changed': () => this.changePicture()
 		};
 	}
 
 	render() {
 		this.attachShadow({ mode: 'open' });
+		// See https://getbootstrap.com/docs/4.0/components/carousel/
 		this.shadowRoot.innerHTML = `
-			<link rel="stylesheet" href="/node_modules/swiper/dist/css/swiper.min.css">
-			<style>
-				.swiper-container {
-					height: 100%;
-				}
-
-				.swiper-slide {
-					height: 100%;
-					position: relative;
-				}
-
-				.swiper-slide img {
-					object-fit: contain;
-					height: 100%;
-					width: 100%;
-				}
-
-				.swiper-slide .tag {
-					position: absolute;
-					z-index: 999;
-					margin: 0 auto;
-					left: 0;
-					right: 0;
-					top: 0;
-					text-align: center;
-				}
-				.tag span {
-					background-color: gray;
-					padding: 15px;
-					border-top: 15px gray solid;
-					border-bottom-left-radius: 10px;
-					border-bottom-right-radius: 10px;
-				}
-			</style>
-			<div class="swiper-container">
-				<div class="swiper-wrapper" id="slides">
-					<div class="swiper-slide">Waiting for pictures</div>
-				</div>
-				<div class="swiper-pagination"></div>
-				<div class="swiper-button-prev"></div>
-				<div class="swiper-button-next"></div>
-			</div>
-		`;
-
-		/* global Swiper */
-		this.mySwiper = new Swiper(this.shadowRoot.querySelector('.swiper-container'), {
-			loop: true,
-
-			pagination: {
-				el: this.shadowRoot.querySelector('.swiper-pagination'),
-			},
-
-			navigation: {
-				nextEl: this.shadowRoot.querySelector('.swiper-button-next'),
-				prevEl: this.shadowRoot.querySelector('.swiper-button-prev'),
-			},
-		});
-
-		this.mySwiper.on('slideChange', () => {
-			let i = this.mySwiper.realIndex;
-			if (i != pictureIndex) {
-				pictureIndex = i;
-				app.dispatch('.picture.changed');
+		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
+		<style>
+			#myCarousel {
+				height: 100%;
 			}
+			.carousel-inner {
+				height: 100%;
+			}
+			.carousel-item {
+				height: 100%
+			}
+			.carousel-caption {
+				text-shadow: 0 1px 0 black;
+				mix-blend-mode: difference;
+			}
+
+			.carousel-indicators {
+				height: 40px;
+			}
+
+			.carousel-item img, 
+			.carousel-indicators img {
+				display: block;
+				height: 100%;
+				width: 100%;
+				object-fit: contain;
+			}
+
+		</style>
+		<div id="myCarousel" class="carousel slide">
+			<!-- main content -->
+			<div class="carousel-inner" id="content"></div>
+
+			<!-- thumbs -->
+			<ol class="carousel-indicators" id="thumbs"></ol>
+
+			<!-- carousel navigation -->
+			<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next" role="button" data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+		</div>`;
+
+		this.carousel = {
+			main: this.shadowRoot.querySelector('#myCarousel'),
+			main$: $(this.carousel.main),
+			mainFn: (cmd) => $(this.carousel.main).carousel(cmd),
+			content: this.shadowRoot.querySelector('#content'),
+			thumbs: this.shadowRoot.querySelector('#thumbs'),
+			next: this.shadowRoot.querySelector('[data-slide="next"]'),
+			prev: this.shadowRoot.querySelector('[data-slide="prev"]'),
+		};
+
+		this.carousel.next.addEventListener('click', () => this.carousel.mainFn('next'));
+		this.carousel.prev.addEventListener('click', () => this.carousel.mainFn('prev'));
+
+		/* global $ */
+		this.carousel.mainFn({
+			interval: false
 		});
+
+		// https://getbootstrap.com/docs/4.0/components/carousel/
+		this.adaptList();
 	}
 
 	adaptList() {
+		if (!this.isRendered()) {
+			return;
+		}
 		if (picturesList.length < 1) {
 			return;
 		}
-		this.mySwiper.removeAllSlides();
-		// TODO: date legend: should be clean up for not significant numbers!
-		this.mySwiper.appendSlide(picturesList.map(v =>
-			`<div class="swiper-slide">
-				<img src="${v.webname}" />
-				<div class="tag"><span>${v.data.comment} ${v.data.date ? v.data.date: ''}</span></div>
-			</div>
-			`
-		));
+		this.carousel.content.innerHTML = '';
+		this.carousel.thumbs.innerHTML = '';
+
+		for(let i = 0; i < picturesList.length; i++) {
+			const v = picturesList[i];
+			// TODO: date legend: should be clean up for not significant numbers!
+			this.carousel.content.insertAdjacentHTML('beforeend',
+				`<div class="carousel-item " data-slide-number="${i}">
+					<img src="${v.webname}">
+					<div class="carousel-caption d-none d-md-block">
+						<h5>${v.data.comment}</h5>
+						<p>${v.data.date}</p>
+					</div>
+				</div>`);
+
+			this.carousel.thumbs.insertAdjacentHTML('beforeend',
+				`<div data-target="#myCarousel" data-slide-to="${i}">
+					<img src="${v.webname}?thumb=1&height=50">
+				</div>`);
+		}
+		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
+		this.carousel.thumbs.querySelector('[data-slide-to="0"]').classList.add('active');
+		this.carousel.thumbs.querySelectorAll('[data-slide-to]').forEach(el =>
+			el.addEventListener('click', () => this.carousel.mainFn(parseInt(el.dataset.slideTo))));
 	}
 
-	adaptPicture() {
-		let i = this.mySwiper.realIndex;
-		if (i != pictureIndex) {
-			this.mySwiper.slideToLoop(pictureIndex);
+	changePicture() {
+		if (!this.carousel)	{
+			return;
 		}
+		this.carousel.mainFn(pictureIndex);
 	}
 }
 
