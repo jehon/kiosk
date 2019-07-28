@@ -2,7 +2,7 @@
 
 set -e
 
-exec 3<&1
+exec 3>&2
 
 modularize_file() {
 	TARGET="client/nm_rework/$(basename "$1")"
