@@ -50,7 +50,8 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 	get kioskEventListeners() {
 		return {
-			'.list.changed': () => this.adaptList()
+			'.list.changed': () => this.adaptList(),
+			'.picture.changed': () => this.changePicture()
 		};
 	}
 
@@ -69,20 +70,29 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			.carousel-item {
 				height: 100%
 			}
-			.contain {
-				object-fit: contain;
-			}
 			.carousel-caption {
 				text-shadow: 0 1px 0 black;
 				mix-blend-mode: difference;
 			}
 
+			.carousel-indicators {
+				height: 40px;
+			}
+
+			.carousel-item img, 
+			.carousel-indicators img {
+				display: block;
+				height: 100%;
+				width: 100%;
+				object-fit: contain;
+			}
+
 		</style>
 		<div id="myCarousel" class="carousel slide">
-			<!-- main slider carousel items -->
+			<!-- main content -->
 			<div class="carousel-inner" id="content"></div>
 
-			<!-- main slider carousel indicators -->
+			<!-- thumbs -->
 			<ol class="carousel-indicators" id="thumbs"></ol>
 
 			<!-- carousel navigation -->
@@ -111,7 +121,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 		/* global $ */
 		this.carousel.mainFn({
-			interval: 5 * 1000 * 1000
+			interval: false
 		});
 
 		// https://getbootstrap.com/docs/4.0/components/carousel/
@@ -133,7 +143,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
-					<img class="d-block w-100 h-100 contain" src="${v.webname}">
+					<img src="${v.webname}">
 					<div class="carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
@@ -141,13 +151,21 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 				</div>`);
 
 			this.carousel.thumbs.insertAdjacentHTML('beforeend',
-				`<li data-target="#myCarousel" data-slide-to="${i}">
-				</li>`);
+				`<div data-target="#myCarousel" data-slide-to="${i}">
+					<img src="${v.webname}?thumb=1&height=50">
+				</div>`);
 		}
 		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
 		this.carousel.thumbs.querySelector('[data-slide-to="0"]').classList.add('active');
 		this.carousel.thumbs.querySelectorAll('[data-slide-to]').forEach(el =>
 			el.addEventListener('click', () => this.carousel.mainFn(parseInt(el.dataset.slideTo))));
+	}
+
+	changePicture() {
+		if (!this.carousel)	{
+			return;
+		}
+		this.carousel.mainFn(pictureIndex);
 	}
 }
 
