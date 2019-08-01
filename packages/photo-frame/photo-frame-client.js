@@ -76,7 +76,16 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			}
 
 			.carousel-indicators {
-				height: 40px;
+				height: 50px;
+			}
+
+			.thumb {
+				background-color: white;
+				border: white solid 5px;
+			}
+
+			.thumb.active {
+				border-color: gray;
 			}
 
 			.carousel-item img, 
@@ -151,7 +160,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 				</div>`);
 
 			this.carousel.thumbs.insertAdjacentHTML('beforeend',
-				`<div data-target="#myCarousel" data-slide-to="${i}">
+				`<div class="thumb" data-target="#myCarousel" data-slide-to="${i}">
 					<img src="${v.webname}?thumb=1&height=50">
 				</div>`);
 		}
