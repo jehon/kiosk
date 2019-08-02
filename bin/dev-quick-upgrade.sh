@@ -37,4 +37,4 @@ header "** done **"
 touch package-lock.json
 
 header "Restarting the service"
-"$KIOSK_APP"/bin/restart-service.sh
+"$KIOSK_APP"/bin/restart.sh
