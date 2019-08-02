@@ -1,7 +1,7 @@
 #!/usr/bin/node --experimental-modules
 
 import hotReloadingProxy from '../node_modules/hot-reloading-proxy/server.js';
-import opn from '../node_modules/opn/index.js';
+import opn from '../node_modules/open/index.js';
 
 import serverAPIFactory from './server-api.mjs';
 const serverAPI = serverAPIFactory('server-with-watch');

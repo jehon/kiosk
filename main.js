@@ -1,9 +1,7 @@
 #!/usr/bin/node --experimental-modules
 
 import start from './server/server.mjs';
-import open from 'open';
 import childProcess from 'child_process';
-
 
 start().then(() => {
 	console.log('Launching browser');
