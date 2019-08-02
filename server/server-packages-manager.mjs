@@ -30,12 +30,13 @@ let manifestList = null;
 
 export async function getManifests() {
 	if (!manifestList) {
-		manifestList = await util.promisify(fs.readdir)(pkgRoot)
+		await util.promisify(fs.readdir)(pkgRoot)
 			.catch(e => logger.error('Error getting the manifest list:', e))
 			.then(list => list.map(el => path.join(pkgRoot, el)))
 			.then(list => Promise.all(list.map(el => testFolder(el))))
 			.then(list => list.filter(el => el))
-		;
+			.then(list => { manifestList = list; return manifestList; });
+
 	}
 	return manifestList;
 }
