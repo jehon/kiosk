@@ -25,46 +25,6 @@ fi
 # shellcheck source=./lib.sh
 . "$KIOSK_APP"/bin/lib.sh
 
-pushd "$KIOSK_APP"
-
-header "Update the code"
-LCOMMIT="$(git rev-parse HEAD)"
-
-header_sub "Dump the current status (for information only)"
-git status
-
-header_sub "In production: reset all local modifications"
-restrictedToProd git reset --hard
-
-header_sub "Pulling all"
-if ! asKioskUser git pull --all --prune; then
-    header "Remote branch has dissapear, looking for a new one..."
-
-    ORIGIN=$(git branch --remotes --merged "HEAD" | grep -v HEAD)
-    header "New origin: $ORIGIN"
-
-    BRANCH="${ORIGIN/origin\/}"
-    BRANCH="${BRANCH// /}"
-    header "New branch: '$BRANCH'"
-  
-    header "Going on the new branch: $BRANCH"
-    asKioskUser git checkout "$BRANCH"
-    asKioskUser git pull
-
-    header "On new branch: $BRANCH"
-fi
-
-NCOMMIT="$(git rev-parse HEAD)"
-
-if [ "$LCOMMIT" == "$NCOMMIT" ] && [ -e "node_modules" ]; then
-	# No change in the pull'ed commit
-	# And we are already installed...
-	exit 0
-fi
-
-header "Backend has changed, need to run setup again"
-asKioskUser npm ci
-
 header "Enforce minimal dependencies"
 header_sub "updating indexes"
 apt --yes update
@@ -102,6 +62,9 @@ cp "$KIOSK_APP/bin/files/xsessions/kiosk.sh" "/usr/share/xsessions"
 chown root.root /usr/share/xsessions/kiosk.*
 chmod 644 /usr/share/xsessions/kiosk.*
 
+header "Installing cron to update kiosk daily"
+ln -s /etc/cron.daily/kiosk-update "$KIOSK_APP"/bin/upgrade.sh
+
 #
 #
 # Checkpoint: 
@@ -127,5 +90,7 @@ popd >/dev/null
 
 header "Set the hostname"
 "$KIOSK_APP"/bin/scripts/change-hostname.sh
+
+# TODO: trigger a service restart !!!
 
 exit 0
