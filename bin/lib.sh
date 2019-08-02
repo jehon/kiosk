@@ -142,6 +142,9 @@ restrictedToProd() {
     return 0
 }
 
+asKioskUser() {
+    runuser -u "$KIOSK_USER" -- "$@"
+}
 
 #
 #

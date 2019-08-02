@@ -64,8 +64,8 @@ header "Installing server dependencies"
 pushd "$KIOSK_APP" >/dev/null
 
 # Must run as user KIOSK_USER, because as root, compiled plugins are not available (why?)
-runuser -u "$KIOSK_USER" -- npm install
-runuser -u "$KIOSK_USER" -- npm prune
+asKioskUser npm install
+asKioskUser npm prune
 # chmod 775 -R node_modules
 popd >/dev/null
 
