@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-# Hypothesis: the code is already present -> see kickstart.sh
+#
+# This script is called as soon as the git clone has been done
+#    - see kickin.sh
+#    /!\ We must be in the same folder as the git clone
+#
 
 set -e
 
@@ -8,6 +12,7 @@ set -e
 KIOSK_APP="$(dirname "$(dirname "$( realpath "$0" )")")"
 export KIOSK_APP
 
+# shellcheck source=./lib.sh
 . "$KIOSK_APP"/bin/lib.sh
 
 header "Store configuration into environment variables"
@@ -37,6 +42,7 @@ fi
 
 ##
 ## Configure newly installed packages
+##    the packages are installed by setup.sh
 ##
 
 header "lightdm will start $KIOSK_USER user"

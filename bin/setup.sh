@@ -1,12 +1,28 @@
 #!/usr/bin/env bash
 
+#
+# This script serve as the "base" setup / upgrade /... script
+#
+# It is called:
+#  - by initialize
+#       INITIAL=1
+#       for the initial setup
+#
+#  - by the upgrade mechanism
+#       -z INITIAL
+#       in dev, the git pull --hard is disabled
+#       in prod, git reset --hard will reset the folder
+#
+
 set -e
 
+# KIOSK_APP should be set by profile, or by initialize
 if [ -z "$KIOSK_APP" ]; then
 	echo "KIOSK_APP is not set. This is abnormal. Quitting" >&2
 	exit 1
 fi
 
+# shellcheck source=./lib.sh
 . "$KIOSK_APP"/bin/lib.sh
 
 header "Enforce minimal dependencies"
