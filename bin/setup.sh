@@ -89,6 +89,6 @@ header "Set the hostname"
 "$KIOSK_APP"/bin/scripts/change-hostname.sh
 
 header "Restarting the service"
-"$KIOSK_APP"/bin/restart-service.sh
+"$KIOSK_APP"/bin/restart.sh
 
 exit 0

@@ -26,4 +26,4 @@ fixCrash "$HOME/.config/chromium/Local State"
 # 	--start-maximized \
 # 	http://127.0.0.1:3000
 
-$KIOSK_APP/server/main.js
+"$KIOSK_APP"/server/main.js
