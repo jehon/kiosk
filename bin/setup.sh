@@ -73,11 +73,9 @@ ln -s /etc/cron.daily/kiosk-update "$KIOSK_APP"/bin/upgrade.sh
 #                  
 #
 
-# header_sub "Fix permissions for $KIOSK_APP"
-# TODO !!!!
-# chown -R $KIOSK_USER "$KIOSK_APP"
-# chmod -R ug+rwX $KIOSK_APP
-
+header_sub "Fix permissions for $KIOSK_APP"
+chown -R $KIOSK_USER "$KIOSK_APP"
+chmod -R ug+rwX $KIOSK_APP
 
 header "Installing server dependencies"
 pushd "$KIOSK_APP" >/dev/null
