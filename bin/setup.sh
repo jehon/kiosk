@@ -83,12 +83,12 @@ pushd "$KIOSK_APP" >/dev/null
 # Must run as user KIOSK_USER, because as root, compiled plugins are not available (why?)
 asKioskUser npm install
 asKioskUser npm prune
-# chmod 775 -R node_modules
 popd >/dev/null
 
 header "Set the hostname"
 "$KIOSK_APP"/bin/scripts/change-hostname.sh
 
-# TODO: trigger a service restart !!!
+header "Restarting the service"
+"$KIOSK_APP"/bin/restart-service.sh
 
 exit 0

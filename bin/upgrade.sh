@@ -53,7 +53,11 @@ if [ "$LCOMMIT" == "$NCOMMIT" ] && [ -e "node_modules" ]; then
 	# No change in the pull'ed commit
 	# And we are already installed...
 
-    # TODO: quid in dev ???
+    # In Dev, this would go out here,
+    # while perhaps, the latest package.json has changed
+    #
+    # So in dev, we will call the "update-dev.sh"
+    #
 	exit 0
 fi
 
