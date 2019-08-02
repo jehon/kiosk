@@ -7,9 +7,9 @@ import { start as startServer } from './server-api-webserver.mjs';
 // Self configuring internal packages
 import { loadServerFiles } from './server-packages-manager.mjs';
 
-export default async function() {
+export default async function(port) {
 	await loadServerFiles().then(async () => {
 		// Return the port
-		return await startServer();
+		return await startServer(port);
 	});
 }

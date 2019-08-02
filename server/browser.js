@@ -8,12 +8,23 @@ const logger = serverAPI.logger;
 
 let browserThread = false;
 
-export function start(port) {
+export function start(port, kioskMode = true) {
 	logger.info('Launching browser');
 	if (browserThread) {
 		stop();
 	}
-	browserThread = childProcess.spawn('chromium-browser', [ `http://localhost:${port}` ], { stdio: 'pipe' });
+	browserThread = childProcess.spawn('chromium-browser',
+		(kioskMode ? [
+			// Production mode
+			'--kiosk',
+		]: [
+			// Developper mode
+			'--auto-open-devtools-for-tabs',
+		]).concat(
+			[
+				`http://localhost:${port}`
+			]),
+		{ stdio: 'pipe' });
 	browserThread.on('exit', () => {
 		logger.info('end of browser');
 		process.exit(0);
