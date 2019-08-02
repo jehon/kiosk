@@ -30,10 +30,10 @@ header_sub "updating indexes"
 apt --yes update
 
 header_sub "Requiring production packages: $CFG_MIN_APT"
-apt install --yes $CFG_MIN_APT
+apt install --yes "${CFG_MIN_APT[@]}"
 
 restrictedToDev header_sub "Install development packages: $CFG_DEV_APT"
-restrictedToDev apt --yes install $CFG_DEV_APT
+restrictedToDev apt --yes install "${CFG_DEV_APT[@]}"
 
 header_sub "Ensure nodejs with version $CFG_MIN_NODE_VERSION is present"
 install_nodejs() {
@@ -63,7 +63,7 @@ chown root.root /usr/share/xsessions/kiosk.*
 chmod 644 /usr/share/xsessions/kiosk.*
 
 header "Installing cron to update kiosk daily"
-ln -s /etc/cron.daily/kiosk-update "$KIOSK_APP"/bin/upgrade.sh
+ln -fs "$KIOSK_APP"/bin/upgrade.sh /etc/cron.daily/kiosk-update
 
 #
 #
@@ -74,8 +74,8 @@ ln -s /etc/cron.daily/kiosk-update "$KIOSK_APP"/bin/upgrade.sh
 #
 
 header_sub "Fix permissions for $KIOSK_APP"
-chown -R $KIOSK_USER "$KIOSK_APP"
-chmod -R ug+rwX $KIOSK_APP
+chown -R "$KIOSK_USER" "$KIOSK_APP"
+chmod -R ug+rwX "$KIOSK_APP"
 
 header "Installing server dependencies"
 pushd "$KIOSK_APP" >/dev/null
