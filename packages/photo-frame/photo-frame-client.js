@@ -12,12 +12,21 @@ let picturesList = [];
 let updatePictureTimeout = false;
 
 function next(i) {
-	let next = i + 1;
-	if (next >= picturesList.length) {
-		next = 0;
+	let res = i + 1;
+	if (res >= picturesList.length) {
+		res = 0;
 	}
-	return next;
+	return res;
 }
+
+function prev(i) {
+	let res = i - 1;
+	if (res <= 0) {
+		res = picturesList.length - 1;
+	}
+	return res;
+}
+
 
 function url(i, escape = false) {
 	if (i in picturesList) {
@@ -75,17 +84,20 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 				mix-blend-mode: difference;
 			}
 
+			/* thumbs */
+
 			.carousel-indicators {
 				height: 50px;
 			}
 
 			.thumb {
-				background-color: white;
-				border: white solid 5px;
+				/* border: white solid 2px; */
 			}
 
 			.thumb.active {
-				border-color: gray;
+				background-color: gray;
+				border-radius: 2px;
+				border: solid 2px gray;
 			}
 
 			.carousel-item img, 
@@ -125,8 +137,17 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			prev: this.shadowRoot.querySelector('[data-slide="prev"]'),
 		};
 
-		this.carousel.next.addEventListener('click', () => this.carousel.mainFn('next'));
-		this.carousel.prev.addEventListener('click', () => this.carousel.mainFn('prev'));
+		/* Next button */
+		this.carousel.next.addEventListener('click', () => {
+			pictureIndex = next(pictureIndex);
+			app.dispatch('.picture.changed', pictureIndex);
+		});
+
+		/* Previous button */
+		this.carousel.prev.addEventListener('click', () => {
+			pictureIndex = prev(pictureIndex);
+			app.dispatch('.picture.changed', pictureIndex);
+		});
 
 		/* global $ */
 		this.carousel.mainFn({
