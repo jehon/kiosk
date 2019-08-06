@@ -38,11 +38,14 @@ CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev) # Extension image fast ?
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils) # Package 'shares'
 #CFG_MIN_APT=("${CFG_MIN_APT[@]}" )
 
-if [ "$(lsb_release -i -s)" == "Ubuntu" ]; then
-	CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-bsu)
-else
-	CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
-fi
+case "$(lsb_release -i -s)" in
+	"Ubuntu" | "Raspbian" )
+		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-bsu)
+		;;
+	* )
+		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
+		;;
+esac
 
 export CFG_MIN_APT
 
