@@ -51,7 +51,7 @@
     "npm-check": "5.9.0",
     "puppeteer": "1.19.0",
     "randomport": "0.1.1",
-    "start-server-and-test": "1.9.1",
+    "start-server-and-test": "1.9.2",
     "watch-then-execute": "1.1.1"
   },
   "scripts": {
