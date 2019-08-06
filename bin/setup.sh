@@ -25,6 +25,33 @@ fi
 # shellcheck source=./lib.sh
 . "$KIOSK_APP"/bin/lib.sh
 
+header "Set variables"
+CFG_MIN_APT=()
+# System wide
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" wget apt-transport-https) # Required by nodejs install 
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" gcc g++ make) # Build of native extensions
+#CFG_MIN_APT=("${CFG_MIN_APT[@]}" ) # 
+
+# Kiosk specific
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq crudini xdotool) # System kiosk
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev) # Extension image fast ?
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils) # Package 'shares'
+#CFG_MIN_APT=("${CFG_MIN_APT[@]}" )
+
+if [ "$(lsb_release -i -s)" == "Ubuntu" ]; then
+	CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-bsu)
+else
+	CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
+fi
+
+export CFG_MIN_APT
+
+CFG_DEV_APT=(htop exiftran exif gnupg2 less xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2)
+export CFG_DEV_APT
+
+CFG_MIN_NODE_VERSION="12.1"
+export CFG_MIN_NODE_VERSION
+
 header "Enforce minimal dependencies"
 header_sub "updating indexes"
 apt --yes update
