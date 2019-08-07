@@ -87,7 +87,8 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			/* thumbs */
 
 			.carousel-indicators {
-				height: 50px;
+				max-height: 50px;
+				margin-bottom: 0.5rem;
 			}
 
 			.thumb {
