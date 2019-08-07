@@ -25,8 +25,8 @@ export function start(port, kioskMode = true) {
 				`http://localhost:${port}`
 			]),
 		{ stdio: 'pipe' });
-	browserThread.on('exit', () => {
-		logger.info('end of browser');
+	browserThread.on('exit', (e) => {
+		logger.info('end of browser', e);
 		process.exit(0);
 	});
 }

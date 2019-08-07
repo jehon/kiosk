@@ -4,7 +4,7 @@ set -e
 
 KIOSK_APP="$(dirname "$(dirname "$(dirname "$( realpath "$0" )")")")"
 
-. "$KIOSK_APP"/bin/lib.sh
+. "$KIOSK_APP"/bin/scripts/lib.sh
 
 KIOSK_APP="$(dirname "$(dirname "$(dirname "$( realpath "$0" )")")")"
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env bash
 
 #
 #
@@ -10,14 +10,10 @@
 
 set -e
 
-# KIOSK_APP should be set by profile, or by initialize
-if [ -z "$KIOSK_APP" ]; then
-	echo "KIOSK_APP is not set. This is abnormal. Quitting" >&2
-	exit 1
-fi
+
 
 # shellcheck source=./lib.sh
-. "$KIOSK_APP"/bin/lib.sh
+. "$(dirname "$BASH_SOURCE" )"/scripts/lib.sh
 
 pushd "$KIOSK_APP"
 
@@ -28,13 +24,17 @@ fi
 
 header "Need an update"
 header_sub "** install **"
-asKioskUser npm install
+# See https://docs.npmjs.com/misc/scripts
+npm install --unsafe-perm
 
 header_sub "** prune **"
-asKioskUser npm prune || true
+npm prune --unsafe-perm || true
 
 header "** done **"
 touch package-lock.json
 
+header "** apply patches **"
+"$KIOSK_APP"/apply-patches.sh
+
 header "Restarting the service"
-"$KIOSK_APP"/bin/restart.sh
+"$KIOSK_APP"/bin/kiosk-restart.sh

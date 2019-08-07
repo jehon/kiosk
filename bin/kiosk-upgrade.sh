@@ -3,7 +3,7 @@
 #
 # Upgrade the code base
 #
-# and then call the (new) setup.sh script
+# and then call the (new) kiosk-setup.sh script
 #
 #
 
@@ -16,7 +16,7 @@ if [ -z "$KIOSK_APP" ]; then
 fi
 
 # shellcheck source=./lib.sh
-. "$KIOSK_APP"/bin/lib.sh
+. "$KIOSK_APP"/bin/scripts/lib.sh
 
 pushd "$KIOSK_APP"
 
@@ -56,10 +56,10 @@ if [ "$LCOMMIT" == "$NCOMMIT" ] && [ -e "node_modules" ]; then
     # In Dev, this would go out here,
     # while perhaps, the latest package.json has changed
     #
-    # So in dev, we will call the "update-dev.sh"
+    # So in dev, we will call the "kiosk-dev.sh"
     #
 	exit 0
 fi
 
-# shellcheck source=./bin/setup.sh
-"$KIOSK_APP"/bin/setup.sh
+# shellcheck source=./bin/kiosk-setup.sh
+"$KIOSK_APP"/bin/kiosk-setup.sh

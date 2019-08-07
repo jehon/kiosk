@@ -23,7 +23,7 @@ if [ -x /etc/profile.d/kiosk-profile.sh ]; then
 	. /etc/profile.d/kiosk-profile.sh
 else
     # Default values
-    KIOSK_APP="$(dirname "$(dirname "$( realpath "$0" )")")"
+    KIOSK_APP="$(dirname "$(dirname "$(dirname "$( realpath "$BASH_SOURCE" )")")")"
     export KIOSK_APP
 
     KIOSK_USER="${KIOSK_USER:-kiosk}"
@@ -157,7 +157,11 @@ is_version2_sufficient () {
 #
 
 debug "Debug mode is enabled"
-debug "KIOSK_DEV  is $KIOSK_DEV"
+if [ -z "$KIOSK_DEV"]; then
+	debug "KIOSK_DEV  is disabled"
+else
+	debug "KIOSK_DEV  is enabled"
+fi
 debug "KIOSK_APP  is $KIOSK_APP"
 debug "KIOSK_USER is $KIOSK_USER"
 debug "NODE_ENV   is $NODE_ENV"

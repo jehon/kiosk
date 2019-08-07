@@ -10,7 +10,7 @@ export KIOSK_USER
 export KIOSK_APP
 export NODE_ENV="development"
 
-. "$KIOSK_APP"/bin/lib.sh
+. "$KIOSK_APP"/bin/scripts/lib.sh
 
 header "Store (dev) configuration into environment variables"
 (
