@@ -13,7 +13,7 @@ KIOSK_APP="$(dirname "$(dirname "$( realpath "$0" )")")"
 export KIOSK_APP
 
 # shellcheck source=./lib.sh
-. "$KIOSK_APP"/bin/lib.sh
+. "$KIOSK_APP"/bin/scripts/lib.sh
 
 header "Store configuration into environment variables"
 (
@@ -38,11 +38,11 @@ fi
 ##
 ## Call normal setup
 ##
-"$KIOSK_APP"/bin/setup.sh
+"$KIOSK_APP"/bin/kiosk-setup.sh
 
 ##
 ## Configure newly installed packages
-##    the packages are installed by setup.sh
+##    the packages are installed by kiosk-setup.sh
 ##
 
 header "lightdm will start $KIOSK_USER user"

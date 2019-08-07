@@ -34,8 +34,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: "/bin/chmod +x #{KIOSK_APP}/bin/*", run: "always"
   unless envProduction
-    config.vm.provision "shell", inline: "/bin/bash #{KIOSK_APP}/bin/dev.sh"
+    config.vm.provision "shell", inline: "/bin/bash #{KIOSK_APP}/bin/kiosk-dev.sh"
   end
   
-  config.vm.provision "shell", inline: "/bin/bash #{KIOSK_APP}/bin/initialize.sh"
+  config.vm.provision "shell", inline: "/bin/bash #{KIOSK_APP}/bin/kiosk-initialize.sh"
 end

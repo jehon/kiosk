@@ -23,7 +23,7 @@ if [ -z "$KIOSK_APP" ]; then
 fi
 
 # shellcheck source=./lib.sh
-. "$KIOSK_APP"/bin/lib.sh
+. "$KIOSK_APP"/bin/scripts/lib.sh
 
 header "Set variables"
 CFG_MIN_APT=()
@@ -39,11 +39,11 @@ CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils) # Package 'shares'
 #CFG_MIN_APT=("${CFG_MIN_APT[@]}" )
 
 case "$(lsb_release -i -s)" in
-	"Ubuntu" | "Raspbian" )
-		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-bsu)
+	"Debian" )
+		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
 		;;
 	* )
-		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
+		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-browser)
 		;;
 esac
 
@@ -87,13 +87,16 @@ else
 fi
 
 header "Install the frontend session"
-cp "$KIOSK_APP/bin/files/xsessions/kiosk.desktop" "/usr/share/xsessions"
-cp "$KIOSK_APP/bin/files/xsessions/kiosk.sh" "/usr/share/xsessions"
+cat > "/usr/share/xsessions/kiosk.desktop" <<EOF
+[Desktop Entry]
+Name=Browser
+Exec=$KIOSK_APP/bin/xsession-kiosk.sh
+Type=Application
+EOF
 chown root.root /usr/share/xsessions/kiosk.*
-chmod 644 /usr/share/xsessions/kiosk.*
 
 header "Installing cron to update kiosk daily"
-ln -fs "$KIOSK_APP"/bin/upgrade.sh /etc/cron.daily/kiosk-update
+ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
 
 #
 #
@@ -103,22 +106,17 @@ ln -fs "$KIOSK_APP"/bin/upgrade.sh /etc/cron.daily/kiosk-update
 #                  
 #
 
-header_sub "Fix permissions for $KIOSK_APP"
-chown -R "$KIOSK_USER" "$KIOSK_APP"
-chmod -R ug+rwX "$KIOSK_APP"
-
 header "Installing server dependencies"
 pushd "$KIOSK_APP" >/dev/null
 
-# Must run as user KIOSK_USER, because as root, compiled plugins are not available (why?)
-asKioskUser npm install
-asKioskUser npm prune
+header "Upgrade server dependencies"
+"$KIOSK_APP"/bin/kiosk-upgrade-sources.sh
 popd >/dev/null
 
 header "Set the hostname"
 "$KIOSK_APP"/bin/scripts/change-hostname.sh
 
 header "Restarting the service"
-"$KIOSK_APP"/bin/restart.sh
+"$KIOSK_APP"/bin/kiosk-restart.sh
 
 exit 0
