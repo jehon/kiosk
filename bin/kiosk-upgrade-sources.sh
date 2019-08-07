@@ -15,7 +15,7 @@ set -e
 # shellcheck source=./lib.sh
 . "$(dirname "$BASH_SOURCE" )"/scripts/lib.sh
 
-pushd "$KIOSK_APP"
+pushd "$KIOSK_APP" > /dev/null
 
 if [ -r package-lock.json ] && [ package-lock.json -nt package.json ]; then
 	header "Already up-to-date"

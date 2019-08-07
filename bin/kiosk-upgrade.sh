@@ -18,7 +18,7 @@ fi
 # shellcheck source=./lib.sh
 . "$KIOSK_APP"/bin/scripts/lib.sh
 
-pushd "$KIOSK_APP"
+pushd "$KIOSK_APP" > /dev/null
 
 header "Update the code"
 LCOMMIT="$(git rev-parse HEAD)"

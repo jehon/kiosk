@@ -20,7 +20,7 @@ xset +dpms
 # W=$(xrandr | grep "\*" | cut -d' ' -f4 | cut -d'x' -f1)
 
 # ( 
-	pushd /opt/web/www
+	pushd /opt/web/www > /dev/null
 	/opt/web/www/main.mjs
 	popd
 # ) >> /var/log/kiosk.log 2>> /var/log/kiosk.err
