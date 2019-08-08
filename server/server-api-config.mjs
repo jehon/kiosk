@@ -37,6 +37,12 @@ if (typeof(jasmine) != 'undefined') {
 
 const cmdLineOptions = yargs
 	.options({
+		'quiet': {
+			alias: 'q',
+			describe: 'Quiet mode, only error messages are shown',
+			type: 'boolean',
+			default: false
+		},
 		'dev': {
 			alias: 'd',
 			describe: 'In dev mode, some functionnalities are disabled.',
@@ -90,7 +96,9 @@ let config = {
 //
 // Command line options (only from command-line)
 //
-
+if (cmdLineOptions.quiet) {
+	config.core.quiet = cmdLineOptions.quiet;
+}
 if (cmdLineOptions.dev) {
 	config.core.dev   = cmdLineOptions.dev;
 }
@@ -104,6 +112,10 @@ if (cmdLineOptions._) {
 //
 // Setup some general configs
 //
+
+if (config.core.quiet) {
+	loggersSetGlobalLevel('ERROR');
+}
 
 if (config.core.dev) {
 	logger.startup('Started in dev mode');
