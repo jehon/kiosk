@@ -6,3 +6,6 @@
 ### Strange ???
 
 npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
+
+
+https://snapcraft.io/docs/node-apps
