@@ -47,8 +47,9 @@ fi
 
 header "lightdm will start $KIOSK_USER user"
 crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-session" "kiosk"
-# TODO: use non-root user ?
-crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-user" "root"
+crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-user" "pi"
+crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-session" "kiosk"
+crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-user" "pi"
 
 header "Redirect sound output to jack first card"
 cp "$KIOSK_APP"/bin/files/asound.conf /etc/
