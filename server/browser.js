@@ -9,6 +9,17 @@ const logger = serverAPI.logger;
 let browserThread = false;
 
 export function start(port, kioskMode = true) {
+
+	// TODO:
+	//
+	// fixCrash() {
+	// 	sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' "$1"
+	// 	sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' "$1"
+	// }
+
+	// fixCrash "$HOME/.config/chromium/Default/Preferences"
+	// fixCrash "$HOME/.config/chromium/Local State"
+
 	logger.info('Launching browser');
 	if (browserThread) {
 		stop();
