@@ -6,5 +6,4 @@ import * as browser from './server/browser.js';
 
 start().then((port) => {
 	browser.start(port);
-	// browser.start(port);
 });
