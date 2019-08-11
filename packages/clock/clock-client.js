@@ -150,13 +150,11 @@ class KioskClock extends app.getKioskEventListenerMixin()(renderMixin(HTMLElemen
 }
 
 customElements.define('kiosk-clock', KioskClock);
-const statusElement = new KioskClock();
-statusElement.setAttribute('no-date', 'no-date');
 
 app
 	.withPriority(defaultPriority)
 	.withMainElement(new KioskClock())
-	.withStatusElement(statusElement)
+	.menuBasedOnIcon('/packages/clock/clock.png')
 	.subscribe('.ticker', (data) => {
 		ticker = data;
 		app.withPriority(elevatedPriority);

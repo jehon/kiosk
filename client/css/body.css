@@ -10,71 +10,35 @@ body {
 	width: 100%;
 
 	margin: 0;
-	padding: 10px;
+	padding: var(--generic-space);
 	box-sizing: border-box;
-
-	display: grid;
-	grid-template-columns: 200px 1fr;
-	grid-template-rows: 100%;
-	grid-template-areas:
-		"menu main"
-		;
-	grid-column-gap: 10px;
 
 	background-color: black;
 	color: white;
 }
 
-body > * {
-	box-sizing: border-box;
-	padding: 5px;
-}
-
 /**
- *  Main menu 
+ * App menu icon overlay
  */
 
-body > #main-menu {
-	height: 100%;
-	width: 100%;
-
-	display: grid;
-	grid-auto-rows: 1fr;
-	grid-template-columns: 100%;
-	grid-gap: 1px;
+body > #app-menu {
+	position: absolute;
+	top: var(--generic-space);
+	left: var(--generic-space);
+	z-index: 1000;
 }
 
-body > #main-menu > * {
-	width: 100%;
-	min-height: 20px;
-
-	object-fit: contain;
-
-	border: 2px gray solid;
-	border-bottom-left-radius: 15px;
-	border-top-left-radius: 15px;
-}
-
-body > #main-menu > [selected] {
-	width: 100%;
-	min-height: 20px;
-
-	object-fit: contain;
-	
-	border-color: white;
-	border-right: none;
-
-	/* border-left:   2px white solid;
-	border-top:    2px white solid;
-	border-bottom: 2px white solid; */
+body > #app-menu > img {
+	width: 40px;
 }
 
 /**
  * Main content
  */
 
-body > #main-application > * {
-	max-height: 100%;
+body > #main-application {
+	box-sizing: border-box;
+	height: 100%;
 	width: 100%;
 
 	/* full */
