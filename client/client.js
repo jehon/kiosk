@@ -43,9 +43,7 @@ subscribe('app.changed', () => {
 		if (!('mainElement' in currentMainApplication)) {
 			clientAPI.logger.error(`No mainElement in ${currentMainApplication.getName()}`);
 			mainAppElement.innerHTML = `<div>No main element available for app ${this.getName()}: ${JSON.stringify(this)}</div>`;
-
 		} else {
-
 			// Ok, let's go !
 			clientAPI.logger.info(`Selecting ${currentMainApplication.getName()}`);
 			displayedApplication = currentMainApplication;

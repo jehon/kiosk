@@ -13,9 +13,9 @@ let state = {
 app.subscribe('.status', data => {
 	state = data;
 	if (state.enabled) {
-		app.withPriority(50);
+		app.changePriority(50);
 	} else {
-		app.withPriority(1000);
+		app.changePriority(1000);
 	}
 });
 

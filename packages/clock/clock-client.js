@@ -157,14 +157,14 @@ app
 	.menuBasedOnIcon('/packages/clock/clock.png')
 	.subscribe('.ticker', (data) => {
 		ticker = data;
-		app.withPriority(elevatedPriority);
+		app.changePriority(elevatedPriority);
 
 		onDate(ticker.stat.end).then(() => {
 			// data.onEndOfDuration(() => {
 		// Is it the current ticker?
 			if (ticker && ticker.triggerDate == data.triggerDate) {
 			// We have this event, so let's stop it and become a normal application again...
-				app.withPriority(defaultPriority);
+				app.changePriority(defaultPriority);
 			}
 		});
 	})

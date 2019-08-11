@@ -107,8 +107,10 @@ export default class ClientAPI {
 	}
 
 	changePriority(newPriority) {
-		this.priority = newPriority;
-		this.dispatchAppChanged();
+		if (this.priority != newPriority) {
+			this.priority = newPriority;
+			this.dispatchAppChanged();
+		}
 		return this;
 	}
 
