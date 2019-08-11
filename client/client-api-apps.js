@@ -30,7 +30,6 @@ export default class ClientAPI {
 	name; // private
 	c; // contextualizer - private
 	logger = loggerFactory('unspecified');
-	enabled = true;
 	priority = 1000;
 
 	constructor(name) {
@@ -102,26 +101,8 @@ export default class ClientAPI {
 		return this;
 	}
 
-	withStatusElement(element) {
-		this.statusElement = element;
-		this.dispatchAppChanged();
-		return this;
-	}
-
 	withMenuElement(element) {
 		this.menuElement = element;
-		return this;
-	}
-
-	disable() {
-		this.enabled = false;
-		this.dispatchAppChanged();
-		return this;
-	}
-
-	enable() {
-		this.enabled = true;
-		this.dispatchAppChanged();
 		return this;
 	}
 
@@ -193,8 +174,7 @@ export function getApplicationByName(name) {
 
 export function getApplicationsList() {
 	const papps = Object.keys(apps)
-		.map(k => apps[k])
-		.filter(app => app.enabled);
+		.map(k => apps[k]);
 	// TODO: should be done when refreshing the list
 	// TODO: second criteria should be the name
 	// !! split event apps.one.changed (one) into apps.list.updated

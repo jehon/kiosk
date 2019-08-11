@@ -1,6 +1,6 @@
 
 import clientAPIFactory from './client-api.js';
-import { getApplicationsList, currentMainApplication } from './client-api-apps.js';
+import { currentMainApplication, getApplicationByName } from './client-api-apps.js';
 import { subscribe } from './client-api-events.js';
 const clientAPI = clientAPIFactory('core');
 
@@ -12,33 +12,24 @@ toastr.options.timeOut = 10*1000;
 // Main initialization of gui
 //
 
+const appMenuElement = document.querySelector('#app-menu');
+if (appMenuElement == null) {
+	throw 'registerAppMenu: #app-menu is null';
+}
+
 const mainAppElement = document.querySelector('#main-application');
 if (mainAppElement == null) {
 	throw 'registerMainContainer: #main-application is null';
 }
 
 let displayedApplication = false;
+
+appMenuElement.addEventListener('click', () => {
+	// Go to menu list application
+	getApplicationByName('menu').goManually();
+});
+
 subscribe('app.changed', () => {
-	//
-	// Menu
-	//
-	const el = document.querySelector('#main-menu');
-	if (el == null) {
-		throw 'main.js: #main-menu is null';
-	}
-	el.innerHTML = '';
-
-	for(const a of getApplicationsList().filter(a => a.statusElement)) {
-		const ael = a.statusElement;
-		el.appendChild(ael);
-		if (currentMainApplication.id == a.id) {
-			ael.setAttribute('selected', 'selected');
-		} else {
-			ael.removeAttribute('selected');
-		}
-		ael.addEventListener('click', () => a.goManually());
-	}
-
 	//
 	// Main app
 	//

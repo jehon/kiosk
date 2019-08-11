@@ -3,8 +3,6 @@ import '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import AppFactory, { renderMixin } from '../../client/client-api.js';
 
-// import { mydate2str } from '../../client/client-helpers.js';
-
 const app = AppFactory('photo-frame');
 
 let pictureIndex = 0;
@@ -27,17 +25,6 @@ function prev(i) {
 	return res;
 }
 
-
-function url(i, escape = false) {
-	if (i in picturesList) {
-		let raw = `${picturesList[i].webname}`;
-		if (escape) {
-			raw = raw.split('\'').join('\\\'');
-		}
-		return raw;
-	}
-	return '';
-}
 
 // Select the next picture
 function updatePicture() {
@@ -202,22 +189,6 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
 
-class KioskPhotoFrameStatus extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
-	get kioskEventListeners() {
-		return {
-			'.picture.changed': () => this.adapt()
-		};
-	}
-
-	adapt() {
-		this.innerHTML = `
-			<div class='full-background-image' style="background-image: url('${url(pictureIndex, true)}')"'></div>
-		`;
-	}
-}
-
-customElements.define('kiosk-photo-frame-status', KioskPhotoFrameStatus);
-
 app.subscribe('.listing', listing => {
 	picturesList = listing; //Object.keys(listing).map(function (key) { return listing[key]; });
 	pictureIndex = -1;
@@ -228,5 +199,5 @@ app.subscribe('.listing', listing => {
 app
 	.withPriority(50)
 	.withMainElement(new KioskPhotoFrame())
-	.withStatusElement(new KioskPhotoFrameStatus())
+	.menuBasedOnIcon('/packages/photo-frame/photo-frame.png')
 ;

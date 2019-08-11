@@ -1,6 +1,9 @@
 
 import AppFactory, { renderMixin } from '../../client/client-api.js';
 
+// TODO: handle when the app is selected, but the camera is not available
+//  --> it should show an error message
+
 const app = AppFactory('camera');
 
 let state = {
@@ -10,51 +13,42 @@ let state = {
 app.subscribe('.status', data => {
 	state = data;
 	if (state.enabled) {
-		app.enable();
+		app.withPriority(50);
 	} else {
-		app.disable();
+		app.withPriority(1000);
 	}
 });
 
-class KioskCamera extends HTMLElement {
+class KioskCamera extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
 	// Working with connected/disconnected to avoid movie running in background
-	connectedCallback() {
-		this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.liveFeedUrl}")'></div>`;
-	}
-
-	disconnectedCallback() {
-		// Avoid background load
-		this.innerHTML = '';
-	}
-}
-customElements.define('kiosk-camera', KioskCamera);
-
-export class KioskCameraStatus extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
 	get kioskEventListeners() {
 		return {
 			'.status': () => this.adapt()
 		};
 	}
 
-	render() {
-		this.innerHTML = '<img class="full"></img>';
-		this.e_img = this.querySelector('img');
+	connectedCallback() {
+		this.adapt();
+	}
+
+	disconnectedCallback() {
+		// Avoid background load
+		this.innerHTML = '';
 	}
 
 	adapt() {
 		if (state.enabled) {
-			this.e_img.src = state.dataURI;
+			this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.liveFeedUrl}")'></div>`;
 		} else {
 			// TODO: icon "not available"
-			this.e_img.src = '';
+			this.innerHTML = '<div>Camera is not available</div>';
 		}
 	}
 }
-customElements.define('kiosk-camera-status', KioskCameraStatus);
+customElements.define('kiosk-camera', KioskCamera);
 
 app
-	.withPriority(50)
+	.withPriority(1000)
 	.withMainElement(new KioskCamera())
-	.withStatusElement(new KioskCameraStatus())
-	.disable()
+	.menuBasedOnIcon('/packages/camera/camera.png')
 ;

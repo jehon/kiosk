@@ -26,12 +26,6 @@ clock:
       duration: 1
 
 menu:
-  Appear.in:
-    priority: 5025,
-    url: "https://appear.in/marielineetjean"
-    icon: "https://d32wid4gq0d4kh.cloudfront.net/favicon_v2-196x196.png"
-    label: "Appear.in"
-
   Meteo:
     priority: 5100
     url: "http://www.meteo.be"
