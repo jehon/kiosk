@@ -7,6 +7,11 @@ description: |
 grade: stable
 confinement: strict
 
+# https://git.launchpad.net/~ondrak/ondras-snaps/+git/homebridge-snap/tree/snap/snapcraft.yaml
+environment:
+    npm_config_unsafe_perm: "true"
+    node_env: "production"
+
 apps:
   kiosk:
     command: npm start
