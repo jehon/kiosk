@@ -13,6 +13,9 @@
 #       in dev, the git pull --hard is disabled
 #       in prod, git reset --hard will reset the folder
 #
+#
+# SNAP: this should be done inside the snap
+#
 
 set -e
 
@@ -86,18 +89,6 @@ else
 	fi
 fi
 
-header "Install the frontend session"
-cat > "/usr/share/xsessions/kiosk.desktop" <<EOF
-[Desktop Entry]
-Name=Browser
-Exec=$KIOSK_APP/bin/xsession-kiosk.sh
-Type=Application
-EOF
-chown root.root /usr/share/xsessions/kiosk.*
-
-header "Installing cron to update kiosk daily"
-ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
-
 #
 #
 # Checkpoint: 
@@ -110,13 +101,7 @@ header "Installing server dependencies"
 pushd "$KIOSK_APP" >/dev/null
 
 header "Upgrade server dependencies"
-"$KIOSK_APP"/bin/kiosk-upgrade-sources.sh
+"$KIOSK_APP"/bin/kiosk-upgrade-sources-dependencies.sh
 popd >/dev/null
-
-header "Set the hostname"
-"$KIOSK_APP"/bin/scripts/change-hostname.sh
-
-header "Restarting the service"
-"$KIOSK_APP"/bin/kiosk-restart.sh
 
 exit 0
