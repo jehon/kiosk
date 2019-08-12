@@ -6,6 +6,8 @@
 # and then call the (new) kiosk-setup.sh script
 #
 #
+# SNAP: this should be done inside the snap
+#
 
 set -e
 
@@ -15,7 +17,7 @@ if [ -z "$KIOSK_APP" ]; then
 	exit 1
 fi
 
-# shellcheck source=./lib.sh
+# shellcheck source=./scripts/lib.sh
 . "$KIOSK_APP"/bin/scripts/lib.sh
 
 pushd "$KIOSK_APP" > /dev/null
@@ -49,7 +51,7 @@ fi
 
 NCOMMIT="$(git rev-parse HEAD)"
 
-if [ "$LCOMMIT" == "$NCOMMIT" ] && [ -e "node_modules" ]; then
+if [ "$LCOMMIT" != "$NCOMMIT" ] || [ ! -e "node_modules" ]; then
 	# No change in the pull'ed commit
 	# And we are already installed...
 
@@ -58,8 +60,6 @@ if [ "$LCOMMIT" == "$NCOMMIT" ] && [ -e "node_modules" ]; then
     #
     # So in dev, we will call the "kiosk-dev.sh"
     #
-	exit 0
+    # shellcheck source=./bin/kiosk-setup.sh
+    "$KIOSK_APP"/bin/kiosk-setup.sh
 fi
-
-# shellcheck source=./bin/kiosk-setup.sh
-"$KIOSK_APP"/bin/kiosk-setup.sh

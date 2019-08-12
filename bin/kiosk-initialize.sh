@@ -5,6 +5,8 @@
 #    - see kickin.sh
 #    /!\ We must be in the same folder as the git clone
 #
+# SNAP: This script will always exist
+#
 
 set -e
 
@@ -29,10 +31,6 @@ if ! id "$KIOSK_USER" 2>/dev/null >/dev/null ; then
 	useradd "$KIOSK_USER" --create-home --groups "audio,video,plugdev,netdev,dip,cdrom"
 
 	restrictedToDev usermod --append --groups "vagrant" "$KIOSK_USER"
-	
-	# FIXME: usefull ? We create the user and it to groups
-	# SRC_NAME=$(id -un 1000 )
-	# SRC_GROUPS=$(id -Gn $SRC_NAME | sed "s/$SRC_NAME //g" | sed "s/ $SRC_NAME//g" | sed "s/ /,/g")
 fi
 
 ##
@@ -40,10 +38,23 @@ fi
 ##
 "$KIOSK_APP"/bin/kiosk-setup.sh
 
+
 ##
 ## Configure newly installed packages
 ##    the packages are installed by kiosk-setup.sh
 ##
+
+header "Installing cron to update kiosk daily"
+ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
+
+header "Install the frontend session"
+cat > "/usr/share/xsessions/kiosk.desktop" <<EOF
+[Desktop Entry]
+Name=Browser
+Exec=$KIOSK_APP/bin/xsession-kiosk.sh
+Type=Application
+EOF
+chown root.root /usr/share/xsessions/kiosk.*
 
 header "lightdm will start $KIOSK_USER user"
 crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-session" "kiosk"
@@ -51,13 +62,15 @@ crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-user" "pi"
 crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-session" "kiosk"
 crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-user" "pi"
 
-# /etc/pam.d/lightdm-autologin
-# <= auth      required pam_succeed_if.so user != root quiet_success
-# => auth      required pam_succeed_if.so user != *anybody* quiet_success
-
 header "Redirect sound output to jack first card"
 cp "$KIOSK_APP"/bin/files/asound.conf /etc/
 chmod 640 /etc/asound.conf
+
+header "Set the hostname"
+"$KIOSK_APP"/bin/scripts/change-hostname.sh
+
+header "Restarting the service"
+"$KIOSK_APP"/bin/kiosk-restart.sh
 
 header "Finished with success"
 echo "For this changes to take effect, please restart the server"

@@ -7,12 +7,15 @@
 #
 # And then, restart the service
 #
+#
+# SNAP: this should be done inside the snap
+#
 
 set -e
 
 
 
-# shellcheck source=./lib.sh
+# shellcheck source=./scripts/lib.sh
 . "$(dirname "$BASH_SOURCE" )"/scripts/lib.sh
 
 pushd "$KIOSK_APP" > /dev/null
