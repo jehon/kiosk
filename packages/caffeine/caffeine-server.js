@@ -1,6 +1,5 @@
 
 import { spawn } from 'child_process';
-import { promisify } from 'util';
 
 import serverAPIFactory from '../../server/server-api.mjs';
 const serverAPI = serverAPIFactory('caffeine');
@@ -15,8 +14,8 @@ const config = {
 
 async function wakeUp() {
 	// Handle return code and errors
-	try {
-		await promisify(spawn)('/usr/bin/xdotool',
+	return new Promise((resolve, reject) => {
+		const cp = spawn('/usr/bin/xdotool',
 			[ 'mousemove_relative', '1', '1', 'mousemove_relative', '--', '-1',  '-1' ],
 			{
 				stdio: [ 'ignore', 'inherit', 'inherit' ],
@@ -24,10 +23,21 @@ async function wakeUp() {
 					'DISPLAY': ':0'
 				}
 			});
-		serverAPI.dispatchToBrowser('.wakeup');
-	} catch (e) {
-		logger.trace('Caffeine error returned: ', e.code, '##', e.stdout, e.stderr);
-	}
+		cp.on('error', err => {
+			logger.error('Caffeine launch error returned: ', err);
+			return reject(-1);
+		});
+		cp.on('exit', (code) => {
+			if (code == 0) {
+				serverAPI.dispatchToBrowser('.wakeup');
+				return resolve();
+			}
+			cp.stderr.setEncoding('UTF8');
+			cp.stdout.setEncoding('UTF8');
+			logger.error('Caffeine return code non-zero: ', code, '# stderr: ', cp.stderr.read());
+			return reject(code);
+		});
+	});
 }
 
 logger.trace('Programming caffeine cron\'s ');
