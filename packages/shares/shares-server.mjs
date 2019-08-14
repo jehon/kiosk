@@ -71,5 +71,6 @@ app.get('/mount/mountedList', (_req, res, _next) => {
 // const shares = serverAPI.getConfig('shares', {});
 // Object.keys(shares).forEach(k => {
 // 	mount(k, shares[k]);
+// });
 
 // test
