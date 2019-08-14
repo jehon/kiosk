@@ -12,7 +12,8 @@ const mountedList = {};
 
 const sharesRoot = path.join(rootDir, 'media');
 
-export async function mount(name, source, type, options = {}) {
+export async function mount(name, mountPoint) {
+	logger.info(`Mounting ${name} with ${mountPoint}`);
 	const target = path.join(sharesRoot, name);
 	let stats = null;
 	try {
@@ -26,7 +27,10 @@ export async function mount(name, source, type, options = {}) {
 	}
 
 	// TODO: handle options
-	const cmdOptions = [ '-t', type, source, target, '-o', 'username=' + options.username, '-o', 'password=' + options.password, '-o', 'domain=' + options.domain ];
+	const cmdOptions = [ '-t', mountPoint.type, mountPoint.source, target,
+		'-o', 'username=' + mountPoint.username,
+		'-o', 'password=' + mountPoint.password,
+		'-o', 'domain=' + mountPoint.domain ];
 	const cmdLine = 'mount "' + cmdOptions.join('" "') + '"';
 	logger.trace('Mount options: ', cmdLine);
 
@@ -36,6 +40,10 @@ export async function mount(name, source, type, options = {}) {
 			stdio: [ 'ignore', null, null ]
 		});
 		logger.trace(`Mounted ${name}`);
+		mount[name] = mountPoint;
+		serverAPI.dispatch('.mounted.' + name);
+		serverAPI.dispatch('.mounted.list', getMountedList());
+
 		return name;
 	} catch (e) {
 		logger.trace('Mount error returned: ', e.code, '##', e.stdout, e.stderr);
@@ -48,10 +56,9 @@ export async function mount(name, source, type, options = {}) {
 	}
 }
 
-// We check that we have a list
-// serverAPI.addSchedule('.refresh', serverAPI.getConfig('.refresh-cron', '0 0 5 * * *'));
-// serverAPI.subscribe('.refresh', (data) => generateListing(data));
-// serverAPI.dispatch('.refresh');
+export function getMountedList() {
+	return mountedList;
+}
 
 // Register some routing functions
 const app = serverAPI.getExpressApp();
@@ -61,8 +68,8 @@ app.get('/mount/mountedList', (_req, res, _next) => {
 	res.json(mountedList);
 });
 
-export function getMountedList() {
-	return mountedList;
-}
+// const shares = serverAPI.getConfig('shares', {});
+// Object.keys(shares).forEach(k => {
+// 	mount(k, shares[k]);
 
 // test
