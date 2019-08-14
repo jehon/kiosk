@@ -65,8 +65,8 @@
     "test-client-watch": "cd tests/client && karma start",
     "test-server": "node --experimental-modules tests/server/jasmine-run.mjs",
     "test-gui": "cd tests/gui && cypress run --browser chromium",
-    "test-gui-with-server": "start-server-and-test test-gui-server http://localhost:3002 test-gui",
-    "test-gui-server": "node --experimental-modules server.js -p 3002",
+    "test-gui-with-server": "start-server-and-test launch-server-for-gui-tests  http://localhost:3002 test-gui",
+    "launch-server-for-gui-tests": "node --experimental-modules server.js -p 3002",
     "cypress:open": "cd tests/gui && cypress open"
   },
   "engines": {
