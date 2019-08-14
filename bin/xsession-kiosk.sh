@@ -16,28 +16,29 @@ xset +dpms
 # fixCrash "$HOME/.config/chromium/Default/Preferences"
 # fixCrash "$HOME/.config/chromium/Local State"
 
+(
+	echo "********** Starting session kiosk ************************"
+	pushd /opt/web/www > /dev/null
+	/usr/bin/node --experimental-modules main.js 2>&1 | tee /tmp/kiosk.log &
+	PID=$!
+	echo "Found id: $PID"
 
-pushd /opt/web/www > /dev/null
-/usr/bin/node --experimental-modules main.js 2>&1 | tee /tmp/kiosk.log &
-PID=$!
-echo "Found id: $PID"
+	echo "Waiting 10 seconds"
+	sleep 10s
 
-echo "Waiting 10 seconds"
-sleep 10s
+	H=$(xrandr | grep "\*" | cut -d' ' -f4 | cut -d'x' -f2)
+	W=$(xrandr | grep "\*" | cut -d' ' -f4 | cut -d'x' -f1)
 
-H=$(xrandr | grep "\*" | cut -d' ' -f4 | cut -d'x' -f2)
-W=$(xrandr | grep "\*" | cut -d' ' -f4 | cut -d'x' -f1)
+	echo "Launching chromium"
+	/usr/bin/chromium-browser \
+		--kiosk \
+		--window-position=0,0 \
+		"--window-size=$W,$H" \
+		--start-maximized \
+		"http://127.0.0.1:3000"
 
-echo "Launching chromium"
-/usr/bin/chromium-browser \
-	--kiosk \
-	--window-position=0,0 \
-	"--window-size=$W,$H" \
-	--start-maximized \
-	"http://127.0.0.1:3000" \
-	> /tmp/kiosk-browser.log
+	echo "Launched: $?"
 
-
-echo "Launched: $?"
-
-kill $PID
+	echo "Killing server $PID:"
+	kill -9 $PID
+) | tee -a /tmp/kiosk-xsession.log
