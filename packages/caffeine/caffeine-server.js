@@ -1,5 +1,5 @@
 
-import { spawn, exec } from 'child_process';
+import { spawn } from 'child_process';
 import { promisify } from 'util';
 
 import serverAPIFactory from '../../server/server-api.mjs';
