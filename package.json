@@ -38,6 +38,7 @@
   "devDependencies": {
     "babel-eslint": "10.0.2",
     "cypress": "3.4.1",
+    "depcheck": "^0.8.3",
     "eslint-plugin-cypress": "2.6.1",
     "eventsource": "1.0.7",
     "hot-reloading-proxy": "1.0.2",
@@ -60,14 +61,15 @@
     "postinstall": "./apply-patches.sh",
     "start": "node --experimental-modules main.js -f tests/kiosk.yml",
     "start-dev": "node --experimental-modules server-with-watch.mjs -f tests/kiosk.yml",
-    "test": "npm run eslint && npm run test-server && npm run test-client && npm run test-gui-with-server",
+    "test": "npm run eslint && npm run test-server && npm run test-client && npm run test-gui-with-server && npm run depcheck",
     "test-client": "cd tests/client && karma start --single-run",
     "test-client-watch": "cd tests/client && karma start",
     "test-server": "node --experimental-modules tests/server/jasmine-run.mjs",
     "test-gui": "cd tests/gui && cypress run --browser chromium",
     "test-gui-with-server": "start-server-and-test launch-server-for-gui-tests  http://localhost:3002 test-gui",
     "launch-server-for-gui-tests": "node --experimental-modules server.js -p 3002",
-    "cypress:open": "cd tests/gui && cypress open"
+    "cypress:open": "cd tests/gui && cypress open",
+    "depcheck": "depcheck"
   },
   "engines": {
     "node": ">=12.0.0"
