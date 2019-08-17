@@ -46,9 +46,9 @@ body > #main-application {
 	object-fit: contain;
 }
 
-/* body > #main-application > * {
+body > #main-application > * {
 	width: 100%;
-} */
+}
 
 iframe {
 	height: 100%;
