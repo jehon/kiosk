@@ -1,5 +1,7 @@
 # Project
 /kiosk.yml
+var/
+etc/
 
 # GUI
 .vscode

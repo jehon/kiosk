@@ -20,7 +20,10 @@ set -e
 
 pushd "$KIOSK_APP" > /dev/null
 
-if [ -r package-lock.json ] && [ package-lock.json -nt package.json ]; then
+PKG=package.json
+PKG_INST=var/package.json.installed
+
+if [ -r "$PKG_INST" ] && [ "$(md5sum "$PKG")" == "$(md5sum "$PKG_INST")" ]; then
 	header "Already up-to-date"
 else
 
@@ -37,6 +40,8 @@ else
 
 	header "** apply patches **"
 	"$KIOSK_APP"/apply-patches.sh
+
+	cp "$PKG" "$PKG_INST"
 fi
 
 header "Restarting the service"

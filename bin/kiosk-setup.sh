@@ -89,6 +89,17 @@ else
 	fi
 fi
 
+
+# 
+#
+# Enforce some folders
+#
+#
+mkdir -p "$KIOSK_APP/var"
+mkdir -p "$KIOSK_APP/etc"
+chmod a+rwX "$KIOSK_APP/var"
+chmod a+rwX "$KIOSK_APP/etc"
+
 #
 #
 # Checkpoint: 
