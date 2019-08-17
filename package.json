@@ -60,6 +60,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "postinstall": "./apply-patches.sh",
     "start": "node --experimental-modules main.js -f tests/kiosk.yml",
+    "start-server": "node --experimental-modules main.js --server-only -f tests/kiosk.yml",
     "start-dev": "node --experimental-modules server-with-watch.mjs -f tests/kiosk.yml",
     "start-server-for-gui-tests": "node --experimental-modules server.js -p 3002",
     "test": "npm run eslint && npm run test-server && npm run test-client && npm run test-gui-with-server && npm run depcheck",

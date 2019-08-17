@@ -65,6 +65,10 @@ const cmdLineOptions = yargs
 			alias: 'f',
 			type: 'string',
 			describe: 'additionnal file configuration'
+		},
+		'server-only': {
+			type: 'boolean',
+			describe: 'start only the server, not the browser'
 		}
 	})
 	.help()
@@ -108,6 +112,7 @@ if (cmdLineOptions.trace) {
 if (cmdLineOptions._) {
 	config._ = cmdLineOptions._;
 }
+config.cmdLine = cmdLineOptions;
 
 //
 // Setup some general configs
