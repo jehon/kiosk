@@ -20,7 +20,7 @@ export const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.u
 
 const configFiles = [
 	// Later override earlier
-	'kiosk.yml'
+	'etc/kiosk.yml'
 ];
 
 if (typeof(jasmine) != 'undefined') {
