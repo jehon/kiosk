@@ -46,8 +46,13 @@ body > #main-application {
 	object-fit: contain;
 }
 
+/* body > #main-application > * {
+	width: 100%;
+} */
+
 iframe {
 	height: 100%;
+	width: 100%;
 	display: block;
 
 	background-image:        url("loading.gif");
