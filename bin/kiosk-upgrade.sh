@@ -32,7 +32,7 @@ header_sub "In production: reset all local modifications"
 restrictedToProd git reset --hard
 
 header_sub "Pulling all"
-if ! asKioskUser git pull --all --prune; then
+if ! git pull --all --prune; then
     header "Remote branch has dissapear, looking for a new one..."
 
     ORIGIN=$(git branch --remotes --merged "HEAD" | grep -v HEAD)
@@ -43,8 +43,8 @@ if ! asKioskUser git pull --all --prune; then
     header "New branch: '$BRANCH'"
   
     header "Going on the new branch: $BRANCH"
-    asKioskUser git checkout "$BRANCH"
-    asKioskUser git pull
+    git checkout "$BRANCH"
+    git pull
 
     header "On new branch: $BRANCH"
 fi
