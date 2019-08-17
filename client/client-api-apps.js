@@ -103,6 +103,7 @@ export default class ClientAPI {
 
 	withMenuElement(element) {
 		this.menuElement = element;
+		this.dispatchAppChanged();
 		return this;
 	}
 
