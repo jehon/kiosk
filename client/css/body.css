@@ -18,21 +18,6 @@ body {
 }
 
 /**
- * App menu icon overlay
- */
-
-body > #app-menu {
-	position: absolute;
-	top: var(--generic-space);
-	left: var(--generic-space);
-	z-index: 1000;
-}
-
-body > #app-menu > img {
-	width: 40px;
-}
-
-/**
  * Main content
  */
 
