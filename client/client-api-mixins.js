@@ -31,6 +31,8 @@ const unsubscriber = Symbol('unsubscriber');
 const c = Symbol('contextualizator');
 const scope = Symbol('scope');
 export const kioskEventListenerMixin = (scope_, cls) => class extends cls {
+	_events = {}
+
 	constructor(...args) {
 		super(...args);
 		this[c] = contextualize(scope_);
@@ -44,7 +46,11 @@ export const kioskEventListenerMixin = (scope_, cls) => class extends cls {
 		}
 		const listing = this.kioskEventListeners;
 		for(const k in listing) {
-			this.kioskSubscribe(k, listing[k]);
+			this.kioskSubscribe(k, (status) => {
+				if (typeof(status) != 'undefined')
+					this._events[k] = status;
+				return listing[k](status);
+			});
 		}
 	}
 
