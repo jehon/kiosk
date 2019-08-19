@@ -145,6 +145,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 		// https://getbootstrap.com/docs/4.0/components/carousel/
 		this.adaptList();
+		this.adaptToActivity(this._events['caffeine.status']);
 	}
 
 	adaptList() {
@@ -192,8 +193,6 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			this.carousel.next.style.visibility = (active ? '' : 'hidden');
 			this.carousel.prev.style.visibility = (active ? '' : 'hidden');
 		}
-		// Problem: how to correctly initialize if not present
-		this._active = active;
 	}
 }
 
