@@ -130,4 +130,6 @@ export function setGlobalLevel(level) {
 export function setModuleLevel(moduleName, level) {
 	activeLevels[moduleName] = level2Int(level);
 }
-window.setModuleLevel = setModuleLevel;
+if (typeof(window) != 'undefined') {
+	window.setModuleLevel = setModuleLevel;
+}
