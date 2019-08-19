@@ -46,16 +46,16 @@ export default class Bus {
 	 * @param {string} eventName: the name of the event
 	 * @param {*} data: the associated data
 	 */
-	async dispatch(eventName, data = false) {
+	async dispatch(eventName, data) {
 		this.logger.trace(`Nofity ${eventName}`, data);
-		if (data) {
+		if (typeof(data) != 'undefined') {
 			if (eventName in this.stateValues && _.isEqual(this.stateValues[eventName], data)) {
 				this.logger.trace('notify: skipping ', eventName, data);
 				return ;
 			}
 		}
-
 		this.stateValues[eventName] = data;
+
 
 		// Specific listeners
 		// Duplicate the eventName so it appears as first parameter
