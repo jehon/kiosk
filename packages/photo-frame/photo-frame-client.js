@@ -46,8 +46,9 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 	get kioskEventListeners() {
 		return {
+			'caffeine.activity': active => this.adaptToActivity(active),
 			'.list.changed': () => this.adaptList(),
-			'.picture.changed': () => this.changePicture()
+			'.picture.changed': () => this.changePicture(),
 		};
 	}
 
@@ -184,6 +185,15 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			return;
 		}
 		this.carousel.mainFn(pictureIndex);
+	}
+
+	adaptToActivity(active) {
+		if (this.carousel.next) {
+			this.carousel.next.style.visibility = (active ? '' : 'hidden');
+			this.carousel.prev.style.visibility = (active ? '' : 'hidden');
+		}
+		// Problem: how to correctly initialize if not present
+		this._active = active;
 	}
 }
 
