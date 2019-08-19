@@ -19,10 +19,10 @@ import AppFactory from '../../client/client-api.js';
 const app = AppFactory('gallery');
 
 class KioskGallery extends PolymerElement {
-	// TODO: adapt to "mount" signals -> extends Kiosk...Listener
 	// get kioskEventListeners() {
 	// 	return {
-	// 		'.second': () => this.adapt()
+	// 		// TODO: adapt to "mount" signals -> extends Kiosk...Listener
+	// 		// 		'.second': () => this.adapt()
 	// 	};
 	// }
 
@@ -50,7 +50,8 @@ class KioskGallery extends PolymerElement {
 	constructor() {
 		super();
 		this.thumbHeight = '100';
-	}}
+	}
+}
 
 customElements.define('kiosk-gallery', KioskGallery);
 
