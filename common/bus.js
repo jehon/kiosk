@@ -17,6 +17,10 @@ export default class Bus {
 	 * @param {function(eventName, data) {}} cb
 	 */
 	subscribe(eventName, cb) {
+		if (!( cb instanceof Function)) {
+			throw `Subscribing to ${eventName} with something that is not a function: ${cb}`;
+		}
+
 		if (eventName in this.stateValues) {
 			cb(this.stateValues[eventName]);
 		}
