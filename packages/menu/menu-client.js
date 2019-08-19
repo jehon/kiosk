@@ -4,6 +4,19 @@ import { getApplicationsList, getApplicationByName } from '../../client/client-a
 const app = AppFactory('menu');
 const logger = app.logger;
 
+// Loading all apps (sent by the server)
+app.subscribe('.apps', (apps) => {
+	for(const appName of Object.keys(apps)) {
+		const app = apps[appName];
+		logger.info(`Registering app by menu: ${appName}`, app);
+		AppFactory(appName)
+			.withPriority(app.priority)
+			.mainBasedOnIFrame(app.url)
+			.menuBasedOnIcon(app.icon, app.label)
+		;
+	}
+});
+
 class KioskMenu extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
 	get kioskEventListeners() {
 		return {
@@ -30,17 +43,7 @@ app
 	.withMainElement(new KioskMenu())
 ;
 
-app.subscribe('.apps', (apps) => {
-	for(const appName of Object.keys(apps)) {
-		const app = apps[appName];
-		logger.info(`Registering app by menu: ${appName}`, app);
-		AppFactory(appName)
-			.withPriority(app.priority)
-			.mainBasedOnIFrame(app.url)
-			.menuBasedOnIcon(app.icon, app.label)
-		;
-	}
-});
+// Insert the icon on top of the body
 
 document.querySelector('body').insertAdjacentHTML('beforeend', `
 <style>
@@ -70,4 +73,6 @@ appMenuElement.addEventListener('click', () => {
 	getApplicationByName('menu').goManually();
 });
 
-getApplicationByName('menu').goManually();
+app.subscribe('caffeine.activity', active => {
+	appMenuElement.style.visibility = (active ? '' : 'hidden');
+});
