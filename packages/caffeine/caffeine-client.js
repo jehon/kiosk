@@ -4,6 +4,9 @@ import AppFactory from '../../client/client-api.js';
 const app = AppFactory('caffeine');
 const logger = app.logger;
 
+// Initialize to false
+app.dispatch('.activity', false);
+
 let eraser = false;
 
 const lastPosition = {};
