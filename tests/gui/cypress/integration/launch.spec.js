@@ -4,8 +4,14 @@ describe('The application is launching', () => {
 		cy.visit('/');
 
 		// Check existence of top elements
-		cy.get('#app-menu').should('be.visible');
 		cy.get('#main-application').should('be.visible');
+
+		// Check the existence of the menu
+		cy.get('body').trigger('mousemove', { which: 1, clientX:   1, clientY: 1 });
+		cy.wait(100);
+		cy.get('body').trigger('mousemove', { which: 1, clientX: 600, clientY: 600 });
+
+		cy.get('#app-menu').should('be.visible');
 
 		// Go to the menu
 		cy.get('#app-menu').click();
