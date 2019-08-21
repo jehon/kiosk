@@ -21,7 +21,7 @@ function memorizePosition(e) {
 // TODO: debug
 const body = document.querySelector('body');
 
-document.addEventListener('mousemove', e => {
+body.addEventListener('mousemove', e => {
 	const now = new Date();
 	if (now - lastPosition.time > 1000) {
 		// Last position is too old, let's start again
