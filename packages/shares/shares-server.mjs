@@ -1,7 +1,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { spawn, exec } from 'child_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
 
 import serverAPIFactory, { rootDir } from '../../server/server-api.mjs';
@@ -73,4 +73,6 @@ app.get('/mount/mountedList', (_req, res, _next) => {
 // 	mount(k, shares[k]);
 // });
 
-// test
+/*
+//192.168.1.9/photo             /opt/web/www/media/photo        cifs    vers=1.0,auto,user,noexec,nosuid,ro,credentials=/root/synology.credent$
+*/
