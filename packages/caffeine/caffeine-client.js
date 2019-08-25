@@ -35,10 +35,6 @@ body.addEventListener('mousemove', e => {
 	// A big movement in a short time, it's an activity
 	if (dist2 > Math.pow(50, 2)) {
 		logger.trace('Activity up');
-
-		// TODO: debug
-		body.style.backgroundColor = 'green';
-
 		app.dispatch('.activity', true);
 
 		// Reprogram the 'down' activity
@@ -47,9 +43,6 @@ body.addEventListener('mousemove', e => {
 			clearTimeout(eraser);
 			eraser = false;
 			logger.trace('Activity down');
-
-			// TODO: debug
-			body.style.backgroundColor = 'black';
 			app.dispatch('.activity', false);
 		}, 5 * 1000);
 	}
