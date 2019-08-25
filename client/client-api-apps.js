@@ -186,7 +186,7 @@ export function getApplicationsList() {
 }
 
 export function _testEmptyApplicationList() {
-	for(let k of Object.keys(apps)) {
+	for(const k of Object.keys(apps)) {
 		delete(apps[k]);
 	}
 }
