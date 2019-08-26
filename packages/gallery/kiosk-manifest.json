@@ -1,5 +1,0 @@
-{
-  "api": 1,
-  "server": "gallery-server.js",
-  "client": "gallery-client.js"
-}

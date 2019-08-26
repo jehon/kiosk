@@ -1,5 +1,5 @@
 
-import { getCurrentPath, getMimeType } from '../gallery/gallery-lib.js';
+import { getCurrentPath, getMimeType } from './lib.js';
 
 import sharp from 'sharp';
 import promiseLimit from 'promise-limit';
