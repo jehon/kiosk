@@ -68,8 +68,11 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 				height: 100%
 			}
 			.carousel-caption {
-				text-shadow: 0 1px 0 black;
-				mix-blend-mode: difference;
+				/* text-shadow: 0 1px 0 black;
+				mix-blend-mode: difference;*/
+				background-color: gray;
+				opacity: 50%;
+				color: white;
 			}
 
 			/* thumbs */
@@ -124,6 +127,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			thumbs: this.shadowRoot.querySelector('#thumbs'),
 			next: this.shadowRoot.querySelector('[data-slide="next"]'),
 			prev: this.shadowRoot.querySelector('[data-slide="prev"]'),
+			caption: this.shadowRoot.querySelector('.carousel-caption')
 		};
 
 		/* Next button */
@@ -190,8 +194,10 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 	adaptToActivity(active) {
 		if (this.carousel.next) {
-			this.carousel.next.style.visibility = (active ? '' : 'hidden');
-			this.carousel.prev.style.visibility = (active ? '' : 'hidden');
+			this.carousel.next.style.visibility    = (active ? '' : 'hidden');
+			this.carousel.prev.style.visibility    = (active ? '' : 'hidden');
+			this.carousel.caption.style.visibility = (active ? '' : 'hidden');
+			this.carousel.thumbs.style.visibility  = (active ? '' : 'hidden');
 		}
 	}
 }
