@@ -74,5 +74,5 @@ appMenuElement.addEventListener('click', () => {
 });
 
 app.subscribe('caffeine.activity', active => {
-	appMenuElement.style.visibility = (active ? '' : 'hidden');
+	appMenuElement.style.display = (active ? '' : 'none');
 });
