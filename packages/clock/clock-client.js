@@ -34,11 +34,23 @@ function describeArc(radius, startAngle, endAngle){
 	return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${arcSweep} 0 ${end.x} ${end.y} L 0 0 Z`;
 }
 
-class KioskClock extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
-	get kioskEventListeners() {
-		return {
-			'.second': () => this.adapt()
-		};
+class KioskClock extends renderMixin(HTMLElement) {
+	cron = false
+
+	connectedCallback() {
+		super.connectedCallback();
+		if (!this.cron) {
+			this.cron = setInterval(() => this.adapt(), 1000);
+		}
+	}
+
+	disconnectedCallback() {
+		if (super.disconnectedCallback) {
+			super.disconnectedCallback();
+		}
+		if (this.cron) {
+			clearInterval(this.cron);
+		}
 	}
 
 	render() {
@@ -169,6 +181,3 @@ app
 		});
 	})
 ;
-
-// Generic timer every seconds (can be used everywhere)
-setInterval(() => app.dispatch('.second'), 1000);
