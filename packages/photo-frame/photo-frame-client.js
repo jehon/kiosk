@@ -58,6 +58,10 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 		this.shadowRoot.innerHTML = `
 		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
 		<style>
+			:host(.inactive) whenActivity {
+				display: none;
+			}
+
 			#myCarousel {
 				height: 100%;
 			}
@@ -68,11 +72,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 				height: 100%
 			}
 			.carousel-caption {
-				/* text-shadow: 0 1px 0 black;
-				mix-blend-mode: difference;*/
-				background-color: gray;
-				opacity: 50%;
-				color: white;
+				text-shadow: 0 2px 0 black;
 			}
 
 			/* thumbs */
@@ -106,14 +106,14 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			<div class="carousel-inner" id="content"></div>
 
 			<!-- thumbs -->
-			<ol class="carousel-indicators" id="thumbs"></ol>
+			<ol class="whenActivity carousel-indicators" id="thumbs"></ol>
 
 			<!-- carousel navigation -->
-			<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+			<a class="whenActivity carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 				<span class="sr-only">Previous</span>
 			</a>
-			<a class="carousel-control-next" role="button" data-slide="next">
+			<a class="whenActivity carousel-control-next" role="button" data-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="sr-only">Next</span>
 			</a>
@@ -126,8 +126,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			content: this.shadowRoot.querySelector('#content'),
 			thumbs: this.shadowRoot.querySelector('#thumbs'),
 			next: this.shadowRoot.querySelector('[data-slide="next"]'),
-			prev: this.shadowRoot.querySelector('[data-slide="prev"]'),
-			caption: this.shadowRoot.querySelector('.carousel-caption')
+			prev: this.shadowRoot.querySelector('[data-slide="prev"]')
 		};
 
 		/* Next button */
@@ -149,7 +148,6 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 
 		// https://getbootstrap.com/docs/4.0/components/carousel/
 		this.adaptList();
-		this.adaptToActivity(this._events['caffeine.status']);
 	}
 
 	adaptList() {
@@ -168,7 +166,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
 					<img src="${v.webname}">
-					<div class="carousel-caption d-none d-md-block">
+					<div class="whenActivity carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
 					</div>
@@ -193,12 +191,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 	}
 
 	adaptToActivity(active) {
-		if (this.carousel.next) {
-			this.carousel.next.style.visibility    = (active ? '' : 'hidden');
-			this.carousel.prev.style.visibility    = (active ? '' : 'hidden');
-			this.carousel.caption.style.visibility = (active ? '' : 'hidden');
-			this.carousel.thumbs.style.visibility  = (active ? '' : 'hidden');
-		}
+		this.toggleAttribute('inactive', !active);
 	}
 }
 
