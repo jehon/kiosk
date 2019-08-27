@@ -32,7 +32,7 @@
     "sharp": "0.23.0",
     "shuffle-array": "1.0.1",
     "toastr": "2.1.4",
-    "yargs": "13.3.0"
+    "yargs": "14.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
