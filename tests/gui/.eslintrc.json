@@ -7,7 +7,4 @@
     "node": true,
     "browser": true
   }
-  // "extends": [
-  //   "plugin:cypress/recommanded"
-  // ]
 }
