@@ -69,7 +69,7 @@ const app = express();
 
 app.on('error', e => logger.error('Error starting server: ', e));
 
-if (getConfig('core.dev', false) || getConfig('core.trace', false)) {
+if (getConfig('core.trace', false)) {
 	// http://expressjs.com/en/resources/middleware/morgan.html
 	app.use(morgan('dev'));
 }
