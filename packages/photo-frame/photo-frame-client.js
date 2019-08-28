@@ -72,7 +72,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 				height: 100%
 			}
 			.carousel-caption {
-				text-shadow: 0 2px 0 black;
+				text-shadow: 1px 1px 2px black, 0 0 1em grey, 0 0 0.2em grey
 			}
 
 			/* thumbs */
