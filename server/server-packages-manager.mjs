@@ -58,9 +58,9 @@ export async function loadServerFiles() {
 	const list = await getServerFiles();
 	return Promise.all(
 		list.map(f => {
-			logger.startup('Loading', f);
+			logger.info('Loading', f);
 			return import(f).then(
-				() => logger.startup('Loading', f, 'done'),
+				() => logger.info('Loading', f, 'done'),
 				e => logger.error('Error loading ', f, ': ', e)
 			);
 		})

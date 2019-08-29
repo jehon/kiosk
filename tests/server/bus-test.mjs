@@ -54,20 +54,20 @@ describe(import.meta.url, () => {
 	});
 
 	it('should not fire events on status quo', async function() {
-		spyOn(console, 'trace').and.callFake(() => {});
+		spyOn(console, 'debug').and.callFake(() => {});
 		// This is linked with console by default
 		const bus = new Bus();
 		let i = 0;
 		let expected = 123;
 
-		console.trace.calls.reset();
+		console.debug.calls.reset();
 		bus.subscribe('test', (data) => {
 			i++;
 			expect(data).toBe(expected);
 		});
 		await bus.dispatch('test', expected);
 		await bus.dispatch('test', expected);
-		expect(console.trace).toHaveBeenCalled();
+		expect(console.debug).toHaveBeenCalled();
 		expect(i).toBe(1);
 
 		expected = 456;
@@ -79,7 +79,7 @@ describe(import.meta.url, () => {
 		expect(i).toBe(3);
 
 		// with objects
-		console.trace.calls.reset();
+		console.debug.calls.reset();
 		expected = { a: 123 };
 		await bus.dispatch('test', expected);
 		expect(i).toBe(4);
@@ -87,7 +87,7 @@ describe(import.meta.url, () => {
 		expected = { a: 123 };
 		await bus.dispatch('test', expected);
 		expect(i).toBe(4);
-		expect(console.trace).toHaveBeenCalled();
+		expect(console.debug).toHaveBeenCalled();
 	});
 
 	it('should fire last status on event registration', async function() {

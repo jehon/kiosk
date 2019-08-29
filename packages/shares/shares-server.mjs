@@ -19,7 +19,7 @@ export async function mount(name, mountPoint) {
 	try {
 		stats = await promisify(fs.stat)(target);
 	} catch(e) {
-		logger.trace(`Creating folder ${target}`);
+		logger.debug(`Creating folder ${target}`);
 		await promisify(fs.mkdir)(target);
 	}
 	if (stats && !stats.isDirectory()) {
@@ -32,21 +32,21 @@ export async function mount(name, mountPoint) {
 		'-o', 'password=' + mountPoint.password,
 		'-o', 'domain=' + mountPoint.domain ];
 	const cmdLine = 'mount "' + cmdOptions.join('" "') + '"';
-	logger.trace('Mount options: ', cmdLine);
+	logger.debug('Mount options: ', cmdLine);
 
 	// Handle return code and errors
 	try {
 		await promisify(exec)(cmdLine, {
 			stdio: [ 'ignore', null, null ]
 		});
-		logger.trace(`Mounted ${name}`);
+		logger.debug(`Mounted ${name}`);
 		mount[name] = mountPoint;
 		serverAPI.dispatch('.mounted.' + name);
 		serverAPI.dispatch('.mounted.list', getMountedList());
 
 		return name;
 	} catch (e) {
-		logger.trace('Mount error returned: ', e.code, '##', e.stdout, e.stderr);
+		logger.debug('Mount error returned: ', e.code, '##', e.stdout, e.stderr);
 
 		// e.stdout:
 		//  mount error(13): permission denied

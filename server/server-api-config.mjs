@@ -81,7 +81,7 @@ const cmdLineOptions = yargs
 //
 
 if (cmdLineOptions.file) {
-	logger.trace('Adding configuration file at the end:', cmdLineOptions.file);
+	logger.debug('Adding configuration file at the end:', cmdLineOptions.file);
 	configFiles.unshift(cmdLineOptions.file);
 }
 
@@ -123,12 +123,12 @@ if (config.core.quiet) {
 }
 
 if (config.core.dev) {
-	logger.startup('Started in dev mode');
+	logger.info('Started in dev mode');
 	loggersSetGlobalLevel('DEBUG');
 }
 
 if (config.core.trace) {
-	logger.startup('Started in trace mode');
+	logger.info('Started in trace mode');
 	loggersSetGlobalLevel('TRACE');
 }
 
@@ -136,18 +136,18 @@ if (config.core.trace) {
 for(const i in configFiles) {
 	const f = configFiles[i];
 	try {
-		logger.trace('Loading config file: ', f);
+		logger.debug('Loading config file: ', f);
 		let txt = fs.readFileSync(f, 'utf8');
 		if (txt) {
 			const doc = yaml.safeLoad(txt);
 			config = deepMerge(config, doc);
-			logger.startup('Loaded config file ' + f);
+			logger.info('Loaded config file ' + f);
 			break;
 		}
 		logger.error('Skipping empty config file ' + f);
 	} catch (e) {
 		if (e && e.code == 'ENOENT') {
-			logger.trace('Config file not found ' + f);
+			logger.debug('Config file not found ' + f);
 			continue;
 		}
 		logger.error('Could not load ' + f, e);
@@ -161,7 +161,7 @@ if (cmdLineOptions.port > 0) {
 	config.core.port  = cmdLineOptions.port;
 }
 
-logger.trace('Loaded config: ', config);
+logger.debug('Loaded config: ', config);
 
 //
 // Main function to get a config

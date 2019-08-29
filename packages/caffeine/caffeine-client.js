@@ -25,7 +25,7 @@ body.addEventListener('mousemove', e => {
 	const now = new Date();
 	if (now - lastPosition.time > 1000) {
 		// Last position is too old, let's start again
-		logger.trace('Reset position');
+		logger.debug('Reset position');
 		memorizePosition(e);
 	}
 
@@ -34,7 +34,7 @@ body.addEventListener('mousemove', e => {
 
 	// A big movement in a short time, it's an activity
 	if (dist2 > Math.pow(50, 2)) {
-		logger.trace('Activity up');
+		logger.debug('Activity up');
 		app.dispatch('.activity', true);
 
 		// Reprogram the 'down' activity
@@ -42,7 +42,7 @@ body.addEventListener('mousemove', e => {
 		eraser = setTimeout(() => {
 			clearTimeout(eraser);
 			eraser = false;
-			logger.trace('Activity down');
+			logger.debug('Activity down');
 			app.dispatch('.activity', false);
 		}, 5 * 1000);
 	}

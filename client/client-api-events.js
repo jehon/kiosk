@@ -17,7 +17,7 @@ var osEvents = new EventSource('/core/events');
 
 osEvents.onmessage = function (event) {
 	const data = JSON.parse(event.data, JSONDateParser);
-	logger.trace(`from server ${data.type}: ${JSON.stringify(data.data)}`);
+	logger.debug(`from server ${data.type}: ${JSON.stringify(data.data)}`);
 	dispatch(data.type, data.data);
 };
 

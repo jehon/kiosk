@@ -50,7 +50,7 @@ function getFoldersFromFolder(folderConfig) {
  * @param folderConfig
  */
 function generateListingForPath(folderConfig) {
-	logger.trace(folderConfig.folder ,'3 - getFilesFromFolderPath: ', folderConfig);
+	logger.debug(folderConfig.folder ,'3 - getFilesFromFolderPath: ', folderConfig);
 	// Symlinks are resolved to allow thumbnails to be more precisely generated
 	// but Samba does not allow links, so they are resolved by samba
 	// and invisible here
@@ -70,21 +70,21 @@ function generateListingForPath(folderConfig) {
 			}
 			previouslySelected.push(folderConfig.folder);
 
-			logger.trace(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting pictures');
+			logger.debug(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting pictures');
 			const images = shuffleArray(getFilesFromFolderByMime(folderConfig));
 			const imgList = images
 				.slice(0, Math.min(folderConfig.quantity,
 					images.length,
 					folderConfig.quantity - listing.length))
 				.map(e => path.join(folderConfig.folder, e));
-			logger.trace(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
+			logger.debug(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
 
 			listing.push(...imgList);
 			continue;
 		}
 
 		// Take folders
-		logger.trace(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting folder');
+		logger.debug(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting folder');
 		listing.push(...generateListingForPath({
 			...folderConfig,
 			folder: path.join(folderConfig.folder, f),
@@ -95,7 +95,7 @@ function generateListingForPath(folderConfig) {
 }
 
 function generateListingForTopFolder(folderConfig) {
-	logger.trace(folderConfig.folder, '# 2 - generateListingForTopFolder: given options: ', folderConfig);
+	logger.debug(folderConfig.folder, '# 2 - generateListingForTopFolder: given options: ', folderConfig);
 	folderConfig = {
 		excludes: [],
 		mimeTypePattern: [ 'image/*' ],
@@ -104,7 +104,7 @@ function generateListingForTopFolder(folderConfig) {
 		...folderConfig,
 	};
 
-	logger.trace(folderConfig.folder, '# 2 - generateListingForTopFolder: resolved options: ', folderConfig);
+	logger.debug(folderConfig.folder, '# 2 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
 	} catch(_e) {
@@ -113,7 +113,7 @@ function generateListingForTopFolder(folderConfig) {
 	}
 
 	let selectedFolderPictures = generateListingForPath(folderConfig);
-	logger.trace(folderConfig.folder, '# 2 - generateListingForTopFolder: found file list ', selectedFolderPictures);
+	logger.debug(folderConfig.folder, '# 2 - generateListingForTopFolder: found file list ', selectedFolderPictures);
 	return selectedFolderPictures;
 }
 
@@ -133,10 +133,10 @@ export async function generateListing(_data = null) {
 
 	// TODO: manage the data selection
 	const folders = serverAPI.getConfig('.folders', []);
-	logger.trace('1 - generateListing: Found top folders', folders);
+	logger.debug('1 - generateListing: Found top folders', folders);
 	for(const i in folders) {
 		const f = folders[i];
-		logger.trace('1 - generateListing: Using folder', f);
+		logger.debug('1 - generateListing: Using folder', f);
 		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f).map(file => ({
 			webname: os2web(f.folder, f.publishedAt, file),
 			original: file,
