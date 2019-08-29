@@ -58,7 +58,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 		this.shadowRoot.innerHTML = `
 		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
 		<style>
-			:host(.inactive) whenActivity {
+			:host([inactive]) .hideOnInactive {
 				display: none;
 			}
 
@@ -106,14 +106,14 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			<div class="carousel-inner" id="content"></div>
 
 			<!-- thumbs -->
-			<ol class="whenActivity carousel-indicators" id="thumbs"></ol>
+			<ol class="hideOnInactive carousel-indicators" id="thumbs"></ol>
 
 			<!-- carousel navigation -->
-			<a class="whenActivity carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+			<a class="hideOnInactive carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 				<span class="sr-only">Previous</span>
 			</a>
-			<a class="whenActivity carousel-control-next" role="button" data-slide="next">
+			<a class="hideOnInactive carousel-control-next" role="button" data-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="sr-only">Next</span>
 			</a>
@@ -166,7 +166,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLE
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
 					<img src="${v.webname}">
-					<div class="whenActivity carousel-caption d-none d-md-block">
+					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
 					</div>
