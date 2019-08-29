@@ -41,7 +41,6 @@
     "eslint": "6.2.2",
     "eslint-plugin-cypress": "2.6.1",
     "eventsource": "1.0.7",
-    "hot-reloading-proxy": "1.0.2",
     "jasmine": "3.4.0",
     "jasmine-core": "3.4.0",
     "jsdoc": "3.6.3",
