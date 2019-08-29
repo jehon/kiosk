@@ -47,10 +47,10 @@ export default class Bus {
 	 * @param {*} data: the associated data
 	 */
 	async dispatch(eventName, data) {
-		this.logger.trace(`Nofity ${eventName}`, data);
+		this.logger.debug(`Nofity ${eventName}`, data);
 		if (typeof(data) != 'undefined') {
 			if (eventName in this.stateValues && _.isEqual(this.stateValues[eventName], data)) {
-				this.logger.trace('notify: skipping ', eventName, data);
+				this.logger.debug('notify: skipping ', eventName, data);
 				return ;
 			}
 		}

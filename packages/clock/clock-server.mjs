@@ -12,7 +12,7 @@ const config = {
 logger.info('Programming config cron\'s');
 for(const l of Object.keys(config.tickers)) {
 	const f = config.tickers[l];
-	logger.trace('Programming: ', l, f);
+	logger.debug('Programming: ', l, f);
 	serverAPI.addSchedule('.ticker', f.cron, f.duration, {
 		label: l,
 		...f

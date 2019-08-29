@@ -18,12 +18,12 @@ priorityMiddleware.use(async (req, res, next) => {
 		return next();
 	}
 	let file = getCurrentPath(req);
-	serverAPI.logger.trace('thumb route for ' + file);
+	serverAPI.logger.debug('thumb route for ' + file);
 	let mimeTypeArray = '';
 	try {
 		mimeTypeArray = await getMimeType(file);
 	} catch (e) {
-		serverAPI.logger.trace(`Could not get the mime type of the file: ${file}`, e);
+		serverAPI.logger.debug(`Could not get the mime type of the file: ${file}`, e);
 		return next();
 	}
 	if (mimeTypeArray[0] != 'image') {
@@ -54,7 +54,7 @@ priorityMiddleware.use(async (req, res, next) => {
 	if (!height && !width) {
 		// default value
 		height = defaultHeight;
-		serverAPI.logger.trace('No height or width, setting default height to ', height);
+		serverAPI.logger.debug('No height or width, setting default height to ', height);
 	}
 
 	res.set('Cache-Control', 'public, max-age=' + 24 * 60 * 60 * 1000);

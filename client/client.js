@@ -69,8 +69,8 @@ subscribe('core.started', (data) => {
 fetch('/core/packages/active')
 	.then(response => response.json())
 	.then(json => json.map(s => {
-		clientAPI.logger.startup(`Loading ${s}`);
+		clientAPI.logger.info(`Loading ${s}`);
 		return import(s)
-			.then(() => clientAPI.logger.startup(`Loading ${s} done`),
-				e => clientAPI.logger.startup(`Loading ${s} error`, e));
+			.then(() => clientAPI.logger.info(`Loading ${s} done`),
+				e => clientAPI.logger.info(`Loading ${s} error`, e));
 	}));

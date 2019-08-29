@@ -121,7 +121,7 @@ export async function start(port = getConfig('core.port')) {
 	return new Promise(resolve => {
 		listener = app.listen(port, () => {
 			const realPort = getPort();
-			logger.startup(`Listening on port ${realPort}!`);
+			logger.info(`Listening on port ${realPort}!`);
 			dispatchToBrowser('core.started', {
 				startupTime: new Date()
 			});
@@ -142,7 +142,7 @@ export const getExpressApp = function() { return app; };
 
 export function dispatchToBrowser(eventName, data = null) {
 	sseSavedStates[eventName] = data;
-	logger.trace('Sending', eventName, data);
+	logger.debug('Sending', eventName, data);
 
 	for(const k of Object.keys(sseClients)) {
 		sseNotifyThisClient(sseClients[k], eventName, data);

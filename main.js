@@ -9,10 +9,10 @@ import loggerFactory from './common/logger.js';
 const logger = loggerFactory('main');
 
 start().then((port) => {
-	logger.startup(`Server up and running on port ${port}`);
+	logger.info(`Server up and running on port ${port}`);
 	if (!getConfig('cmdLine.server-only', false)) {
 		browser.start(port);
 	} else {
-		logger.startup('Not launching the browser as requested');
+		logger.info('Not launching the browser as requested');
 	}
 });

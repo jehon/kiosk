@@ -25,7 +25,7 @@ const kioskVideoFeed = '/camera/video';
 
 export async function _check(quick = false) {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
-	serverAPI.logger.trace(`checking "${url}" with ${authHeader}`);
+	serverAPI.logger.debug(`checking "${url}" with ${authHeader}`);
 	const headers  = new fetch.Headers({
 		'Authorization': authHeader
 	});
@@ -39,7 +39,7 @@ export async function _check(quick = false) {
 			}
 			if (++successes < 2 && !quick) {
 				// We want at least two sucesses before showing it (= 10 seconds) ...
-				serverAPI.logger.trace('Waiting for two successes');
+				serverAPI.logger.debug('Waiting for two successes');
 				return;
 			}
 			return response.buffer()
@@ -58,7 +58,7 @@ export async function _check(quick = false) {
 				}));
 		})
 		.catch(_err => {
-			serverAPI.logger.trace('Received error, disabling camera', _err);
+			serverAPI.logger.debug('Received error, disabling camera', _err);
 			if (successes > 0) {
 				successes = 0;
 

@@ -12,13 +12,9 @@ function color(str, color) {
 }
 
 const LEVELS = {
-	'NONE': 0,
 	'ERROR': 1,
-	'WARN': 2,
-	'STARTUP': 3,
 	'INFO': 4,
-	'DEBUG': 5,
-	'TRACE': 10
+	'DEBUG': 5
 };
 
 const activeLevels = {
@@ -75,24 +71,6 @@ class Logger {
 		return this;
 	}
 
-	startup(...args) {
-		const level = 'STARTUP';
-		if (this._isActive(level)) {
-			/* eslint-disable-next-line no-console */
-			console.log(this._generateHeader(level), color(this._generateMessage(...args), 'white'));
-		}
-		return this;
-	}
-
-	warn(...args) {
-		const level = 'WARN';
-		if (this._isActive(level)) {
-			/* eslint-disable-next-line no-console */
-			console.warn(this._generateHeader(level), color(this._generateMessage(...args), 'red'));
-		}
-		return this;
-	}
-
 	info(...args) {
 		const level = 'INFO';
 		if (this._isActive(level)) {
@@ -107,15 +85,6 @@ class Logger {
 		if (this._isActive(level)) {
 			/* eslint-disable-next-line no-console */
 			console.debug(this._generateHeader(level), color(this._generateMessage(...args), 'yellow'));
-		}
-		return this;
-	}
-
-	trace(...args) {
-		const level = 'TRACE';
-		if (this._isActive(level)) {
-			/* eslint-disable-next-line no-console */
-			console.log(this._generateHeader('TRACE'), color(this._generateMessage(...args), 'yellow'));
 		}
 		return this;
 	}

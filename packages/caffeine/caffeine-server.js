@@ -40,7 +40,7 @@ async function wakeUp() {
 	});
 }
 
-logger.trace('Programming caffeine cron\'s ');
+logger.debug('Programming caffeine cron\'s ');
 serverAPI.addSchedule('.wakeup', config.cron);
 
 serverAPI.subscribe('.wakeup', wakeUp);
