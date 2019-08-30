@@ -1,5 +1,5 @@
 name: kiosk
-base: core18
+base: core
 version: '1'
 summary: A kiosk for your home
 description: |
@@ -10,7 +10,7 @@ confinement: strict
 # https://git.launchpad.net/~ondrak/ondras-snaps/+git/homebridge-snap/tree/snap/snapcraft.yaml
 environment:
     npm_config_unsafe_perm: "true"
-    node_env: "production"
+    NODE_ENV: "production"
 
 apps:
   kiosk:
