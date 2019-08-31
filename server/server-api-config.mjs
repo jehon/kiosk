@@ -117,8 +117,8 @@ if (config.core.quiet) {
 }
 
 if (config.core.dev) {
-	logger.info('Started in dev mode');
 	loggersSetGlobalLevel('DEBUG');
+	logger.info('Started in dev mode');
 }
 
 
