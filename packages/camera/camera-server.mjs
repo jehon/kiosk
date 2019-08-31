@@ -25,7 +25,7 @@ const kioskVideoFeed = '/camera/video';
 
 export async function _check(quick = false) {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
-	serverAPI.logger.debug(`checking "${url}" with ${authHeader}`);
+	serverAPI.logger.debug(`checking "${url}"`);
 	const headers  = new fetch.Headers({
 		'Authorization': authHeader
 	});
