@@ -49,12 +49,6 @@ const cmdLineOptions = yargs
 			type: 'boolean',
 			default: false
 		},
-		'trace': {
-			alias: 't',
-			describe: '',
-			type: 'boolean',
-			default: false
-		},
 		'port': {
 			alias: 'p',
 			type: 'integer',
@@ -125,11 +119,6 @@ if (config.core.quiet) {
 if (config.core.dev) {
 	logger.info('Started in dev mode');
 	loggersSetGlobalLevel('DEBUG');
-}
-
-if (config.core.trace) {
-	logger.info('Started in trace mode');
-	loggersSetGlobalLevel('TRACE');
 }
 
 
