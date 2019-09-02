@@ -25,7 +25,7 @@ const kioskVideoFeed = '/camera/video';
 
 export async function _check(quick = false) {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
-	serverAPI.logger.debug(`checking "${url}" with ${authHeader}`);
+	serverAPI.logger.debug(`checking "${url}"`);
 	const headers  = new fetch.Headers({
 		'Authorization': authHeader
 	});
@@ -34,8 +34,8 @@ export async function _check(quick = false) {
 			if (!response.ok) {
 				// Go to the "catch" phase
 				// TODO: should pop up and say: hey, we have a problem ! -> activate applic + special image
-				serverAPI.logger.error('Received the response: ', response);
-				throw 'Invalid response';
+				serverAPI.logger.error('Received the response: ', response.status);
+				throw new Error('Invalid response');
 			}
 			if (++successes < 2 && !quick) {
 				// We want at least two sucesses before showing it (= 10 seconds) ...
@@ -58,7 +58,7 @@ export async function _check(quick = false) {
 				}));
 		})
 		.catch(_err => {
-			serverAPI.logger.debug('Received error, disabling camera', _err);
+			serverAPI.logger.debug('Received error, disabling camera', _err.message);
 			if (successes > 0) {
 				successes = 0;
 
