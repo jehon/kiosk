@@ -1,6 +1,7 @@
 # Project
 var/
 etc/
+parts/
 
 # GUI
 .vscode
