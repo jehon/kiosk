@@ -55,6 +55,7 @@
     "watch-then-execute": "1.1.1"
   },
   "scripts": {
+    "clean": "rm -fr parts tmp",
     "eslint": "eslint --ignore-path .gitignore --ignore-pattern /unused .",
     "eslint:fix": "npm run eslint -- --fix",
     "postinstall": "./apply-patches.sh",
