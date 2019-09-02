@@ -18,7 +18,7 @@ const LEVELS = {
 };
 
 const activeLevels = {
-	'*':5
+	'*':4
 };
 
 function level2Int(level) {

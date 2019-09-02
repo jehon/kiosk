@@ -20,4 +20,4 @@ fixCrash "$HOME/.config/chromium/Local State"
 	echo "********** Starting session kiosk ************************"
 	pushd "$KIOSK_APP" > /dev/null
 	/usr/bin/node --experimental-modules main.js
-) 2>&1 | tee -a /tmp/kiosk-xsession.log
+) 2>&1 | tee /tmp/kiosk-xsession.log
