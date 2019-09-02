@@ -1,11 +1,16 @@
 name: kiosk
-base: core18
+base: core
 version: '1'
 summary: A kiosk for your home
 description: |
   A kiosk displaying all your local/samba pictures on a screen
 grade: stable
 confinement: strict
+
+# https://git.launchpad.net/~ondrak/ondras-snaps/+git/homebridge-snap/tree/snap/snapcraft.yaml
+environment:
+    npm_config_unsafe_perm: "true"
+    NODE_ENV: "production"
 
 apps:
   kiosk:
