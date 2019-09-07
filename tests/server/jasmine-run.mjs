@@ -6,9 +6,8 @@ import Jasmine from 'jasmine';
 import '../../node_modules/colors/lib/index.js';
 
 // Configure default logger
-import loggerFactory, { setGlobalLevel } from '../../common/logger.js';
+import loggerFactory from '../../common/logger.js';
 const logger = loggerFactory('jasmine');
-setGlobalLevel('DEBUG');
 
 const jasmine = new Jasmine();
 jasmine.loadConfigFile( './tests/server/jasmine.json' );
