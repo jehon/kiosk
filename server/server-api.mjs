@@ -6,7 +6,7 @@ import '../node_modules/colors/lib/index.js';
 import Bus from '../common/bus.js';
 import contextualize from '../common/contextualize.js';
 import loggerFactory from '../common/logger.js';
-import Scheduler from '../common/scheduler.js';
+import Scheduler from './scheduler.js';
 export { rootDir } from './server-api-config.mjs';
 
 // Server
