@@ -1,5 +1,5 @@
 
-import Scheduler from '../../common/scheduler.js';
+import Scheduler from '../../server/scheduler.js';
 
 describe(import.meta.url, function() {
 	it('should trigger events', function() {
