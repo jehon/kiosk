@@ -8,7 +8,7 @@ import yaml from 'js-yaml';
 import deepMerge  from 'deepmerge';
 import objectPath from 'object-path';
 
-import loggerFactory, { setGlobalLevel as loggersSetGlobalLevel } from '../common/logger.js';
+import loggerFactory, { debugModule } from '../common/logger.js';
 const logger = loggerFactory('core.config');
 
 
@@ -37,12 +37,6 @@ if (typeof(jasmine) != 'undefined') {
 
 const cmdLineOptions = yargs
 	.options({
-		'quiet': {
-			alias: 'q',
-			describe: 'Quiet mode, only error messages are shown',
-			type: 'boolean',
-			default: false
-		},
 		'dev': {
 			alias: 'd',
 			describe: 'In dev mode, some functionnalities are disabled.',
@@ -94,14 +88,8 @@ let config = {
 //
 // Command line options (only from command-line)
 //
-if (cmdLineOptions.quiet) {
-	config.core.quiet = cmdLineOptions.quiet;
-}
 if (cmdLineOptions.dev) {
 	config.core.dev   = cmdLineOptions.dev;
-}
-if (cmdLineOptions.trace) {
-	config.core.trace = cmdLineOptions.trace;
 }
 if (cmdLineOptions._) {
 	config._ = cmdLineOptions._;
@@ -112,12 +100,8 @@ config.cmdLine = cmdLineOptions;
 // Setup some general configs
 //
 
-if (config.core.quiet) {
-	loggersSetGlobalLevel('ERROR');
-}
-
 if (config.core.dev) {
-	loggersSetGlobalLevel('DEBUG');
+	debugModule('*');
 	logger.info('Started in dev mode');
 }
 
