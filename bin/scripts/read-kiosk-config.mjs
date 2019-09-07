@@ -1,8 +1,5 @@
 #!/usr/bin/node --experimental-modules
 
-import { setGlobalLevel }  from '../../common/logger.js';
-setGlobalLevel('ERROR');
-
 import getConfig  from '../../server/server-api-config.mjs';
 
 let args = getConfig('_');
