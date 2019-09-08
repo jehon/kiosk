@@ -1,5 +1,5 @@
 
-import { subscribe } from './client-api-events.js';
+import { subscribe } from './client-api-apps.js';
 import contextualize from '../common/contextualize.js';
 
 const isRendered = Symbol('isRendered');

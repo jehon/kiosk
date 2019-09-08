@@ -1,9 +1,14 @@
 
 import loggerFactory from '../common/logger.js';
 import contextualize from '../common/contextualize.js';
+import Bus from '../common/bus.js';
 
-import { subscribe, dispatch } from './client-api-events.js';
 import { kioskEventListenerMixin } from './client-api-mixins.js';
+
+const bus = new Bus(loggerFactory('bus'));
+
+export const subscribe = (name, callback) => bus.subscribe(name, callback);
+export const dispatch = (name, data) => bus.dispatch(name, data);
 
 const apps = {};
 const logger = loggerFactory('client-api-apps');

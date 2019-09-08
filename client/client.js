@@ -1,8 +1,9 @@
 
 import clientAPIFactory from './client-api.js';
 import { currentMainApplication } from './client-api-apps.js';
-import { subscribe } from './client-api-events.js';
-const clientAPI = clientAPIFactory('core');
+import './client-server-events.js';
+
+const app = clientAPIFactory('core');
 
 /* global toastr */
 /* configure the toastr */
@@ -19,7 +20,7 @@ if (mainAppElement == null) {
 
 let displayedApplication = false;
 
-subscribe('app.changed', () => {
+app.subscribe('app.changed', () => {
 	//
 	// Main app
 	//
@@ -31,11 +32,11 @@ subscribe('app.changed', () => {
 
 		// Reject not "main" application
 		if (!('mainElement' in currentMainApplication)) {
-			clientAPI.logger.error(`No mainElement in ${currentMainApplication.getName()}`);
+			app.logger.error(`No mainElement in ${currentMainApplication.getName()}`);
 			mainAppElement.innerHTML = `<div>No main element available for app ${this.getName()}: ${JSON.stringify(this)}</div>`;
 		} else {
 			// Ok, let's go !
-			clientAPI.logger.info(`Selecting ${currentMainApplication.getName()}`);
+			app.logger.info(`Selecting ${currentMainApplication.getName()}`);
 			displayedApplication = currentMainApplication;
 
 			mainAppElement.innerHTML = '';
@@ -50,12 +51,12 @@ subscribe('app.changed', () => {
 });
 
 let startedTimestamp = false;
-subscribe('core.started', (data) => {
+app.subscribe('core.started', (data) => {
 	let startedTimestampNew = data.startupTime.toISOString();
-	clientAPI.logger.debug('Connected back to the server: ', startedTimestampNew, startedTimestamp);
+	app.logger.debug('Connected back to the server: ', startedTimestampNew, startedTimestamp);
 	if (startedTimestamp) {
 		if (startedTimestampNew != startedTimestamp) {
-			clientAPI.logger.info('New session from server: ', startedTimestampNew, 'restarting the browser');
+			app.logger.info('New session from server: ', startedTimestampNew, 'restarting the browser');
 			document.location.reload();
 		}
 	}
@@ -69,8 +70,8 @@ subscribe('core.started', (data) => {
 fetch('/core/packages/active')
 	.then(response => response.json())
 	.then(json => json.map(s => {
-		clientAPI.logger.info(`Loading ${s}`);
+		app.logger.info(`Loading ${s}`);
 		return import(s)
-			.then(() => clientAPI.logger.info(`Loading ${s} done`),
-				e => clientAPI.logger.info(`Loading ${s} error`, e));
+			.then(() => app.logger.info(`Loading ${s} done`),
+				e => app.logger.info(`Loading ${s} error`, e));
 	}));
