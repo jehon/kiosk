@@ -12,8 +12,6 @@ describe(import.meta.url, () => {
 	});
 
 	it('should call logs', () => {
-		loggerTest.setModuleLevel('INFO');
-
 		process.stdout.write.calls.reset();
 		loggerTest.info('test');
 		expect(process.stdout.write).toHaveBeenCalledTimes(1);
@@ -28,8 +26,8 @@ describe(import.meta.url, () => {
 	});
 
 	it('should define level by logger', () => {
-		loggerTest.setModuleLevel('INFO');
-		loggerTest2.setModuleLevel('ERROR');
+		loggerTest.disableDebug();
+		loggerTest2.enableDebug();
 
 		process.stdout.write.calls.reset();
 		loggerTest.info('test');
