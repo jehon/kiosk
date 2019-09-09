@@ -141,7 +141,7 @@ export default class ClientAPI {
 	//
 	//
 	getKioskEventListenerMixin() {
-		return (element) => kioskEventListenerMixin(this.name, element);
+		return (element) => kioskEventListenerMixin(this, element);
 	}
 
 	//
@@ -156,8 +156,7 @@ export default class ClientAPI {
 	}
 
 	subscribe(name, cb) {
-		subscribe(this.c(name), cb);
-		return this;
+		return subscribe(this.c(name), cb);
 	}
 
 	goManually() { // TODO: affine "manual" mode
