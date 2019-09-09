@@ -60,8 +60,7 @@ export function getMountedList() {
 }
 
 // Register some routing functions
-const app = app.getExpressApp();
-app.get('/mount/mountedList', (_req, res, _next) => {
+app.getExpressApp().get('/mount/mountedList', (_req, res, _next) => {
 	// TODO: allow to generate from a specific folder?
 	app.dispatch('.refresh', null);
 	res.json(mountedList);
