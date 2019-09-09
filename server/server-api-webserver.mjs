@@ -6,7 +6,7 @@ import morgan from 'morgan';
 
 import getConfig from './server-api-config.mjs';
 import loggerFactory from '../common/logger.js';
-const logger = loggerFactory('webserver');
+const logger = loggerFactory('core.webserver');
 
 //
 // SSE
@@ -27,39 +27,6 @@ function sseNotifyThisClient(client, eventName, data) {
 	// client.write('event: ' + eventName + '\n');
 	client.write('data: ' + JSON.stringify(obj) + '\n\n');
 }
-
-//
-// Babel
-//
-
-// Other solutions: rollupjs
-
-// function babelify(subpath) {
-// 	return function (req, res, next) {
-// 		const realPathFile = path.join(getConfig('core.root'), subpath, req.path);
-//
-// 		if (path.extname(realPathFile) != '.js') {
-// 			next();
-// 		}
-//
-// 		// https://old.babeljs.io/docs/usage/api/#babeltransformcode-string-options-object
-//
-// 		babel.transformFile(realPathFile, {
-// 			plugins: [
-//				'transform-commonjs-es2015-modules'
-//              // need babel-plugin-module-resolver ?
-//          ]
-//
-// 		}, (err, result) => {
-// 			if (err != null) {
-// 				res.sendStatus(500);
-// 			} else {
-// 				res.type('application/javascript');
-// 				res.send('/* transpiled */\n' + result.code);
-// 			}
-// 		});
-// 	};
-// }
 
 //
 // Server with static's

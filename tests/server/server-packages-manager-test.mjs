@@ -8,12 +8,14 @@ describe(import.meta.url, () => {
 	});
 
 	it('should detect server packages', async () => {
-		const pkgList = await packageManager.getServerFiles();
+		await packageManager.getManifests();
+		const pkgList = packageManager.manifestListServer;
 		expect(pkgList.length).toBeGreaterThanOrEqual(3);
 	});
 
 	it('should detect client packages', async () => {
-		const pkgList = await packageManager.getServerFiles();
+		await packageManager.getManifests();
+		const pkgList = packageManager.manifestListClient;
 		expect(pkgList.length).toBeGreaterThanOrEqual(3);
 	});
 });
