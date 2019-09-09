@@ -6,12 +6,11 @@ const app = AppFactory('menu');
 // Loading all apps (sent by the server)
 app.subscribe('.apps', (apps) => {
 	for(const appName of Object.keys(apps)) {
-		const app = apps[appName];
-		app.info(`Registering app by menu: ${appName}`, app);
+		app.info(`Registering app by menu: ${appName}`, apps[appName]);
 		AppFactory(appName)
-			.withPriority(app.priority)
-			.mainBasedOnIFrame(app.url)
-			.menuBasedOnIcon(app.icon, app.label)
+			.withPriority(apps[appName].priority)
+			.mainBasedOnIFrame(apps[appName].url)
+			.menuBasedOnIcon(apps[appName].icon, apps[appName].label)
 		;
 	}
 });
