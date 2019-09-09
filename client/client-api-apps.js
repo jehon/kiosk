@@ -1,5 +1,5 @@
 
-import loggerFactory from '../common/logger.js';
+import loggerFactory from './client-api-logger.js';
 import contextualize from '../common/contextualize.js';
 import Bus from '../common/bus.js';
 
