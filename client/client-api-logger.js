@@ -1,4 +1,6 @@
 
+import '../node_modules/debug/dist/debug.js';
+
 export async function remoteLogger(name, category, ...data) {
 	let jdata = JSON.stringify(data,
 		(k, v) => (v instanceof HTMLElement || v instanceof Node) ? 'html-element' : v
@@ -18,9 +20,12 @@ export async function remoteLogger(name, category, ...data) {
 
 class RemoteLogger {
 	name = '';
+	#debug;
 
 	constructor(name) {
 		this.name = name;
+		/* global debug */
+		this.#debug = debug(name.split('.').join(':'));
 	}
 
 	async info(...data) {
@@ -39,7 +44,8 @@ class RemoteLogger {
 		// TODO: use debug.js in the browser too...
 
 		/* eslint-disable no-console */
-		console.debug('[DEBUG]', this.name, ':', ...data);
+		// console.debug('[DEBUG]', this.name, ':', ...data);
+		this.#debug(...data);
 		await remoteLogger(this.name, 'debug', ...data);
 	}
 }
