@@ -10,6 +10,27 @@ import exifParser from './exif-parser.js';
 import serverAPIFactory from '../../server/server-api.mjs';
 const app = serverAPIFactory('photo-frame');
 
+
+// Thanks to https://github.com/ungap/promise-all-settled/blob/master/index.js
+const allSettled = Promise.allSettled || function ($) {
+	return Promise.all(
+		$.map(
+			function (value) {
+				return Promise.resolve(value).then(this.$).catch(this._);
+			},
+			{
+				$: function (value) {
+					return { status: 'fulfilled', value: value };
+				},
+				_: function (reason) {
+					return { status: 'rejected', reason: reason };
+				}
+			}
+		)
+	);
+};
+
+
 // Historical files, to avoid taking twice the same folder
 let hasAnUpdatedList = false;
 let selectedPictures = [];
