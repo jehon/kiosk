@@ -73,5 +73,5 @@ fetch('/core/packages/active')
 		app.info(`Loading ${s}`);
 		return import(s)
 			.then(() => app.info(`Loading ${s} done`),
-				e => app.info(`Loading ${s} error`, e));
+				e => app.error(`Loading ${s} error`, e));
 	}));
