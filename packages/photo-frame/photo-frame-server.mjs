@@ -171,7 +171,8 @@ export async function generateListing(_data = null) {
 	app.debug('Extracting exif data for all files');
 	// TODO URGENT: need to throttle this !
 	newSelectedPictures = await Promise.all(newSelectedPictures.map(f => exifParser(f.original)
-		.then(data => { f.data = data; return f; })));
+			.then(data => { f.data = data; return f; })
+			.catch(e => { app.info('Could not read exif: ', e); return f; })
 	app.debug('Extracting exif data done');
 
 	newSelectedPictures.sort((a, b) => {
