@@ -20,8 +20,12 @@ function renderError(e) {
 }
 
 class Logger {
-	constructor(moduleName = '?') {
+	moduleName = '';
+	origin = '';
+
+	constructor(moduleName = '?', origin = 'server') {
 		this.moduleName = moduleName;
+		this.origin = origin;
 		this.debug = debugFactory(moduleName);
 	}
 
@@ -38,7 +42,11 @@ class Logger {
 		const date = m.getFullYear() + '-' + ('0' + (m.getMonth() + 1)).slice(-2) + '-' + ('0' + m.getDate()).slice(-2)
 			+ ' '
 			+ ('0' + m.getHours()).slice(-2) + ':' + ('0' + m.getMinutes()).slice(-2) + ':' + ('0' + m.getSeconds()).slice(-2);
-		return `${color(date, 'gray')} ${color(level.padEnd(7), 'blue')} [${color(this.moduleName, 'yellow')}]: `;
+		let msg = `${color(date, 'gray')}`;
+		msg += ` ${color(this.origin, this.origin == 'server' ? 'cyan' : 'magenta')}`;
+		msg += ` ${color(level.padEnd(5), 'blue')}`;
+		msg += ` [${color(this.moduleName, 'yellow')}]: `;
+		return msg;
 	}
 
 	_generateMessage(...args) {
@@ -70,12 +78,8 @@ class Logger {
 	}
 }
 
-export default (moduleName = '') => new Logger(moduleName);
+export default (moduleName = '', origin = 'server') => new Logger(moduleName, origin);
 
 export function debugModule(moduleName) {
 	activeLevels[moduleName] = true;
-}
-
-if (typeof(window) != 'undefined') {
-	window.debugModule = debugModule;
 }

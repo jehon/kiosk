@@ -36,7 +36,7 @@ export const mockableAPI = {
 	dispatchToBrowser:       (...args)                               => dispatchToBrowser(...args),
 	dispatch:                (eventName, data)                       => bus.dispatch(eventName, data),
 	subscribe:               (eventName, cb)                         => bus.subscribe(eventName, cb),
-	loggerFactory:           loggerFactory,
+	loggerFactory:           (loggerName)                            => loggerFactory(loggerName, 'server'),
 	addSchedule:             (signal, cron, duration = 0, data = {}) => scheduler.addCron(signal, cron, duration, data),
 
 	getExpressApp:           ()                                      => getExpressApp(),
