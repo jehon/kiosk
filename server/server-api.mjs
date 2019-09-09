@@ -34,16 +34,20 @@ export const mockableAPI = {
 
 export default function inContext(context) {
 	const c = contextualize(context);
+	const logger = mockableAPI.loggerFactory(context);
 
 	return {
-		logger:                 mockableAPI.loggerFactory(context),
+		// TODO: remove logger from public api
+		logger,
 		getConfig:              (opath, def)                            => mockableAPI.getConfig(c(opath), def),
 
 		dispatchToBrowser:      (eventName, msg)                        => mockableAPI.dispatchToBrowser(c(eventName), msg),
 		dispatch:               (eventName, msg)                        => mockableAPI.dispatch(c(eventName), msg),
 		subscribe:              (eventName, cb)                         => mockableAPI.subscribe(c(eventName), cb),
 		addSchedule:            (signal, cron, duration = 0, data = {}) => mockableAPI.addSchedule(c(signal), cron, duration, data),
-
+		error:                  (...data)                               => logger.error(...data),
+		info:                   (...data)                               => logger.info(...data),
+		debug:                  (...data)                               => logger.debug(...data),
 
 		// TODO: https://expressjs.com/en/api.html#req
 		// var greet = express.Router();

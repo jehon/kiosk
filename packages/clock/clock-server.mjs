@@ -1,22 +1,20 @@
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const serverAPI = serverAPIFactory('clock');
-
-const logger = serverAPI.logger;
+const app = serverAPIFactory('clock');
 
 const config = {
 	tickers: [],
-	...serverAPI.getConfig()
+	...app.getConfig()
 };
 
-logger.info('Programming config cron\'s');
+app.info('Programming config cron\'s');
 for(const l of Object.keys(config.tickers)) {
 	const f = config.tickers[l];
-	logger.debug('Programming: ', l, f);
-	serverAPI.addSchedule('.ticker', f.cron, f.duration, {
+	app.debug('Programming: ', l, f);
+	app.addSchedule('.ticker', f.cron, f.duration, {
 		label: l,
 		...f
 	});
 }
 
-serverAPI.subscribe('.ticker', (data) => serverAPI.dispatchToBrowser('.ticker', data));
+app.subscribe('.ticker', (data) => app.dispatchToBrowser('.ticker', data));

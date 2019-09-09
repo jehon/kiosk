@@ -1,5 +1,7 @@
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const serverAPI = serverAPIFactory('menu');
+const app = serverAPIFactory('menu');
 
-serverAPI.dispatchToBrowser('.apps', serverAPI.getConfig() || []);
+const appConfigs = app.getConfig() || [];
+app.debug('Sending app configs to client', appConfigs);
+app.dispatchToBrowser('.apps', appConfigs);

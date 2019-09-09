@@ -3,8 +3,8 @@
 import childProcess from 'child_process';
 
 import serverAPIFactory from './server-api.mjs';
-const serverAPI = serverAPIFactory('browser');
-const logger = serverAPI.logger;
+const app = serverAPIFactory('browser');
+const logger = app.logger;
 
 let browserThread = false;
 

@@ -2,13 +2,12 @@
 import AppFactory, { renderMixin } from '../../client/client-api.js';
 import { getApplicationsList, getApplicationByName } from '../../client/client-api-apps.js';
 const app = AppFactory('menu');
-const logger = app.logger;
 
 // Loading all apps (sent by the server)
 app.subscribe('.apps', (apps) => {
 	for(const appName of Object.keys(apps)) {
 		const app = apps[appName];
-		logger.info(`Registering app by menu: ${appName}`, app);
+		app.info(`Registering app by menu: ${appName}`, app);
 		AppFactory(appName)
 			.withPriority(app.priority)
 			.mainBasedOnIFrame(app.url)
@@ -70,9 +69,11 @@ if (appMenuElement == null) {
 
 appMenuElement.addEventListener('click', () => {
 	// Go to menu list application
+	app.debug('Going to the menu pane');
 	getApplicationByName('menu').goManually();
 });
 
 app.subscribe('caffeine.activity', active => {
+	app.debug('Activity recieved', active);
 	appMenuElement.style.display = (active ? '' : 'none');
 });

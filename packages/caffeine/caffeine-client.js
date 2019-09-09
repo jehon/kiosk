@@ -2,7 +2,6 @@
 import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('caffeine');
-const logger = app.logger;
 
 // Initialize to false
 app.dispatch('.activity', false);
@@ -25,7 +24,7 @@ body.addEventListener('mousemove', e => {
 	const now = new Date();
 	if (now - lastPosition.time > 1000) {
 		// Last position is too old, let's start again
-		logger.debug('Reset position');
+		app.debug('Reset position');
 		memorizePosition(e);
 	}
 
@@ -34,7 +33,7 @@ body.addEventListener('mousemove', e => {
 
 	// A big movement in a short time, it's an activity
 	if (dist2 > Math.pow(50, 2)) {
-		logger.debug('Activity up');
+		app.debug('Activity up');
 		app.dispatch('.activity', true);
 
 		// Reprogram the 'down' activity
@@ -42,7 +41,7 @@ body.addEventListener('mousemove', e => {
 		eraser = setTimeout(() => {
 			clearTimeout(eraser);
 			eraser = false;
-			logger.debug('Activity down');
+			app.debug('Activity down');
 			app.dispatch('.activity', false);
 		}, 5 * 1000);
 	}

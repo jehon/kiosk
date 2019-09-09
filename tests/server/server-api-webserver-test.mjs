@@ -4,7 +4,7 @@ import EventSource from '../../node_modules/eventsource/lib/eventsource.js';
 
 import { start as startServer, stop as stopServer } from '../../server/server-api-webserver.mjs';
 import serverAPIFactory from '../../server/server-api.mjs';
-const serverAPI = serverAPIFactory('server-api-browser-test');
+const app = serverAPIFactory('server-api-browser-test');
 
 const serverUrl = (url) => `http://localhost:${port}${url}`;
 
@@ -59,13 +59,13 @@ describe(import.meta.url, () => {
 				done();
 			});
 			es.on('open', () => {
-				serverAPI.dispatchToBrowser(evtName, 'hello world');
+				app.dispatchToBrowser(evtName, 'hello world');
 			});
 		});
 
 		it('should fire last known status at connection', (done) => {
 			const evtName = 'browser-test-statefull';
-			serverAPI.dispatchToBrowser(evtName, 'hello world 2');
+			app.dispatchToBrowser(evtName, 'hello world 2');
 
 			const es = new EventSource(serverUrl('/core/events'));
 			es.onerror = function (err) {
