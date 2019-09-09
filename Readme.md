@@ -11,3 +11,8 @@ npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
 TODO:
 	mounter without fstab
 	https://snapcraft.io/docs/node-apps
+
+
+Settings for private fields:
+    "typescript.validate.enable": false,
+    "javascript.validate.enable": false,
