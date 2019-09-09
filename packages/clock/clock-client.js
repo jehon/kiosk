@@ -166,18 +166,19 @@ customElements.define('kiosk-clock', KioskClock);
 app
 	.withPriority(defaultPriority)
 	.withMainElement(new KioskClock())
-	.menuBasedOnIcon('/packages/clock/clock.png')
-	.subscribe('.ticker', (data) => {
-		ticker = data;
-		app.changePriority(elevatedPriority);
+	.menuBasedOnIcon('/packages/clock/clock.png');
 
-		onDate(ticker.stat.end).then(() => {
-			// data.onEndOfDuration(() => {
+app.subscribe('.ticker', (data) => {
+	ticker = data;
+	app.changePriority(elevatedPriority);
+
+	onDate(ticker.stat.end).then(() => {
+		// data.onEndOfDuration(() => {
 		// Is it the current ticker?
-			if (ticker && ticker.triggerDate == data.triggerDate) {
+		if (ticker && ticker.triggerDate == data.triggerDate) {
 			// We have this event, so let's stop it and become a normal application again...
-				app.changePriority(defaultPriority);
-			}
-		});
-	})
+			app.changePriority(defaultPriority);
+		}
+	});
+})
 ;

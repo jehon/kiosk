@@ -1,7 +1,4 @@
 
-import { subscribe } from './client-api-apps.js';
-import contextualize from '../common/contextualize.js';
-
 const isRendered = Symbol('isRendered');
 export const renderMixin = (cls) => class extends cls {
 	constructor(...args) {
@@ -28,16 +25,12 @@ export const renderMixin = (cls) => class extends cls {
 };
 
 const unsubscriber = Symbol('unsubscriber');
-const c = Symbol('contextualizator');
-const scope = Symbol('scope');
-export const kioskEventListenerMixin = (scope_, cls) => class extends cls {
+export const kioskEventListenerMixin = (app, cls) => class extends cls {
 	_events = {}
 
 	constructor(...args) {
 		super(...args);
-		this[c] = contextualize(scope_);
 		this[unsubscriber] = [];
-		this[scope] = scope_;
 	}
 
 	connectedCallback() {
@@ -69,6 +62,6 @@ export const kioskEventListenerMixin = (scope_, cls) => class extends cls {
 	}
 
 	kioskSubscribe(eventName, cb) {
-		this[unsubscriber].push(subscribe(this[c](eventName), cb));
+		this[unsubscriber].push(app.subscribe(eventName, cb));
 	}
 };
