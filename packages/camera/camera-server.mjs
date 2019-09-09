@@ -10,7 +10,7 @@ const serverAPI = serverAPIFactory('camera');
 let successes = 0;
 
 const config = {
-	'cron-recheck': '*/5 * * * * *',
+	'cron-recheck': '*/15 * * * * *',
 	host: 'localhost',
 	username: '',
 	password: '',

@@ -69,6 +69,11 @@ const app = express();
 
 app.on('error', e => logger.error('Error starting server: ', e));
 
+// Handle POST data correctly
+// See https://stackoverflow.com/a/54546000/1954789
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 if (getConfig('core.trace', false)) {
 	// http://expressjs.com/en/resources/middleware/morgan.html
 	app.use(morgan('dev'));
