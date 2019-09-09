@@ -45,3 +45,13 @@ class RemoteLogger {
 }
 
 export default (name) => new RemoteLogger(name);
+
+const globalCatcher = new RemoteLogger('core:global');
+
+window.addEventListener('error', (event) => {
+	globalCatcher.error(event.message,
+		event.filename ?
+			event.filename + '#' + event.lineno + ':' + event.colno
+			: ''
+		, event.error);
+});
