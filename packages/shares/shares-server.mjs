@@ -5,21 +5,20 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 
 import serverAPIFactory, { rootDir } from '../../server/server-api.mjs';
-const serverAPI = serverAPIFactory('shares');
-const logger = serverAPI.logger;
+const app = serverAPIFactory('shares');
 
 const mountedList = {};
 
 const sharesRoot = path.join(rootDir, 'media');
 
 export async function mount(name, mountPoint) {
-	logger.info(`Mounting ${name} with ${mountPoint}`);
+	app.info(`Mounting ${name} with ${mountPoint}`);
 	const target = path.join(sharesRoot, name);
 	let stats = null;
 	try {
 		stats = await promisify(fs.stat)(target);
 	} catch(e) {
-		logger.debug(`Creating folder ${target}`);
+		app.debug(`Creating folder ${target}`);
 		await promisify(fs.mkdir)(target);
 	}
 	if (stats && !stats.isDirectory()) {
@@ -32,21 +31,21 @@ export async function mount(name, mountPoint) {
 		'-o', 'password=' + mountPoint.password,
 		'-o', 'domain=' + mountPoint.domain ];
 	const cmdLine = 'mount "' + cmdOptions.join('" "') + '"';
-	logger.debug('Mount options: ', cmdLine);
+	app.debug('Mount options: ', cmdLine);
 
 	// Handle return code and errors
 	try {
 		await promisify(exec)(cmdLine, {
 			stdio: [ 'ignore', null, null ]
 		});
-		logger.debug(`Mounted ${name}`);
+		app.debug(`Mounted ${name}`);
 		mount[name] = mountPoint;
-		serverAPI.dispatch('.mounted.' + name);
-		serverAPI.dispatch('.mounted.list', getMountedList());
+		app.dispatch('.mounted.' + name);
+		app.dispatch('.mounted.list', getMountedList());
 
 		return name;
 	} catch (e) {
-		logger.debug('Mount error returned: ', e.code, '##', e.stdout, e.stderr);
+		app.debug('Mount error returned: ', e.code, '##', e.stdout, e.stderr);
 
 		// e.stdout:
 		//  mount error(13): permission denied
@@ -61,10 +60,10 @@ export function getMountedList() {
 }
 
 // Register some routing functions
-const app = serverAPI.getExpressApp();
+const app = app.getExpressApp();
 app.get('/mount/mountedList', (_req, res, _next) => {
 	// TODO: allow to generate from a specific folder?
-	serverAPI.dispatch('.refresh', null);
+	app.dispatch('.refresh', null);
 	res.json(mountedList);
 });
 

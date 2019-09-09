@@ -2,12 +2,12 @@
 
 const fs = require('fs-extra');
 const net = require('net');
-const serverAPIFn = require('./server-api.mjs');
-const serverAPI = serverAPIFn('core.socket');
+const serverAPIFactory = require('./server-api.mjs');
+const app = serverAPIFactory('core.socket');
 
 let socketPath = false;
 
-serverAPI.setConfigDefaultValue('.socket', '/var/kiosk.socket');
+app.setConfigDefaultValue('.socket', '/var/kiosk.socket');
 
 // Pipe to receive notifications from the OS
 try {

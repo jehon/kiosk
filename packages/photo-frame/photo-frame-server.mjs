@@ -8,8 +8,7 @@ import minimatch from 'minimatch';
 import exifParser from './exif-parser.js';
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const serverAPI = serverAPIFactory('photo-frame');
-const logger = serverAPI.logger;
+const app = serverAPIFactory('photo-frame');
 
 // Historical files, to avoid taking twice the same folder
 let hasAnUpdatedList = false;
@@ -50,7 +49,7 @@ function getFoldersFromFolder(folderConfig) {
  * @param folderConfig
  */
 function generateListingForPath(folderConfig) {
-	logger.debug(folderConfig.folder ,'3 - getFilesFromFolderPath: ', folderConfig);
+	app.debug(folderConfig.folder ,'3.0 - getFilesFromFolderPath: ', folderConfig);
 	// Symlinks are resolved to allow thumbnails to be more precisely generated
 	// but Samba does not allow links, so they are resolved by samba
 	// and invisible here
@@ -70,21 +69,21 @@ function generateListingForPath(folderConfig) {
 			}
 			previouslySelected.push(folderConfig.folder);
 
-			logger.debug(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting pictures');
+			app.debug(folderConfig.folder, '# 3.1 - getFilesFromFolderPath: selecting pictures');
 			const images = shuffleArray(getFilesFromFolderByMime(folderConfig));
 			const imgList = images
 				.slice(0, Math.min(folderConfig.quantity,
 					images.length,
 					folderConfig.quantity - listing.length))
 				.map(e => path.join(folderConfig.folder, e));
-			logger.debug(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
+			app.debug(folderConfig.folder, '# 3.2 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
 
 			listing.push(...imgList);
 			continue;
 		}
 
 		// Take folders
-		logger.debug(folderConfig.folder, '# 3 - getFilesFromFolderPath: selecting folder');
+		app.debug(folderConfig.folder, '# 3.3 - getFilesFromFolderPath: selecting folder');
 		listing.push(...generateListingForPath({
 			...folderConfig,
 			folder: path.join(folderConfig.folder, f),
@@ -95,25 +94,25 @@ function generateListingForPath(folderConfig) {
 }
 
 function generateListingForTopFolder(folderConfig) {
-	logger.debug(folderConfig.folder, '# 2 - generateListingForTopFolder: given options: ', folderConfig);
+	app.debug(folderConfig.folder, '# 2.0 - generateListingForTopFolder: given options: ', folderConfig);
 	folderConfig = {
 		excludes: [],
 		mimeTypePattern: [ 'image/*' ],
 		quantity: 10,
-		...serverAPI.getConfig('.folder-defaults', {}),
+		...app.getConfig('.folder-defaults', {}),
 		...folderConfig,
 	};
 
-	logger.debug(folderConfig.folder, '# 2 - generateListingForTopFolder: resolved options: ', folderConfig);
+	app.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
 	} catch(_e) {
-		logger.error(`Could not find folder '${folderConfig.folder}'`);
+		app.error(`Could not find folder '${folderConfig.folder}'`);
 		return [];
 	}
 
 	let selectedFolderPictures = generateListingForPath(folderConfig);
-	logger.debug(folderConfig.folder, '# 2 - generateListingForTopFolder: found file list ', selectedFolderPictures);
+	app.debug(folderConfig.folder, '# 2.2 - generateListingForTopFolder: found file list ', selectedFolderPictures);
 	return selectedFolderPictures;
 }
 
@@ -126,17 +125,17 @@ function os2web(os, web, f) { // TODO: this should be in package "shares"
 //  -> Generate a selection
 //
 export async function generateListing(_data = null) {
-	logger.info('Generate listing');
+	app.info('Generate listing');
 	hasAnUpdatedList = false;
 	previouslySelected.length = 0;
 	let newSelectedPictures = [];
 
 	// TODO: manage the data selection
-	const folders = serverAPI.getConfig('.folders', []);
-	logger.debug('1 - generateListing: Found top folders', folders);
+	const folders = app.getConfig('.folders', []);
+	app.debug('1 - generateListing: Found top folders', folders);
 	for(const i in folders) {
 		const f = folders[i];
-		logger.debug('1 - generateListing: Using folder', f);
+		app.debug('1.1 - generateListing: Using folder', f);
 		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f).map(file => ({
 			webname: os2web(f.folder, f.publishedAt, file),
 			original: file,
@@ -144,12 +143,15 @@ export async function generateListing(_data = null) {
 	}
 
 	if (newSelectedPictures.length == 0) {
-		logger.error('Generate listing: Nothing found in generated JSON!');
+		app.error('Generate listing: Nothing found in generated JSON!');
 		return null;
 	}
 
+	app.debug('Extracting exif data for all files');
+	// TODO URGENT: need to throttle this !
 	newSelectedPictures = await Promise.all(newSelectedPictures.map(f => exifParser(f.original)
 		.then(data => { f.data = data; return f; })));
+	app.debug('Extracting exif data done');
 
 	newSelectedPictures.sort((a, b) => {
 		return a.date < b.date ? -1 : a.date == b.date ? 0 : 1;
@@ -157,9 +159,10 @@ export async function generateListing(_data = null) {
 
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
-	serverAPI.dispatchToBrowser('.listing', selectedPictures);
+	app.debug('Sending to browser', selectedPictures);
+	app.dispatchToBrowser('.listing', selectedPictures);
 
-	logger.info('Generating listing done');
+	app.info('Generating listing done');
 	return selectedPictures;
 }
 
@@ -174,24 +177,28 @@ export async function generateListing(_data = null) {
 
 
 // We check that we have a list
-serverAPI.addSchedule('.check-has-list', serverAPI.getConfig('.check-cron', '0 0/5 * * * *'));
-serverAPI.subscribe('.check-has-list', () => {
+const checkHasListSchedule = app.getConfig('.check-cron', '0 0/5 * * * *');
+app.debug('Programming checking for presence of listing at', checkHasListSchedule);
+app.addSchedule('.check-has-list', checkHasListSchedule);
+app.subscribe('.check-has-list', () => {
 	if (selectedPictures.length == 0 || !hasAnUpdatedList) {
 		generateListing();
 	}
 });
 
 // Refresh the list sometimes
-serverAPI.addSchedule('.refresh', serverAPI.getConfig('.refresh-cron', '0 0 5 * * *'));
-serverAPI.subscribe('.refresh', (data) => generateListing(data));
-// Let's go
-serverAPI.dispatch('.refresh');
+const refreshSchedule  = app.getConfig('.refresh-cron', '0 0 5 * * *');
+app.debug('Programming resfresh at', refreshSchedule);
+app.addSchedule('.refresh', refreshSchedule);
+app.subscribe('.refresh', (data) => generateListing(data));
+
+// Force a first go !
+app.dispatch('.refresh');
 
 // Register some routing functions
-const app = serverAPI.getExpressApp();
-app.get('/photo-frame/refresh', (_req, res, _next) => {
+app.getExpressApp().get('/photo-frame/refresh', (_req, res, _next) => {
 	// TODO: allow to generate from a specific folder?
-	serverAPI.dispatch('.refresh', null);
+	app.dispatch('.refresh', null);
 	res.json(selectedPictures);
 });
 

@@ -169,10 +169,12 @@ app
 	.menuBasedOnIcon('/packages/clock/clock.png');
 
 app.subscribe('.ticker', (data) => {
+	app.debug('Received ticker', data);
 	ticker = data;
 	app.changePriority(elevatedPriority);
 
 	onDate(ticker.stat.end).then(() => {
+		app.debug('ticker on date', data);
 		// data.onEndOfDuration(() => {
 		// Is it the current ticker?
 		if (ticker && ticker.triggerDate == data.triggerDate) {
