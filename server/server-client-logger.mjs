@@ -1,16 +1,28 @@
 /* eslint-env node */
 
-// import getConfig from './server-api-config.mjs';
-import { getExpressApp } from './server-api-webserver.mjs';
+import serverAPIFactory from './server-api.mjs';
+const app = serverAPIFactory('server-client-logger');
+
 import loggerAPI from '../common/logger.js';
-const logger = loggerAPI('server-client-logger');
 
-// Register route on URL
-const app = getExpressApp();
-app.post('/core/client/logs', async (req, res) => {
-	const data = req.body;
-	// data = { ts, name, category, data[] }
+const clientLogger = loggerAPI('clientLogger', 'client');
 
-	logger.info('client/logs', data);
+app.getExpressApp().post('/core/client/logs', async (req, res) => {
+	const log = req.body;
+	// log = { ts, name, category, "data[]" }
+
+	// Parse the "data" array, wich is still a string now
+	const pdata = JSON.parse(log.data);
+
+	if (! [ 'error', 'info', 'debug'].includes(log.category)) {
+		throw 'Invalid category';
+	}
+
+	// Set dynamically the module name
+	clientLogger.moduleName = log.name + ':client';
+
+	// Call the logger
+	clientLogger[log.category](...pdata);
+
 	res.json(true);
 });

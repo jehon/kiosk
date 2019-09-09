@@ -1,14 +1,18 @@
 
 export async function remoteLogger(name, category, ...data) {
+	let jdata = JSON.stringify(data,
+		(k, v) => (v instanceof HTMLElement || v instanceof Node) ? 'html-element' : v
+	);
+
 	axios.post('/core/client/logs', {
 		ts: new Date(),
 		name,
 		category,
-		data: data.map(v => v instanceof HTMLElement || v instanceof Node ? 'html-element' : v),
+		data: jdata
 	})
 		.catch(function (error) {
 			/* eslint-disable no-console */
-			console.log('Error sending log to server: ', error);
+			console.error('Error sending log to server: ', error);
 		});
 }
 
