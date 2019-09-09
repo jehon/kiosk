@@ -6,29 +6,12 @@ import path from 'path';
 import minimatch from 'minimatch';
 
 import exifParser from './exif-parser.js';
+import pLimitFactory from '../../node_modules/p-limit/index.js';
+
+const exifReaderLimiter = pLimitFactory(1);
 
 import serverAPIFactory from '../../server/server-api.mjs';
 const app = serverAPIFactory('photo-frame');
-
-
-// Thanks to https://github.com/ungap/promise-all-settled/blob/master/index.js
-const allSettled = Promise.allSettled || function ($) {
-	return Promise.all(
-		$.map(
-			function (value) {
-				return Promise.resolve(value).then(this.$).catch(this._);
-			},
-			{
-				$: function (value) {
-					return { status: 'fulfilled', value: value };
-				},
-				_: function (reason) {
-					return { status: 'rejected', reason: reason };
-				}
-			}
-		)
-	);
-};
 
 
 // Historical files, to avoid taking twice the same folder
@@ -169,10 +152,11 @@ export async function generateListing(_data = null) {
 	}
 
 	app.debug('Extracting exif data for all files');
-	// TODO URGENT: need to throttle this !
-	newSelectedPictures = await Promise.all(newSelectedPictures.map(f => exifParser(f.original)
+	newSelectedPictures = await Promise.all(newSelectedPictures.map(
+		f => exifReaderLimiter(() => exifParser(f.original))
 			.then(data => { f.data = data; return f; })
 			.catch(e => { app.info('Could not read exif: ', e); return f; })
+	));
 	app.debug('Extracting exif data done');
 
 	newSelectedPictures.sort((a, b) => {
