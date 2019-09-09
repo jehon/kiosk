@@ -29,7 +29,7 @@ export default class Scheduler {
 			cron = '0 ' + cron;
 		}
 
-		this.logger.info(`Programming task for ${eventNameOrFunction}: ${cronstrue.toString(cron)}`);
+		this.logger.debug(`Programming task for ${eventNameOrFunction}: ${cronstrue.toString(cron)}`);
 
 		const job = new CronJob.CronJob(cron, async () => {
 			const now = new Date();
@@ -43,6 +43,7 @@ export default class Scheduler {
 				if (typeof eventNameOrFunction == 'function') {
 					await eventNameOrFunction(arg);
 				} else {
+					this.logger.debug('Notifying', eventNameOrFunction, arg);
 					await this.notify(eventNameOrFunction, arg);
 				}
 			} catch(e) {

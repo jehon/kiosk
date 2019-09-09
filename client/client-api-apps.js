@@ -5,13 +5,12 @@ import Bus from '../common/bus.js';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
-const bus = new Bus(loggerFactory('bus'));
+const bus = new Bus(loggerFactory('core:bus'));
 
 export const subscribe = (name, callback) => bus.subscribe(name, callback);
 export const dispatch = (name, data) => bus.dispatch(name, data);
 
 const apps = {};
-const logger = loggerFactory('client-api-apps');
 
 export let currentMainApplication = null;
 let manualSelectionOfMainApplicationTimer = false;
@@ -34,16 +33,28 @@ export default class ClientAPI {
 	id = idCounter++;
 	name; // private
 	c; // contextualizer - private
-	logger = loggerFactory('unspecified');
+	logger;
 	priority = 1000;
 
 	constructor(name) {
 		this.name = name;
 		this.logger = loggerFactory(this.name);
 		this.c = contextualize(this.name);
-		logger.info('Registering app', this.getName(), this);
+		this.info('Registering app', this.getName(), this);
 		apps[this.getName()] = this;
 		this.dispatchAppChanged();
+	}
+
+	error(...data) {
+		this.logger.error(...data);
+	}
+
+	info(...data) {
+		this.logger.info(...data);
+	}
+
+	debug(...data) {
+		this.logger.debug(...data);
 	}
 
 	//

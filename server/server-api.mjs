@@ -13,20 +13,7 @@ export { rootDir } from './server-api-config.mjs';
 import getConfig, * as configAPI from './server-api-config.mjs';
 import { getExpressApp, dispatchToBrowser } from './server-api-webserver.mjs';
 
-// process.on('unhandledRejection', (reason, promise) => {
-// 	console.log('hehehe: unhandled rejection error ?');
-// 	console.error(`${reason.message} (from: ${reason.name} ${reason.code} #${reason.errno}: ${reason.syscall}() for ${reason.path} )`);
-// 	console.error(reason.stack);
-// 	// console.error(reason.errno, reason.code, reason.syscall, reason.path);
-// 	throw(reason);
-// 	// console.log(typeof(reason), typeof(promise));
-// 	// console.log(Object.keys(reason), Object.keys(promise));
-// 	// console.log(promise);
-// 	// console.log(reason);
-// 	// console.log('Unhandled Rejection at:', promise, 'reason:', reason);
-// });
-
-const logger = loggerFactory('server');
+const logger = loggerFactory('server:bus');
 const bus = new Bus(logger);
 const scheduler = new Scheduler((signal, data) => bus.dispatch(signal, data), logger);
 
@@ -46,7 +33,6 @@ export const mockableAPI = {
 };
 
 export default function inContext(context) {
-	// const c = ctxForFunction(context);
 	const c = contextualize(context);
 
 	return {

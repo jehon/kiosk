@@ -95,6 +95,7 @@ if (cmdLineOptions._) {
 	config._ = cmdLineOptions._;
 }
 config.cmdLine = cmdLineOptions;
+logger.debug('Command line parsed options: ', config);
 
 //
 // Setup some general configs
@@ -126,6 +127,7 @@ for(const i in configFiles) {
 		logger.error('Could not load ' + f, e);
 	}
 }
+logger.debug('Config object after loading files', config);
 
 //
 // Override with command line options
@@ -134,7 +136,7 @@ if (cmdLineOptions.port > 0) {
 	config.core.port  = cmdLineOptions.port;
 }
 
-logger.debug('Loaded config: ', config);
+logger.debug('Final config: ', config);
 
 //
 // Main function to get a config

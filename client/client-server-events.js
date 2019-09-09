@@ -2,7 +2,6 @@
 import ClientAPIFactory from './client-api.js';
 
 const app = ClientAPIFactory('core-api-evnets');
-const logger = app.logger;
 
 //
 // Listen from server events
@@ -13,7 +12,7 @@ var osEvents = new EventSource('/core/events');
 
 osEvents.onmessage = function (event) {
 	const data = JSON.parse(event.data, JSONDateParser);
-	logger.debug(`from server ${data.type}: ${JSON.stringify(data.data)}`);
+	app.debug(`from server ${data.type}:`, data.data);
 	app.dispatch(data.type, data.data);
 };
 

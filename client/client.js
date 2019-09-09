@@ -32,11 +32,11 @@ app.subscribe('app.changed', () => {
 
 		// Reject not "main" application
 		if (!('mainElement' in currentMainApplication)) {
-			app.logger.error(`No mainElement in ${currentMainApplication.getName()}`);
+			app.error(`No mainElement in ${currentMainApplication.getName()}`);
 			mainAppElement.innerHTML = `<div>No main element available for app ${this.getName()}: ${JSON.stringify(this)}</div>`;
 		} else {
 			// Ok, let's go !
-			app.logger.info(`Selecting ${currentMainApplication.getName()}`);
+			app.info(`Selecting ${currentMainApplication.getName()}`);
 			displayedApplication = currentMainApplication;
 
 			mainAppElement.innerHTML = '';
@@ -53,10 +53,10 @@ app.subscribe('app.changed', () => {
 let startedTimestamp = false;
 app.subscribe('core.started', (data) => {
 	let startedTimestampNew = data.startupTime.toISOString();
-	app.logger.debug('Connected back to the server: ', startedTimestampNew, startedTimestamp);
+	app.debug('Connected back to the server: ', startedTimestampNew, startedTimestamp);
 	if (startedTimestamp) {
 		if (startedTimestampNew != startedTimestamp) {
-			app.logger.info('New session from server: ', startedTimestampNew, 'restarting the browser');
+			app.info('New session from server: ', startedTimestampNew, 'restarting the browser');
 			document.location.reload();
 		}
 	}
@@ -70,8 +70,8 @@ app.subscribe('core.started', (data) => {
 fetch('/core/packages/active')
 	.then(response => response.json())
 	.then(json => json.map(s => {
-		app.logger.info(`Loading ${s}`);
+		app.info(`Loading ${s}`);
 		return import(s)
-			.then(() => app.logger.info(`Loading ${s} done`),
-				e => app.logger.info(`Loading ${s} error`, e));
+			.then(() => app.info(`Loading ${s} done`),
+				e => app.info(`Loading ${s} error`, e));
 	}));

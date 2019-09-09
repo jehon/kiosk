@@ -7,7 +7,7 @@ import util from 'util';
 import getConfig from './server-api-config.mjs';
 import { getExpressApp } from './server-api-webserver.mjs';
 import loggerAPI from '../common/logger.js';
-const logger = loggerAPI('packages-manager');
+const logger = loggerAPI('core.packages');
 
 const root = getConfig('core.root');
 const pkgRoot = path.join(root, 'packages');
@@ -27,6 +27,8 @@ async function testFolder(f) {
 }
 
 let manifestList = null;
+export let manifestListClient = null;
+export let manifestListServer = null;
 
 export async function getManifests() {
 	if (!manifestList) {
@@ -37,30 +39,31 @@ export async function getManifests() {
 			.then(list => list.filter(el => el))
 			.then(list => { manifestList = list; return manifestList; });
 
+		manifestListServer = manifestList
+			.filter(el => 'server' in el)
+			.map(el => path.join(el.relativePath, el.server))
+		;
+
+		manifestListClient = manifestList
+			.filter(el => 'client' in el)
+			.map(el => path.join('/', path.relative(root, el.relativePath), el.client))
+		;
+
+
+		logger.debug('Manifest list: ', manifestList);
+		logger.debug('Server manifest files', manifestListServer);
+		logger.debug('Client manifest files', manifestListClient);
 	}
 	return manifestList;
 }
 
-export async function getServerFiles() {
-	return getManifests()
-		.then(list => list.filter(el => 'server' in el))
-		.then(list => list.map(el => path.join(el.relativePath, el.server)))
-	;
-}
-
-export async function getClientFiles() {
-	return getManifests()
-		.then(list => list.filter(el => 'client' in el))
-		.then(list => list.map(el => path.join('/', path.relative(root, el.relativePath), el.client)));
-}
-
 export async function loadServerFiles() {
-	const list = await getServerFiles();
+	await getManifests();
 	return Promise.all(
-		list.map(f => {
+		manifestListServer.map(f => {
 			logger.info('Loading', f);
 			return import(f).then(
-				() => logger.info('Loading', f, 'done'),
+				() => logger.debug('Loading', f, 'done'),
 				e => logger.error('Error loading ', f, ': ', e)
 			);
 		})
@@ -69,4 +72,8 @@ export async function loadServerFiles() {
 
 // Register route on URL
 const app = getExpressApp();
-app.get('/core/packages/active', async (req, res) => res.json(await getClientFiles()));
+app.get('/core/packages/active', async (req, res) => {
+	await getManifests();
+	res.json(manifestListClient);
+});
+
