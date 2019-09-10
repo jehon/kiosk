@@ -8,6 +8,8 @@ import yaml from 'js-yaml';
 import deepMerge  from 'deepmerge';
 import objectPath from 'object-path';
 
+import debugFactory from 'debug';
+
 import loggerFactory, { debugModule } from '../common/logger.js';
 const logger = loggerFactory('core.config:server');
 
@@ -137,6 +139,15 @@ if (cmdLineOptions.port > 0) {
 }
 
 logger.debug('Final config: ', config);
+
+//
+// Activate some loggers
+//
+if (config.core.loggers) {
+	for(const l of config.core.loggers) {
+		debugFactory.enable(l);
+	}
+}
 
 //
 // Main function to get a config
