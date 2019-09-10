@@ -7,7 +7,7 @@ import util from 'util';
 import getConfig from './server-api-config.mjs';
 import { getExpressApp } from './server-api-webserver.mjs';
 import loggerAPI from '../common/logger.js';
-const logger = loggerAPI('core.packages');
+const logger = loggerAPI('core:server:packages');
 
 const root = getConfig('core.root');
 const pkgRoot = path.join(root, 'packages');

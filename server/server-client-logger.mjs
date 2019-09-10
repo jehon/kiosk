@@ -5,7 +5,7 @@ const app = serverAPIFactory('server-client-logger');
 
 import loggerAPI from '../common/logger.js';
 
-const clientLogger = loggerAPI('clientLogger', 'client');
+const clientLogger = loggerAPI('clientLogger:client');
 
 app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	const log = req.body;
@@ -19,7 +19,7 @@ app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	}
 
 	// Set dynamically the module name
-	clientLogger.moduleName = log.name + ':client';
+	clientLogger.setNamespace(log.name.split('.').join(':') + ':client');
 
 	// Call the logger
 	clientLogger[log.category](...pdata);
