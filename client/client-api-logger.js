@@ -20,12 +20,12 @@ export async function remoteLogger(name, category, ...data) {
 
 class RemoteLogger {
 	name = '';
-	#debug;
+	debug;
 
 	constructor(name) {
 		this.name = name;
 		/* global debug */
-		this.#debug = debug(name.split('.').join(':'));
+		this.debug = debug(name.split('.').join(':'));
 	}
 
 	async info(...data) {
@@ -45,7 +45,7 @@ class RemoteLogger {
 
 		/* eslint-disable no-console */
 		// console.debug('[DEBUG]', this.name, ':', ...data);
-		this.#debug(...data);
+		this.debug(...data);
 		await remoteLogger(this.name, 'debug', ...data);
 	}
 }
