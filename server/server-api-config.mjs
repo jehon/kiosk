@@ -145,6 +145,7 @@ logger.debug('Final config: ', config);
 //
 if (config.core.loggers) {
 	for(const l of config.core.loggers) {
+		logger.info('Enabling logging level due to configuration: ', l);
 		debugFactory.enable(l);
 	}
 }
