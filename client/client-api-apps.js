@@ -33,7 +33,7 @@ export default class ClientAPI {
 	id = idCounter++;
 	name; // private
 	c; // contextualizer - private
-	#logger;
+	logger;
 	priority = 1000;
 
 	constructor(name) {
