@@ -23,11 +23,12 @@ pushd "$KIOSK_APP" > /dev/null
 PKG=package.json
 PKG_INST=var/package.json.installed
 
-if [ -r "$PKG_INST" ] && [ "$(md5sum "$PKG")" == "$(md5sum "$PKG_INST")" ]; then
+# cat | md5sum ? avoid the filename to be shown in the output...
+if [ -r "$PKG_INST" ] && [ "$(cat "$PKG" | md5sum)" == "$(cat "$PKG_INST" | md5sum)" ]; then
 	header "Already up-to-date"
 else
-
 	header "Need an update"
+
 	header_sub "** install **"
 	# See https://docs.npmjs.com/misc/scripts
 	npm install --unsafe-perm
