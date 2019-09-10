@@ -8,7 +8,7 @@ const logger = app.logger;
 
 let browserThread = false;
 
-export function start(port, kioskMode = true) {
+export function start(port, devMode) {
 
 	// TODO:
 	//
@@ -25,12 +25,12 @@ export function start(port, kioskMode = true) {
 		stop();
 	}
 	browserThread = childProcess.spawn('chromium-browser',
-		(kioskMode ? [
-			// Production mode
-			'--kiosk',
-		]: [
+		(devMode ? [
 			// Developper mode
 			'--auto-open-devtools-for-tabs',
+		]:[
+			// Production mode
+			'--kiosk',
 		]).concat(
 			[
 				`http://localhost:${port}`

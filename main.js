@@ -11,7 +11,7 @@ const logger = loggerFactory('main');
 start().then((port) => {
 	logger.info(`Server up and running on port ${port}`);
 	if (!getConfig('cmdLine.server-only', false)) {
-		browser.start(port);
+		browser.start(port, getConfig('options.browser.with-console', false));
 	} else {
 		logger.info('Not launching the browser as requested');
 	}
