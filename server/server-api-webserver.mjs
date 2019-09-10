@@ -6,7 +6,7 @@ import morgan from 'morgan';
 
 import getConfig from './server-api-config.mjs';
 import loggerFactory from '../common/logger.js';
-const logger = loggerFactory('core.webserver');
+const logger = loggerFactory('core:webserver:server');
 
 //
 // SSE

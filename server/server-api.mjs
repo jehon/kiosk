@@ -13,9 +13,9 @@ export { rootDir } from './server-api-config.mjs';
 import getConfig, * as configAPI from './server-api-config.mjs';
 import { getExpressApp, dispatchToBrowser } from './server-api-webserver.mjs';
 
-const logger = loggerFactory('server.bus');
+const logger = loggerFactory('bus:server');
 const bus = new Bus(logger);
-const scheduler = new Scheduler((signal, data) => bus.dispatch(signal, data), loggerFactory('scheduler', 'server'));
+const scheduler = new Scheduler((signal, data) => bus.dispatch(signal, data), loggerFactory('scheduler:server'));
 
 export const mockableAPI = {
 	getConfig:               (...args)                               => getConfig(...args),
@@ -23,7 +23,7 @@ export const mockableAPI = {
 	dispatchToBrowser:       (...args)                               => dispatchToBrowser(...args),
 	dispatch:                (eventName, data)                       => bus.dispatch(eventName, data),
 	subscribe:               (eventName, cb)                         => bus.subscribe(eventName, cb),
-	loggerFactory:           (loggerName)                            => loggerFactory(loggerName, 'server'),
+	loggerFactory:           (loggerName)                            => loggerFactory(loggerName + ':server'),
 	addSchedule:             (signal, cron, duration = 0, data = {}) => scheduler.addCron(signal, cron, duration, data),
 
 	getExpressApp:           ()                                      => getExpressApp(),
