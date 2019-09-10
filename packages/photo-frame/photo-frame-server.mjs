@@ -13,6 +13,7 @@ const exifReaderLimiter = pLimitFactory(1);
 import serverAPIFactory from '../../server/server-api.mjs';
 const app = serverAPIFactory('photo-frame');
 
+const buildingLogger = app.getChildLogger('building');
 
 // Historical files, to avoid taking twice the same folder
 let hasAnUpdatedList = false;
@@ -53,7 +54,7 @@ function getFoldersFromFolder(folderConfig) {
  * @param folderConfig
  */
 function generateListingForPath(folderConfig) {
-	app.debug(folderConfig.folder ,'3.0 - getFilesFromFolderPath: ', folderConfig);
+	buildingLogger.debug(folderConfig.folder ,'3.0 - getFilesFromFolderPath: ', folderConfig);
 	// Symlinks are resolved to allow thumbnails to be more precisely generated
 	// but Samba does not allow links, so they are resolved by samba
 	// and invisible here
@@ -73,21 +74,21 @@ function generateListingForPath(folderConfig) {
 			}
 			previouslySelected.push(folderConfig.folder);
 
-			app.debug(folderConfig.folder, '# 3.1 - getFilesFromFolderPath: selecting pictures');
+			buildingLogger.debug(folderConfig.folder, '# 3.1 - getFilesFromFolderPath: selecting pictures');
 			const images = shuffleArray(getFilesFromFolderByMime(folderConfig));
 			const imgList = images
 				.slice(0, Math.min(folderConfig.quantity,
 					images.length,
 					folderConfig.quantity - listing.length))
 				.map(e => path.join(folderConfig.folder, e));
-			app.debug(folderConfig.folder, '# 3.2 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
+			buildingLogger.debug(folderConfig.folder, '# 3.2 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
 
 			listing.push(...imgList);
 			continue;
 		}
 
 		// Take folders
-		app.debug(folderConfig.folder, '# 3.3 - getFilesFromFolderPath: selecting folder');
+		buildingLogger.debug(folderConfig.folder, '# 3.3 - getFilesFromFolderPath: selecting folder');
 		listing.push(...generateListingForPath({
 			...folderConfig,
 			folder: path.join(folderConfig.folder, f),
@@ -98,7 +99,7 @@ function generateListingForPath(folderConfig) {
 }
 
 function generateListingForTopFolder(folderConfig) {
-	app.debug(folderConfig.folder, '# 2.0 - generateListingForTopFolder: given options: ', folderConfig);
+	buildingLogger.debug(folderConfig.folder, '# 2.0 - generateListingForTopFolder: given options: ', folderConfig);
 	folderConfig = {
 		excludes: [],
 		mimeTypePattern: [ 'image/*' ],
@@ -107,7 +108,7 @@ function generateListingForTopFolder(folderConfig) {
 		...folderConfig,
 	};
 
-	app.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
+	buildingLogger.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
 	} catch(_e) {
@@ -116,7 +117,7 @@ function generateListingForTopFolder(folderConfig) {
 	}
 
 	let selectedFolderPictures = generateListingForPath(folderConfig);
-	app.debug(folderConfig.folder, '# 2.2 - generateListingForTopFolder: found file list ', selectedFolderPictures);
+	buildingLogger.debug(folderConfig.folder, '# 2.2 - generateListingForTopFolder: found file list ', selectedFolderPictures);
 	return selectedFolderPictures;
 }
 
@@ -129,17 +130,17 @@ function os2web(os, web, f) { // TODO: this should be in package "shares"
 //  -> Generate a selection
 //
 export async function generateListing(_data = null) {
-	app.info('Generate listing');
+	app.debug('Generate listing');
 	hasAnUpdatedList = false;
 	previouslySelected.length = 0;
 	let newSelectedPictures = [];
 
 	// TODO: manage the data selection
 	const folders = app.getConfig('.folders', []);
-	app.debug('1 - generateListing: Found top folders', folders);
+	buildingLogger.debug('1 - generateListing: Found top folders', folders);
 	for(const i in folders) {
 		const f = folders[i];
-		app.debug('1.1 - generateListing: Using folder', f);
+		buildingLogger.debug('1.1 - generateListing: Using folder', f);
 		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f).map(file => ({
 			webname: os2web(f.folder, f.publishedAt, file),
 			original: file,
@@ -151,13 +152,13 @@ export async function generateListing(_data = null) {
 		return null;
 	}
 
-	app.debug('Extracting exif data for all files');
+	buildingLogger.debug('Extracting exif data for all files');
 	newSelectedPictures = await Promise.all(newSelectedPictures.map(
 		f => exifReaderLimiter(() => exifParser(f.original))
 			.then(data => { f.data = data; return f; })
 			.catch(e => { app.info('Could not read exif: ', e); return f; })
 	));
-	app.debug('Extracting exif data done');
+	buildingLogger.debug('Extracting exif data done');
 
 	newSelectedPictures.sort((a, b) => {
 		return a.date < b.date ? -1 : a.date == b.date ? 0 : 1;
@@ -165,10 +166,10 @@ export async function generateListing(_data = null) {
 
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
-	app.debug('Sending to browser', selectedPictures);
+	buildingLogger.debug('Sending to browser', selectedPictures);
 	app.dispatchToBrowser('.listing', selectedPictures);
 
-	app.info('Generating listing done');
+	app.debug('Generating listing done');
 	return selectedPictures;
 }
 

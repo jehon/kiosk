@@ -23,6 +23,10 @@ class Logger {
 		this.streams.log = debugFactory(this.namespace + '*');
 	}
 
+	extend(name) {
+		return new Logger(this.namespace + ':' + name);
+	}
+
 	setNamespace(nm) {
 		this.namespace = nm;
 		loggersList.add(nm);

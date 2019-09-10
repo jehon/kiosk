@@ -49,6 +49,7 @@ export default function inContext(context) {
 		info:                   (...data)                               => logger.info(...data),
 		debug:                  (...data)                               => logger.debug(...data),
 
+		getChildLogger:         (name)                                  => logger.extend(name),
 		// TODO: https://expressjs.com/en/api.html#req
 		// var greet = express.Router();
 
