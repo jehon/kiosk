@@ -26,7 +26,8 @@ class Logger {
 	constructor(moduleName = '?', origin = 'server') {
 		this.moduleName = moduleName;
 		this.origin = origin;
-		this.debug = debugFactory(moduleName);
+		console.log('debug: ', this.moduleName, this.origin);
+		this.debug = debugFactory(moduleName + ':' + this.origin);
 	}
 
 	enableDebug() {
@@ -78,7 +79,10 @@ class Logger {
 	}
 }
 
-export default (moduleName = '', origin = 'server') => new Logger(moduleName, origin);
+export default (moduleName = '', origin = 'server') => {
+	console.info('Registering debug: ', moduleName, ' / ', origin);
+	return new Logger(moduleName, origin);
+};
 
 export function debugModule(moduleName) {
 	activeLevels[moduleName] = true;
