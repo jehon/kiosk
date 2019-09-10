@@ -13,9 +13,9 @@ export { rootDir } from './server-api-config.mjs';
 import getConfig, * as configAPI from './server-api-config.mjs';
 import { getExpressApp, dispatchToBrowser } from './server-api-webserver.mjs';
 
-const logger = loggerFactory('server:bus');
+const logger = loggerFactory('server.bus');
 const bus = new Bus(logger);
-const scheduler = new Scheduler((signal, data) => bus.dispatch(signal, data), logger);
+const scheduler = new Scheduler((signal, data) => bus.dispatch(signal, data), loggerFactory('scheduler', 'server'));
 
 export const mockableAPI = {
 	getConfig:               (...args)                               => getConfig(...args),
