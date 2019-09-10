@@ -7,12 +7,8 @@
 
 npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
 
+TODO: mounter without fstab
+TODO: https://snapcraft.io/docs/node-apps
+TODO: configure the log rotation (! impact on makefile)
 
-TODO:
-	mounter without fstab
-	https://snapcraft.io/docs/node-apps
-
-
-Settings for private fields:
-    "typescript.validate.enable": false,
-    "javascript.validate.enable": false,
+"javascript.validate.enable": false,
