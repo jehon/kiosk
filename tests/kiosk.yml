@@ -1,6 +1,8 @@
 ---
 core:
   dev: true
+  loggers:
+    - "main:server"
   path:
     var: /tmp/
 
