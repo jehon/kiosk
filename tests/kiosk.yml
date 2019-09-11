@@ -3,10 +3,6 @@ core:
   loggers:
     - "core:server:logger"
     - "core:server:config"
-    - "core:server:scheduler"
-    - "photo-frame:server"
-    - "client:photo-frame"
-    - "client:core-api-events"
   path:
     var: /tmp/
 
