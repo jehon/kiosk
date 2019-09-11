@@ -3,12 +3,15 @@
 import childProcess from 'child_process';
 
 import serverAPIFactory from './server-api.mjs';
-const app = serverAPIFactory('browser');
-const logger = app.logger;
+const app = serverAPIFactory('core.browser');
 
 let browserThread = false;
 
-export function start(port, devMode) {
+export function start(port) {
+	const devMode = app.getConfig('.console', false);
+	if (browserThread) {
+		throw 'Browser already launched at ' + browserThread;
+	}
 
 	// TODO:
 	//
@@ -20,7 +23,7 @@ export function start(port, devMode) {
 	// fixCrash "$HOME/.config/chromium/Default/Preferences"
 	// fixCrash "$HOME/.config/chromium/Local State"
 
-	logger.info('Launching browser');
+	app.debug('Launching browser');
 	if (browserThread) {
 		stop();
 	}
@@ -37,12 +40,20 @@ export function start(port, devMode) {
 			]),
 		{ stdio: 'pipe' });
 	browserThread.on('exit', (e) => {
-		logger.info('end of browser', e);
+		app.debug('end of browser', e);
 		process.exit(0);
 	});
 }
 
 export function stop() {
-	browserThread.kill();
+	if (!browserThread) {
+		app.info('Browser was not started by us');
+	} else {
+		try {
+			browserThread.kill();
+		} catch(e) {
+			app.error('Error killing browser', e);
+		}
+	}
 	browserThread = false;
 }

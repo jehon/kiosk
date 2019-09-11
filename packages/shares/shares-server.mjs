@@ -4,8 +4,9 @@ import path from 'path';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
-import serverAPIFactory, { rootDir } from '../../server/server-api.mjs';
+import serverAPIFactory from '../../server/server-api.mjs';
 const app = serverAPIFactory('shares');
+const rootDir = app.getConfig('core.root');
 
 const mountedList = {};
 

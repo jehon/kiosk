@@ -1,4 +1,7 @@
 
+// Colors for the process logger
+import '../node_modules/colors/lib/index.js';
+
 import _ from '../node_modules/lodash-es/lodash.js';
 import debugFactory from 'debug';
 
@@ -61,12 +64,18 @@ class Logger {
 	}
 }
 
-const listing = new WeakMap();
+const logger = new Logger('core:server:logger');
+logger.info('To have the list of available lgogers, enable this one');
+
+const loggerMap = new WeakMap();
+const loggerList = new Set();
 
 export default (namespace) => {
-	if (listing.has(namespace)) {
-		return listing.get(namespace);
+	if (loggerMap.has(namespace)) {
+		return loggerMap.get(namespace);
 	}
+	logger.debug('creating logger ' + namespace);
+	loggerList.add(namespace);
 	return new Logger(namespace);
 };
 
@@ -74,3 +83,6 @@ export function enableDebugForRegexp(regexp) {
 	debugFactory.enable(regexp);
 }
 
+export function getLoggerList() {
+	return new Set(loggerList);
+}

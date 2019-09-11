@@ -3,9 +3,9 @@
 import serverAPIFactory from './server-api.mjs';
 const app = serverAPIFactory('server-client-logger');
 
-import loggerAPI from './server-logger.js';
+import loggerFactory from './server-logger.js';
 
-const clientLogger = loggerAPI('clientLogger:client');
+const clientLogger = loggerFactory('server:client');
 
 app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	const log = req.body;
