@@ -5,7 +5,7 @@ import express from 'express';
 import morgan from 'morgan';
 
 import getConfig from './server-api-config.mjs';
-import loggerFactory from '../common/logger.js';
+import loggerFactory from './server-logger.js';
 const logger = loggerFactory('core:webserver:server');
 
 //

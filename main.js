@@ -5,7 +5,7 @@ import start from './server/server.mjs';
 import getConfig from './server/server-api-config.mjs';
 import * as browser from './server/browser.js';
 
-import loggerFactory from './common/logger.js';
+import loggerFactory from './server/server-logger.js';
 const logger = loggerFactory('main');
 
 start().then((port) => {

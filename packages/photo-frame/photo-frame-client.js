@@ -1,7 +1,7 @@
 
 import '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import AppFactory, { renderMixin } from '../../client/client-api.js';
+import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('photo-frame');
 
@@ -41,7 +41,7 @@ function updatePicture() {
 	updatePictureTimeout= setTimeout(updatePicture, 15 * 1000);
 }
 
-class KioskPhotoFrame extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
+class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 	carousel = false
 
 	get kioskEventListeners() {

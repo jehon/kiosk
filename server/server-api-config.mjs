@@ -10,7 +10,7 @@ import objectPath from 'object-path';
 
 import debugFactory from 'debug';
 
-import loggerFactory, { debugModule } from '../common/logger.js';
+import loggerFactory, { enableDebugForRegexp } from './server-logger.js';
 const logger = loggerFactory('core.config:server');
 
 
@@ -104,7 +104,7 @@ logger.debug('Command line parsed options: ', config);
 //
 
 if (config.core.dev) {
-	debugModule('*');
+	enableDebugForRegexp('*');
 	logger.info('Started in dev mode');
 }
 

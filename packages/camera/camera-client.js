@@ -1,5 +1,5 @@
 
-import AppFactory, { renderMixin } from '../../client/client-api.js';
+import AppFactory from '../../client/client-api.js';
 
 // TODO: handle when the app is selected, but the camera is not available
 //  --> it should show an error message
@@ -19,7 +19,7 @@ app.subscribe('.status', data => {
 	}
 });
 
-class KioskCamera extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
+class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	// Working with connected/disconnected to avoid movie running in background
 	get kioskEventListeners() {
 		return {

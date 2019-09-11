@@ -1,9 +1,14 @@
 
 const isRendered = Symbol('isRendered');
-export const renderMixin = (cls) => class extends cls {
+const unsubscriber = Symbol('unsubscriber');
+
+export const kioskEventListenerMixin = (app, cls) => class extends cls {
+	_events = {}
+
 	constructor(...args) {
 		super(...args);
 		this[isRendered] = false;
+		this[unsubscriber] = [];
 	}
 
 	connectedCallback() {
@@ -14,36 +19,19 @@ export const renderMixin = (cls) => class extends cls {
 			this[isRendered] = true;
 			this.render();
 		}
-	}
-
-	isRendered() {
-		return this[isRendered];
-	}
-
-	// Abstract
-	render() {}
-};
-
-const unsubscriber = Symbol('unsubscriber');
-export const kioskEventListenerMixin = (app, cls) => class extends cls {
-	_events = {}
-
-	constructor(...args) {
-		super(...args);
-		this[unsubscriber] = [];
-	}
-
-	connectedCallback() {
-		if (super.connectedCallback) {
-			super.connectedCallback();
-		}
 		const listing = this.kioskEventListeners;
 		for(const k in listing) {
-			this.kioskSubscribe(k, (status) => {
-				if (typeof(status) != 'undefined')
-					this._events[k] = status;
-				return listing[k](status);
-			});
+			this[unsubscriber].push(
+				app.subscribe(k,
+					// Callback function
+					(status) => {
+						if (typeof(status) != 'undefined')  {
+							// Store the value locally
+							this._events[k] = status;
+						}
+						return listing[k](status);
+					})
+			);
 		}
 	}
 
@@ -56,12 +44,15 @@ export const kioskEventListenerMixin = (app, cls) => class extends cls {
 		}
 	}
 
+	isRendered() {
+		return this[isRendered];
+	}
+
+	// Abstract
+	render() {}
+
 	// Abstract
 	get kioskEventListeners() {
 		return {};
-	}
-
-	kioskSubscribe(eventName, cb) {
-		this[unsubscriber].push(app.subscribe(eventName, cb));
 	}
 };
