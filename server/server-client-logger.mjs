@@ -3,7 +3,7 @@
 import serverAPIFactory from './server-api.mjs';
 const app = serverAPIFactory('server-client-logger');
 
-import loggerAPI from '../common/logger.js';
+import loggerAPI from './server-logger.js';
 
 const clientLogger = loggerAPI('clientLogger:client');
 

@@ -1,5 +1,5 @@
 
-import AppFactory, { renderMixin } from '../../client/client-api.js';
+import AppFactory from '../../client/client-api.js';
 import { getApplicationsList, getApplicationByName } from '../../client/client-api-apps.js';
 const app = AppFactory('menu');
 
@@ -15,7 +15,7 @@ app.subscribe('.apps', (apps) => {
 	}
 });
 
-class KioskMenu extends app.getKioskEventListenerMixin()(renderMixin(HTMLElement)) {
+class KioskMenu extends app.getKioskEventListenerMixin()(HTMLElement) {
 	get kioskEventListeners() {
 		return {
 			'app.changed': () => this.adapt()

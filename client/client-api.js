@@ -1,6 +1,4 @@
 
-export { renderMixin } from './client-api-mixins.js';
-
 // Common elements
 import './elements/img-loading.js';
 import './elements/css-inherit.js';

@@ -1,6 +1,6 @@
 /* global moment */
 
-import AppFactory, { renderMixin } from '../../client/client-api.js';
+import AppFactory from '../../client/client-api.js';
 const app = AppFactory('clock');
 
 import { onDate } from '../../client/client-helpers.js';
@@ -34,7 +34,7 @@ function describeArc(radius, startAngle, endAngle){
 	return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${arcSweep} 0 ${end.x} ${end.y} L 0 0 Z`;
 }
 
-class KioskClock extends renderMixin(HTMLElement) {
+class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 	cron = false
 
 	connectedCallback() {
