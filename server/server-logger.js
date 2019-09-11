@@ -18,26 +18,30 @@ function generateMessage(level, ...args) {
 	).join(' ');
 }
 
-const loggersList = new Set();
+function canonizeNamespace(n) {
+	return n.split('.').join(':');
+}
+
+const loggersMap = new WeakMap();
+const loggersList = new Map();
 
 class Logger {
 	namespace = '';
 	streams = {};
 
 	constructor(namespace) {
-		this.namespace = namespace.split('.').join(':');
+		this.namespace = canonizeNamespace(namespace);
+
 		this.streams.debug = debugFactory(this.namespace);
 		this.streams.log = debugFactory(this.namespace + '*');
+
+		// Register for later use
+		loggersList.set(this.namespace, { k: this.namespace });
+		loggersMap.set(loggersList.get(this.namespace), this);
 	}
 
 	extend(name) {
 		return new Logger(this.namespace + ':' + name);
-	}
-
-	setNamespace(nm) {
-		// TODO with dynamic debugjs, change it here too...
-		this.namespace = nm;
-		loggersList.add(nm);
 	}
 
 	enableDebug() {
@@ -67,22 +71,25 @@ class Logger {
 const logger = new Logger('core:server:logger');
 logger.info('To have the list of available lgogers, enable this one');
 
-const loggerMap = new WeakMap();
-const loggerList = new Set();
+export default (rawNamespace) => {
+	const namespace = canonizeNamespace(rawNamespace);
 
-export default (namespace) => {
-	if (loggerMap.has(namespace)) {
-		return loggerMap.get(namespace);
+	if (loggersList.has(namespace)) {
+		const k = loggersList.get(namespace);
+		if (loggersMap.has(k)) {
+			return loggersMap.get(k);
+		}
 	}
 	logger.debug('creating logger ' + namespace);
-	loggerList.add(namespace);
 	return new Logger(namespace);
 };
 
+let enabled = process.env.DEBUG;
 export function enableDebugForRegexp(regexp) {
-	debugFactory.enable(regexp);
+	enabled = [ enabled, regexp ].join(',');
+	debugFactory.enable(enabled);
 }
 
 export function getLoggerList() {
-	return new Set(loggerList);
+	return new Set(loggersList.keys());
 }
