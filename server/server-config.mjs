@@ -9,7 +9,7 @@ import deepMerge  from 'deepmerge';
 import objectPath from 'object-path';
 
 import loggerFactory, { enableDebugForRegexp } from './server-logger.js';
-const logger = loggerFactory('core.server.config');
+const logger = loggerFactory('core:server:config');
 
 // TODO: legacy, but difficult to remove
 export const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));

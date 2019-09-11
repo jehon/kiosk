@@ -1,6 +1,6 @@
 #!/usr/bin/node --experimental-modules
 
-import getConfig  from '../../server/server-api-config.mjs';
+import getConfig  from '../../server/server-config.mjs';
 
 let args = getConfig('_');
 if (args.length < 2) {

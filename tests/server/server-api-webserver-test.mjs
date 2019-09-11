@@ -2,9 +2,9 @@
 import fetch from '../../node_modules/node-fetch/lib/index.js';
 import EventSource from '../../node_modules/eventsource/lib/eventsource.js';
 
-import { start as startServer, stop as stopServer } from '../../server/server-api-webserver.mjs';
+import { start as startServer, stop as stopServer } from '../../server/server-webserver.mjs';
 import serverAPIFactory from '../../server/server-api.mjs';
-const app = serverAPIFactory('server-api-browser-test');
+const app = serverAPIFactory('server-browser-test');
 
 const serverUrl = (url) => `http://localhost:${port}${url}`;
 

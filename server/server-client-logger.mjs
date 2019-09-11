@@ -1,11 +1,9 @@
 /* eslint-env node */
 
 import serverAPIFactory from './server-api.mjs';
-const app = serverAPIFactory('server-client-logger');
+const app = serverAPIFactory('core:server:client:logger');
 
 import loggerFactory from './server-logger.js';
-
-const clientLogger = loggerFactory('server:client');
 
 app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	const log = req.body;
@@ -18,11 +16,8 @@ app.getExpressApp().post('/core/client/logs', async (req, res) => {
 		throw 'Invalid category';
 	}
 
-	// Set dynamically the module name
-	clientLogger.setNamespace(log.name.split('.').join(':') + ':client');
-
-	// Call the logger
-	clientLogger[log.category](log.name, ...pdata);
+	// Make the call to the right logger
+	loggerFactory('client:' + log.name)[log.category](log.name, ...pdata);
 
 	res.json(true);
 });
