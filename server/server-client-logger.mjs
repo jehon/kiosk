@@ -22,7 +22,7 @@ app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	clientLogger.setNamespace(log.name.split('.').join(':') + ':client');
 
 	// Call the logger
-	clientLogger[log.category](...pdata);
+	clientLogger[log.category](log.name, ...pdata);
 
 	res.json(true);
 });
