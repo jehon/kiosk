@@ -8,12 +8,10 @@ import yaml from 'js-yaml';
 import deepMerge  from 'deepmerge';
 import objectPath from 'object-path';
 
-import debugFactory from 'debug';
-
 import loggerFactory, { enableDebugForRegexp } from './server-logger.js';
-const logger = loggerFactory('core.config:server');
+const logger = loggerFactory('core.server.config');
 
-
+// TODO: legacy, but difficult to remove
 export const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));
 
 //
@@ -39,12 +37,6 @@ if (typeof(jasmine) != 'undefined') {
 
 const cmdLineOptions = yargs
 	.options({
-		'dev': {
-			alias: 'd',
-			describe: 'In dev mode, some functionnalities are disabled.',
-			type: 'boolean',
-			default: false
-		},
 		'port': {
 			alias: 'p',
 			type: 'integer',
@@ -66,10 +58,11 @@ const cmdLineOptions = yargs
 	.strict()
 	.argv;
 
+logger.debug('Command line parsed options: ', cmdLineOptions);
+
 //
 // Load all the files
 //
-
 if (cmdLineOptions.file) {
 	logger.debug('Adding configuration file at the end:', cmdLineOptions.file);
 	configFiles.unshift(cmdLineOptions.file);
@@ -82,32 +75,14 @@ if (cmdLineOptions.file) {
 let config = {
 	core: {
 		root: rootDir,
-		port: 3000
+		port: 3000,
+		serverOnly: false
 	}
 };
-
-
-//
-// Command line options (only from command-line)
-//
-if (cmdLineOptions.dev) {
-	config.core.dev   = cmdLineOptions.dev;
-}
-if (cmdLineOptions._) {
-	config._ = cmdLineOptions._;
-}
-config.cmdLine = cmdLineOptions;
-logger.debug('Command line parsed options: ', config);
 
 //
 // Setup some general configs
 //
-
-if (config.core.dev) {
-	enableDebugForRegexp('*');
-	logger.info('Started in dev mode');
-}
-
 
 for(const i in configFiles) {
 	const f = configFiles[i];
@@ -138,29 +113,37 @@ if (cmdLineOptions.port > 0) {
 	config.core.port  = cmdLineOptions.port;
 }
 
+if (cmdLineOptions.serverOnly > 0) {
+	config.core.serverOnly  = cmdLineOptions.serverOnly;
+}
+
 logger.debug('Final config: ', config);
 
 //
 // Activate some loggers
 //
 if (config.core.loggers) {
-	for(const l of config.core.loggers) {
-		logger.info('Enabling logging level due to configuration: ', l);
-		debugFactory.enable(l);
+	for(const re of config.core.loggers) {
+		logger.info('Enabling logging level due to configuration: ', re);
+		enableDebugForRegexp(re);
 	}
 }
 
 //
 // Main function to get a config
 //
-
+const getConfigLogger = logger.extend('get');
 export default function getConfig(path = false, def = undefined) {
 	if (path) {
 		if (objectPath.has(config, path)) {
-			return objectPath.get(config, path);
+			const val = objectPath.get(config, path);
+			getConfigLogger.debug(`Getting ${path} for defined value`, val);
+			return val;
 		}
+		getConfigLogger.debug(`Getting ${path} for default value`, def);
 		return def;
 	}
+	getConfigLogger.debug('Getting all config');
 	return JSON.parse(JSON.stringify(config));
 }
 

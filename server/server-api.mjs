@@ -1,35 +1,30 @@
 
-// Colors for the process logger
-import '../node_modules/colors/lib/index.js';
-
 // Common
-import Bus from '../common/bus.js';
-import contextualize from '../common/contextualize.js';
-import loggerFactory from './server-logger.js';
-import Scheduler from './scheduler.js';
-export { rootDir } from './server-api-config.mjs';
-
-// Server
-import getConfig, * as configAPI from './server-api-config.mjs';
+import Bus                                  from '../common/bus.js';
+import contextualize                        from '../common/contextualize.js';
+import loggerFactory                        from './server-logger.js';
+import Scheduler                            from './server-scheduler.js';
+import getConfig, * as configAPI            from './server-api-config.mjs';
 import { getExpressApp, dispatchToBrowser } from './server-api-webserver.mjs';
 
-const logger = loggerFactory('bus:server');
-const bus = new Bus(logger);
-const scheduler = new Scheduler((signal, data) => bus.dispatch(signal, data), loggerFactory('scheduler:server'));
+export { rootDir }                          from './server-api-config.mjs';
+
+const bus       = new Bus(loggerFactory('core:server:bus'));
+const scheduler = new Scheduler(bus);
 
 export const mockableAPI = {
-	getConfig:               (...args)                               => getConfig(...args),
+	getConfig:               (...args)                                  => getConfig(...args),
 
-	dispatchToBrowser:       (...args)                               => dispatchToBrowser(...args),
-	dispatch:                (eventName, data)                       => bus.dispatch(eventName, data),
-	subscribe:               (eventName, cb)                         => bus.subscribe(eventName, cb),
-	loggerFactory:           (loggerName)                            => loggerFactory(loggerName + ':server'),
-	addSchedule:             (signal, cron, duration = 0, data = {}) => scheduler.addCron(signal, cron, duration, data),
+	dispatchToBrowser:       (...args)                                  => dispatchToBrowser(...args),
+	dispatch:                (eventName, data)                          => bus.dispatch(eventName, data),
+	subscribe:               (eventName, cb)                            => bus.subscribe(eventName, cb),
+	loggerFactory:           (loggerName)                               => loggerFactory(loggerName + ':server'),
+	addSchedule:             (eventName, cron, duration = 0, data = {}) => scheduler.addCron(eventName, cron, duration, data),
 
-	getExpressApp:           ()                                      => getExpressApp(),
+	getExpressApp:           ()                                         => getExpressApp(),
 
-	testingConfigOverride:   (newConfig)                             => configAPI.testingConfigOverride(newConfig),
-	testingConfigRestore:    ()                                      => configAPI.testingConfigRestore(),
+	testingConfigOverride:   (newConfig)                                => configAPI.testingConfigOverride(newConfig),
+	testingConfigRestore:    ()                                         => configAPI.testingConfigRestore(),
 };
 
 export default function inContext(context) {
