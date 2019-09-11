@@ -1,7 +1,7 @@
 #!/usr/bin/node --experimental-modules
 
 // Global initialization
-import { start as startServer } from './server-api-webserver.mjs';
+import { start as startServer } from './server-webserver.mjs';
 import './server-client-logger.mjs';
 
 // Self configuring internal packages

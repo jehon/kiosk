@@ -4,10 +4,10 @@ import Bus                                  from '../common/bus.js';
 import contextualize                        from '../common/contextualize.js';
 import loggerFactory                        from './server-logger.js';
 import Scheduler                            from './server-scheduler.js';
-import getConfig, * as configAPI            from './server-api-config.mjs';
-import { getExpressApp, dispatchToBrowser } from './server-api-webserver.mjs';
+import getConfig, * as configAPI            from './server-config.mjs';
+import { getExpressApp, dispatchToBrowser } from './server-webserver.mjs';
 
-export { rootDir }                          from './server-api-config.mjs';
+export { rootDir }                          from './server-config.mjs';
 
 const bus       = new Bus(loggerFactory('core:server:bus'));
 const scheduler = new Scheduler(bus);

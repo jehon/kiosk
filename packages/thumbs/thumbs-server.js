@@ -4,7 +4,7 @@ import { getCurrentPath, getMimeType } from './lib.js';
 import sharp from 'sharp';
 import promiseLimit from 'promise-limit';
 
-import { priorityMiddleware } from '../../server/server-api-webserver.mjs';
+import { priorityMiddleware } from '../../server/server-webserver.mjs';
 import serverAPIFactory from '../../server/server-api.mjs';
 const app = serverAPIFactory('thumbs');
 

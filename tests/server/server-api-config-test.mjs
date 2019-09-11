@@ -1,5 +1,5 @@
 
-import getConfig, { testingConfigOverride, testingConfigRestore } from '../../server/server-api-config.mjs';
+import getConfig, { testingConfigOverride, testingConfigRestore } from '../../server/server-config.mjs';
 
 describe(import.meta.url, () => {
 	beforeEach(() => {

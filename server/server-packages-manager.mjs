@@ -4,8 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 
-import getConfig from './server-api-config.mjs';
-import { getExpressApp } from './server-api-webserver.mjs';
+import getConfig from './server-config.mjs';
+import { getExpressApp } from './server-webserver.mjs';
 import loggerAPI from './server-logger.js';
 const logger = loggerAPI('core:server:packages');
 
