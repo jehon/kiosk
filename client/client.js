@@ -67,7 +67,7 @@ app.subscribe('core.started', (data) => {
 // Load other packages
 //
 
-fetch('/core/packages/active')
+fetch('/core/packages/client/active')
 	.then(response => response.json())
 	.then(json => json.map(s => {
 		app.info(`Loading ${s}`);

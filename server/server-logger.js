@@ -91,5 +91,5 @@ export function enableDebugForRegexp(regexp) {
 }
 
 export function getLoggerList() {
-	return new Set(loggersList.keys());
+	return Array.from(loggersList.keys());
 }
