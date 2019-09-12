@@ -5,8 +5,8 @@ import contextualize                        from '../common/contextualize.js';
 import loggerFactory                        from './server-logger.js';
 import Scheduler                            from './server-scheduler.js';
 import getConfig, * as configAPI            from './server-config.mjs';
-import { getExpressApp, dispatchToBrowser } from './server-webserver.mjs';
-
+import { getExpressApp }                    from './server-webserver.mjs';
+import dispatchToBrowser                    from './server-client-dispatch.mjs';
 export { rootDir }                          from './server-config.mjs';
 
 const bus       = new Bus(loggerFactory('core:server:bus'));
