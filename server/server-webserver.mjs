@@ -2,31 +2,10 @@
 import path from 'path';
 
 import express from 'express';
-import morgan from 'morgan';
 
 import getConfig from './server-config.mjs';
 import loggerFactory from './server-logger.js';
 const logger = loggerFactory('core:webserver:server');
-
-//
-// SSE
-//
-
-let listener = false;
-const sseSavedStates = {};
-const sseClients = {};
-let sseNextClientId = 0;
-
-function sseNotifyThisClient(client, eventName, data) {
-	const obj = {
-		type: eventName,
-		data
-	};
-
-	// client.write('id: ' + eventId + '\n');
-	// client.write('event: ' + eventName + '\n');
-	client.write('data: ' + JSON.stringify(obj) + '\n\n');
-}
 
 //
 // Server with static's
@@ -36,15 +15,14 @@ const app = express();
 
 app.on('error', e => logger.error('Error starting server: ', e));
 
+// // http://expressjs.com/en/resources/middleware/morgan.html
+// import morgan from 'morgan';
+// app.use(morgan('dev'));
+
 // Handle POST data correctly
 // See https://stackoverflow.com/a/54546000/1954789
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-if (getConfig('core.trace', false)) {
-	// http://expressjs.com/en/resources/middleware/morgan.html
-	app.use(morgan('dev'));
-}
 
 export const priorityMiddleware = express.Router();
 app.use('/', priorityMiddleware);
@@ -63,60 +41,39 @@ app.use('/media/',        express.static(path.join(getConfig('core.root'), 'medi
 
 app.use('/dynamic/',      express.static(path.join(getConfig('core.root'), 'dynamic')));
 
-// SSE
-app.use('/core/events', function (req, res, _next) {
-	var clientId = sseNextClientId++;
-	sseClients[clientId] = res;
-
-	req.socket.setTimeout(0); // '0' means 'no timeout'
-
-	req.on('close', function () {
-		delete sseClients[clientId];
-	});
-
-	if (req.headers.accept == 'text/event-stream') {
-		res.writeHead(200, {
-			'Content-Type': 'text/event-stream',
-			'Cache-Control': 'no-cache',
-			'Connection': 'keep-alive'
-		});
-	}
-
-	res.write('\n', 'utf-8'); // 'flush' output buffer
-
-	for(const k of Object.keys(sseSavedStates)) {
-		sseNotifyThisClient(res, k, sseSavedStates[k]);
-	}
-});
+let serverListener = false;
 
 export async function start(port = getConfig('core.port')) {
 	return new Promise(resolve => {
-		listener = app.listen(port, () => {
+		if (serverListener) {
+			logger.debug('It was already started');
+			return getPort();
+		}
+		serverListener = app.listen(port, () => {
 			const realPort = getPort();
 			logger.info(`Listening on port ${realPort}!`);
-			dispatchToBrowser('core.started', {
-				startupTime: new Date()
-			});
 			resolve(realPort);
 		});
 	});
 }
 
 export function getPort() {
-	return listener.address().port;
+	return serverListener.address().port;
 }
 
 export function stop() {
-	listener.close();
+	if (!serverListener) {
+		logger.debug('Webserver was not started');
+		return;
+	}
+	serverListener.close();
+	serverListener = false;
 }
+
+/*
+ *
+ * Real business here
+ *
+ */
 
 export const getExpressApp = function() { return app; };
-
-export function dispatchToBrowser(eventName, data = null) {
-	sseSavedStates[eventName] = data;
-	logger.debug('Sending', eventName, data);
-
-	for(const k of Object.keys(sseClients)) {
-		sseNotifyThisClient(sseClients[k], eventName, data);
-	}
-}
