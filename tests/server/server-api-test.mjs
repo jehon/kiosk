@@ -1,46 +1,47 @@
 
-import serverAPIFactory, { mockableAPI as mockableAPI, rootDir } from '../../server/server-api.mjs';
+import serverAPIFactory, { ServerAPI } from '../../server/server-api.mjs';
 
 describe(import.meta.url, () => {
-	describe(import.meta.url, () => {
-		it('should give the root dir', () => {
-			console.log(process.cwd());
-			expect(rootDir).toBe(process.cwd());
-		});
-	});
-
 	describe('should serverAPI without context', () => {
 		it('should have a bus', async () => {
+			const app = serverAPIFactory('test');
+
 			let i = 0;
-			mockableAPI.subscribe('test.brol', () => i++);
-			await mockableAPI.dispatch('test.brol');
+			app.subscribe('test.brol', () => i++);
+			await app.dispatch('test.brol');
 			expect(i).toBeGreaterThan(0);
 		});
 
 		it('should be mockable', async () => {
+			const app = serverAPIFactory('test');
+
 			const tt = async() => {
-				await mockableAPI.dispatch('test.brol');
+				await app.dispatch('test.brol');
 			};
-			spyOn(mockableAPI, 'dispatch');
+			spyOn(ServerAPI.prototype, 'dispatch');
 			await tt();
-			expect(mockableAPI.dispatch).toHaveBeenCalled();
+			expect(ServerAPI.prototype.dispatch).toHaveBeenCalled();
 		});
 	});
 
 	describe('should serverAPI with context', () => {
-		const ctxServerAPI = serverAPIFactory('test');
+		const app = serverAPIFactory('test');
 		it('should have a bus', async () => {
 			let i = 0;
-			ctxServerAPI.subscribe('test.brol', () => i++);
-			await ctxServerAPI.dispatch('test.brol');
-			await ctxServerAPI.dispatch('.brol');
-			expect(i).toBeGreaterThan(1);
+			// This could fire a i++ because of a previously store state
+			app.subscribe('test.brol', () => i++);
+			i = 0;
+			await app.dispatch('test.brol');
+			await app.dispatch('.brol');
+			expect(i).toBe(2);
 		});
 
 		it('should be mockable', async () => {
-			spyOn(mockableAPI, 'dispatch');
-			await ctxServerAPI.dispatch('test.brol');
-			expect(mockableAPI.dispatch).toHaveBeenCalled();
+			const app = serverAPIFactory('test');
+
+			spyOn(ServerAPI.prototype, 'dispatch');
+			await app.dispatch('test.brol');
+			expect(ServerAPI.prototype.dispatch).toHaveBeenCalled();
 		});
 	});
 });

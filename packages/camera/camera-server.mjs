@@ -5,22 +5,20 @@ import btoa from '../../node_modules/btoa/index.js';
 import Datauri from 'datauri';
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const app = serverAPIFactory('camera');
+const app = serverAPIFactory('camera:server');
 
 let successes = 0;
 
 const config = {
 	'cron-recheck': '*/15 * * * * *',
-	host: 'localhost',
+	host: 'http://localhost',
 	username: '',
 	password: '',
 	imageFeed: '/image.jpg',
 	videoFeed: '/video/mjpg.cgi',
 	...app.getConfig()
 };
-
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
-
 const kioskVideoFeed = '/camera/video';
 
 export async function _check(quick = false) {
