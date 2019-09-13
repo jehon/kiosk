@@ -1,22 +1,22 @@
 
-import { mockableAPI as mockableAPI } from '../../server/server-api.mjs';
+import { ServerAPI, testingConfigOverride, testingConfigRestore } from '../../server/server-api.mjs';
 import { expectBrowserEvent } from './helpers.mjs';
 
 import '../../packages/clock/clock-server.mjs';
 
 describe(import.meta.url, () => {
 	beforeEach(function() {
-		spyOn(mockableAPI, 'dispatchToBrowser').and.callThrough();
-		mockableAPI.testingConfigOverride({});
+		spyOn(ServerAPI.prototype, 'dispatchToBrowser').and.callThrough();
+		testingConfigOverride({});
 	});
 
 	afterEach(function() {
-		mockableAPI.testingConfigRestore();
+		testingConfigRestore();
 	});
 
 	it('should trigger tickers', async function() {
-		mockableAPI.testingConfigRestore();
-		mockableAPI.testingConfigOverride({
+		testingConfigRestore();
+		testingConfigOverride({
 			'clock': {
 				'tickers':  {
 					'clock-server-test-label': {
@@ -30,10 +30,10 @@ describe(import.meta.url, () => {
 		expectBrowserEvent('clock.ticker', () => {
 			jasmine.clock().tick(8 * 1000);
 		}, () => {
-			expect(mockableAPI.dispatchToBrowser).toHaveBeenCalledTimes(4);
-			expect(mockableAPI.dispatchToBrowser.calls.argsFor(0)[0]).toBe('clock.ticker');
-			expect(mockableAPI.dispatchToBrowser.calls.argsFor(0)[1].label).toBe('clock-server-test-label');
-			expect(mockableAPI.dispatchToBrowser.calls.argsFor(0)[1].duration).toBe(1);
+			expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalledTimes(4);
+			expect(ServerAPI.prototype.dispatchToBrowser.calls.argsFor(0)[0]).toBe('clock.ticker');
+			expect(ServerAPI.prototype.dispatchToBrowser.calls.argsFor(0)[1].label).toBe('clock-server-test-label');
+			expect(ServerAPI.prototype.dispatchToBrowser.calls.argsFor(0)[1].duration).toBe(1);
 		});
 	});
 });

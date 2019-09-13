@@ -11,7 +11,7 @@ import pLimitFactory from '../../node_modules/p-limit/index.js';
 const exifReaderLimiter = pLimitFactory(1);
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const app = serverAPIFactory('photo-frame');
+const app = serverAPIFactory('photo-frame:server');
 
 const buildingLogger = app.getChildLogger('building');
 

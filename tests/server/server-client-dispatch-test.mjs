@@ -3,7 +3,7 @@ import EventSource from '../../node_modules/eventsource/lib/eventsource.js';
 
 import { start as startServer, stop as stopServer } from '../../server/server-webserver.mjs';
 import serverAPIFactory from '../../server/server-api.mjs';
-const app = serverAPIFactory('server-browser-test');
+const app = serverAPIFactory('server-client-browser:test');
 
 const serverUrl = (url) => `http://localhost:${port}${url}`;
 

@@ -37,7 +37,10 @@ export class ServerAPI {
 	}
 
 	getConfig(opath, def)  {
-		return getConfig(this.c(opath), def);
+		if (opath) {
+			return getConfig(this.c(opath), def);
+		}
+		return getConfig();
 	}
 
 	dispatchToBrowser(eventName, msg) {
