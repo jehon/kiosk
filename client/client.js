@@ -3,7 +3,7 @@ import clientAPIFactory from './client-api.js';
 import { currentMainApplication } from './client-api-apps.js';
 import './client-server-events.js';
 
-const app = clientAPIFactory('core');
+const app = clientAPIFactory('core:client');
 
 /* global toastr */
 /* configure the toastr */
@@ -29,7 +29,6 @@ app.subscribe('app.changed', () => {
 	// - we don't have a new application (currentMainApplication)
 	// - we are already there (currentMainApplication == displayedApplication)
 	if (currentMainApplication != null && (currentMainApplication.id != displayedApplication.id)) {
-
 		// Reject not "main" application
 		if (!('mainElement' in currentMainApplication)) {
 			app.error(`No mainElement in ${currentMainApplication.getName()}`);
