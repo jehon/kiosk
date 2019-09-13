@@ -17,7 +17,7 @@ app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	}
 
 	// Make the call to the right logger
-	loggerFactory('client:' + log.name)[log.category](log.name, ...pdata);
+	loggerFactory(log.name + ':todo:client')[log.category](log.name, ...pdata);
 
 	res.json(true);
 });
