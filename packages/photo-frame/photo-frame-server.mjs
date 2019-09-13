@@ -11,7 +11,7 @@ import pLimitFactory from '../../node_modules/p-limit/index.js';
 const exifReaderLimiter = pLimitFactory(1);
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const app = serverAPIFactory('photo-frame');
+const app = serverAPIFactory('photo-frame:server');
 
 const buildingLogger = app.getChildLogger('building');
 
@@ -153,11 +153,12 @@ export async function generateListing(_data = null) {
 	}
 
 	buildingLogger.debug('Extracting exif data for all files');
-	newSelectedPictures = await Promise.all(newSelectedPictures.map(
-		f => exifReaderLimiter(() => exifParser(f.original))
-			.then(data => { f.data = data; return f; })
-			.catch(e => { app.info('Could not read exif: ', e); return f; })
-	));
+	newSelectedPictures = await Promise.all(
+		newSelectedPictures.map(
+			f => exifReaderLimiter(() => exifParser(f.original))
+				.then(data => { f.data = data; return f; })
+				.catch(e => { app.info('Could not read exif: ', e); return f; })
+		));
 	buildingLogger.debug('Extracting exif data done');
 
 	newSelectedPictures.sort((a, b) => {
@@ -187,9 +188,9 @@ export async function generateListing(_data = null) {
 const checkHasListSchedule = app.getConfig('.check-cron', '0 0/5 * * * *');
 app.debug('Programming checking for presence of listing at', checkHasListSchedule);
 app.addSchedule('.check-has-list', checkHasListSchedule);
-app.subscribe('.check-has-list', () => {
+app.subscribe('.check-has-list', async () => {
 	if (selectedPictures.length == 0 || !hasAnUpdatedList) {
-		generateListing();
+		await generateListing();
 	}
 });
 

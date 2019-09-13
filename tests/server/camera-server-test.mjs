@@ -1,15 +1,15 @@
 
 import nock from 'nock';
 
-const host = 'http://127.0.0.1';
+const host = 'http://localhost';
 
-import { mockableAPI } from '../../server/server-api.mjs';
+import { testingConfigOverride, testingConfigRestore } from '../../server/server-api.mjs';
 import * as cameraAPI from'../../packages/camera/camera-server.mjs';
 import { expectBrowserEvent } from './helpers.mjs';
 
 describe(import.meta.url, () => {
 	beforeAll(() => {
-		mockableAPI.testingConfigOverride({
+		testingConfigOverride({
 			camera: {
 				host
 			}
@@ -17,7 +17,7 @@ describe(import.meta.url, () => {
 	});
 
 	afterAll(() => {
-		mockableAPI.testingConfigRestore();
+		testingConfigRestore();
 	});
 
 	it('should adapt to http conditions', async function() {
@@ -31,7 +31,7 @@ describe(import.meta.url, () => {
 				.reply(200, 'ok')
 				.persist();
 
-			let l = await expectBrowserEvent('camera.status', async () => {
+			let l = await expectBrowserEvent('.status', async () => {
 				await cameraAPI._check();
 				await cameraAPI._check();
 			});
@@ -45,7 +45,7 @@ describe(import.meta.url, () => {
 				.replyWithError('something awful happened')
 				.persist();
 
-			let l = await expectBrowserEvent('camera.status', async () => {
+			let l = await expectBrowserEvent('.status', async () => {
 				await cameraAPI._check();
 			});
 			expect(l[0].enabled).toBeFalsy();
@@ -58,7 +58,7 @@ describe(import.meta.url, () => {
 				.reply(200, 'ok')
 				.persist();
 
-			let l = await expectBrowserEvent('camera.status', async () => {
+			let l = await expectBrowserEvent('.status', async () => {
 				await cameraAPI._check();
 				await cameraAPI._check();
 			});

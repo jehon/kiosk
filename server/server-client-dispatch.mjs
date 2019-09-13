@@ -46,8 +46,10 @@ expressApp.use('/core/events', function (req, res, _next) {
 });
 
 export default function dispatchToBrowser(eventName, data = null) {
-	sseSavedStates[eventName] = data;
-	logger.debug('Sending', eventName, data);
+	if (data) {
+		sseSavedStates[eventName] = data;
+	}
+	logger.debug(`Sending '${eventName}'`, data);
 
 	for(const k of Object.keys(sseClients)) {
 		sseNotifyThisClient(sseClients[k], eventName, data);
