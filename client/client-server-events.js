@@ -1,7 +1,7 @@
 
 import ClientAPIFactory from './client-api.js';
 
-const app = ClientAPIFactory('core-api-events');
+const app = ClientAPIFactory('core:client:server-events');
 
 //
 // Listen from server events
