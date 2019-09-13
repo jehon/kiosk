@@ -46,8 +46,9 @@ let serverListener = false;
 export async function start(port = getConfig('core.port')) {
 	return new Promise(resolve => {
 		if (serverListener) {
-			logger.debug('It was already started');
-			return getPort();
+			const realPort = getPort();
+			logger.debug(`It was already started on ${realPort}`);
+			resolve(realPort);
 		}
 		serverListener = app.listen(port, () => {
 			const realPort = getPort();
