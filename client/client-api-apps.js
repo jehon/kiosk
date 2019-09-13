@@ -96,7 +96,7 @@ export default class ClientAPI {
 	dispatchAppChanged() { // TODO: Should be static ?
 		// Select the main application
 		if (!manualSelectionOfMainApplicationTimer) {
-			currentMainApplication = getApplicationsList().filter(a => a.mainElement)[0];
+			currentMainApplication = getApplicationsList().filter(a => a.mainElement && a.priority)[0];
 		}
 		dispatch('app.changed');
 		return this;
