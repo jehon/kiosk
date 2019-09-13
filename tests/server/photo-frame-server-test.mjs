@@ -70,11 +70,4 @@ describe(import.meta.url, () => {
 		expect(ServerAPI.prototype.dispatchToBrowser).not.toHaveBeenCalled();
 		testingConfigRestore();
 	});
-
-	it('should regenerate the listing when changing from date', function() {
-		ServerAPI.prototype.dispatchToBrowser.calls.reset();
-		jasmine.clock().tick(24*60*60*1000);
-		expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalled();
-		expect(photoFrameAPI.getSelectedPictures().length).toBeGreaterThan(2);
-	});
 });
