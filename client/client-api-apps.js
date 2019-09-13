@@ -97,6 +97,9 @@ export default class ClientAPI {
 		// Select the main application
 		if (!manualSelectionOfMainApplicationTimer) {
 			currentMainApplication = getApplicationsList().filter(a => a.mainElement && a.priority)[0];
+			if (currentMainApplication) {
+				this.debug('Will dispatching app changed and selected new currentMainApplication', currentMainApplication.name, currentMainApplication);
+			}
 		}
 		dispatch('app.changed');
 		return this;
