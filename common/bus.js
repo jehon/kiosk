@@ -67,7 +67,7 @@ export default class Bus {
 		const eListeners = this.events[eventName];
 
 		// Wait for all to have managed the result
-		await Promise.all(Object.getOwnPropertySymbols(eListeners).map(async i => {
+		return await Promise.all(Object.getOwnPropertySymbols(eListeners).map(async i => {
 			const listener = eListeners[i];
 			try {
 				// The listener is called "sync", ie. the result is sent back synchronously

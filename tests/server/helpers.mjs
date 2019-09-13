@@ -1,16 +1,18 @@
 
-import { mockableAPI } from '../../server/server-api.mjs';
+import { ServerAPI } from '../../server/server-api.mjs';
 
-export async function expectBrowserEvent(eventName, when, cb) {
-	if (mockableAPI.dispatchToBrowser.calls) {
-		mockableAPI.dispatchToBrowser.calls.reset();
+// Eventname is the shortname, because it is the way it was called
+// from the class, outside of any context
+export async function expectBrowserEvent(eventName, testFn) {
+	if (ServerAPI.prototype.dispatchToBrowser.calls) {
+		ServerAPI.prototype.dispatchToBrowser.calls.reset();
 	} else {
-		spyOn(mockableAPI, 'dispatchToBrowser').and.callThrough();
+		spyOn(ServerAPI.prototype, 'dispatchToBrowser').and.callThrough();
 	}
-	await when();
+	await testFn();
 	const res = [];
-	const c = mockableAPI.dispatchToBrowser.calls.argsFor;
-	for(let i = 0; i < mockableAPI.dispatchToBrowser.calls.argsFor.length; i++) {
+	const c = ServerAPI.prototype.dispatchToBrowser.calls.argsFor;
+	for(let i = 0; i < ServerAPI.prototype.dispatchToBrowser.calls.argsFor.length; i++) {
 		if (c(i)[0] == eventName) {
 			res.push(c(i)[1]);
 		}
