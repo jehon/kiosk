@@ -30,6 +30,7 @@ function runExiv(...params) {
 	return '';
 }
 
+// TODO: use exiftool (more easy to use)
 export default async function exivReadAll(filePath) {
 	const data = runExiv('-g', 'Exif.*', filePath);
 	const result = {
@@ -41,6 +42,8 @@ export default async function exivReadAll(filePath) {
 		let k = line.split(' ')[0].trim();
 		if (k in translation) {
 			k = translation[k];
+		} else {
+			return;
 		}
 
 		let v = line.substr(60).replace(/\0/g, '').trim();
