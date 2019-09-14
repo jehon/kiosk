@@ -55,3 +55,7 @@ export default function dispatchToBrowser(eventName, data = null) {
 		sseNotifyThisClient(sseClients[k], eventName, data);
 	}
 }
+
+expressApp.use('/core/browser-state', function (req, res, _next) {
+	return res.json(sseSavedStates);
+});
