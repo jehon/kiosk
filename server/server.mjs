@@ -5,7 +5,7 @@ import './server-client-logger.mjs';
 import { getLoggerList }        from './server-logger.js';
 import { loadServerFiles }      from './server-packages.mjs';
 
-import serverAPIFactory from './server-api.mjs';
+import serverAPIFactory, { getSavedState } from './server-api.mjs';
 const app = serverAPIFactory('core:server');
 
 export default async (port) => loadServerFiles()
@@ -24,4 +24,8 @@ export default async (port) => loadServerFiles()
 // could not be done in server-logger, because of cycle dependencies
 app.getExpressApp().get('/core/loggers', async (req, res) => {
 	res.json(getLoggerList());
+});
+
+app.getExpressApp().get('/core/state', async (req, res) => {
+	res.json(getSavedState());
 });

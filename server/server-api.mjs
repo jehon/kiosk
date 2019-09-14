@@ -12,6 +12,10 @@ export { rootDir }                          from './server-config.mjs';
 const bus       = new Bus(loggerFactory('core:server:bus'));
 const scheduler = new Scheduler(bus);
 
+export function getSavedState() {
+	return bus.getSavedState();
+}
+
 export class ServerAPI {
 	constructor(name) {
 		this.name = name;

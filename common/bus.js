@@ -78,4 +78,8 @@ export default class Bus {
 			}
 		}));
 	}
+
+	getSavedState() {
+		return this.stateValues;
+	}
 }
