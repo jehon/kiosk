@@ -161,6 +161,11 @@ export async function generateListing(_data = null) {
 		));
 	buildingLogger.debug('Extracting exif data done');
 
+	newSelectedPictures = newSelectedPictures.map(v => {
+		delete v.original;
+		return v;
+	});
+
 	newSelectedPictures.sort((a, b) => {
 		return a.date < b.date ? -1 : a.date == b.date ? 0 : 1;
 	});
