@@ -212,7 +212,7 @@ app.dispatch('.refresh');
 app.getExpressApp().get('/photo-frame/refresh', async (_req, res, _next) => {
 	// TODO: allow to generate from a specific folder?
 	app.debug('Requesting refreshing the list');
-	await app.dispatch('.refresh', null);
+	await app.dispatch('.refresh');
 	res.json(selectedPictures);
 });
 
