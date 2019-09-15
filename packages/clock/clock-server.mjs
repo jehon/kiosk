@@ -1,6 +1,6 @@
 
 import serverAPIFactory from '../../server/server-api.mjs';
-const app = serverAPIFactory('clock');
+const app = serverAPIFactory('clock:server');
 
 const config = {
 	tickers: [],
