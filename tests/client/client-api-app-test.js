@@ -1,5 +1,5 @@
 
-import ClientAPI from '../../client/client-api-apps.js';
+import { ClientAPI } from '../../client/client-api.js';
 
 let app1 = new ClientAPI('test1')
 	.withPriority(1);

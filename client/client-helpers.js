@@ -1,5 +1,5 @@
 
-import loggerFactory from './client-api-logger.js';
+import loggerFactory from './client-logger.js';
 const logger = loggerFactory('core:client:helpers');
 
 // clock-client
