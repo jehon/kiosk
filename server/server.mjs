@@ -2,7 +2,7 @@
 
 import { start as startServer } from './server-webserver.mjs';
 import './server-client-logger.mjs';
-import { getLoggerList }        from './server-logger.js';
+import { getLoggerList, getEnabledDebugRegexp }        from './server-logger.js';
 import { loadServerFiles }      from './server-packages.mjs';
 
 import serverAPIFactory, { getSavedState } from './server-api.mjs';
@@ -17,6 +17,8 @@ export default async (port) => loadServerFiles()
 		app.dispatchToBrowser('core.started', {
 			startupTime: new Date()
 		});
+		app.dispatchToBrowser('core.loggersRegexp', getEnabledDebugRegexp());
+
 		return port;
 	});
 
