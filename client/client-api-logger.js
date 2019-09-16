@@ -1,9 +1,19 @@
 
 import '../node_modules/debug/dist/debug.js';
 
+// TODO: get loggers from server and apply them locally
+
+// core.loggersRegexp
+
 export async function remoteLogger(name, category, ...data) {
 	let jdata = JSON.stringify(data,
-		(k, v) => (v instanceof HTMLElement || v instanceof Node) ? 'html-element' : v
+		(k, v) => (v instanceof HTMLElement || v instanceof Node) ?
+			(
+				'html-element'
+				+ (v.id ? '#' + v.id : '')
+				+ (v.class ? '.' + v.class : '')
+			)
+			: v
 	);
 
 	axios.post('/core/client/logs', {
@@ -12,9 +22,9 @@ export async function remoteLogger(name, category, ...data) {
 		category,
 		data: jdata
 	})
-		.catch(function (error) {
+		.catch(function (_error) {
 			/* eslint-disable no-console */
-			console.error('Error sending log to server: ', error);
+			// console.error('Error sending log to server: ', _error);
 		});
 }
 
@@ -30,20 +40,17 @@ class RemoteLogger {
 
 	async info(...data) {
 		/* eslint-disable no-console */
-		console.info('[INFO]', this.name, ':', ...data);
+		console.info(this.name, ':' , '[INFO]', ...data);
 		await remoteLogger(this.name, 'info', ...data);
 	}
 
 	async error(...data) {
 		/* eslint-disable no-console */
-		console.error('[ERROR]', this.name, ':', ...data);
+		console.error(this.name, ':' , '[ERROR]', ...data);
 		await remoteLogger(this.name, 'error', ...data);
 	}
 
 	async debug(...data) {
-		// TODO: use debug.js in the browser too...
-
-		/* eslint-disable no-console */
 		// console.debug('[DEBUG]', this.name, ':', ...data);
 		this.debug(...data);
 		await remoteLogger(this.name, 'debug', ...data);
@@ -52,8 +59,7 @@ class RemoteLogger {
 
 export default (name) => new RemoteLogger(name);
 
-const globalCatcher = new RemoteLogger('core:global');
-
+const globalCatcher = new RemoteLogger('core:client:global');
 window.addEventListener('error', (event) => {
 	globalCatcher.error(event.message,
 		event.filename ?

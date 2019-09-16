@@ -3,6 +3,7 @@ core:
   loggers:
     - "core:server:logger"
     - "core:server:config"
+    - "core:client:global"
   path:
     var: /tmp/
 
