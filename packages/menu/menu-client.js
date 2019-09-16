@@ -1,6 +1,6 @@
 
 import AppFactory from '../../client/client-api.js';
-import { getApplicationsList, getApplicationByName } from '../../client/client-api-apps.js';
+import { getApplicationsList, getApplicationByName } from '../../client/client-api.js';
 const app = AppFactory('menu');
 
 // Loading all apps (sent by the server)

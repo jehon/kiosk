@@ -1,7 +1,7 @@
 
 import clientAPIFactory from './client-api.js';
-import { currentMainApplication } from './client-api-apps.js';
-import { enableClientLoggers } from './client-api-logger.js';
+import { currentMainApplication } from './client-api.js';
+import { enableClientLoggers } from './client-logger.js';
 import './client-server-events.js';
 
 const app = clientAPIFactory('core:client');
