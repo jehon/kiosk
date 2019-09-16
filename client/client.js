@@ -1,6 +1,7 @@
 
 import clientAPIFactory from './client-api.js';
 import { currentMainApplication } from './client-api-apps.js';
+import { enableClientLoggers } from './client-api-logger.js';
 import './client-server-events.js';
 
 const app = clientAPIFactory('core:client');
@@ -49,6 +50,7 @@ app.subscribe('app.changed', () => {
 	}
 });
 
+// For development mainly (and only)
 let startedTimestamp = false;
 app.subscribe('core.started', (data) => {
 	let startedTimestampNew = data.startupTime.toISOString();
@@ -60,6 +62,10 @@ app.subscribe('core.started', (data) => {
 		}
 	}
 	startedTimestamp = startedTimestampNew;
+});
+
+app.subscribe('core.loggersRegexp', (loggers) => {
+	enableClientLoggers(loggers);
 });
 
 //

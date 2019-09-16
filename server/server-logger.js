@@ -44,13 +44,13 @@ class Logger {
 		return new Logger(this.namespace + ':' + name);
 	}
 
-	enableDebug() {
-		debugFactory.enable(this.namespace);
-	}
+	// enableDebug() {
+	// 	debugFactory.enable(this.namespace);
+	// }
 
-	disableDebug() {
-		debugFactory.disable(this.namespace);
-	}
+	// disableDebug() {
+	// 	debugFactory.disable(this.namespace);
+	// }
 
 	error(...args) {
 		this.streams.log(generateMessage('ERROR', ...args).red);
@@ -86,8 +86,13 @@ export default (rawNamespace) => {
 
 let enabled = process.env.DEBUG;
 export function enableDebugForRegexp(regexp) {
-	enabled = [ enabled, regexp ].join(',');
+	// Protect agains DEBUG not being defined
+	enabled = (enabled ? enabled + ',' : '') + regexp;
 	debugFactory.enable(enabled);
+}
+
+export function getEnabledDebugRegexp() {
+	return enabled;
 }
 
 export function getLoggerList() {
