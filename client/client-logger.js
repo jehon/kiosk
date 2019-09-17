@@ -29,35 +29,39 @@ export async function remoteLogger(name, category, ...data) {
 }
 
 class RemoteLogger {
-	name = '';
+	namespace = '';
 	debug;
 
-	constructor(name) {
-		this.name = name;
+	constructor(namespace) {
+		this.namespace = namespace;
 		/* global debug */
-		this.debug = debug(name.split('.').join(':'));
+		this.debug = debug(namespace.split('.').join(':'));
+	}
+
+	extend(name) {
+		return new RemoteLogger(this.namespace + ':' + name);
 	}
 
 	async info(...data) {
 		/* eslint-disable no-console */
-		console.info(this.name, ':' , '[INFO]', ...data);
-		await remoteLogger(this.name, 'info', ...data);
+		console.info(this.namespace, ':' , '[INFO]', ...data);
+		await remoteLogger(this.namespace, 'info', ...data);
 	}
 
 	async error(...data) {
 		/* eslint-disable no-console */
-		console.error(this.name, ':' , '[ERROR]', ...data);
-		await remoteLogger(this.name, 'error', ...data);
+		console.error(this.namespace, ':' , '[ERROR]', ...data);
+		await remoteLogger(this.namespace, 'error', ...data);
 	}
 
 	async debug(...data) {
 		// console.debug('[DEBUG]', this.name, ':', ...data);
 		this.debug(...data);
-		await remoteLogger(this.name, 'debug', ...data);
+		await remoteLogger(this.namespace, 'debug', ...data);
 	}
 }
 
-export default (name) => new RemoteLogger(name);
+export default function remoteLoggerFactory(name)  { return new RemoteLogger(name); }
 
 const globalCatcher = new RemoteLogger('core:client:global');
 window.addEventListener('error', (event) => {
