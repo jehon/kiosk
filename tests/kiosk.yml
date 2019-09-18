@@ -4,6 +4,8 @@ core:
     - "core:server:logger"
     - "core:server:config"
     - "core:client:global"
+#    - "core:client:chooser"
+#    - "core:client:bus"
   path:
     var: /tmp/
 
