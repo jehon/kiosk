@@ -54,7 +54,7 @@ export default class Bus {
 				return ;
 			}
 		}
-		this.stateValues[eventName] = data;
+		this.stateValues[eventName] = _.cloneDeep(data);
 
 
 		// Specific listeners
