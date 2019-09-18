@@ -1,6 +1,5 @@
 
 import clientAPIFactory from './client-api.js';
-import { currentMainApplication } from './client-api.js';
 import { enableClientLoggers } from './client-logger.js';
 import './client-server-events.js';
 
@@ -21,7 +20,7 @@ if (mainAppElement == null) {
 
 let displayedApplication = false;
 
-app.subscribe('app.changed', () => {
+app.subscribe('apps.current', (wishedApp) => {
 	//
 	// Main app
 	//
@@ -29,18 +28,18 @@ app.subscribe('app.changed', () => {
 	// Skip if
 	// - we don't have a new application (currentMainApplication)
 	// - we are already there (currentMainApplication == displayedApplication)
-	if (currentMainApplication != null && (currentMainApplication.id != displayedApplication.id)) {
+	if (wishedApp != null && (wishedApp.id != displayedApplication.id)) {
 		// Reject not "main" application
-		if (!('mainElement' in currentMainApplication)) {
-			app.error(`No mainElement in ${currentMainApplication.getName()}`);
+		if (!('mainElement' in wishedApp)) {
+			app.error(`No mainElement in ${wishedApp.getName()}`);
 			mainAppElement.innerHTML = `<div>No main element available for app ${this.getName()}: ${JSON.stringify(this)}</div>`;
 		} else {
 			// Ok, let's go !
-			app.info(`Selecting ${currentMainApplication.getName()}`);
-			displayedApplication = currentMainApplication;
+			app.info(`Selecting ${wishedApp.getName()}`);
+			displayedApplication = wishedApp;
 
 			mainAppElement.innerHTML = '';
-			const me = currentMainApplication.mainElement;
+			const me = wishedApp.mainElement;
 			if (typeof(me) == 'function') {
 				me(mainAppElement);
 			} else {

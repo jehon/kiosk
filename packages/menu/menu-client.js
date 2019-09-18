@@ -18,7 +18,7 @@ app.subscribe('.apps', (apps) => {
 class KioskMenu extends app.getKioskEventListenerMixin()(HTMLElement) {
 	get kioskEventListeners() {
 		return {
-			'app.changed': () => this.adapt()
+			'apps.list': () => this.adapt()
 		};
 	}
 

@@ -9,15 +9,9 @@ import Bus from '../common/bus.js';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
-const bus = new Bus(loggerFactory('core:bus'));
-
-const subscribe = (name, callback) => bus.subscribe(name, callback);
-const dispatch = (name, data) => bus.dispatch(name, data);
+const bus = new Bus(loggerFactory('core:client:bus'));
 
 const apps = {};
-
-export let currentMainApplication = null;
-let manualSelectionOfMainApplicationTimer = false;
 
 /**
  * Application priorities
@@ -99,13 +93,7 @@ export class ClientAPI {
 
 	dispatchAppChanged() { // TODO: Should be static ?
 		// Select the main application
-		if (!manualSelectionOfMainApplicationTimer) {
-			currentMainApplication = getApplicationsList().filter(a => a.mainElement && a.priority)[0];
-			if (currentMainApplication) {
-				this.debug('Will dispatching app changed and selected new currentMainApplication', currentMainApplication.name, currentMainApplication);
-			}
-		}
-		dispatch('app.changed');
+		this.dispatch('apps.list', apps);
 		return this;
 	}
 
@@ -157,32 +145,21 @@ export class ClientAPI {
 	//
 	//
 
-	async dispatch(name, data = null) {
-		await dispatch(this.c(name), data);
+	async dispatch(name, data) {
+		await bus.dispatch(this.c(name), data);
 		return this;
 	}
 
 	subscribe(name, cb) {
-		return subscribe(this.c(name), cb);
+		return bus.subscribe(this.c(name), cb);
 	}
 
-	goManually() { // TODO: affine "manual" mode
-		// Forget previous timer
-		if (manualSelectionOfMainApplicationTimer) {
-			clearTimeout(manualSelectionOfMainApplicationTimer);
-		}
-
-		// Program new timer
-		manualSelectionOfMainApplicationTimer = setTimeout(() => {
-			manualSelectionOfMainApplicationTimer = false;
-			// Trigger a new calculation of the top app
-			this.dispatchAppChanged();
-		}, 2 * 60 * 1000);
-
-		currentMainApplication = this;
-		this.dispatchAppChanged();
+	goManually() {
+		selectApplication(this);
 	}
 }
+
+export default (space) => new ClientAPI(space);
 
 /*
  *
@@ -213,4 +190,41 @@ export function _testEmptyApplicationList() {
 	}
 }
 
-export default (space) => new ClientAPI(space);
+
+const appChooser = new ClientAPI('core:client:chooser');
+let currentApplication = null;
+let manualSelectionTimer = false;
+
+function selectNewMainApplication() {
+	if (!manualSelectionTimer) {
+		currentApplication = getApplicationsList().filter(a => a.mainElement && a.priority)[0];
+		appChooser.debug('Selecting application automatically', currentApplication ? currentApplication.name : 'no available');
+	}
+	if (currentApplication) {
+		appChooser.debug('New currentMainApplication', currentApplication.name, currentApplication);
+		appChooser.dispatch('apps.current', currentApplication);
+	}
+}
+
+export function selectApplication(app) {
+	// Forget previous timer
+	if (manualSelectionTimer) {
+		appChooser.debug('Restart of manual mode');
+		clearTimeout(manualSelectionTimer);
+	} else {
+		appChooser.debug('Start of manual mode');
+	}
+
+	// Program new timer
+	manualSelectionTimer = setTimeout(() => {
+		appChooser.debug('End of manual mode');
+		manualSelectionTimer = false;
+		// Trigger a new calculation of the top app
+		selectNewMainApplication();
+	}, 2 * 60 * 1000);
+
+	currentApplication = app;
+	selectNewMainApplication();
+}
+
+appChooser.subscribe('apps.list', () => selectNewMainApplication());
