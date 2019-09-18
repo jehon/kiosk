@@ -4,7 +4,6 @@ etc/
 parts/
 
 # GUI
-.vscode
 .idea
 
 # Temp anywhere

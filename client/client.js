@@ -2,6 +2,7 @@
 import clientAPIFactory from './client-api.js';
 import { enableClientLoggers } from './client-logger.js';
 import './client-server-events.js';
+import './client-app-chooser.js';
 
 const app = clientAPIFactory('core:client');
 

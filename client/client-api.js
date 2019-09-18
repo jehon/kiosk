@@ -10,7 +10,6 @@ import Bus from '../common/bus.js';
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
 const bus = new Bus(loggerFactory('core:client:bus'));
-
 const apps = {};
 
 /**
@@ -26,6 +25,11 @@ const apps = {};
  */
 
 let idCounter = 1;
+
+let selectApplication = () => {};
+import('./client-app-chooser.js').then(mod => {
+	selectApplication = mod.default;
+});
 
 export class ClientAPI {
 	id = idCounter++;
@@ -86,14 +90,14 @@ export class ClientAPI {
 		element.classList.add('full-background-image');
 		element.style.backgroundImage = `url('${url}')`;
 		element.innerHTML = `<span>${text}</span>`;
-		element.addEventListener('click', () => this.goManually());
+		element.addEventListener('click', () => selectApplication(this));
 		this.withMenuElement(element);
 		return this;
 	}
 
 	dispatchAppChanged() { // TODO: Should be static ?
 		// Select the main application
-		this.dispatch('apps.list', apps);
+		this.dispatch('apps.list', getApplicationsList());
 		return this;
 	}
 
@@ -153,10 +157,6 @@ export class ClientAPI {
 	subscribe(name, cb) {
 		return bus.subscribe(this.c(name), cb);
 	}
-
-	goManually() {
-		selectApplication(this);
-	}
 }
 
 export default (space) => new ClientAPI(space);
@@ -191,40 +191,4 @@ export function _testEmptyApplicationList() {
 }
 
 
-const appChooser = new ClientAPI('core:client:chooser');
-let currentApplication = null;
-let manualSelectionTimer = false;
 
-function selectNewMainApplication() {
-	if (!manualSelectionTimer) {
-		currentApplication = getApplicationsList().filter(a => a.mainElement && a.priority)[0];
-		appChooser.debug('Selecting application automatically', currentApplication ? currentApplication.name : 'no available');
-	}
-	if (currentApplication) {
-		appChooser.debug('New currentMainApplication', currentApplication.name, currentApplication);
-		appChooser.dispatch('apps.current', currentApplication);
-	}
-}
-
-export function selectApplication(app) {
-	// Forget previous timer
-	if (manualSelectionTimer) {
-		appChooser.debug('Restart of manual mode');
-		clearTimeout(manualSelectionTimer);
-	} else {
-		appChooser.debug('Start of manual mode');
-	}
-
-	// Program new timer
-	manualSelectionTimer = setTimeout(() => {
-		appChooser.debug('End of manual mode');
-		manualSelectionTimer = false;
-		// Trigger a new calculation of the top app
-		selectNewMainApplication();
-	}, 2 * 60 * 1000);
-
-	currentApplication = app;
-	selectNewMainApplication();
-}
-
-appChooser.subscribe('apps.list', () => selectNewMainApplication());
