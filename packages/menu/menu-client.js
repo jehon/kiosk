@@ -1,6 +1,6 @@
 
+import selectApplication from '../../client/client-app-chooser.js';
 import AppFactory from '../../client/client-api.js';
-import { getApplicationsList, getApplicationByName } from '../../client/client-api.js';
 const app = AppFactory('menu');
 
 // Loading all apps (sent by the server)
@@ -18,17 +18,17 @@ app.subscribe('.apps', (apps) => {
 class KioskMenu extends app.getKioskEventListenerMixin()(HTMLElement) {
 	get kioskEventListeners() {
 		return {
-			'apps.list': () => this.adapt()
+			'apps.list': (list) => this.adaptToList(list)
 		};
 	}
 
-	adapt() {
+	adaptToList(list) {
 		// TODO: optimization -> make the diff ?
 		this.innerHTML = '';
 		this.classList.add('grid');
 		this.classList.add('fit');
 
-		for(const app of getApplicationsList().filter(a => a.menuElement && a.mainElement)) {
+		for(const app of list.filter(a => a.menuElement && a.mainElement)) {
 			app.menuElement.setAttribute('data-app', app.name);
 			this.appendChild(app.menuElement);
 		}
@@ -69,7 +69,7 @@ if (appMenuElement == null) {
 appMenuElement.addEventListener('click', () => {
 	// Go to menu list application
 	app.debug('Going to the menu pane');
-	getApplicationByName('menu').goManually();
+	selectApplication(app);
 });
 
 app.subscribe('caffeine.activity', active => {
