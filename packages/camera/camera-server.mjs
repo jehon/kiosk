@@ -16,7 +16,7 @@ const config = {
 	password: '',
 	imageFeed: '/image.jpg',
 	videoFeed: '/video/mjpg.cgi',
-	...app.getConfig()
+	...app.getConfig('.')
 };
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 const kioskVideoFeed = '/camera/video';
