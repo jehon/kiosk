@@ -16,16 +16,16 @@ function relaunchActivity() {
 
 	// Program new timer
 	manualSelectionTimer = setTimeout(() => {
-        if (manualSelectionTimer) {
-            app.debug('End of manual mode');
-            clearTimeout(manualSelectionTimer);
+		if (manualSelectionTimer) {
+			app.debug('End of manual mode');
+			clearTimeout(manualSelectionTimer);
 
-            // Trigger a new calculation of the top app
-            autoSelectApp(getApplicationsList());
-        }
-        manualSelectionTimer = false;
+			// Trigger a new calculation of the top app
+			autoSelectApp(getApplicationsList());
+		}
+		manualSelectionTimer = false;
 
-    }, 2 * 60 * 1000);
+	}, 2 * 60 * 1000);
 }
 
 function dispatchApp() {
@@ -38,11 +38,11 @@ function dispatchApp() {
 function autoSelectApp(list) {
 	currentApplication = list.filter(a => a.mainElement && a.priority)[0];
 	app.debug('Selecting application automatically', currentApplication ? currentApplication.name : 'no available');
-    dispatchApp();
+	dispatchApp();
 }
 
 export default function selectApplication(app) {
-    relaunchActivity();
+	relaunchActivity();
 	currentApplication = app;
 	dispatchApp();
 }
