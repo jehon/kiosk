@@ -4,9 +4,9 @@ import mime from 'mime-types';
 import shuffleArray from 'shuffle-array';
 import path from 'path';
 import minimatch from 'minimatch';
+import pLimitFactory from 'p-limit';
 
 import exifParser from './exif-parser.js';
-import pLimitFactory from '../../node_modules/p-limit/index.js';
 
 const exifReaderLimiter = pLimitFactory(1);
 
