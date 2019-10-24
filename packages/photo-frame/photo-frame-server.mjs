@@ -6,7 +6,7 @@ import path from 'path';
 import minimatch from 'minimatch';
 import pLimitFactory from 'p-limit';
 
-import exifParser from './exif-parser.js';
+import exifParser from './exif-parser.mjs';
 
 const exifReaderLimiter = pLimitFactory(1);
 

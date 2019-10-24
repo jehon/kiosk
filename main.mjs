@@ -3,9 +3,9 @@
 import startServer from './server/server.mjs';
 
 import getConfig from './server/server-config.mjs';
-import * as browser from './server/core-browser.js';
+import * as browser from './server/core-browser.mjs';
 
-import loggerFactory from './server/server-logger.js';
+import loggerFactory from './server/server-logger.mjs';
 const logger = loggerFactory('core:main');
 
 startServer().then((port) => {

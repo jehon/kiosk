@@ -1,5 +1,5 @@
 
-import loggerFactory from './server-logger.js';
+import loggerFactory from './server-logger.mjs';
 const logger = loggerFactory('core:client-dispatch:server');
 
 import { getExpressApp } from './server-webserver.mjs';

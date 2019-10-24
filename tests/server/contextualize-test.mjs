@@ -1,5 +1,5 @@
 
-import contextualize, { ctxForFunction } from '../../common/contextualize.js';
+import contextualize, { ctxForFunction } from '../../common/contextualize.mjs';
 
 describe(import.meta.url, () => {
 	it('should contextualize relative keys', () => {

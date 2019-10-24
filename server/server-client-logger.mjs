@@ -3,7 +3,7 @@
 import serverAPIFactory from './server-api.mjs';
 const app = serverAPIFactory('core:server:client:logger');
 
-import loggerFactory from './server-logger.js';
+import loggerFactory from './server-logger.mjs';
 
 app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	const log = req.body;
