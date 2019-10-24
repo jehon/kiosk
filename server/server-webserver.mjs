@@ -4,7 +4,7 @@ import path from 'path';
 import express from 'express';
 
 import getConfig from './server-config.mjs';
-import loggerFactory from './server-logger.js';
+import loggerFactory from './server-logger.mjs';
 const logger = loggerFactory('core:webserver:server');
 
 //

@@ -1,9 +1,9 @@
 
 // Common
-import Bus                                  from '../common/bus.js';
-import contextualize                        from '../common/contextualize.js';
-import loggerFactory                        from './server-logger.js';
-import Scheduler                            from './server-scheduler.js';
+import Bus                                  from '../common/bus.mjs';
+import contextualize                        from '../common/contextualize.mjs';
+import loggerFactory                        from './server-logger.mjs';
+import Scheduler                            from './server-scheduler.mjs';
 import getConfig, * as configAPI            from './server-config.mjs';
 import { getExpressApp }                    from './server-webserver.mjs';
 import dispatchToBrowser                    from './server-client-dispatch.mjs';

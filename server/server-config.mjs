@@ -8,7 +8,7 @@ import yaml from 'js-yaml';
 import deepMerge  from 'deepmerge';
 import objectPath from 'object-path';
 
-import loggerFactory, { enableDebugForRegexp } from './server-logger.js';
+import loggerFactory, { enableDebugForRegexp } from './server-logger.mjs';
 const logger = loggerFactory('core:server:config');
 
 // TODO: legacy, but difficult to remove

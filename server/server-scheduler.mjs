@@ -3,7 +3,7 @@
 import CronJob from '../node_modules/cron/lib/cron.js';
 import cronstrue from '../node_modules/cronstrue/dist/cronstrue.js';
 
-import loggerFactory from './server-logger.js';
+import loggerFactory from './server-logger.mjs';
 
 export default class Scheduler {
 	logger;

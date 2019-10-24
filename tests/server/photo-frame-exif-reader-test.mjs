@@ -1,5 +1,5 @@
 
-import exifParser from '../../packages/photo-frame/exif-parser.js';
+import exifParser from '../../packages/photo-frame/exif-parser.mjs';
 
 describe(import.meta.url, () => {
 	it('should parse file infos on f1', async () => {

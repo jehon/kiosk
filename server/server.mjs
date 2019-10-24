@@ -2,7 +2,7 @@
 
 import { start as startServer } from './server-webserver.mjs';
 import './server-client-logger.mjs';
-import { getLoggerList, getEnabledDebugRegexp }        from './server-logger.js';
+import { getLoggerList, getEnabledDebugRegexp }        from './server-logger.mjs';
 import { loadServerFiles }      from './server-packages.mjs';
 
 import serverAPIFactory, { getSavedState } from './server-api.mjs';

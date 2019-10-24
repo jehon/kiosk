@@ -4,8 +4,8 @@ import './elements/img-loading.js';
 import './elements/css-inherit.js';
 
 import loggerFactory from './client-logger.js';
-import contextualize from '../common/contextualize.js';
-import Bus from '../common/bus.js';
+import contextualize from '../common/contextualize.mjs';
+import Bus from '../common/bus.mjs';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
