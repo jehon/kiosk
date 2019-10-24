@@ -1,16 +1,17 @@
 
-import fs from 'fs';
-import mime from 'mime-types';
-import shuffleArray from 'shuffle-array';
-import path from 'path';
-import minimatch from 'minimatch';
-import pLimitFactory from 'p-limit';
+const fs = require('fs');
+const mime = require('mime-types');
+const shuffleArray = require('shuffle-array');
+const path = require('path');
+const minimatch = require('minimatch');
+const pLimitFactory = require('p-limit');
 
-import exifParser from './exif-parser.mjs';
+const exifParser = require('./exif-parser.js');
 
 const exifReaderLimiter = pLimitFactory(1);
 
-import serverAPIFactory from '../../server/server-api.mjs';
+// Not working
+const serverAPIFactory = require('../../server/server-api.mjs');
 const app = serverAPIFactory('photo-frame:server');
 
 const buildingLogger = app.getChildLogger('building');
@@ -129,7 +130,7 @@ function os2web(os, web, f) { // TODO: this should be in package "shares"
 // Main entry-point
 //  -> Generate a selection
 //
-export async function generateListing(_data = null) {
+async function generateListing(_data = null) {
 	app.debug('Generate listing');
 	hasAnUpdatedList = false;
 	previouslySelected.length = 0;
@@ -221,6 +222,9 @@ app.getExpressApp().get('/photo-frame/', async (_req, res, _next) => {
 	res.json(selectedPictures);
 });
 
-export function getSelectedPictures() {
+function getSelectedPictures() {
 	return selectedPictures;
 }
+
+module.exports.generateListing = generateListing;
+module.exports.getSelectedPictures = getSelectedPictures;

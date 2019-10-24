@@ -1,7 +1,7 @@
 
 import serverAPIFactory, { ServerAPI,testingConfigOverride, testingConfigRestore } from'../../server/server-api.mjs';
 
-import * as photoFrameAPI from '../../packages/photo-frame/photo-frame-server.mjs';
+import * as photoFrameAPI from '../../packages/photo-frame/photo-frame-server.js';
 
 const app = serverAPIFactory('photo-frame:test');
 
