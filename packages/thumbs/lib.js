@@ -1,11 +1,11 @@
 
-import fs from 'fs-extra';
-import path from 'path';
-import { promisify } from 'util';
+const fs = require('fs-extra');
+const path = require('path');
+const { promisify } = require('util');
 
-import mime from 'mime-types';
+const mime = require('mime-types');
 
-import { rootDir } from '../../server/server-api.mjs';
+const { rootDir } = require('../../server/server-api.mjs');
 
 export function getCurrentPath(req, absolute = true) {
 	const dir = decodeURI(req.originalUrl).split('?')[0];
@@ -24,3 +24,6 @@ export async function getMimeType(filepath) {
 	}
 	return (mime.lookup(filepath) || 'application/binary').split('/');
 }
+
+module.exports.getCurrentPath = getCurrentPath;
+module.exports.getMimeType = getMimeType;

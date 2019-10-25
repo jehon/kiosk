@@ -1,10 +1,10 @@
 
-import proxy from '../../node_modules/express-http-proxy/index.js';
-import fetch from 'node-fetch';
-import btoa from '../../node_modules/btoa/index.js';
-import Datauri from 'datauri';
+const proxy = require('../../node_modules/express-http-proxy/index.js');
+const fetch = require('node-fetch');
+const btoa = require('../../node_modules/btoa/index.js');
+const Datauri = require('datauri');
 
-import serverAPIFactory from '../../server/server-api.mjs';
+const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('camera:server');
 
 let successes = 0;
@@ -21,7 +21,7 @@ const config = {
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 const kioskVideoFeed = '/camera/video';
 
-export async function _check(quick = false) {
+async function _check(quick = false) {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
 	app.debug(`checking "${url}"`);
 	const headers  = new fetch.Headers({
@@ -88,3 +88,5 @@ app.getExpressApp().use(kioskVideoFeed, proxy(() => config.host,
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);
+
+module.exports._check = _check;

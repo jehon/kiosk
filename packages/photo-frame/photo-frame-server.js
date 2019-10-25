@@ -10,8 +10,7 @@ const exifParser = require('./exif-parser.js');
 
 const exifReaderLimiter = pLimitFactory(1);
 
-// Not working
-const serverAPIFactory = require('../../server/server-api.mjs');
+const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('photo-frame:server');
 
 const buildingLogger = app.getChildLogger('building');

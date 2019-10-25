@@ -1,10 +1,10 @@
 
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process');
+const { promisify } = require('util');
 
-import serverAPIFactory from '../../server/server-api.mjs';
+const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('shares');
 const rootDir = app.getConfig('core.root');
 
@@ -12,7 +12,7 @@ const mountedList = {};
 
 const sharesRoot = path.join(rootDir, 'media');
 
-export async function mount(name, mountPoint) {
+async function mount(name, mountPoint) {
 	app.info(`Mounting ${name} with ${mountPoint}`);
 	const target = path.join(sharesRoot, name);
 	let stats = null;
@@ -56,7 +56,7 @@ export async function mount(name, mountPoint) {
 	}
 }
 
-export function getMountedList() {
+function getMountedList() {
 	return mountedList;
 }
 
@@ -66,6 +66,9 @@ app.getExpressApp().get('/mount/mountedList', (_req, res, _next) => {
 	app.dispatch('.refresh', null);
 	res.json(mountedList);
 });
+
+module.exports.mount = mount;
+module.exports.getMountedList = getMountedList;
 
 // const shares = serverAPI.getConfig('shares', {});
 // Object.keys(shares).forEach(k => {

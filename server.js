@@ -2,5 +2,5 @@
 
 // TODO: Obsolete
 
-import start from './server/server.mjs';
+const start = require('./server/server.js');
 start();

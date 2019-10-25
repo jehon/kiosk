@@ -49,12 +49,17 @@ export default class Bus {
 	async dispatch(eventName, data) {
 		this.logger.debug(`Nofity ${eventName}`, data);
 		if (typeof(data) != 'undefined') {
+
+			// JSON.stringify(a) === JSON.stringify(b);
+			// JSON.stringify(sortMyObj, Object.keys(sortMyObj).sort());
+
+
 			if (eventName in this.stateValues && _.isEqual(this.stateValues[eventName], data)) {
 				this.logger.debug('notify: skipping ', eventName, data);
 				return ;
 			}
 		}
-		this.stateValues[eventName] = _.cloneDeep(data);
+		this.stateValues[eventName] = JSON.parse(JSON.stringify(data));
 
 
 		// Specific listeners

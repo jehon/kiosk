@@ -1,9 +1,9 @@
 
 // Colors for the process logger
-import '../node_modules/colors/lib/index.js';
+require('colors');
 
-import _ from '../node_modules/lodash-es/lodash.js';
-import debugFactory from 'debug';
+const _ = require('lodash');
+const debugFactory = require('debug');
 
 function renderError(e) {
 	const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
@@ -71,7 +71,7 @@ class Logger {
 const logger = new Logger('core:server:logger');
 logger.info('To have the list of available lgogers, enable this one');
 
-export default (rawNamespace) => {
+const loggerFactory = (rawNamespace) => {
 	const namespace = canonizeNamespace(rawNamespace);
 
 	if (loggersList.has(namespace)) {
@@ -85,16 +85,21 @@ export default (rawNamespace) => {
 };
 
 let enabled = process.env.DEBUG;
-export function enableDebugForRegexp(regexp) {
+function enableDebugForRegexp(regexp) {
 	// Protect agains DEBUG not being defined
 	enabled = (enabled ? enabled + ',' : '') + regexp;
 	debugFactory.enable(enabled);
 }
 
-export function getEnabledDebugRegexp() {
+function getEnabledDebugRegexp() {
 	return enabled;
 }
 
-export function getLoggerList() {
+function getLoggerList() {
 	return Array.from(loggersList.keys());
 }
+
+module.exports = loggerFactory;
+module.exports.enableDebugForRegexp = enableDebugForRegexp;
+module.exports.getEnabledDebugRegexp= getEnabledDebugRegexp;
+module.exports.getLoggerList = getLoggerList;

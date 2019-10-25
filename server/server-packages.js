@@ -1,10 +1,10 @@
 /* eslint-env node */
 
-import fs from 'fs';
-import path from 'path';
-import util from 'util';
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
 
-import serverAPIFactory from './server-api.mjs';
+const serverAPIFactory = require('./server-api.js');
 const app = serverAPIFactory('core:server:packages');
 
 const root = app.getConfig('core.root');
@@ -30,10 +30,10 @@ async function testFolder(f) {
 }
 
 let manifestList = null;
-export let manifestListClient = null;
-export let manifestListServer = null;
+let manifestListClient = null;
+let manifestListServer = null;
 
-export async function getManifests() {
+async function getManifests() {
 	if (!manifestList) {
 		await util.promisify(fs.readdir)(pkgRoot)
 			.then(list => list.map(el => path.join(pkgRoot, el)))
@@ -61,15 +61,13 @@ export async function getManifests() {
 	return manifestList;
 }
 
-export async function loadServerFiles() {
+async function loadServerFiles() {
 	await getManifests();
 	return Promise.all(
 		manifestListServer.map(f => {
 			app.debug('Loading', f);
-			return import(f).then(
-				() => app.info('Loaded', f),
-				e => app.error('Error loading ', f, ': ', e)
-			);
+			require(f);
+			app.info('Loaded ', f);
 		})
 	);
 }
@@ -79,3 +77,9 @@ app.getExpressApp().get('/core/packages/client/active', async (req, res) => {
 	await getManifests();
 	res.json(manifestListClient);
 });
+
+
+module.exports.manifestListClient = manifestListClient;
+module.exports.manifestListServer = manifestListServer;
+module.exports.getManifests = getManifests;
+module.exports.loadServerFiles = loadServerFiles;

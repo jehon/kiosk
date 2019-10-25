@@ -1,11 +1,11 @@
-#!/usr/bin/node --experimental-modules
+#!/usr/bin/env node
 
-import startServer from './server/server.mjs';
+const startServer = require('./server/server.js');
 
-import getConfig from './server/server-config.mjs';
-import * as browser from './server/core-browser.mjs';
+const  getConfig = require('./server/server-config.js');
+const  browser = require('./server/core-browser.js');
 
-import loggerFactory from './server/server-logger.mjs';
+const  loggerFactory = require('./server/server-logger.js');
 const logger = loggerFactory('core:main');
 
 startServer().then((port) => {

@@ -1,14 +1,12 @@
-#!/usr/bin/node --experimental-modules
+#!/usr/bin/env node
 
-import { start as startServer } from './server-webserver.mjs';
-import './server-client-logger.mjs';
-import { getLoggerList, getEnabledDebugRegexp }        from './server-logger.mjs';
-import { loadServerFiles }      from './server-packages.mjs';
-
-import serverAPIFactory, { getSavedState } from './server-api.mjs';
+const { start: startServer }                    = require('./server-webserver.js');
+const { getLoggerList, getEnabledDebugRegexp }  = require('./server-logger.js');
+const { loadServerFiles }                       = require('./server-packages.js');
+const serverAPIFactory                          = require('./server-api.js');
 const app = serverAPIFactory('core:server');
 
-export default async (port) => loadServerFiles()
+const startFullStack = async (port) => loadServerFiles()
 	.then(() => startServer(port))
 	.then((port) => {
 		// Force the client to reload if it was still alive
@@ -29,5 +27,7 @@ app.getExpressApp().get('/core/loggers', async (req, res) => {
 });
 
 app.getExpressApp().get('/core/state', async (req, res) => {
-	res.json(getSavedState());
+	res.json(serverAPIFactory.getSavedState());
 });
+
+module.exports = startFullStack;

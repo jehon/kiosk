@@ -1,9 +1,9 @@
 /* eslint-env node */
 
-import serverAPIFactory from './server-api.mjs';
+const serverAPIFactory = require('./server-api.js');
 const app = serverAPIFactory('core:server:client:logger');
 
-import loggerFactory from './server-logger.mjs';
+const loggerFactory = require('./server-logger.js');
 
 app.getExpressApp().post('/core/client/logs', async (req, res) => {
 	const log = req.body;

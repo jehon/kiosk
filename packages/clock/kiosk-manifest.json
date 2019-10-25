@@ -1,5 +1,5 @@
 {
   "api": 1,
-  "server": "clock-server.mjs",
+  "server": "clock-server.js",
   "client": "clock-client.js"
 }

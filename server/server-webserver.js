@@ -1,10 +1,10 @@
 
-import path from 'path';
+const path = require('path');
 
-import express from 'express';
+const express = require('express');
 
-import getConfig from './server-config.mjs';
-import loggerFactory from './server-logger.mjs';
+const getConfig = require('./server-config.js');
+const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:webserver:server');
 
 //
@@ -16,7 +16,7 @@ const app = express();
 app.on('error', e => logger.error('Error starting server: ', e));
 
 // // http://expressjs.com/en/resources/middleware/morgan.html
-// import morgan from 'morgan';
+// const morgan = require('morgan');
 // app.use(morgan('dev'));
 
 // Handle POST data correctly
@@ -24,7 +24,7 @@ app.on('error', e => logger.error('Error starting server: ', e));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-export const priorityMiddleware = express.Router();
+const priorityMiddleware = express.Router();
 app.use('/', priorityMiddleware);
 
 // Index is in client
@@ -43,7 +43,7 @@ app.use('/dynamic/',      express.static(path.join(getConfig('core.root'), 'dyna
 
 let serverListener = false;
 
-export async function start(port = getConfig('core.port')) {
+async function start(port = getConfig('core.port')) {
 	return new Promise(resolve => {
 		if (serverListener) {
 			const realPort = getPort();
@@ -58,11 +58,11 @@ export async function start(port = getConfig('core.port')) {
 	});
 }
 
-export function getPort() {
+function getPort() {
 	return serverListener.address().port;
 }
 
-export function stop() {
+function stop() {
 	if (!serverListener) {
 		logger.debug('Webserver was not started');
 		return;
@@ -77,4 +77,10 @@ export function stop() {
  *
  */
 
-export const getExpressApp = function() { return app; };
+const getExpressApp = function() { return app; };
+
+module.exports.priorityMiddleware = priorityMiddleware;
+module.exports.start = start;
+module.exports.getPort = getPort;
+module.exports.stop = stop;
+module.exports.getExpressApp = getExpressApp;
