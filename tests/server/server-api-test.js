@@ -1,7 +1,7 @@
 
-import serverAPIFactory, { ServerAPI } from '../../server/server-api.mjs';
+const { serverAPIFactory, ServerAPI } = require('../../server/server-api.js');
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	describe('should serverAPI without context', () => {
 		it('should have a bus', async () => {
 			const app = serverAPIFactory('test');

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const serverAPIFactory = require('./server-api.js');
+const { serverAPIFactory } = require('./server-api.js');
 const app = serverAPIFactory('core:server:packages');
 
 const root = app.getConfig('core.root');
@@ -30,8 +30,8 @@ async function testFolder(f) {
 }
 
 let manifestList = null;
-let manifestListClient = null;
-let manifestListServer = null;
+module.exports.manifestListClient = [];
+module.exports.manifestListServer = [];
 
 async function getManifests() {
 	if (!manifestList) {
@@ -43,20 +43,22 @@ async function getManifests() {
 			.catch(e => app.error('Error getting the manifest list:', e));
 
 		if (manifestList) {
-			manifestListServer = manifestList
+			module.exports.manifestListServer.length = 0;
+			module.exports.manifestListServer.push(...manifestList
 				.filter(el => 'server' in el)
 				.map(el => path.join(el.relativePath, el.server))
-			;
+			);
 
-			manifestListClient = manifestList
+			module.exports.manifestListClient.length = 0;
+			module.exports.manifestListClient.push(...manifestList
 				.filter(el => 'client' in el)
 				.map(el => path.join('/', path.relative(root, el.relativePath), el.client))
-			;
+			);
 		}
 
 		app.debug('Manifest list: ', manifestList);
-		app.debug('Server manifest files', manifestListServer);
-		app.debug('Client manifest files', manifestListClient);
+		app.debug('Server manifest files', module.exports.manifestListServer);
+		app.debug('Client manifest files', module.exports.manifestListClient);
 	}
 	return manifestList;
 }
@@ -64,7 +66,7 @@ async function getManifests() {
 async function loadServerFiles() {
 	await getManifests();
 	return Promise.all(
-		manifestListServer.map(f => {
+		module.exports.manifestListServer.map(f => {
 			app.debug('Loading', f);
 			require(f);
 			app.info('Loaded ', f);
@@ -75,11 +77,9 @@ async function loadServerFiles() {
 // Register route on URL
 app.getExpressApp().get('/core/packages/client/active', async (req, res) => {
 	await getManifests();
-	res.json(manifestListClient);
+	res.json(module.exports.manifestListClient);
 });
 
 
-module.exports.manifestListClient = manifestListClient;
-module.exports.manifestListServer = manifestListServer;
 module.exports.getManifests = getManifests;
 module.exports.loadServerFiles = loadServerFiles;

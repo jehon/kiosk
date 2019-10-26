@@ -1,7 +1,8 @@
 
-import Bus from '../../common/bus.mjs';
+const esmLoader = require('esm')(module/*, options*/);
+const { Bus } = esmLoader('../../common/bus.mjs');
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	it('should notify', async function() {
 		const bus = new Bus();
 		let i = 0;

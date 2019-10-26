@@ -1,9 +1,28 @@
 
-import _ from '../node_modules/lodash-es/lodash.js';
+// TODO
+// import _ from '../node_modules/lodash/lodash.js';
 
 // Inspired from https://gist.github.com/mudge/5830382
 
-export default class Bus {
+function clone(obj) {
+	if(obj == null || typeof(obj) != 'object') {
+		return obj;
+	}
+
+	var temp = new obj.constructor();
+
+	for(var key in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, key)) {
+			// eslint-disable-next-line no-prototype-builtins
+			// if (obj.hasOwnProperty(key)) {
+			temp[key] = clone(obj[key]);
+		}
+	}
+
+	return temp;
+}
+
+export class Bus {
 	constructor(logger = console) {
 		this.logger = logger;
 		this.events = {};
@@ -50,20 +69,15 @@ export default class Bus {
 		this.logger.debug(`Nofity ${eventName}`, data);
 		if (typeof(data) != 'undefined') {
 
-			// JSON.stringify(a) === JSON.stringify(b);
-			// JSON.stringify(sortMyObj, Object.keys(sortMyObj).sort());
-
-
-			if (eventName in this.stateValues && _.isEqual(this.stateValues[eventName], data)) {
+			if (eventName in this.stateValues
+					&& (
+						JSON.stringify(this.stateValues[eventName], Object.keys(this.stateValues[eventName]).sort())
+					== JSON.stringify(data, Object.keys(data).sort()))) {
 				this.logger.debug('notify: skipping ', eventName, data);
 				return ;
 			}
 		}
-		this.stateValues[eventName] = JSON.parse(JSON.stringify(data));
-
-
-		// Specific listeners
-		// Duplicate the eventName so it appears as first parameter
+		this.stateValues[eventName] = clone(data);
 
 		if (!(eventName in this.events)) {
 			return;

@@ -1,7 +1,7 @@
 
-import serverAPIFactory, { ServerAPI,testingConfigOverride, testingConfigRestore } from'../../server/server-api.mjs';
+const { serverAPIFactory, ServerAPI,testingConfigOverride, testingConfigRestore } = require('../../server/server-api.js');
 
-import * as photoFrameAPI from '../../packages/photo-frame/photo-frame-server.js';
+const photoFrameAPI = require('../../packages/photo-frame/photo-frame-server.js');
 
 const app = serverAPIFactory('photo-frame:test');
 
@@ -9,7 +9,7 @@ function baseConfig() {
 	return JSON.parse(JSON.stringify(app.getConfig()));
 }
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeEach(() => {
 		spyOn(ServerAPI.prototype, 'dispatchToBrowser');
 	});

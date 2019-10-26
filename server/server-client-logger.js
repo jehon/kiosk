@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-const serverAPIFactory = require('./server-api.js');
+const { serverAPIFactory } = require('./server-api.js');
 const app = serverAPIFactory('core:server:client:logger');
 
 const loggerFactory = require('./server-logger.js');

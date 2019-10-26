@@ -1,7 +1,7 @@
 
-import Scheduler from '../../server/server-scheduler.mjs';
+const Scheduler = require('../../server/server-scheduler.js');
 
-describe(import.meta.url, function() {
+describe(__filename, function() {
 	it('should trigger events', function() {
 		let i = 0;
 		let scheduler = new Scheduler({

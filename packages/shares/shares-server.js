@@ -4,7 +4,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const { promisify } = require('util');
 
-const serverAPIFactory = require('../../server/server-api.js');
+const { serverAPIFactory } = require('../../server/server-api.js');
 const app = serverAPIFactory('shares');
 const rootDir = app.getConfig('core.root');
 

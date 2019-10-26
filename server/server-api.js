@@ -1,9 +1,10 @@
 
-// const esmLoader = require('esm')(module/*, options*/);
+const esmLoader = require('esm')(module/*, options*/);
 
 // Common
-const Bus                                  = require('../common/bus.mjs');
-const contextualize                        = require('../common/contextualize.mjs');
+const { Bus }                              = esmLoader('../common/bus.mjs');
+const { contextualize }                    = esmLoader('../common/contextualize.mjs');
+
 const loggerFactory                        = require('./server-logger.js');
 const Scheduler                            = require('./server-scheduler.js');
 const configAPI                            = require('./server-config.js');
@@ -85,7 +86,7 @@ function testingConfigRestore() {
 	return configAPI.testingConfigRestore();
 }
 
-module.exports = serverAPIFactory;
+module.exports.serverAPIFactory = serverAPIFactory;
 module.exports.rootDir = configAPI.rootDir;
 module.exports.getSavedState = getSavedState;
 module.exports.ServerAPI = ServerAPI;

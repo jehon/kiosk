@@ -1,9 +1,9 @@
 
-import { ServerAPI } from '../../server/server-api.mjs';
+const { ServerAPI } = require('../../server/server-api.js');
 
 // Eventname is the shortname, because it is the way it was called
 // from the class, outside of any context
-export async function expectBrowserEvent(eventName, testFn) {
+async function expectBrowserEvent(eventName, testFn) {
 	if (ServerAPI.prototype.dispatchToBrowser.calls) {
 		ServerAPI.prototype.dispatchToBrowser.calls.reset();
 	} else {
@@ -19,3 +19,5 @@ export async function expectBrowserEvent(eventName, testFn) {
 	}
 	return res;
 }
+
+module.exports.expectBrowserEvent = expectBrowserEvent;

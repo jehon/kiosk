@@ -1,7 +1,8 @@
 
-import contextualize, { ctxForFunction } from '../../common/contextualize.mjs';
+const esmLoader = require('esm')(module/*, options*/);
+const { contextualize, ctxForFunction } = esmLoader('../../common/contextualize.mjs');
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	it('should contextualize relative keys', () => {
 		const ctx = contextualize('test');
 		expect(ctx('.brol')).toBe('test.brol');

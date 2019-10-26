@@ -2,10 +2,10 @@
 
 const startServer = require('./server/server.js');
 
-const  getConfig = require('./server/server-config.js');
-const  browser = require('./server/core-browser.js');
+const { getConfig } = require('./server/server-config.js');
+const browser = require('./server/core-browser.js');
 
-const  loggerFactory = require('./server/server-logger.js');
+const loggerFactory = require('./server/server-logger.js');
 const logger = loggerFactory('core:main');
 
 startServer().then((port) => {

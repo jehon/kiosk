@@ -1,10 +1,10 @@
 
-import { ServerAPI, testingConfigOverride, testingConfigRestore } from '../../server/server-api.mjs';
-import { expectBrowserEvent } from './helpers.mjs';
+const { ServerAPI, testingConfigOverride, testingConfigRestore } = require('../../server/server-api.js');
+const { expectBrowserEvent } = require('./test-functions.js');
 
-import '../../packages/clock/clock-server.mjs';
+require('../../packages/clock/clock-server.js');
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeEach(function() {
 		spyOn(ServerAPI.prototype, 'dispatchToBrowser').and.callThrough();
 		testingConfigOverride({});

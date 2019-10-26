@@ -5,9 +5,9 @@ const { promisify } = require('util');
 
 const mime = require('mime-types');
 
-const { rootDir } = require('../../server/server-api.mjs');
+const { rootDir } = require('../../server/server-api.js');
 
-export function getCurrentPath(req, absolute = true) {
+function getCurrentPath(req, absolute = true) {
 	const dir = decodeURI(req.originalUrl).split('?')[0];
 
 	if (absolute) {
@@ -16,7 +16,7 @@ export function getCurrentPath(req, absolute = true) {
 	return path.normalize(dir);
 }
 
-export async function getMimeType(filepath) {
+async function getMimeType(filepath) {
 	const stat = await promisify(fs.stat)(filepath);
 	if (stat.isDirectory()) {
 		// TODO: type of folder ? mountpoint -q -- / => exit status show if it is a mount point (0) or not (>0)

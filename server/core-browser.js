@@ -2,7 +2,7 @@
 
 const childProcess = require('child_process');
 
-const serverAPIFactory = require('./server-api.js');
+const { serverAPIFactory } = require('./server-api.js');
 const app = serverAPIFactory('core.browser');
 
 let browserThread = false;

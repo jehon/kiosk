@@ -3,7 +3,7 @@ const path = require('path');
 
 const express = require('express');
 
-const getConfig = require('./server-config.js');
+const { getConfig } = require('./server-config.js');
 const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:webserver:server');
 

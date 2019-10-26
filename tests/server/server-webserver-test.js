@@ -1,7 +1,7 @@
 
-import fetch from '../../node_modules/node-fetch/lib/index.js';
+const fetch = require('../../node_modules/node-fetch/lib/index.js');
 
-import { start as startServer, stop as stopServer } from '../../server/server-webserver.mjs';
+const { start: startServer, stop: stopServer } = require('../../server/server-webserver.js');
 
 const serverUrl = (url) => `http://localhost:${port}${url}`;
 
@@ -11,7 +11,7 @@ function serverFetch(url, ...args) {
 
 let port = 0;
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeAll(async () => {
 		port = await startServer(0);
 	});

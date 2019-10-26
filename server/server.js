@@ -3,7 +3,7 @@
 const { start: startServer }                    = require('./server-webserver.js');
 const { getLoggerList, getEnabledDebugRegexp }  = require('./server-logger.js');
 const { loadServerFiles }                       = require('./server-packages.js');
-const serverAPIFactory                          = require('./server-api.js');
+const { serverAPIFactory }                      = require('./server-api.js');
 const app = serverAPIFactory('core:server');
 
 const startFullStack = async (port) => loadServerFiles()

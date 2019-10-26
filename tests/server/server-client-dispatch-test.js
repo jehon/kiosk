@@ -1,15 +1,15 @@
 
-import EventSource from '../../node_modules/eventsource/lib/eventsource.js';
+const EventSource = require('../../node_modules/eventsource/lib/eventsource.js');
 
-import { start as startServer, stop as stopServer } from '../../server/server-webserver.mjs';
-import serverAPIFactory from '../../server/server-api.mjs';
+const { start: startServer, stop: stopServer } = require('../../server/server-webserver.js');
+const { serverAPIFactory } = require('../../server/server-api.js');
 const app = serverAPIFactory('server-client-browser:test');
 
 const serverUrl = (url) => `http://localhost:${port}${url}`;
 
 let port = 0;
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeAll(async () => {
 		port = await startServer(0);
 	});

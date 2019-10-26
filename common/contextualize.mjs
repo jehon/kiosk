@@ -5,7 +5,7 @@
 	 *    - [^.] => treat as global key
 	 */
 
-export default function contextualize(contextRaw) {
+export function contextualize(contextRaw) {
 	const context = contextRaw.split(':')[0];
 	return function(key) {
 		if ((typeof(key) == 'string' && key[0] == '.')

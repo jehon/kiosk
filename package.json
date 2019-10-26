@@ -71,7 +71,7 @@
     "test": "npm run test-server && npm run test-client && npm run test-gui-with-server && npm run lint",
     "test-client": "cd tests/client && karma start --single-run",
     "test-client-watch": "cd tests/client && karma start",
-    "test-server": "node --experimental-modules tests/server/jasmine-run.mjs",
+    "test-server": "jasmine --config=tests/server/jasmine.json",
     "test-gui": "cd tests/gui && cypress run --browser chromium",
     "test-gui-with-server": "start-server-and-test start-server-for-gui-tests  http://localhost:3002 test-gui",
     "cypress-open": "cd tests/gui && cypress open",

@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const btoa = require('../../node_modules/btoa/index.js');
 const Datauri = require('datauri');
 
-const serverAPIFactory = require('../../server/server-api.js');
+const { serverAPIFactory } = require('../../server/server-api.js');
 const app = serverAPIFactory('camera:server');
 
 let successes = 0;

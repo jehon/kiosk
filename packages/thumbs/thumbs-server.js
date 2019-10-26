@@ -1,11 +1,11 @@
 
-const { getCurrentPath, getMimeType } = require('./lib.mjs');
+const { getCurrentPath, getMimeType } = require('./lib.js');
 
 const sharp = require('sharp');
 const promiseLimit = require('promise-limit');
 
-const { priorityMiddleware } = require('../../server/server-webserver.mjs');
-const serverAPIFactory = require('../../server/server-api.mjs');
+const { priorityMiddleware } = require('../../server/server-webserver.js');
+const { serverAPIFactory } = require('../../server/server-api.js');
 const app = serverAPIFactory('thumbs');
 
 // Config

@@ -1,13 +1,13 @@
 
-import nock from 'nock';
+const nock = require('nock');
 
 const host = 'http://localhost';
 
-import { testingConfigOverride, testingConfigRestore } from '../../server/server-api.mjs';
-import * as cameraAPI from'../../packages/camera/camera-server.mjs';
-import { expectBrowserEvent } from './helpers.mjs';
+const { testingConfigOverride, testingConfigRestore } = require('../../server/server-api.js');
+const cameraAPI = require('../../packages/camera/camera-server.js');
+const { expectBrowserEvent } = require('./test-functions.js');
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeAll(() => {
 		testingConfigOverride({
 			camera: {

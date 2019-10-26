@@ -10,7 +10,6 @@ const objectPath = require('object-path');
 const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:server:config');
 
-// const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));
 const rootDir = path.dirname(__dirname);
 
 //
@@ -54,7 +53,8 @@ const cmdLineOptions = yargs
 	})
 	.help()
 	.recommendCommands()
-	.strict()
+// FIXME: reactivate strict --> make a function to be called at global scope: "parseCommandLine", "loadFiles", ???
+	// .strict()
 	.argv;
 
 logger.debug('Command line parsed options: ', cmdLineOptions);
@@ -167,7 +167,7 @@ function testingConfigRestore() {
 	configTestBackup = false;
 }
 
-module.exports = getConfig;
+module.exports.getConfig = getConfig;
 module.exports.rootDir = rootDir;
 module.exports.testingConfigOverride = testingConfigOverride;
 module.exports.testingConfigRestore = testingConfigRestore;

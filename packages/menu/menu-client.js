@@ -23,6 +23,7 @@ class KioskMenu extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	adaptToList(list) {
+		console.log('LIST:', list);
 		// TODO: optimization -> make the diff ?
 		this.innerHTML = '';
 		this.classList.add('grid');
