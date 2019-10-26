@@ -1,26 +1,13 @@
 
-// TODO
-// import _ from '../node_modules/lodash/lodash.js';
-
 // Inspired from https://gist.github.com/mudge/5830382
 
-function clone(obj) {
-	if(obj == null || typeof(obj) != 'object') {
-		return obj;
-	}
+// TODO
+// Browser ok:
+import _ from '../node_modules/lodash-es/lodash.js';
+function clone(obj) { return _.cloneDeep(obj); }
 
-	var temp = new obj.constructor();
-
-	for(var key in obj) {
-		if (Object.prototype.hasOwnProperty.call(obj, key)) {
-			// eslint-disable-next-line no-prototype-builtins
-			// if (obj.hasOwnProperty(key)) {
-			temp[key] = clone(obj[key]);
-		}
-	}
-
-	return temp;
-}
+// // Server ok:
+// import clone from '../node_modules/lodash.clonedeep/index.js';
 
 export class Bus {
 	constructor(logger = console) {
