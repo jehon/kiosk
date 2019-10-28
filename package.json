@@ -46,7 +46,7 @@
     "eslint": "6.6.0",
     "eslint-plugin-cypress": "2.7.0",
     "eventsource": "1.0.7",
-    "jasmine": "3.4.0",
+    "jasmine": "3.5.0",
     "jasmine-core": "3.4.0",
     "jsdoc": "3.6.3",
     "karma": "4.4.1",
