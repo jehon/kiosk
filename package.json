@@ -65,7 +65,7 @@
     "lint:fix": "npm run lint -- --fix",
     "postinstall": "./apply-patches.sh",
     "start": "node --experimental-modules main.mjs -f tests/kiosk.yml",
-    "start-server": "node --experimental-modules main.mjs --server-only -f tests/kiosk.yml",
+    "start-server": "npm start -- --server-only",
     "start-server-for-gui-tests": "node --experimental-modules server.mjs -p 3002",
     "test": "npm run test-server && npm run test-client && npm run test-gui-with-server && npm run lint",
     "test-client": "cd tests/client && karma start --single-run",
