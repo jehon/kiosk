@@ -4,7 +4,11 @@ import mime from 'mime-types';
 import shuffleArray from 'shuffle-array';
 import path from 'path';
 import minimatch from 'minimatch';
-import pLimitFactory from 'p-limit';
+
+// See https://nodejs.org/dist/latest-v12.x/docs/api/modules.html#modules_module_createrequire_filename
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pLimitFactory = require('p-limit');
 
 import exifParser from './exif-parser.mjs';
 
