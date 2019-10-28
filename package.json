@@ -17,7 +17,7 @@
     "datauri": "2.0.0",
     "debug": "4.1.1",
     "deepmerge": "4.0.0",
-    "esm": "^3.2.25",
+    "esm": "3.2.25",
     "express": "4.17.1",
     "express-http-proxy": "1.5.1",
     "fetch-mock": "7.3.9",
