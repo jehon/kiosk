@@ -16,7 +16,7 @@
     "cronstrue": "1.83.0",
     "datauri": "2.0.0",
     "debug": "4.1.1",
-    "deepmerge": "4.0.0",
+    "deepmerge": "4.2.1",
     "esm": "3.2.25",
     "express": "4.17.1",
     "express-http-proxy": "1.5.1",
