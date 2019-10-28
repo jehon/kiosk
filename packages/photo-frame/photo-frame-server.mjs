@@ -4,7 +4,15 @@ import mime from 'mime-types';
 import shuffleArray from 'shuffle-array';
 import path from 'path';
 import minimatch from 'minimatch';
-import pLimitFactory from 'p-limit';
+
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+// const pLimitFactory = require('../../node_modules/p-limit/index.js');
+const pLimitFactory = require('p-limit');
+
+// import pLimitFactory from '../../node_modules/p-limit/index.js';
+// const pLimitFactory = () =>  (cb)  => cb();
+// console.log('*** pLimitFactory ***', pLimitFactory);
 
 import exifParser from './exif-parser.mjs';
 
