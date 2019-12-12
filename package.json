@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "babel-eslint": "10.0.3",
-    "cypress": "3.7.0",
+    "cypress": "3.8.0",
     "depcheck": "0.9.1",
     "eslint": "6.7.2",
     "eslint-plugin-cypress": "2.7.0",
