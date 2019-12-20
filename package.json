@@ -43,7 +43,7 @@
     "babel-eslint": "10.0.3",
     "cypress": "3.8.0",
     "depcheck": "0.9.1",
-    "eslint": "6.7.2",
+    "eslint": "6.8.0",
     "eslint-plugin-cypress": "2.8.1",
     "eventsource": "1.0.7",
     "jasmine": "3.5.0",
