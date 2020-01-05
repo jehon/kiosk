@@ -1,4 +1,4 @@
-#!/usr/bin/node --experimental-modules
+#!/usr/bin/env node
 
 import startServer from './server/server.mjs';
 
