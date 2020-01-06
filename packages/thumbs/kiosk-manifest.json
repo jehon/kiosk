@@ -1,5 +1,5 @@
 {
     "api": 1,
-    "server": "thumbs-server.mjs"
+    "server": "thumbs-server.js"
   }
   

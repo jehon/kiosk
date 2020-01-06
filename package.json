@@ -17,6 +17,7 @@
     "datauri": "2.0.0",
     "debug": "4.1.1",
     "deepmerge": "4.2.2",
+    "electron": "^7.1.7",
     "esm": "3.2.25",
     "express": "4.17.1",
     "express-http-proxy": "1.6.0",
@@ -25,6 +26,7 @@
     "heapdump": "0.3.15",
     "js-yaml": "3.13.1",
     "karma-jasmine-html": "1.0.0",
+    "lodash": "^4.17.15",
     "lodash-es": "4.17.15",
     "mime-types": "2.1.25",
     "minimatch": "3.0.4",
@@ -60,13 +62,14 @@
     "watch-then-execute": "1.1.1"
   },
   "scripts": {
+    "electron": "electron main.js -- -f tests/kiosk.yml",
     "clean": "rm -fr parts tmp",
     "lint": "eslint --ignore-path .gitignore --ignore-pattern /unused .",
     "lint:fix": "npm run lint -- --fix",
-    "postinstall": "./apply-patches.sh",
-    "start": "node main.mjs -f tests/kiosk.yml",
+    "xxx-postinstall": "./apply-patches.sh",
+    "start": "node main.js -f tests/kiosk.yml",
     "start-server": "npm start -- --server-only",
-    "start-server-for-gui-tests": "node server.mjs -p 3002",
+    "start-server-for-gui-tests": "node server.js -p 3002",
     "test": "npm run test-server && npm run test-client && npm run test-gui-with-server && npm run lint",
     "test-client": "cd tests/client && karma start --single-run",
     "test-client-watch": "cd tests/client && karma start",
@@ -79,5 +82,6 @@
   },
   "engines": {
     "node": ">=12.0.0"
-  }
+  },
+  "main": "main.js"
 }

@@ -1,5 +1,5 @@
 
-import { spawnSync } from 'child_process';
+const { spawnSync } = require('child_process');
 
 const translation = {
 	'Exif.Photo.UserComment': 'comment',
@@ -31,7 +31,7 @@ function runExiv(...params) {
 }
 
 // TODO: use exiftool (more easy to use)
-export default async function exivReadAll(filePath) {
+async function exivReadAll(filePath) {
 	const data = runExiv('-g', 'Exif.*', filePath);
 	const result = {
 		'comment': '',
@@ -63,3 +63,5 @@ export default async function exivReadAll(filePath) {
 	});
 	return result;
 }
+
+module.exports = exivReadAll;

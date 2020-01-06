@@ -1,18 +1,16 @@
 
-import fs from 'fs';
-import path from 'path';
-import yargs from 'yargs';
-import url from 'url';
+const fs = require('fs');
+const path = require('path');
+const yargs = require('yargs');
 
-import yaml from 'js-yaml';
-import deepMerge  from 'deepmerge';
-import objectPath from 'object-path';
+const yaml = require('js-yaml');
+const deepMerge  = require('deepmerge');
+const objectPath = require('object-path');
 
-import loggerFactory, { enableDebugForRegexp } from './server-logger.mjs';
+const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:server:config');
 
-// TODO: legacy, but difficult to remove
-export const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));
+const rootDir = path.dirname(__dirname);
 
 //
 // Parameters
@@ -125,7 +123,7 @@ logger.debug('Final config: ', config);
 if (config.core.loggers) {
 	for(const re of config.core.loggers) {
 		logger.info('Enabling logging level due to configuration: ', re);
-		enableDebugForRegexp(re);
+		loggerFactory.enableDebugForRegexp(re);
 	}
 }
 
@@ -133,7 +131,7 @@ if (config.core.loggers) {
 // Main function to get a config
 //
 const getConfigLogger = logger.extend('get');
-export default function getConfig(path = false, def = undefined) {
+module.exports = function getConfig(path = false, def = undefined) {
 	if (path) {
 		if (objectPath.has(config, path)) {
 			const val = objectPath.get(config, path);
@@ -145,25 +143,29 @@ export default function getConfig(path = false, def = undefined) {
 	}
 	getConfigLogger.debug('Getting all config');
 	return JSON.parse(JSON.stringify(config));
-}
+};
 
 //
 // for testing purposes
 //
 
 let configTestBackup = false;
-export function testingConfigOverride(configOverride) {
+function testingConfigOverride(configOverride) {
 	if (configTestBackup !== false) {
 		throw 'testingConfigOverride could not be called twice, please restore config before with testingConfigRestore()';
 	}
 	configTestBackup = config;
 	config = configOverride;
 }
+module.exports.testingConfigOverride = testingConfigOverride;
 
-export function testingConfigRestore() {
+function testingConfigRestore() {
 	if (configTestBackup === false) {
 		throw 'testingConfigRestore called when no backup was present. Please override first with testingConfigOverride(<config object>)';
 	}
 	config = configTestBackup;
 	configTestBackup = false;
 }
+module.exports.testingConfigRestore = testingConfigRestore;
+
+module.exports.rootDir = rootDir;
