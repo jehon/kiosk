@@ -1,7 +1,7 @@
 
-import { spawn } from 'child_process';
+const { spawn } = require('child_process');
 
-import serverAPIFactory from '../../server/server-api.mjs';
+const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('caffeine:server');
 
 const config = {

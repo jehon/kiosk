@@ -1,9 +1,9 @@
 
-import _ from '../node_modules/lodash-es/lodash.js';
+const _ = require('lodash');
 
 // Inspired from https://gist.github.com/mudge/5830382
 
-export default class Bus {
+class Bus {
 	constructor(logger = console) {
 		this.logger = logger;
 		this.events = {};
@@ -83,3 +83,5 @@ export default class Bus {
 		return this.stateValues;
 	}
 }
+
+module.exports = Bus;

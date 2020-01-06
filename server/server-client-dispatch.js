@@ -1,8 +1,8 @@
 
-import loggerFactory from './server-logger.mjs';
+const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:client-dispatch:server');
 
-import { getExpressApp } from './server-webserver.mjs';
+const { getExpressApp } = require('./server-webserver.js');
 const expressApp = getExpressApp();
 
 const sseSavedStates = {};
@@ -45,7 +45,7 @@ expressApp.use('/core/events', function (req, res, _next) {
 	}
 });
 
-export default function dispatchToBrowser(eventName, data = null) {
+module.exports = function dispatchToBrowser(eventName, data = null) {
 	if (data) {
 		sseSavedStates[eventName] = data;
 	}
@@ -54,7 +54,7 @@ export default function dispatchToBrowser(eventName, data = null) {
 	for(const k of Object.keys(sseClients)) {
 		sseNotifyThisClient(sseClients[k], eventName, data);
 	}
-}
+};
 
 expressApp.use('/core/browser-state', function (req, res, _next) {
 	return res.json(sseSavedStates);

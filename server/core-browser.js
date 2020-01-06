@@ -1,13 +1,12 @@
-#!/usr/bin/env node --experimental-modules
 
-import childProcess from 'child_process';
+const childProcess = require('child_process');
 
-import serverAPIFactory from './server-api.mjs';
+const serverAPIFactory = require('./server-api.js');
 const app = serverAPIFactory('core.browser');
 
 let browserThread = false;
 
-export function start(port) {
+module.exports.start = function start(port) {
 	const devMode = app.getConfig('.console', false);
 	if (browserThread) {
 		throw 'Browser already launched at ' + browserThread;
@@ -43,9 +42,9 @@ export function start(port) {
 		app.debug('end of browser', e);
 		process.exit(0);
 	});
-}
+};
 
-export function stop() {
+module.exports.stop = function stop() {
 	if (!browserThread) {
 		app.info('Browser was not started by us');
 	} else {
@@ -56,4 +55,4 @@ export function stop() {
 		}
 	}
 	browserThread = false;
-}
+};

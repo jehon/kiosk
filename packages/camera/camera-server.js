@@ -1,10 +1,10 @@
 
-import proxy from '../../node_modules/express-http-proxy/index.js';
-import fetch from 'node-fetch';
-import btoa from '../../node_modules/btoa/index.js';
-import Datauri from 'datauri';
+const proxy = require('express-http-proxy');
+const fetch = require('node-fetch');
+const btoa = require('btoa');
+const Datauri = require('datauri');
 
-import serverAPIFactory from '../../server/server-api.mjs';
+const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('camera:server');
 
 let successes = 0;
@@ -16,12 +16,27 @@ const config = {
 	password: '',
 	imageFeed: '/image.jpg',
 	videoFeed: '/video/mjpg.cgi',
+	audioFeed: '/audio.cgi',
 	...app.getConfig('.')
 };
+/**
+ * From: http://forums.dlink.com/index.php?topic=58565.0
+ * view functions:
+  1   mvideo.htm      stream   admin or user
+  2   lphone.htm      stream   admin or user
+  3   mjpeg.cgi      stream   admin or user
+  4   mobile.htm      still   admin or user
+  5   iphone.htm      still   admin or user
+  6   image/jpeg.cgi   still   admin or user
+  V   video.cgi      stream   admin only?
+  A   audio.cgi      audio   admin only?
+
+ */
+
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 const kioskVideoFeed = '/camera/video';
 
-export async function _check(quick = false) {
+async function _check(quick = false) {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
 	app.debug(`checking "${url}"`);
 	const headers  = new fetch.Headers({
@@ -68,22 +83,20 @@ export async function _check(quick = false) {
 		});
 }
 _check(true);
+module.exports._check = _check;
 
-function addHeader(name, value, opts = {}) {
-	// https://www.npmjs.com/package/express-http-proxy
-	opts.preserveHostHdr = true;
-	opts.proxyReqOptDecorator = function(proxyReqOpts, _srcReq) {
-		proxyReqOpts.headers[name] = value;
-		return proxyReqOpts;
-	};
-	return opts;
-}
-
-// Todo: make this dynamic?
-app.getExpressApp().use(kioskVideoFeed, proxy(() => config.host,
-	addHeader('Authorization',  authHeader, {
-		proxyReqPathResolver: (_req) => config.videoFeed
-	})
+app.getExpressApp().use(kioskVideoFeed, proxy(
+	config.host,
+	{
+		// https://www.npmjs.com/package/express-http-proxy
+		// preserveHostHdr: true,
+		proxyReqPathResolver: (_req) => config.videoFeed,
+		proxyReqOptDecorator: function(proxyReqOpts, _srcReq) {
+			proxyReqOpts.headers['Authorization'] = authHeader;
+			return proxyReqOpts;
+		},
+		stream: true
+	}
 ));
 
 app.subscribe('.recheck', _check);

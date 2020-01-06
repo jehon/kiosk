@@ -1,10 +1,10 @@
 /* eslint-env node */
 
-import fs from 'fs';
-import path from 'path';
-import util from 'util';
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
 
-import serverAPIFactory from './server-api.mjs';
+const serverAPIFactory = require( './server-api.js');
 const app = serverAPIFactory('core:server:packages');
 
 const root = app.getConfig('core.root');
@@ -30,10 +30,10 @@ async function testFolder(f) {
 }
 
 let manifestList = null;
-export let manifestListClient = null;
-export let manifestListServer = null;
+module.exports.manifestListClient = null;
+module.exports.manifestListServer = null;
 
-export async function getManifests() {
+async function getManifests() {
 	if (!manifestList) {
 		await util.promisify(fs.readdir)(pkgRoot)
 			.then(list => list.map(el => path.join(pkgRoot, el)))
@@ -43,39 +43,42 @@ export async function getManifests() {
 			.catch(e => app.error('Error getting the manifest list:', e));
 
 		if (manifestList) {
-			manifestListServer = manifestList
+			module.exports.manifestListServer = manifestList
 				.filter(el => 'server' in el)
 				.map(el => path.join(el.relativePath, el.server))
 			;
 
-			manifestListClient = manifestList
+			module.exports.manifestListClient = manifestList
 				.filter(el => 'client' in el)
 				.map(el => path.join('/', path.relative(root, el.relativePath), el.client))
 			;
 		}
 
 		app.debug('Manifest list: ', manifestList);
-		app.debug('Server manifest files', manifestListServer);
-		app.debug('Client manifest files', manifestListClient);
+		app.debug('Server manifest files', module.exports.manifestListServer);
+		app.debug('Client manifest files', module.exports.manifestListClient);
 	}
 	return manifestList;
 }
+module.exports.getManifests = getManifests;
 
-export async function loadServerFiles() {
+module.exports.loadServerFiles = async function loadServerFiles() {
 	await getManifests();
 	return Promise.all(
-		manifestListServer.map(f => {
+		module.exports.manifestListServer.map(f => {
 			app.debug('Loading', f);
-			return import(f).then(
-				() => app.info('Loaded', f),
-				e => app.error('Error loading ', f, ': ', e)
-			);
+			try {
+				require(f);
+				app.info('Loaded', f);
+			} catch(e) {
+				app.error('Error loading ', f, ': ', e);
+			}
 		})
 	);
-}
+};
 
 // Register route on URL
 app.getExpressApp().get('/core/packages/client/active', async (req, res) => {
 	await getManifests();
-	res.json(manifestListClient);
+	res.json(module.exports.anifestListClient);
 });
