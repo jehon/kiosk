@@ -1,5 +1,5 @@
+// TODO: reenable thumbs ???
 {
     "api": 1,
     "server": "thumbs-server.js"
-  }
-  
+}
