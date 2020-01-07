@@ -35,20 +35,15 @@ if (typeof(jasmine) != 'undefined') {
 
 const cmdLineOptions = yargs
 	.options({
-		'port': {
-			alias: 'p',
-			type: 'integer',
-			describe: 'The port to listen to',
-			default: 0
-		},
 		'file': {
 			alias: 'f',
 			type: 'string',
 			describe: 'additionnal file configuration'
 		},
-		'server-only': {
+		'devMode': {
+			alias: [ '-d', '--dev-mode' ],
 			type: 'boolean',
-			describe: 'start only the server, not the browser'
+			describe: 'activate the dev mode'
 		}
 	})
 	.help()
@@ -72,9 +67,7 @@ if (cmdLineOptions.file) {
 
 let config = {
 	core: {
-		root: rootDir,
-		port: 3000,
-		serverOnly: false
+		root: rootDir
 	}
 };
 
@@ -107,12 +100,11 @@ logger.debug('Config object after loading files', config);
 //
 // Override with command line options
 //
-if (cmdLineOptions.port > 0) {
-	config.core.port  = cmdLineOptions.port;
-}
-
-if (cmdLineOptions.serverOnly > 0) {
-	config.core.serverOnly  = cmdLineOptions.serverOnly;
+if (cmdLineOptions.devMode) {
+	if (!('browser' in config.core)) {
+		config.core.browser = {};
+	}
+	config.core.browser.console = true;
 }
 
 logger.debug('Final config: ', config);

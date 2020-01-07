@@ -69,7 +69,7 @@ class Logger {
 }
 
 const logger = new Logger('core:server:logger');
-logger.info('To have the list of available lgogers, enable this one');
+logger.info('To have the list of available loggers, enable this one');
 
 module.exports = (rawNamespace) => {
 	const namespace = canonizeNamespace(rawNamespace);
