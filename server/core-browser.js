@@ -30,8 +30,8 @@ module.exports.start = async function(port) {
 	win = new BrowserWindow(opts);
 
 	// and load the index.html of the app.
-	// win.loadFile('client/index.html');
-	win.loadURL(`http://localhost:${port}`);
+	win.loadFile('client/index.html');
+	// win.loadURL(`http://localhost:${port}`);
 
 	// Open the DevTools.
 	if (devMode) {
