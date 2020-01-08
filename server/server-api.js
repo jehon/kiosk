@@ -1,13 +1,12 @@
 
 // Common
-const Bus                                  = require('../common/bus.js');
-const contextualize                        = require('../common/contextualize.js');
-const loggerFactory                        = require('./server-logger.js');
-const Scheduler                            = require('./server-scheduler.js');
-const getConfig                            = require('./server-config.js');
-const { getExpressApp }                    = require('./server-webserver.js');
-const dispatchToBrowser                    = require('./server-client-dispatch.js');
-const { rootDir }                          = require('./server-config.js');
+const Bus                                  = require('../common/bus');
+const contextualize                        = require('../common/contextualize');
+const loggerFactory                        = require('./server-logger');
+const Scheduler                            = require('./server-scheduler');
+const getConfig                            = require('./server-config');
+const { dispatchToBrowser }                = require('./core-browser');
+const { rootDir }                          = require('./server-config');
 
 
 const bus       = new Bus(loggerFactory('core:server:bus'));
@@ -71,10 +70,6 @@ class ServerAPI {
 
 	getChildLogger(name) {
 		return this.logger.extend(name);
-	}
-
-	getExpressApp() {
-		return getExpressApp();
 	}
 }
 module.exports.ServerAPI = ServerAPI;

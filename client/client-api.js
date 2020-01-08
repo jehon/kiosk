@@ -4,8 +4,8 @@ import './elements/img-loading.js';
 import './elements/css-inherit.js';
 
 import loggerFactory from './client-logger.js';
-import contextualize from '../common/contextualize.mjs';
-import Bus from '../common/bus.mjs';
+import contextualize from '../common.es6/contextualize.js';
+import Bus from '../common.es6/bus.js';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
@@ -155,7 +155,10 @@ export class ClientAPI {
 	}
 
 	subscribe(name, cb) {
-		return bus.subscribe(this.c(name), cb);
+		require('electron').ipcRenderer.on(name, (event, message) => {
+			cb(message);
+		});
+		// return bus.subscribe(this.c(name), cb);
 	}
 }
 

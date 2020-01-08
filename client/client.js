@@ -1,6 +1,5 @@
 
 import clientAPIFactory from './client-api.js';
-import { enableClientLoggers } from './client-logger.js';
 import './client-server-events.js';
 import './client-app-chooser.js';
 
@@ -50,31 +49,12 @@ app.subscribe('apps.current', (wishedApp) => {
 	}
 });
 
-// For development mainly (and only)
-let startedTimestamp = false;
-app.subscribe('core.started', (data) => {
-	let startedTimestampNew = data.startupTime.toISOString();
-	app.debug('Connected back to the server: ', startedTimestampNew, startedTimestamp);
-	if (startedTimestamp) {
-		if (startedTimestampNew != startedTimestamp) {
-			app.info('New session from server: ', startedTimestampNew, 'restarting the browser');
-			document.location.reload();
-		}
-	}
-	startedTimestamp = startedTimestampNew;
-});
-
-app.subscribe('core.loggersRegexp', (loggers) => {
-	enableClientLoggers(loggers);
-});
-
 //
 // Load other packages
 //
 
-fetch('/core/packages/client/active')
-	.then(response => response.json())
-	.then(json => json.map(s => {
+require('electron').require('../server/server-packages.js').getClientFiles()
+	.then(list => list.map(s => {
 		app.info(`Loading ${s}`);
 		return import(s)
 			.then(() => app.info(`Loading ${s} done`),

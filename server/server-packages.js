@@ -4,8 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const serverAPIFactory = require( './server-api.js');
-const app = serverAPIFactory('core:server:packages');
+const app = require( './server-api.js')('core:server:packages');
 
 const root = app.getConfig('core.root');
 const pkgRoot = path.join(root, 'packages');
@@ -62,7 +61,7 @@ async function getManifests() {
 }
 module.exports.getManifests = getManifests;
 
-module.exports.loadServerFiles = async function loadServerFiles() {
+module.exports.loadServerFiles = async function() {
 	await getManifests();
 	return Promise.all(
 		module.exports.manifestListServer.map(f => {
@@ -77,8 +76,7 @@ module.exports.loadServerFiles = async function loadServerFiles() {
 	);
 };
 
-// Register route on URL
-app.getExpressApp().get('/core/packages/client/active', async (req, res) => {
-	await getManifests();
-	res.json(module.exports.anifestListClient);
-});
+module.exports.getClientFiles = async function() {
+	return getManifests()
+		.then(() => module.exports.manifestListClient);
+};

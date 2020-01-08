@@ -1,8 +1,6 @@
 
-const proxy = require('express-http-proxy');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
-const Datauri = require('datauri');
 
 const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('camera:server');
@@ -34,7 +32,6 @@ const config = {
  */
 
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
-const kioskVideoFeed = '/camera/video';
 
 async function _check(quick = false) {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
@@ -55,21 +52,11 @@ async function _check(quick = false) {
 				app.debug('Waiting for two successes');
 				return;
 			}
-			// TODO: not need the image anymore
-			return response.buffer()
-				.then(buffer => {
-					const datauri = new Datauri();
-					// TODO: calculate the contentType from uri extension?
-					const contentType = '.jpg';
-					datauri.format(contentType, buffer);
-					return datauri.content;
-				})
-				.then(b64URI => app.dispatchToBrowser('.status', {
-					enabled: true,
-					dataURI: b64URI,
-					// imageB64: buffer.toString('base64'),
-					liveFeedUrl: kioskVideoFeed
-				}));
+			return app.dispatchToBrowser('.status', {
+				enabled: true,
+				// imageB64: buffer.toString('base64'),
+				config
+			});
 		})
 		.catch(_err => {
 			app.debug('Received error, disabling camera', _err.message);
@@ -84,20 +71,6 @@ async function _check(quick = false) {
 }
 _check(true);
 module.exports._check = _check;
-
-app.getExpressApp().use(kioskVideoFeed, proxy(
-	config.host,
-	{
-		// https://www.npmjs.com/package/express-http-proxy
-		// preserveHostHdr: true,
-		proxyReqPathResolver: (_req) => config.videoFeed,
-		proxyReqOptDecorator: function(proxyReqOpts, _srcReq) {
-			proxyReqOpts.headers['Authorization'] = authHeader;
-			return proxyReqOpts;
-		},
-		stream: true
-	}
-));
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);

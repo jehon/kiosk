@@ -9,7 +9,6 @@ const objectPath = require('object-path');
 
 const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:server:config');
-
 const rootDir = path.dirname(__dirname);
 
 //
@@ -101,10 +100,7 @@ logger.debug('Config object after loading files', config);
 // Override with command line options
 //
 if (cmdLineOptions.devMode) {
-	if (!('browser' in config.core)) {
-		config.core.browser = {};
-	}
-	config.core.browser.console = true;
+	config.core.devMode = true;
 }
 
 logger.debug('Final config: ', config);
