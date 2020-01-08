@@ -17,4 +17,39 @@ for(const l of Object.keys(config.tickers)) {
 	});
 }
 
-app.subscribe('.ticker', (data) => app.dispatchToBrowser('.ticker', data));
+async function onDate(date) {
+	app.debug('onDate: Programming for ', date);
+	return new Promise((resolve, _reject) => {
+		if (typeof(onDate) == 'string') {
+			date = new Date(date);
+		}
+		const now = new Date();
+		if (date < now) {
+			app.debug('onDate: but it was already in the past, triggering immediately');
+			return resolve();
+		}
+		setTimeout(() => {
+			app.debug('onDate: is now the wanted time ', date);
+			resolve();
+		}, date - now);
+	});
+}
+
+// TODO: should be initiated by previous ticker on startup
+let ticker = null;
+app.subscribe('.ticker', (data) => {
+	app.dispatchToBrowser('.ticker', data);
+	ticker = data;
+
+	onDate(ticker.stat.end).then(() => {
+		app.debug('ticker on date', data);
+		// Is it the current ticker?
+		if (ticker && ticker.triggerDate == data.triggerDate) {
+			// We have this event, so let's stop it and become a normal application again...
+			app.dispatchToBrowser('.ticker', null);
+		}
+	});
+
+});
+
+module.exports.getCurrentTicker = () => ticker;
