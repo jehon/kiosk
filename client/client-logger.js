@@ -71,12 +71,3 @@ window.addEventListener('error', (event) => {
 			: ''
 		, event.error);
 });
-
-export function enableClientLoggers(loggers) {
-	console.info('Loggers to be enabled', loggers);
-	// Do not debug unless explicitely said to
-	debug.disable('*');
-
-	// Enable what we want
-	debug.enable(loggers);
-}

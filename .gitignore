@@ -2,6 +2,7 @@
 var/
 etc/
 parts/
+common.es6/
 
 # GUI
 .idea

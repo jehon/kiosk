@@ -211,19 +211,6 @@ app.subscribe('.refresh', (data) => generateListing(data));
 // Force a first go !
 app.dispatch('.refresh');
 
-// Register some routing functions
-app.getExpressApp().get('/photo-frame/refresh', async (_req, res, _next) => {
-	// TODO: allow to generate from a specific folder?
-	app.debug('Requesting refreshing the list');
-	await app.dispatch('.refresh');
-	res.json(selectedPictures);
-});
-
-app.getExpressApp().get('/photo-frame/', async (_req, res, _next) => {
-	app.debug('Requesting listing');
-	res.json(selectedPictures);
-});
-
 function getSelectedPictures() {
 	return selectedPictures;
 }

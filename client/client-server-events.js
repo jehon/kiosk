@@ -7,6 +7,10 @@ const app = ClientAPIFactory('core:client:server-events');
 // Listen from server events
 //
 
+require('electron').ipcRenderer.on('ping', (event, message) => {
+	console.log(message); // Prints 'whoooooooh!'
+});
+
 // https://www.npmjs.com/package/sse-pusher
 var osEvents = new EventSource('/core/events');
 

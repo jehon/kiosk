@@ -44,14 +44,6 @@ class Logger {
 		return new Logger(this.namespace + ':' + name);
 	}
 
-	// enableDebug() {
-	// 	debugFactory.enable(this.namespace);
-	// }
-
-	// disableDebug() {
-	// 	debugFactory.disable(this.namespace);
-	// }
-
 	error(...args) {
 		this.streams.log(generateMessage('ERROR', ...args).red);
 		return this;

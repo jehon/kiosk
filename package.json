@@ -26,6 +26,7 @@
     "js-yaml": "3.13.1",
     "karma-jasmine-html": "1.0.0",
     "lodash": "4.17.15",
+    "lodash-es": "^4.17.15",
     "mime-types": "2.1.25",
     "minimatch": "3.0.4",
     "morgan": "1.9.1",
@@ -40,7 +41,10 @@
     "yargs": "15.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
     "babel-eslint": "10.0.3",
+    "babel-plugin-transform-commonjs": "^1.1.6",
     "cypress": "3.8.1",
     "depcheck": "0.9.1",
     "eslint": "6.8.0",
@@ -61,8 +65,9 @@
   },
   "scripts": {
     "clean": "rm -fr parts tmp",
+    "build": "babel common --out-dir common.es6 && sed -i 's:from \"lodash\":from \"../node_modules/lodash-es/lodash.js\":' common.es6/bus.js",
     "start": "electron main.js -f tests/kiosk.yml",
-    "start-dev": "electron main.js -f tests/kiosk.yml --dev-mode",
+    "start-dev": "npm run build && electron main.js -f tests/kiosk.yml --dev-mode",
     "test": "npm run test-server && npm run test-client && npm run lint",
     "test-client": "cd tests/client && karma start --single-run",
     "test-server": "node tests/server/jasmine-run.mjs",

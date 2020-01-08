@@ -62,13 +62,6 @@ function getMountedList() {
 }
 module.exports.getMountedList = getMountedList;
 
-// Register some routing functions
-app.getExpressApp().get('/mount/mountedList', (_req, res, _next) => {
-	// TODO: allow to generate from a specific folder?
-	app.dispatch('.refresh', null);
-	res.json(mountedList);
-});
-
 // const shares = serverAPI.getConfig('shares', {});
 // Object.keys(shares).forEach(k => {
 // 	mount(k, shares[k]);

@@ -1,16 +1,12 @@
 
 const { BrowserWindow } = require('electron');
 
-const serverAPIFactory = require('./server-api.js');
-const serverApp = serverAPIFactory('core.browser');
+const devMode = require('./server-config.js')('core.devMode', false);
+const logger = require('./server-logger.js')('core:browser');
 
-const devMode = serverApp.getConfig('.console', false);
+let win;
 
-module.exports.start = async function(port) {
-	// Keep a global reference of the window object, if you don't, the window will
-	// be closed automatically when the JavaScript object is garbage collected.
-	let win;
-
+module.exports.start = async function() {
 	const opts = {
 		autoHideMenuBar: true,
 		webPreferences: {
@@ -26,23 +22,23 @@ module.exports.start = async function(port) {
 		opts.kiosk = true;
 	}
 
-	// Create the browser window.
 	win = new BrowserWindow(opts);
-
-	// and load the index.html of the app.
 	win.loadFile('client/index.html');
-	// win.loadURL(`http://localhost:${port}`);
 
 	// Open the DevTools.
 	if (devMode) {
 		win.webContents.openDevTools();
 	}
 
-	// Emitted when the window is closed.
 	win.on('closed', () => {
-		// Dereference the window object, usually you would store windows
-		// in an array if your app supports multi windows, this is the time
-		// when you should delete the corresponding element.
 		win = null;
 	});
+};
+
+module.exports.dispatchToBrowser = function dispatchToBrowser(eventName, data = null) {
+	logger.debug(`Sending '${eventName}'`, data);
+
+	if (win) {
+		win.webContents.send(eventName, data);
+	}
 };
