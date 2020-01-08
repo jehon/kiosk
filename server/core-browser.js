@@ -1,8 +1,8 @@
 
 const { BrowserWindow } = require('electron');
 
-const devMode = require('./server-config.js')('core.devMode', false);
 const logger = require('./server-logger.js')('core:browser');
+const devMode = require('./server-config.js')('core.devMode', false);
 
 let win;
 

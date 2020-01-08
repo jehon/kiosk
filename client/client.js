@@ -1,6 +1,5 @@
 
 import clientAPIFactory from './client-api.js';
-import './client-server-events.js';
 import './client-app-chooser.js';
 
 const app = clientAPIFactory('core:client');
