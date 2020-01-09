@@ -6,26 +6,29 @@ import '../node_modules/debug/dist/debug.js';
 // core.loggersRegexp
 
 export async function remoteLogger(name, category, ...data) {
-	let jdata = JSON.stringify(data,
-		(k, v) => (v instanceof HTMLElement || v instanceof Node) ?
-			(
-				'html-element'
-				+ (v.id ? '#' + v.id : '')
-				+ (v.class ? '.' + v.class : '')
-			)
-			: v
-	);
+	// TODO: remote logger !!!
 
-	axios.post('/core/client/logs', {
-		ts: new Date(),
-		name,
-		category,
-		data: jdata
-	})
-		.catch(function (_error) {
-			/* eslint-disable no-console */
-			// console.error('Error sending log to server: ', _error);
-		});
+	// let jdata = JSON.stringify(data,
+	// 	(k, v) => (v instanceof HTMLElement || v instanceof Node) ?
+	// 		(
+	// 			'html-element'
+	// 			+ (v.id ? '#' + v.id : '')
+	// 			+ (v.class ? '.' + v.class : '')
+	// 		)
+	// 		: v
+	// );
+
+	// // TODO: here
+	// axios.post('/core/client/logs', {
+	// 	ts: new Date(),
+	// 	name,
+	// 	category,
+	// 	data: jdata
+	// })
+	// 	.catch(function (_error) {
+	// 		/* eslint-disable no-console */
+	// 		// console.error('Error sending log to server: ', _error);
+	// 	});
 }
 
 class RemoteLogger {

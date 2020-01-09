@@ -164,7 +164,7 @@ customElements.define('kiosk-clock', KioskClock);
 app
 	.withPriority(defaultPriority)
 	.withMainElement(new KioskClock())
-	.menuBasedOnIcon('/packages/clock/clock.png');
+	.menuBasedOnIcon('../packages/clock/clock.png');
 
 app.subscribe('.ticker', (data) => {
 	ticker = data;

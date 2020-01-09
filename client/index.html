@@ -7,12 +7,20 @@
 
 	<link rel="stylesheet" type="text/css" href="../node_modules/toastr/build/toastr.min.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script>
+			window.moduleBis = window.module;
+			delete(window.module);
+	</script>
 
 	<script src="../node_modules/jquery/dist/jquery.min.js"></script>
 	<script src="../node_modules/toastr/build/toastr.min.js"></script>
 	<script src="../node_modules/moment/min/moment-with-locales.min.js"></script>
 	<script src="../node_modules/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
 	<script src="../node_modules/axios/dist/axios.min.js"></script>
+	<script>
+			window.module = window.moduleBis;
+			delete(window.moduleBis);
+	</script>
 
 	<script type="module" src="client.js"></script>
 </head>

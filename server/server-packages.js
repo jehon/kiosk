@@ -49,7 +49,7 @@ async function getManifests() {
 
 			module.exports.manifestListClient = manifestList
 				.filter(el => 'client' in el)
-				.map(el => path.join('/', path.relative(root, el.relativePath), el.client))
+				.map(el => '../' + path.join(path.relative(root, el.relativePath), el.client))
 			;
 		}
 
