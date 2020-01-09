@@ -4,7 +4,9 @@ import AppFactory from '../../client/client-api.js';
 const app = AppFactory('menu');
 
 // Loading all apps (sent by the server)
-app.subscribe('.apps', (apps) => {
+app.subscribe('.apps', () => updateApps());
+function updateApps() {
+	const apps = require('electron').remote.require('./packages/menu/menu-server.js').getAppConfigs();
 	for(const appName of Object.keys(apps)) {
 		app.info(`Registering app by menu: ${appName}`, apps[appName]);
 		AppFactory(appName)
@@ -13,7 +15,7 @@ app.subscribe('.apps', (apps) => {
 			.menuBasedOnIcon(apps[appName].icon, apps[appName].label)
 		;
 	}
-});
+}
 
 class KioskMenu extends app.getKioskEventListenerMixin()(HTMLElement) {
 	get kioskEventListeners() {
@@ -76,3 +78,5 @@ app.subscribe('caffeine.activity', active => {
 	app.debug('Activity recieved', active);
 	appMenuElement.style.display = (active ? '' : 'none');
 });
+
+updateApps();

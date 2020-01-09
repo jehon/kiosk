@@ -54,10 +54,7 @@ async function _check(quick = false) {
 				return;
 			}
 			statusEnabled = true;
-			return app.dispatchToBrowser('.status', {
-				enabled: true,
-				config
-			});
+			return app.dispatchToBrowser('.status');
 		})
 		.catch(_err => {
 			app.debug('Received error, disabling camera', _err.message);
@@ -66,7 +63,7 @@ async function _check(quick = false) {
 
 				// Forcing leaving to camera
 				statusEnabled = false;
-				app.dispatchToBrowser('.status', { enabled: false });
+				app.dispatchToBrowser('.status');
 			}
 			return ;
 		});
