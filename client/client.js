@@ -4,6 +4,8 @@ import './client-app-chooser.js';
 
 const app = clientAPIFactory('core:client');
 
+const toastr = require('toastr');
+
 /* global toastr */
 /* configure the toastr */
 toastr.options.timeOut = 10*1000;
@@ -52,7 +54,7 @@ app.subscribe('apps.current', (wishedApp) => {
 // Load other packages
 //
 
-require('electron').require('../server/server-packages.js').getClientFiles()
+require('electron').remote.require('./server/server-packages.js').getClientFiles()
 	.then(list => list.map(s => {
 		app.info(`Loading ${s}`);
 		return import(s)

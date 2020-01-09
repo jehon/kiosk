@@ -1,5 +1,5 @@
 
-import '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
+import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import AppFactory from '../../client/client-api.js';
 
@@ -56,7 +56,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 		this.attachShadow({ mode: 'open' });
 		// See https://getbootstrap.com/docs/4.0/components/carousel/
 		this.shadowRoot.innerHTML = `
-		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
+		<link rel='stylesheet' type='text/css' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>
 		<style>
 			:host([inactive]) .hideOnInactive {
 				display: none;
@@ -207,5 +207,5 @@ app.subscribe('.listing', listing => {
 app
 	.withPriority(50)
 	.withMainElement(new KioskPhotoFrame())
-	.menuBasedOnIcon('/packages/photo-frame/photo-frame.png')
+	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 ;

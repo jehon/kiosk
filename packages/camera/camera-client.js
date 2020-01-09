@@ -50,5 +50,5 @@ customElements.define('kiosk-camera', KioskCamera);
 app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
-	.menuBasedOnIcon('/packages/camera/camera.png')
+	.menuBasedOnIcon('../packages/camera/camera.png')
 ;
