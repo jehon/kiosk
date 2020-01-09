@@ -162,8 +162,8 @@ async function generateListing(_data = null) {
 
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
-	buildingLogger.debug('Sending to browser', selectedPictures);
-	app.dispatchToBrowser('.listing', selectedPictures);
+	buildingLogger.debug('Updating listing to', selectedPictures);
+	app.dispatchToBrowser('.listing');
 
 	app.debug('Generating listing done');
 	return selectedPictures;
@@ -199,7 +199,7 @@ app.subscribe('.refresh', (data) => generateListing(data));
 // Force a first go !
 app.dispatch('.refresh');
 
-function getSelectedPictures() {
+module.exports.getSelectedPictures = function getSelectedPictures() {
 	return selectedPictures;
-}
-module.exports.getSelectedPictures = getSelectedPictures;
+};
+

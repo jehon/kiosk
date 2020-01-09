@@ -52,8 +52,8 @@ class ServerAPI {
 		return getConfig();
 	}
 
-	dispatchToBrowser(eventName, msg) {
-		return dispatchToBrowser(this.c(eventName), msg);
+	dispatchToBrowser(eventName) {
+		return dispatchToBrowser(this.c(eventName));
 	}
 
 	dispatch(eventName, msg) {

@@ -38,15 +38,15 @@ async function onDate(date) {
 // TODO: should be initiated by previous ticker on startup
 let ticker = null;
 app.subscribe('.ticker', (data) => {
-	app.dispatchToBrowser('.ticker', data);
 	ticker = data;
+	app.dispatchToBrowser('.ticker');
 
 	onDate(ticker.stat.end).then(() => {
 		app.debug('ticker on date', data);
 		// Is it the current ticker?
 		if (ticker && ticker.triggerDate == data.triggerDate) {
 			// We have this event, so let's stop it and become a normal application again...
-			app.dispatchToBrowser('.ticker', null);
+			app.dispatchToBrowser('.ticker');
 		}
 	});
 
