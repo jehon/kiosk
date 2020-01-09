@@ -157,7 +157,8 @@ export class ClientAPI {
 	subscribe(name, cb) {
 		// TODO here:
 
-		require('electron').ipcRenderer.on(name, (event, message) => {
+		require('electron').ipcRenderer.on(this.c(name), (event, message) => {
+			this.debug('Received: ', event, message);
 			cb(message);
 		});
 		return bus.subscribe(this.c(name), cb);

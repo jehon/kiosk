@@ -123,10 +123,6 @@ function generateListingForTopFolder(folderConfig) {
 	return selectedFolderPictures;
 }
 
-function os2web(os, web, f) { // TODO: this should be in package "shares"
-	return f.replace(os, web);
-}
-
 //
 // Main entry-point
 //  -> Generate a selection
@@ -143,10 +139,7 @@ async function generateListing(_data = null) {
 	for(const i in folders) {
 		const f = folders[i];
 		buildingLogger.debug('1.1 - generateListing: Using folder', f);
-		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f).map(file => ({
-			webname: os2web(f.folder, f.publishedAt, file),
-			original: file,
-		})));
+		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f));
 	}
 
 	if (newSelectedPictures.length == 0) {
@@ -157,19 +150,14 @@ async function generateListing(_data = null) {
 	buildingLogger.debug('Extracting exif data for all files');
 	newSelectedPictures = await Promise.all(
 		newSelectedPictures.map(
-			f => exifReaderLimiter(() => exifParser(f.original))
-				.then(data => { f.data = data; return f; })
-				.catch(e => { app.info('Could not read exif: ', e); return f; })
+			filepath => exifReaderLimiter(() => exifParser(filepath))
+				.catch(e => { app.info('Could not read exif: ', e); return {}; })
+				.then(data => ({ filepath, data }))
 		));
 	buildingLogger.debug('Extracting exif data done');
 
-	newSelectedPictures = newSelectedPictures.map(v => {
-		delete v.original;
-		return v;
-	});
-
 	newSelectedPictures.sort((a, b) => {
-		return a.date < b.date ? -1 : a.date == b.date ? 0 : 1;
+		return a.data.date < b.data.date ? -1 : a.data.date == b.data.date ? 0 : 1;
 	});
 
 	selectedPictures = newSelectedPictures;

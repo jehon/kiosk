@@ -4,8 +4,6 @@ import './client-app-chooser.js';
 
 const app = clientAPIFactory('core:client');
 
-const toastr = require('toastr');
-
 /* global toastr */
 /* configure the toastr */
 toastr.options.timeOut = 10*1000;

@@ -6,18 +6,18 @@ import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('camera');
 
-let state = {
-	enabled: false
-};
+let state = false;
 
-app.subscribe('.status', data => {
-	state = data;
-	if (state.enabled) {
+app.subscribe('.status', () => {
+	state = require('electron').remote.require('./packages/camera/camera-server.js').getStatus();
+	if (state) {
 		app.changePriority(50);
 	} else {
 		app.changePriority(1000);
 	}
 });
+
+app.dispatch('.status');
 
 class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	// Working with connected/disconnected to avoid movie running in background
@@ -37,8 +37,9 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	adapt() {
-		if (state.enabled) {
-			this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.liveFeedUrl}")'></div>`;
+		if (state) {
+			// TODO: add sound
+			this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.host + state.videoFeed}?${Date.now()}")'></div>`;
 		} else {
 			// TODO: icon "not available"
 			this.innerHTML = '<div>Camera is not available</div>';

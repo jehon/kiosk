@@ -21,14 +21,14 @@
       ],
       "outputCapture": "std"
     },
-    {
-      "name": "Electron: Renderer",
-      "type": "chrome",
-      "request": "attach",
-      "port": 9223,
-      "webRoot": "${workspaceFolder}",
-      "timeout": 30000
-    },
+    // {
+    //   "name": "Electron: Renderer",
+    //   "type": "chrome",
+    //   "request": "attach",
+    //   "port": 9223,
+    //   "webRoot": "${workspaceFolder}",
+    //   "timeout": 30000
+    // },
     {
       "type": "node",
       "request": "launch",
@@ -39,13 +39,13 @@
       ]
     },
   ],
-  "compounds": [
-    {
-        "name": "Electron: All",
-        "configurations": [
-            "Electron: Main",
-            "Electron: Renderer"
-        ]
-    }
-  ]
+  // "compounds": [
+  //   {
+  //       "name": "Electron: All",
+  //       "configurations": [
+  //           "Electron: Main",
+  //           "Electron: Renderer"
+  //       ]
+  //   }
+  // ]
 }

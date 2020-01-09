@@ -6,6 +6,7 @@ const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('camera:server');
 
 let successes = 0;
+let statusEnabled = false;
 
 const config = {
 	'cron-recheck': '*/15 * * * * *',
@@ -52,9 +53,9 @@ async function _check(quick = false) {
 				app.debug('Waiting for two successes');
 				return;
 			}
+			statusEnabled = true;
 			return app.dispatchToBrowser('.status', {
 				enabled: true,
-				// imageB64: buffer.toString('base64'),
 				config
 			});
 		})
@@ -64,6 +65,7 @@ async function _check(quick = false) {
 				successes = 0;
 
 				// Forcing leaving to camera
+				statusEnabled = false;
 				app.dispatchToBrowser('.status', { enabled: false });
 			}
 			return ;
@@ -74,3 +76,10 @@ module.exports._check = _check;
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);
+
+module.exports.getStatus = function() {
+	if (!statusEnabled) {
+		return false;
+	}
+	return config;
+};

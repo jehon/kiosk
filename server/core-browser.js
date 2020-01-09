@@ -35,10 +35,11 @@ module.exports.start = async function() {
 	});
 };
 
-module.exports.dispatchToBrowser = function dispatchToBrowser(eventName, data = null) {
+function dispatchToBrowser(eventName, data = null) {
 	logger.debug(`Sending '${eventName}'`, data);
 
 	if (win) {
 		win.webContents.send(eventName, data);
 	}
-};
+}
+module.exports.dispatchToBrowser = dispatchToBrowser;
