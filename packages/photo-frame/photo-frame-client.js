@@ -5,6 +5,8 @@ import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('photo-frame');
 
+const relativePathForPicture = '../';
+
 let pictureIndex = 0;
 let picturesList = [];
 let updatePictureTimeout = false;
@@ -165,7 +167,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
-					<img src="${v.webname}">
+					<img src="${relativePathForPicture}${v.filepath}">
 					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
@@ -174,7 +176,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 			this.carousel.thumbs.insertAdjacentHTML('beforeend',
 				`<div class="thumb" data-target="#myCarousel" data-slide-to="${i}">
-					<img src="${v.webname}?thumb=1&height=50">
+					<img src="${relativePathForPicture + v.filepath}?thumb=1&height=50">
 				</div>`);
 		}
 		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
@@ -196,6 +198,9 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 }
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
+
+picturesList = require('electron').remote.require('./packages/photo-frame/photo-frame-server.js').getSelectedPictures();
+updatePicture();
 
 app.subscribe('.listing', listing => {
 	picturesList = listing; //Object.keys(listing).map(function (key) { return listing[key]; });
