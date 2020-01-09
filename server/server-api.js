@@ -1,4 +1,6 @@
 
+const { app } = require('electron');
+
 // Common
 const Bus                                  = require('../common/bus');
 const contextualize                        = require('../common/contextualize');
@@ -7,7 +9,6 @@ const Scheduler                            = require('./server-scheduler');
 const getConfig                            = require('./server-config');
 const { dispatchToBrowser }                = require('./core-browser');
 const { rootDir }                          = require('./server-config');
-
 
 const bus       = new Bus(loggerFactory('core:server:bus'));
 const scheduler = new Scheduler(bus);
@@ -50,6 +51,23 @@ class ServerAPI {
 			return getConfig(this.c(opath), def);
 		}
 		return getConfig();
+	}
+
+	registerCredentials(url, username, password) {
+		this.info(`Registering credentials for ${username}@${url}: #${password.length} characters`);
+		// TODO: here
+		//
+		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
+		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
+		//
+		app.on('login', (event, webContents, details, authInfo, callback) => {
+			if (details.startsWith(url)) {
+				app.info('Auto fill in credentials for ${details}');
+				callback(username, password);
+				event.preventDefault();
+			}
+		});
+		// TODO: make an array of credentials, to allow unsubscribing ???
 	}
 
 	dispatchToBrowser(eventName) {

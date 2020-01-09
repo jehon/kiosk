@@ -18,6 +18,9 @@ const config = {
 	audioFeed: '/audio.cgi',
 	...app.getConfig('.')
 };
+
+app.registerCredentials(config.host, config.username, config.password);
+
 /**
  * From: http://forums.dlink.com/index.php?topic=58565.0
  * view functions:
