@@ -61,10 +61,9 @@ class ServerAPI {
 		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
 		//
 		app.on('login', (event, webContents, details, authInfo, callback) => {
-			if (details.startsWith(url)) {
-				app.info('Auto fill in credentials for ${details}');
-				callback(username, password);
+			if (details.url.startsWith(url)) {
 				event.preventDefault();
+				callback(username, password);
 			}
 		});
 		// TODO: make an array of credentials, to allow unsubscribing ???
