@@ -9,7 +9,7 @@ const app = AppFactory('camera');
 let state = false;
 
 app.subscribe('.status', () => {
-	state = require('electron').remote.require('./packages/camera/camera-server.js').getStatus();
+	state = { ...require('electron').remote.require('./packages/camera/camera-server.js').getStatus() };
 	if (state) {
 		app.changePriority(50);
 	} else {
