@@ -10,8 +10,10 @@ module.exports.start = async function() {
 	const opts = {
 		autoHideMenuBar: true,
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
+			titleBarStyle: 'hiddenInset'
 		},
+		frame: false
 	};
 
 	if (devMode) {
