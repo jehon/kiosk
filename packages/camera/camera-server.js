@@ -71,8 +71,11 @@ async function _check(quick = false) {
 			return ;
 		});
 }
-_check(true);
 module.exports._check = _check;
+
+// Make 2 checks to be sure that we are in the correct state since startup
+_check(true);
+_check(true);
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);
