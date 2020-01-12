@@ -101,6 +101,9 @@ logger.debug('Config object after loading files', config);
 //
 if (cmdLineOptions.devMode) {
 	config.core.devMode = true;
+	logger.info('Versions', process.versions);
+	logger.info('Node version: ', process.versions['node']);
+	logger.info('Chrome version: ', process.versions['chrome']);
 }
 
 logger.debug('Final config: ', config);
