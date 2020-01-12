@@ -61,6 +61,7 @@ async function _check() {
 			if (++successes < 2) {
 				// We want at least two sucesses before showing it (= 10 seconds) ...
 				app.debug('Waiting for two successes');
+				status.message = 'Waiting for two sucesses before enabling it';
 				return;
 			}
 			status = {

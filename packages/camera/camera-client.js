@@ -41,7 +41,7 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	adapt() {
 		if (status.enabled) {
 			// TODO: add sound
-			//this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.host + state.videoFeed}?${Date.now()}")'></div>`;
+			//this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
 			this.innerHTML = `<iframe src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
 		} else {
 			// TODO: icon "not available"
