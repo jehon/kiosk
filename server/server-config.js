@@ -101,6 +101,7 @@ logger.debug('Config object after loading files', config);
 //
 if (cmdLineOptions.devMode) {
 	config.core.devMode = true;
+	logger.info('Versions', process.versions);
 }
 
 logger.debug('Final config: ', config);
