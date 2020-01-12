@@ -6,11 +6,13 @@ import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('camera');
 
-let state = false;
+let status = {
+	enabled: false
+};
 
 app.subscribe('.status', () => {
-	state = { ...require('electron').remote.require('./packages/camera/camera-server.js').getStatus() };
-	if (state) {
+	status = { ...require('electron').remote.require('./packages/camera/camera-server.js').getStatus() };
+	if (status.enabled) {
 		app.changePriority(50);
 	} else {
 		app.changePriority(1000);
@@ -37,12 +39,13 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	adapt() {
-		if (state) {
+		if (status.enabled) {
 			// TODO: add sound
-			this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.host + state.videoFeed}?${Date.now()}")'></div>`;
+			//this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.host + state.videoFeed}?${Date.now()}")'></div>`;
+			this.innerHTML = `<iframe src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
 		} else {
 			// TODO: icon "not available"
-			this.innerHTML = '<div>Camera is not available</div>';
+			this.innerHTML = '<div>Camera is not available: ${status.error} ${status.errorMsg}</div>';
 		}
 	}
 }

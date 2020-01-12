@@ -6,7 +6,9 @@ const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('camera:server');
 
 let successes = 0;
-let statusEnabled = false;
+let status = {
+	enabled: false
+};
 
 const config = {
 	'cron-recheck': '*/15 * * * * *',
@@ -37,7 +39,7 @@ app.registerCredentials(config.host, config.username, config.password);
 
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 
-async function _check(quick = false) {
+async function _check() {
 	const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
 	app.debug(`checking "${url}"`);
 	const headers  = new fetch.Headers({
@@ -49,40 +51,45 @@ async function _check(quick = false) {
 				// Go to the "catch" phase
 				// TODO: should pop up and say: hey, we have a problem ! -> activate applic + special image
 				app.error('Received the response: ', response.status);
-				throw new Error('Invalid response');
+				status = {
+					enabled: false,
+					error: response.status,
+					errorMsg: response.statusText
+				};
+				return app.dispatchToBrowser('.status');
 			}
-			if (++successes < 2 && !quick) {
+			if (++successes < 2) {
 				// We want at least two sucesses before showing it (= 10 seconds) ...
 				app.debug('Waiting for two successes');
 				return;
 			}
-			statusEnabled = true;
+			status = {
+				enabled: true
+			};
 			return app.dispatchToBrowser('.status');
-		})
-		.catch(_err => {
+		}, _err => {
 			app.debug('Received error, disabling camera', _err.message);
 			if (successes > 0) {
 				successes = 0;
 
 				// Forcing leaving to camera
-				statusEnabled = false;
-				app.dispatchToBrowser('.status');
+				status = {
+					enabled: false,
+					errorMsg: _err.message
+				};
+				return app.dispatchToBrowser('.status');
 			}
-			return ;
 		});
 }
 module.exports._check = _check;
 
 // Make 2 checks to be sure that we are in the correct state since startup
-_check(true);
-_check(true);
+_check();
+_check();
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);
 
 module.exports.getStatus = function() {
-	if (!statusEnabled) {
-		return false;
-	}
-	return config;
+	return { ...status, ...config };
 };

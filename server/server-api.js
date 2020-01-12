@@ -62,6 +62,7 @@ class ServerAPI {
 		//
 		app.on('login', (event, webContents, details, authInfo, callback) => {
 			if (details.url.startsWith(url)) {
+				this.info(`Auto fill in credentials for ${details}`);
 				event.preventDefault();
 				callback(username, password);
 			}
