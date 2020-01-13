@@ -82,7 +82,10 @@ full-upgrade: dump \
 #
 #
 remote-ssh:
-	ssh $(HOST) -t "cd $(TARGET) && exec bash --login"
+	ssh $(HOST) -X -t "cd $(TARGET) && exec bash --login"
+
+remote-ssh-pi:
+	ssh pi@$(HOST) -X -t "cd $(TARGET) && exec bash --login"
 
 remote-htop:
 	ssh $(HOST) -t htop
