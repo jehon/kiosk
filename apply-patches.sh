@@ -39,14 +39,3 @@ JS
 		popd > /dev/null
 	fi
 )
-
-(
-	echo "Patching lodash-es type"
-	pushd node_modules/lodash-es > /dev/null
-	if [ ! -r package.json.init ]; then
-		cp package.json package.json.init
-	fi
-	cat package.json.init | jq ".type = \"module\"" > package.json
-	popd > /dev/null
-)
-
