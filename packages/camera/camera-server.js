@@ -53,15 +53,14 @@ async function _check() {
 				app.error('Received the response: ', response.status);
 				status = {
 					enabled: false,
-					error: response.status,
-					errorMsg: response.statusText
+					errMessage: response.status + ': ' + response.statusText,
 				};
 				return app.dispatchToBrowser('.status');
 			}
 			if (++successes < 2) {
 				// We want at least two sucesses before showing it (= 10 seconds) ...
 				app.debug('Waiting for two successes');
-				status.message = 'Waiting for two sucesses before enabling it';
+				status.errMessage = 'Waiting for two sucesses before enabling it';
 				return;
 			}
 			status = {
@@ -76,7 +75,7 @@ async function _check() {
 				// Forcing leaving to camera
 				status = {
 					enabled: false,
-					errorMsg: _err.message
+					errMessage: _err.message
 				};
 				return app.dispatchToBrowser('.status');
 			}
