@@ -71,27 +71,31 @@ endef
 # Full
 #
 #
-kiosk-full-upgrade: kiosk-deploy \
-	kiosk-control-restart-dm \
-	kiosk-logs
+full-upgrade: dump \
+	deploy \
+	remote-restart-dm \
+	remote-logs
 
 #
 #
 # Check
 #
 #
-kiosk-check-htop:
+remote-ssh:
+	ssh $(HOST) -t "cd $(TARGET) && exec bash --login"
+
+remote-htop:
 	ssh $(HOST) -t htop
 
-kiosk-logs-lightdm:
+remote-logs-lightdm:
 	ssh $(HOST) journalctl -f -u lightdm
 
-kiosk-logs:
+remote-logs:
 	ssh $(HOST) tail -n 100 -f /tmp/kiosk-xsession.log
 
-kiosk-logs-cycle:
+remote-logs-cycle:
 	while true; do \
-		make kiosk-logs \
+		make remote-logs \
 		sleep 1s; \
 	done
 
@@ -100,13 +104,13 @@ kiosk-logs-cycle:
 # Control
 #
 #
-kiosk-control-reboot:
+remote-reboot:
 	ssh $(HOST) reboot
 
-kiosk-control-restart-dm:
+remote-restart-dm:
 	ssh $(HOST) systemctl restart display-manager
 
-kiosk-control-restart-browser:
+remote-restart-browser:
 	ssh $(HOST) su pi -c \"DISPLAY=:0 /usr/bin/xdotool key --clearmodifiers ctrl+F5\"
 
 #
@@ -114,7 +118,7 @@ kiosk-control-restart-browser:
 # Deploy
 #
 #
-kiosk-deploy:
+deploy: dump
 	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
 		--exclude .vagrant \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
