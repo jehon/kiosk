@@ -39,9 +39,7 @@ else
 	header "** done **"
 	touch package-lock.json
 
-	header "** apply patches **"
-	"$KIOSK_APP"/apply-patches.sh
-
+	header "** mark it as new point **"
 	cp "$PKG" "$PKG_INST"
 fi
 

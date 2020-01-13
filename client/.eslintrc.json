@@ -4,6 +4,5 @@
     "es6": true
   },
   "globals": {
-    "axios": true
   }
 }
