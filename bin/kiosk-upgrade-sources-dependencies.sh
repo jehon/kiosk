@@ -40,6 +40,7 @@ else
 	touch package-lock.json
 
 	header "** mark it as new point **"
+	mkdir -p "$( dirname "$PKG_INST" )"
 	cp "$PKG" "$PKG_INST"
 fi
 
