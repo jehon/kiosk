@@ -42,6 +42,8 @@ else
 	header "** apply patches **"
 	"$KIOSK_APP"/apply-patches.sh
 
+	header "** mark it as new point **"
+	mkdir -p "$( dirname "$PKG_INST" )"
 	cp "$PKG" "$PKG_INST"
 fi
 
