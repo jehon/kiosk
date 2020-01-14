@@ -5,8 +5,7 @@
 xset +dpms
 # xset dpms 0 0 900
 
-shellcheck disable=SC1091
-. /etc/profile.d/kiosk-profile.sh
+KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 
 fixCrash() {
 	sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' "$1"

@@ -11,7 +11,7 @@
 set -e
 
 # Later on, this will be set by profile...
-KIOSK_APP="$(dirname "$(dirname "$( realpath "$0" )")")"
+KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 export KIOSK_APP
 
 # shellcheck source=./lib.sh
