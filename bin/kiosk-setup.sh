@@ -19,11 +19,7 @@
 
 set -e
 
-# KIOSK_APP should be set by profile, or by initialize
-if [ -z "$KIOSK_APP" ]; then
-	echo "KIOSK_APP is not set. This is abnormal. Quitting" >&2
-	exit 1
-fi
+KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 
 # shellcheck source=./lib.sh
 . "$KIOSK_APP"/bin/scripts/lib.sh
