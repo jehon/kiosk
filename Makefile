@@ -113,9 +113,6 @@ remote-reboot:
 remote-restart-dm:
 	ssh $(HOST) systemctl restart display-manager
 
-remote-restart-browser:
-	ssh $(HOST) su pi -c \"DISPLAY=:0 /usr/bin/xdotool key --clearmodifiers ctrl+F5\"
-
 #
 #
 # Deploy
