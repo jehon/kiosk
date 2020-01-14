@@ -45,7 +45,7 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 			this.innerHTML = `<iframe class='full' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
 		} else {
 			// TODO: icon "not available"
-			this.innerHTML = '<div>Camera is not available: ${status.errMessage}</div>';
+			this.innerHTML = `<div>Camera is not available: ${status.errMessage}</div>`;
 		}
 	}
 }
