@@ -5,8 +5,6 @@ import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('photo-frame');
 
-const relativePathForPicture = '../';
-
 let pictureIndex = 0;
 let picturesList = [];
 let updatePictureTimeout = false;
@@ -167,7 +165,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
-					<img src="${relativePathForPicture}${v.filepath}">
+					<img src="${v.filepath}">
 					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
@@ -176,7 +174,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 			this.carousel.thumbs.insertAdjacentHTML('beforeend',
 				`<div class="thumb" data-target="#myCarousel" data-slide-to="${i}">
-					<img src="${relativePathForPicture + v.filepath}?thumb=1&height=50">
+					<img src="${v.filepath}?thumb=1&height=50">
 				</div>`);
 		}
 		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
