@@ -119,12 +119,16 @@ remote-restart-dm:
 #
 #
 deploy: dump
+	npm run build
+	
 	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
 		--exclude .vagrant \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
 		--exclude "/media"                --filter "protect /media/"            \
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
+
+	ssh $(HOST) chmod a+rwX -R "$(TARGET)"
 
 	ssh $(HOST) truncate --size 0 /tmp/kiosk-xsession.log
 
