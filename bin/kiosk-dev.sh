@@ -2,7 +2,7 @@
 
 set -e
 
-KIOSK_APP="$(dirname "$(dirname "$( realpath "$0" )")")"
+KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 KIOSK_USER="$( id -un 1000 )"
 
 export KIOSK_DEV="true"
