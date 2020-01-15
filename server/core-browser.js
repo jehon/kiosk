@@ -8,12 +8,12 @@ let win;
 
 module.exports.start = async function() {
 	const opts = {
-		// autoHideMenuBar: true,
+		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: true,
-			// titleBarStyle: 'hiddenInset' // #
+			titleBarStyle: 'hiddenInset'
 		},
-		// frame: false
+		frame: false
 	};
 	opts.width = 1980;
 	opts.height = 1080;
