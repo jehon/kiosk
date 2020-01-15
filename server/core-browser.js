@@ -8,29 +8,25 @@ let win;
 
 module.exports.start = async function() {
 	const opts = {
-		autoHideMenuBar: true,
+		// autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: true,
-			titleBarStyle: 'hiddenInset'
+			// titleBarStyle: 'hiddenInset' // #
 		},
-		frame: false
+		// frame: false
 	};
+	opts.width = 1980;
+	opts.height = 1080;
 
 	if (devMode) {
-		opts.width = 1200;
-		opts.height = 800;
+		true;
 	} else {
-		opts.fullscreen = true;
-		opts.kiosk = true;
+		// opts.fullscreen = true;
+		// opts.kiosk = true; // #
 	}
 
 	win = new BrowserWindow(opts);
 	win.loadFile('client/index.html');
-
-	// Open the DevTools.
-	if (devMode) {
-		win.webContents.openDevTools();
-	}
 
 	win.on('closed', () => {
 		win = null;
