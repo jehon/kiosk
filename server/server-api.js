@@ -1,5 +1,5 @@
 
-const { app } = require('electron');
+const { app: electronApp } = require('electron');
 
 // Common
 const Bus                                  = require('../common/bus');
@@ -60,7 +60,7 @@ class ServerAPI {
 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
 		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
 		//
-		app.on('login', (event, webContents, details, authInfo, callback) => {
+		electronApp.on('login', (event, webContents, details, authInfo, callback) => {
 			if (details.url.startsWith(url)) {
 				this.info(`Auto fill in credentials for ${details}`);
 				event.preventDefault();
