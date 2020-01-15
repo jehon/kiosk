@@ -63,7 +63,7 @@ class Logger {
 const logger = new Logger('core:server:logger');
 logger.info('To have the list of available loggers, enable this one');
 
-module.exports = (rawNamespace) => {
+function loggerFactory(rawNamespace) {
 	const namespace = canonizeNamespace(rawNamespace);
 
 	if (loggersList.has(namespace)) {
@@ -74,7 +74,8 @@ module.exports = (rawNamespace) => {
 	}
 	logger.debug('creating logger ' + namespace);
 	return new Logger(namespace);
-};
+}
+module.exports = loggerFactory;
 
 let enabled = process.env.DEBUG;
 module.exports.enableDebugForRegexp = function enableDebugForRegexp(regexp) {
@@ -89,4 +90,13 @@ module.exports.getEnabledDebugRegexp = function getEnabledDebugRegexp() {
 
 module.exports.getLoggerList = function getLoggerList() {
 	return Array.from(loggersList.keys());
+};
+
+module.exports.fromRemote = function(name, category, data) {
+	if (! [ 'error', 'info', 'debug'].includes(category)) {
+		throw 'Invalid category';
+	}
+
+	// Make the call to the right logger
+	loggerFactory(name + ':client')[category](name, ...data);
 };
