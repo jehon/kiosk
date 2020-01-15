@@ -25,8 +25,7 @@ SHELL := /bin/bash
 #
 ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 HOST   ?= kiosk
-TARGET ?= /opt/web/www
-# TARGET := /opt/kiosk
+TARGET ?= /opt/kiosk
 
 dump:
 	$(info ROOT:   $(ROOT))
