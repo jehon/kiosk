@@ -1,5 +1,6 @@
 
 const { app: electronApp } = require('electron');
+const app = require('./server-api.js')('server');
 
 const browser = require('./core-browser.js');
 
@@ -7,6 +8,10 @@ const { loadServerFiles } = require('./server-packages');
 
 if (app.getConfig('core.devMode')) {
 	// https://electronjs.org/docs/api/chrome-command-line-switches
+	electronApp.commandLine.appendSwitch('remote-debugging-port', '9223');
+	electronApp.commandLine.appendSwitch('inspect', '9222');
+	app.info('** Inspect available on port 9222: http://localhost:9222/');
+	app.info('** Remote debugging available on port http://localhost:9223/');
 }
 
 electronApp.on('ready', () => {
