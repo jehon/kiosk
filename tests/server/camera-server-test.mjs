@@ -8,8 +8,10 @@ const { testingConfigOverride, testingConfigRestore } = getConfig;
 import cameraAPI from'../../packages/camera/camera-server.js';
 import { expectBrowserEvent } from './helpers.mjs';
 
+import spectronApp from './spectron-helper.mjs';
+
 describe(import.meta.url, () => {
-	beforeAll(() => {
+	beforeAll(async () => {
 		testingConfigOverride({
 			camera: {
 				host
@@ -17,7 +19,7 @@ describe(import.meta.url, () => {
 		});
 	});
 
-	afterAll(() => {
+	afterAll(async () => {
 		testingConfigRestore();
 	});
 
