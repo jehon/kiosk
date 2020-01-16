@@ -10,6 +10,7 @@ npm run test-server \
     tests/server/server-api-test.mjs \
     tests/server/clock-server-test.mjs \
     tests/server/photo-frame-exif-reader-test.mjs \
+    tests/server/camera-server-test.mjs \
 
 exit 0
 
