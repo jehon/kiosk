@@ -136,6 +136,10 @@ module.exports = function getConfig(path = false, def = undefined) {
 	return JSON.parse(JSON.stringify(config));
 };
 
+module.exports.set = function(path, val) {
+	objectPath.set(path, val);
+};
+
 //
 // for testing purposes
 //
