@@ -3,6 +3,7 @@ const { app: electronApp } = require('electron');
 const app = require('./server-api.js')('server');
 
 const browser = require('./core-browser.js');
+const webServer = require('./server-webserver.js');
 
 const { loadServerFiles } = require('./server-packages');
 
@@ -17,8 +18,10 @@ if (devMode) {
 }
 
 electronApp.on('ready', () => {
-	loadServerFiles()
-		.then(() => browser.start());
+	webServer.start()
+		.then(() => loadServerFiles())
+		.then(() => browser.start())
+	;
 });
 
 // Quit when all windows are closed.
