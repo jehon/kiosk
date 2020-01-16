@@ -6,7 +6,9 @@ const browser = require('./core-browser.js');
 
 const { loadServerFiles } = require('./server-packages');
 
-if (app.getConfig('core.devMode')) {
+const devMode = app.getConfig('core.devMode');
+
+if (devMode) {
 	// https://electronjs.org/docs/api/chrome-command-line-switches
 	electronApp.commandLine.appendSwitch('remote-debugging-port', '9223');
 	electronApp.commandLine.appendSwitch('inspect', '9222');
