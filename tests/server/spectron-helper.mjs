@@ -1,8 +1,9 @@
 
 // https://electronjs.org/spectron
 
-const Application = require('spectron').Application;
-const spectronApp = new Application({
+import Spectron from 'spectron';
+
+const spectronApp = new Spectron.Application({
 	path: '../../main.js'
 });
 
