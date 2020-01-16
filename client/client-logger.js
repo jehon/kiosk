@@ -3,7 +3,8 @@ import '../node_modules/debug/dist/debug.js';
 
 const remoteModule = require('electron').remote.require('./server/server-logger.js');
 
-// core.loggersRegexp
+// Get loggers from server and apply them locally
+debug.enable(remoteModule.getEnabledDebugRegexp());
 
 export async function remoteLogger(name, category, ...data) {
 	// Send the logs to the server

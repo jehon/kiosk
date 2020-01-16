@@ -60,10 +60,8 @@ require('electron').remote.require('./server/server-packages.js').getClientFiles
 				e => app.error(`Loading ${s} error`, e));
 	}));
 
-require('electron').remote.require('./server/server-config.js').getConfig('core.devMode')
-	.then(devMode => {
-		if (devMode) {
-			// https://electronjs.org/devtron
-			require('devtron').install();
-		}
-	});
+const devMode = require('electron').remote.require('./server/server-config.js')('core.devMode');
+if (devMode) {
+	// https://electronjs.org/devtron
+	require('devtron').install();
+}
