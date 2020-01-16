@@ -6,5 +6,6 @@
   "helpers": [
     "*-helper.js"
   ],
-  "stopSpecOnExpectationFailure": true
+  "stopSpecOnExpectationFailure": true,
+  "random": false
 }
