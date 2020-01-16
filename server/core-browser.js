@@ -28,6 +28,10 @@ module.exports.start = async function() {
 	win = new BrowserWindow(opts);
 	win.loadFile('client/index.html');
 
+	if (devMode) {
+		win.webContents.openDevTools();
+	}
+
 	win.on('closed', () => {
 		win = null;
 	});
