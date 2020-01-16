@@ -31,13 +31,22 @@ afterAll(() => {
 // Starting the App
 
 import Spectron from 'spectron';
+import electronPath from 'electron';
 
 const spectronApp = new Spectron.Application({
-	path: './main.js'
+	path: electronPath,
+	args: [
+		'./main.js'
+		// path.join(process.cwd(), 'main.js'),
+		// '-f',
+		// 'tests/kiosk.yml'
+	]
 });
 
+console.log(spectronApp);
+
 console.log('Starting spectron app ???');
-spectronApp.start({ path: path.join(process.cwd(), 'node_modules/.bin/electron')  })
+spectronApp.start()
 	.then(() => {
 		console.log('started');
 	})
