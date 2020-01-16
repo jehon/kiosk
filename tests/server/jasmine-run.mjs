@@ -14,7 +14,8 @@ const jasmine = new Jasmine({ projectBaseDir: path.resolve() });
 
 jasmine.loadConfigFile( './tests/server/jasmine.json' );
 if (process.argv.length > 2) {
-	jasmine.specFiles = process.argv.slice(2);
+	jasmine.specFiles = process.argv.slice(2)
+		.map(f => path.join(process.cwd(), f));
 }
 
 jasmine.jasmine.clock().install();
@@ -28,7 +29,7 @@ afterAll(() => {
 // Load mjs specs
 Promise.all(
 	jasmine.specFiles.filter(f => f.endsWith('.mjs')).map(f => {
-		f = f.replace('tests/server/', './');
+		f = f.replace(path.join(process.cwd(), 'tests/server/'), './');
 		// console.log('MJS: ', f);
 		return import(f)
 			.catch(e => {
@@ -37,9 +38,8 @@ Promise.all(
 			});
 	})
 ).then(() => {
-	jasmine.specFiles = jasmine.specFiles.filter(f => f.endsWith('.js'))
-		.map(f => path.join(process.cwd(), f));
+	jasmine.specFiles = jasmine.specFiles.filter(f => f.endsWith('.js'));
 
-	// console.log('JS: ', jasmine.specFiles);
+	console.log('JS: ', jasmine.specFiles);
 	jasmine.execute();
 });
