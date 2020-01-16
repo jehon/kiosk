@@ -1,5 +1,6 @@
 
-import serverAPIFactory, { ServerAPI } from '../../server/server-api.mjs';
+import serverAPIFactory from '../../server/server-api.js';
+const { ServerAPI } = serverAPIFactory;
 
 describe(import.meta.url, () => {
 	describe('should serverAPI without context', () => {

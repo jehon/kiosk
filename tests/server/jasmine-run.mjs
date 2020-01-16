@@ -6,7 +6,7 @@ import Jasmine from 'jasmine';
 import '../../node_modules/colors/lib/index.js';
 
 // Configure default logger
-import loggerFactory from '../../server/server-logger.mjs';
+import loggerFactory from '../../server/server-logger.js';
 const logger = loggerFactory('jasmine');
 
 const jasmine = new Jasmine();

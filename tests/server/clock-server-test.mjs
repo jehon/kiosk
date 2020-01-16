@@ -1,8 +1,10 @@
 
-import { ServerAPI, testingConfigOverride, testingConfigRestore } from '../../server/server-api.mjs';
+import serverAPIFactory from '../../server/server-api.js';
+const { ServerAPI, testingConfigOverride, testingConfigRestore } = serverAPIFactory;
+
 import { expectBrowserEvent } from './helpers.mjs';
 
-import '../../packages/clock/clock-server.mjs';
+import '../../packages/clock/clock-server.js';
 
 describe(import.meta.url, () => {
 	beforeEach(function() {
