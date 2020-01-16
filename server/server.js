@@ -33,8 +33,10 @@ electronApp.on('web-contents-created', (event, contents) => {
 	contents.on('new-window', async (event, _navigationUrl) => event.preventDefault());
 
 	// https://electronjs.org/docs/tutorial/security#16-filter-the-remote-module
-	electronApp.on('remote-get-builtin', (event, _webContents, _moduleName) => event.preventDefault());
 	electronApp.on('remote-get-global', (event, _webContents, _moduleName) => event.preventDefault());
 	electronApp.on('remote-get-current-window', (event, _webContents) => event.preventDefault());
 	electronApp.on('remote-get-current-web-contents', (event, _webContents) => event.preventDefault());
+	if (!devMode) {
+		electronApp.on('remote-get-builtin', (event, _webContents, _moduleName) => event.preventDefault());
+	}
 });
