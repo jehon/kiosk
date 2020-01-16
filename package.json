@@ -39,6 +39,7 @@
     "babel-plugin-transform-commonjs": "^1.1.6",
     "cypress": "3.8.1",
     "depcheck": "0.9.1",
+    "devtron": "1.4.0",
     "eslint": "6.8.0",
     "eslint-plugin-cypress": "2.8.1",
     "eventsource": "1.0.7",
@@ -52,6 +53,7 @@
     "npm-check": "5.9.0",
     "puppeteer": "2.0.0",
     "randomport": "0.1.1",
+    "spectron": "9.0.0",
     "sharp": "0.23.4",
     "start-server-and-test": "1.10.6",
     "watch-then-execute": "1.1.1"

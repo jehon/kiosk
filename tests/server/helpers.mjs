@@ -1,5 +1,6 @@
 
 import serverAPIFactory from '../../server/server-api.js';
+import spectronApp from './spectron-helper.mjs';
 const { ServerAPI } = serverAPIFactory;
 
 // Eventname is the shortname, because it is the way it was called
