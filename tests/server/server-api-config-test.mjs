@@ -1,5 +1,6 @@
 
-import getConfig, { testingConfigOverride, testingConfigRestore } from '../../server/server-config.mjs';
+import getConfig  from '../../server/server-config.js';
+const { testingConfigOverride, testingConfigRestore } = getConfig;
 
 describe(import.meta.url, () => {
 	beforeEach(() => {

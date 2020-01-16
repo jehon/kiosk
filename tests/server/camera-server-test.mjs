@@ -3,8 +3,9 @@ import nock from 'nock';
 
 const host = 'http://localhost';
 
-import { testingConfigOverride, testingConfigRestore } from '../../server/server-api.mjs';
-import * as cameraAPI from'../../packages/camera/camera-server.mjs';
+import getConfig from '../../server/server-api.js';
+const { testingConfigOverride, testingConfigRestore } = getConfig;
+import * as cameraAPI from'../../packages/camera/camera-server.js';
 import { expectBrowserEvent } from './helpers.mjs';
 
 describe(import.meta.url, () => {
