@@ -91,8 +91,10 @@ async function _check() {
 module.exports._check = _check;
 
 // Make 2 checks to be sure that we are in the correct state since startup
-_check();
-_check();
+_check()
+	.then(() => _check())
+	.then(() => _check())
+;
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);
