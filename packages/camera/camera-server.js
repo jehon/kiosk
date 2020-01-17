@@ -18,7 +18,8 @@ const config = {
 	imageFeed: '/image.jpg',
 	videoFeed: '/video/mjpg.cgi',
 	audioFeed: '/audio.cgi',
-	...app.getConfig('.')
+	...app.getConfig('.'),
+	frameURL: `http://localhost:${app.getConfig('core.webserver.port')/camera/frame}`
 };
 
 app.registerCredentials(config.host, config.username, config.password);
@@ -36,6 +37,10 @@ app.registerCredentials(config.host, config.username, config.password);
   A   audio.cgi      audio   admin only?
 
  */
+
+app.getExpressApp().get('/camera/frame', () => `
+	<div class='full full-background-image' style='background-image: url("${config.host + config.videoFeed}?${Date.now()}")'></div>
+`.trim());
 
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 

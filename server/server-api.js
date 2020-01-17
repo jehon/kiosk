@@ -9,6 +9,7 @@ const Scheduler                            = require('./server-scheduler');
 const getConfig                            = require('./server-config');
 const { dispatchToBrowser }                = require('./core-browser');
 const { rootDir }                          = require('./server-config');
+const webServer                            = require('./server-webserver.js');
 
 const bus       = new Bus(loggerFactory('core:server:bus'));
 const scheduler = new Scheduler(bus);
@@ -88,6 +89,10 @@ class ServerAPI {
 
 	getChildLogger(name) {
 		return this.logger.extend(name);
+	}
+
+	getExpressApp() {
+		return webServer.getExpressApp();
 	}
 }
 module.exports.ServerAPI = ServerAPI;

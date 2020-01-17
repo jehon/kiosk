@@ -5,12 +5,6 @@ const app = express();
 const getConfig = require('./server-config.js');
 const logger = require('./server-logger.js')('core:webserver:server');
 
-app.get('**/*.yml', function(req, res, _next) {
-	res.end('You are not allowed!');
-});
-
-app.use('/', express.static(getConfig('core.root')));
-
 let serverListener = false;
 
 async function start(port = getConfig('core.port')) {
@@ -45,5 +39,6 @@ function stop() {
 module.exports = {
 	start,
 	stop,
-	getPort
+	getPort,
+	getExpressApp: () => app
 };
