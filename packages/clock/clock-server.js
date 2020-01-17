@@ -7,7 +7,7 @@ const config = {
 	...app.getConfig()
 };
 
-app.info('Programming config cron\'s');
+app.debug('Programming config cron\'s');
 for(const l of Object.keys(config.tickers)) {
 	const f = config.tickers[l];
 	app.debug('Programming: ', l, f);

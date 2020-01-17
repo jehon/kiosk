@@ -29,5 +29,5 @@ var socketForEvents = net.createServer((stream) => {
 });
 
 socketForEvents.listen(socketPath, () => {
-	console.info(`Listening for events on ${socketPath}`);
+	logger.debug(`Listening for events on ${socketPath}`);
 });

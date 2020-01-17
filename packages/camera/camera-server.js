@@ -18,6 +18,7 @@ const config = {
 	imageFeed: '/image.jpg',
 	videoFeed: '/video/mjpg.cgi',
 	audioFeed: '/audio.cgi',
+	errMessage: 'No error received',
 	...app.getConfig('.'),
 	frameURL: `http://localhost:${app.getConfig('core.webserver.port')/camera/frame}`
 };
@@ -68,19 +69,20 @@ async function _check() {
 				status.errMessage = 'Waiting for two sucesses before enabling it';
 				return;
 			}
+			app.debug('Activating camera');
 			status = {
 				enabled: true
 			};
 			return app.dispatchToBrowser('.status');
 		}, _err => {
-			app.debug('Received error, disabling camera', _err.message);
+			app.debug('Received network error, disabling camera', _err.message);
 			if (successes > 0) {
 				successes = 0;
 
 				// Forcing leaving to camera
 				status = {
 					enabled: false,
-					errMessage: _err.message
+					errMessage: 'Received network error, disabling camera:' + (_err.message ? _err.message : '-no message-'),
 				};
 				return app.dispatchToBrowser('.status');
 			}
