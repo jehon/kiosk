@@ -20,7 +20,6 @@ const config = {
 	audioFeed: '/audio.cgi',
 	errMessage: 'No error received',
 	...app.getConfig('.'),
-	frameURL: `http://localhost:${app.getConfig('core.webserver.port')/camera/frame}`
 };
 
 app.registerCredentials(config.host, config.username, config.password);
@@ -39,9 +38,9 @@ app.registerCredentials(config.host, config.username, config.password);
 
  */
 
-app.getExpressApp().get('/camera/frame', () => `
+app.getExpressApp().get('/camera/frame', (req, res) => res.send(`
 	<div class='full full-background-image' style='background-image: url("${config.host + config.videoFeed}?${Date.now()}")'></div>
-`.trim());
+`.trim()));
 
 const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 
@@ -100,5 +99,7 @@ app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);
 
 module.exports.getStatus = function() {
-	return { ...status, ...config };
+	return { ...status, ...config,
+		frameURL: `http://localhost:${app.getConfig('core.webserver.port')}/camera/frame`
+	};
 };

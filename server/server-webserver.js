@@ -7,6 +7,9 @@ const logger = require('./server-logger.js')('core:webserver:server');
 
 let serverListener = false;
 
+// TODO: restrict the static to exclude some files!
+app.use(express.static('.'));
+
 async function start(port = getConfig('core.port', 1234)) {
 	return new Promise(resolve => {
 		if (serverListener) {
