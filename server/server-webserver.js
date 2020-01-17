@@ -8,6 +8,7 @@ const logger = require('./server-logger.js')('core:webserver:server');
 let serverListener = false;
 
 async function start(port = getConfig('core.port')) {
+async function start(port = getConfig('core.port', 1234)) {
 	return new Promise(resolve => {
 		if (serverListener) {
 			const realPort = getPort();
@@ -17,7 +18,7 @@ async function start(port = getConfig('core.port')) {
 		serverListener = app.listen(port, () => {
 			const realPort = getPort();
 			logger.debug(`Listening on port ${realPort}!`);
-			getConfig.set('core.webserver.port', port);
+			getConfig.set('core.webserver.port', realPort);
 			resolve(realPort);
 		});
 	});
