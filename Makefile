@@ -25,8 +25,7 @@ SHELL := /bin/bash
 #
 ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 HOST   ?= kiosk
-TARGET ?= /opt/web/www
-# TARGET := /opt/kiosk
+TARGET ?= /opt/kiosk
 
 dump:
 	$(info ROOT:   $(ROOT))
@@ -113,15 +112,13 @@ remote-reboot:
 remote-restart-dm:
 	ssh $(HOST) systemctl restart display-manager
 
-remote-restart-browser:
-	ssh $(HOST) su pi -c \"DISPLAY=:0 /usr/bin/xdotool key --clearmodifiers ctrl+F5\"
-
 #
 #
 # Deploy
 #
 #
 deploy: dump
+	npm run build
 	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
 		--exclude .vagrant \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
@@ -129,6 +126,8 @@ deploy: dump
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
 
+	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
+	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
 	ssh $(HOST) truncate --size 0 /tmp/kiosk-xsession.log
 
 	ssh $(HOST) "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"

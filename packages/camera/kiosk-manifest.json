@@ -1,5 +1,5 @@
 {
   "api": 1,
-  "server": "camera-server.mjs",
+  "server": "camera-server.js",
   "client": "camera-client.js"
 }

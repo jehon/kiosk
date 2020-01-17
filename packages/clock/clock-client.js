@@ -3,8 +3,6 @@
 import AppFactory from '../../client/client-api.js';
 const app = AppFactory('clock');
 
-import { onDate } from '../../client/client-helpers.js';
-
 const defaultPriority = 1250;
 const elevatedPriority = 150;
 
@@ -166,21 +164,13 @@ customElements.define('kiosk-clock', KioskClock);
 app
 	.withPriority(defaultPriority)
 	.withMainElement(new KioskClock())
-	.menuBasedOnIcon('/packages/clock/clock.png');
+	.menuBasedOnIcon('../packages/clock/clock.png');
 
 app.subscribe('.ticker', (data) => {
-	app.debug('Received ticker', data);
 	ticker = data;
-	app.changePriority(elevatedPriority);
-
-	onDate(ticker.stat.end).then(() => {
-		app.debug('ticker on date', data);
-		// data.onEndOfDuration(() => {
-		// Is it the current ticker?
-		if (ticker && ticker.triggerDate == data.triggerDate) {
-			// We have this event, so let's stop it and become a normal application again...
-			app.changePriority(defaultPriority);
-		}
-	});
-})
-;
+	if (data) {
+		app.changePriority(elevatedPriority);
+	} else {
+		app.changePriority(defaultPriority);
+	}
+});

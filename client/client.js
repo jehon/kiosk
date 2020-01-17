@@ -1,7 +1,5 @@
 
 import clientAPIFactory from './client-api.js';
-import { enableClientLoggers } from './client-logger.js';
-import './client-server-events.js';
 import './client-app-chooser.js';
 
 const app = clientAPIFactory('core:client');
@@ -36,7 +34,7 @@ app.subscribe('apps.current', (wishedApp) => {
 			mainAppElement.innerHTML = `<div>No main element available for app ${this.getName()}: ${JSON.stringify(this)}</div>`;
 		} else {
 			// Ok, let's go !
-			app.info(`Selecting ${wishedApp.getName()}`);
+			app.debug(`Selecting ${wishedApp.getName()}`);
 			displayedApplication = wishedApp;
 
 			mainAppElement.innerHTML = '';
@@ -50,33 +48,20 @@ app.subscribe('apps.current', (wishedApp) => {
 	}
 });
 
-// For development mainly (and only)
-let startedTimestamp = false;
-app.subscribe('core.started', (data) => {
-	let startedTimestampNew = data.startupTime.toISOString();
-	app.debug('Connected back to the server: ', startedTimestampNew, startedTimestamp);
-	if (startedTimestamp) {
-		if (startedTimestampNew != startedTimestamp) {
-			app.info('New session from server: ', startedTimestampNew, 'restarting the browser');
-			document.location.reload();
-		}
-	}
-	startedTimestamp = startedTimestampNew;
-});
-
-app.subscribe('core.loggersRegexp', (loggers) => {
-	enableClientLoggers(loggers);
-});
-
 //
 // Load other packages
 //
 
-fetch('/core/packages/client/active')
-	.then(response => response.json())
-	.then(json => json.map(s => {
-		app.info(`Loading ${s}`);
+require('electron').remote.require('./server/server-packages.js').getClientFiles()
+	.then(list => list.map(s => {
+		app.debug(`Loading ${s}`);
 		return import(s)
-			.then(() => app.info(`Loading ${s} done`),
+			.then(() => app.debug(`Loading ${s} done`),
 				e => app.error(`Loading ${s} error`, e));
 	}));
+
+const devMode = require('electron').remote.require('./server/server-config.js')('core.devMode');
+if (devMode) {
+	// https://electronjs.org/devtron
+	require('devtron').install();
+}

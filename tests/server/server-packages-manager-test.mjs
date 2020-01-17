@@ -1,5 +1,5 @@
 
-import * as packageManager from '../../server/server-packages.mjs';
+import packageManager from '../../server/server-packages.js';
 
 describe(import.meta.url, () => {
 	it('should detect packages', async () => {

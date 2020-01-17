@@ -1,20 +1,18 @@
 
-import fs from 'fs';
-import mime from 'mime-types';
-import shuffleArray from 'shuffle-array';
-import path from 'path';
-import minimatch from 'minimatch';
+const fs = require('fs');
+const mime = require('mime-types');
+const shuffleArray = require('shuffle-array');
+const path = require('path');
+const minimatch = require('minimatch');
 
 // See https://nodejs.org/dist/latest-v12.x/docs/api/modules.html#modules_module_createrequire_filename
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
 const pLimitFactory = require('p-limit');
 
-import exifParser from './exif-parser.mjs';
+const exifParser = require('./exif-parser.js');
 
 const exifReaderLimiter = pLimitFactory(1);
 
-import serverAPIFactory from '../../server/server-api.mjs';
+const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('photo-frame:server');
 
 const buildingLogger = app.getChildLogger('building');
@@ -112,6 +110,10 @@ function generateListingForTopFolder(folderConfig) {
 		...folderConfig,
 	};
 
+	if (folderConfig.folder[0] != '/') {
+		folderConfig.folder = path.join(app.getConfig('core.root') , folderConfig.folder);
+	}
+
 	buildingLogger.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
@@ -125,15 +127,11 @@ function generateListingForTopFolder(folderConfig) {
 	return selectedFolderPictures;
 }
 
-function os2web(os, web, f) { // TODO: this should be in package "shares"
-	return f.replace(os, web);
-}
-
 //
 // Main entry-point
 //  -> Generate a selection
 //
-export async function generateListing(_data = null) {
+async function generateListing(_data = null) {
 	app.debug('Generate listing');
 	hasAnUpdatedList = false;
 	previouslySelected.length = 0;
@@ -145,10 +143,7 @@ export async function generateListing(_data = null) {
 	for(const i in folders) {
 		const f = folders[i];
 		buildingLogger.debug('1.1 - generateListing: Using folder', f);
-		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f).map(file => ({
-			webname: os2web(f.folder, f.publishedAt, file),
-			original: file,
-		})));
+		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f));
 	}
 
 	if (newSelectedPictures.length == 0) {
@@ -159,29 +154,25 @@ export async function generateListing(_data = null) {
 	buildingLogger.debug('Extracting exif data for all files');
 	newSelectedPictures = await Promise.all(
 		newSelectedPictures.map(
-			f => exifReaderLimiter(() => exifParser(f.original))
-				.then(data => { f.data = data; return f; })
-				.catch(e => { app.info('Could not read exif: ', e); return f; })
+			filepath => exifReaderLimiter(() => exifParser(filepath))
+				.catch(e => { app.debug('Could not read exif: ', e); return {}; })
+				.then(data => ({ filepath, data }))
 		));
 	buildingLogger.debug('Extracting exif data done');
 
-	newSelectedPictures = newSelectedPictures.map(v => {
-		delete v.original;
-		return v;
-	});
-
 	newSelectedPictures.sort((a, b) => {
-		return a.date < b.date ? -1 : a.date == b.date ? 0 : 1;
+		return a.data.date < b.data.date ? -1 : a.data.date == b.data.date ? 0 : 1;
 	});
 
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
-	buildingLogger.debug('Sending to browser', selectedPictures);
-	app.dispatchToBrowser('.listing', selectedPictures);
+	buildingLogger.debug('Updating listing to', selectedPictures);
+	app.dispatchToBrowser('.listing');
 
 	app.debug('Generating listing done');
 	return selectedPictures;
 }
+module.exports.generateListing = generateListing;
 
 // ********************************************
 //
@@ -212,19 +203,7 @@ app.subscribe('.refresh', (data) => generateListing(data));
 // Force a first go !
 app.dispatch('.refresh');
 
-// Register some routing functions
-app.getExpressApp().get('/photo-frame/refresh', async (_req, res, _next) => {
-	// TODO: allow to generate from a specific folder?
-	app.debug('Requesting refreshing the list');
-	await app.dispatch('.refresh');
-	res.json(selectedPictures);
-});
-
-app.getExpressApp().get('/photo-frame/', async (_req, res, _next) => {
-	app.debug('Requesting listing');
-	res.json(selectedPictures);
-});
-
-export function getSelectedPictures() {
+module.exports.getSelectedPictures = function getSelectedPictures() {
 	return selectedPictures;
-}
+};
+

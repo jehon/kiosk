@@ -1,5 +1,5 @@
 
-import Bus from '../../common/bus.mjs';
+import Bus from '../../common/bus.js';
 
 describe(import.meta.url, () => {
 	it('should notify', async function() {
