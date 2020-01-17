@@ -7,7 +7,6 @@ const logger = require('./server-logger.js')('core:webserver:server');
 
 let serverListener = false;
 
-async function start(port = getConfig('core.port')) {
 async function start(port = getConfig('core.port', 1234)) {
 	return new Promise(resolve => {
 		if (serverListener) {
