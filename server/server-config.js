@@ -137,7 +137,7 @@ module.exports = function getConfig(path = false, def = undefined) {
 };
 
 module.exports.set = function(path, val) {
-	objectPath.set(path, val);
+	objectPath.set(config, path, val);
 };
 
 //
