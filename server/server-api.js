@@ -2,14 +2,14 @@
 const { app: electronApp } = require('electron');
 
 // Common
-const Bus                                  = require('../common/bus');
-const contextualize                        = require('../common/contextualize');
-const loggerFactory                        = require('./server-logger');
-const Scheduler                            = require('./server-scheduler');
-const getConfig                            = require('./server-config');
-const { dispatchToBrowser }                = require('./core-browser');
-const { rootDir }                          = require('./server-config');
-const webServer                            = require('./server-webserver.js');
+const Bus                                        = require('../common/bus');
+const contextualize                              = require('../common/contextualize');
+const loggerFactory                              = require('./server-logger');
+const Scheduler                                  = require('./server-scheduler');
+const getConfig                                  = require('./server-config');
+const { dispatchToBrowser, registerCredentials } = require('./core-browser');
+const { rootDir }                                = require('./server-config');
+const webServer                                  = require('./server-webserver.js');
 
 const bus       = new Bus(loggerFactory('core:server:bus'));
 const scheduler = new Scheduler(bus);
@@ -56,19 +56,22 @@ class ServerAPI {
 
 	registerCredentials(url, username, password) {
 		this.debug(`Registering credentials for ${username}@${url}: #${password.length} characters`);
-		// TODO: here
+		registerCredentials(url, { username, password });
+
+		// TODO: here - split the registerCredentials -> map + onlogin being on different logger and thread
 		//
 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
 		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
 		//
-		electronApp.on('login', (event, webContents, details, authInfo, callback) => {
-			if (details.url.startsWith(url)) {
-				this.info(`Auto fill in credentials of ${details.url} for ${url} with ${username}`);
-				event.preventDefault();
-				callback(username, password);
-			}
-		});
-		// TODO: make an array of credentials, to allow unsubscribing ???
+
+		// electronApp.on('login', (event, webContents, details, authInfo, callback) => {
+		// 	this.debug(`login request for ${details.url}`);
+		// 	if (details.url.startsWith(url)) {
+		// 		this.debug(`Auto fill in credentials of ${details.url} for ${url} with ${username}`);
+		// 		event.preventDefault();
+		// 		callback(username, password);
+		// 	}
+		// });
 	}
 
 	dispatchToBrowser(eventName) {
