@@ -26,7 +26,8 @@ module.exports.start = async function() {
 	}
 
 	win = new BrowserWindow(opts);
-	win.loadFile('client/index.html');
+	// win.loadFile('client/index.html');
+	win.loadURL('http://localhost:1234/client/index.html');
 
 	if (devMode) {
 		win.webContents.openDevTools();
