@@ -155,7 +155,7 @@ async function generateListing(_data = null) {
 	newSelectedPictures = await Promise.all(
 		newSelectedPictures.map(
 			filepath => exifReaderLimiter(() => exifParser(filepath))
-				.catch(e => { app.info('Could not read exif: ', e); return {}; })
+				.catch(e => { app.debug('Could not read exif: ', e); return {}; })
 				.then(data => ({ filepath, data }))
 		));
 	buildingLogger.debug('Extracting exif data done');

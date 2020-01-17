@@ -67,7 +67,7 @@ module.exports.loadServerFiles = async function() {
 			app.debug('Loading', f);
 			try {
 				require(f);
-				app.info('Loaded', f);
+				app.debug('Loaded', f);
 			} catch(e) {
 				app.error('Error loading ', f, ': ', e);
 			}

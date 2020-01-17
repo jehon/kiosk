@@ -16,7 +16,7 @@ async function start(port = getConfig('core.port')) {
 		}
 		serverListener = app.listen(port, () => {
 			const realPort = getPort();
-			logger.info(`Listening on port ${realPort}!`);
+			logger.debug(`Listening on port ${realPort}!`);
 			getConfig.set('core.webserver.port', port);
 			resolve(realPort);
 		});

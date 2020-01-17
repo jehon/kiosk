@@ -82,7 +82,7 @@ for(const i in configFiles) {
 		if (txt) {
 			const doc = yaml.safeLoad(txt);
 			config = deepMerge(config, doc);
-			logger.info('Loaded config file ' + f);
+			logger.debug('Loaded config file ' + f);
 			break;
 		}
 		logger.error('Skipping empty config file ' + f);
@@ -101,7 +101,7 @@ logger.debug('Config object after loading files', config);
 //
 if (cmdLineOptions.devMode) {
 	config.core.devMode = true;
-	logger.info('Versions', process.versions);
+	logger.debug('Versions', process.versions);
 	logger.info('Node version: ', process.versions['node']);
 	logger.info('Chrome version: ', process.versions['chrome']);
 }
@@ -113,7 +113,7 @@ logger.debug('Final config: ', config);
 //
 if (config.core.loggers) {
 	for(const re of config.core.loggers) {
-		logger.info('Enabling logging level due to configuration: ', re);
+		logger.debug('Enabling logging level due to configuration: ', re);
 		loggerFactory.enableDebugForRegexp(re);
 	}
 }

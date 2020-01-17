@@ -8,7 +8,7 @@ app.subscribe('.apps', () => updateApps());
 function updateApps() {
 	const apps = require('electron').remote.require('./packages/menu/menu-server.js').getAppConfigs();
 	for(const appName of Object.keys(apps)) {
-		app.info(`Registering app by menu: ${appName}`, apps[appName]);
+		app.debug(`Registering app by menu: ${appName}`, apps[appName]);
 		AppFactory(appName)
 			.withPriority(apps[appName].priority)
 			.mainBasedOnIFrame(apps[appName].url)

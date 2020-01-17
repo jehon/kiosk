@@ -34,7 +34,7 @@ app.subscribe('apps.current', (wishedApp) => {
 			mainAppElement.innerHTML = `<div>No main element available for app ${this.getName()}: ${JSON.stringify(this)}</div>`;
 		} else {
 			// Ok, let's go !
-			app.info(`Selecting ${wishedApp.getName()}`);
+			app.debug(`Selecting ${wishedApp.getName()}`);
 			displayedApplication = wishedApp;
 
 			mainAppElement.innerHTML = '';
@@ -54,9 +54,9 @@ app.subscribe('apps.current', (wishedApp) => {
 
 require('electron').remote.require('./server/server-packages.js').getClientFiles()
 	.then(list => list.map(s => {
-		app.info(`Loading ${s}`);
+		app.debug(`Loading ${s}`);
 		return import(s)
-			.then(() => app.info(`Loading ${s} done`),
+			.then(() => app.debug(`Loading ${s} done`),
 				e => app.error(`Loading ${s} error`, e));
 	}));
 

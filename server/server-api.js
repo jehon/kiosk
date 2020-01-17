@@ -28,7 +28,7 @@ class ServerAPI {
 		this.name = name;
 		this.logger = loggerFactory(this.name);
 		this.c = contextualize(this.name);
-		this.info('Registering app', this.getName(), this);
+		this.debug('Registering app', this.getName(), this);
 	}
 
 	getName() {
@@ -55,7 +55,7 @@ class ServerAPI {
 	}
 
 	registerCredentials(url, username, password) {
-		this.info(`Registering credentials for ${username}@${url}: #${password.length} characters`);
+		this.debug(`Registering credentials for ${username}@${url}: #${password.length} characters`);
 		// TODO: here
 		//
 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login

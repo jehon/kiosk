@@ -42,7 +42,7 @@ export class ClientAPI {
 		this.name = name;
 		this.logger = loggerFactory(this.name);
 		this.c = contextualize(this.name);
-		this.info('Registering app', this.getName(), this);
+		this.debug('Registering app', this.getName(), this);
 		apps[this.getName()] = this;
 		this.dispatchAppChanged();
 	}
