@@ -1,16 +1,24 @@
 
 // See https://stackoverflow.com/a/47835049/1954789
 
-import glob from 'glob';
+import path from 'path';
+
 import Jasmine from 'jasmine';
 import '../../node_modules/colors/lib/index.js';
 
 // Configure default logger
-import loggerFactory from '../../server/server-logger.mjs';
+import loggerFactory from '../../server/server-logger.js';
 const logger = loggerFactory('jasmine');
 
-const jasmine = new Jasmine();
+const jasmine = new Jasmine({ projectBaseDir: path.resolve() });
+
 jasmine.loadConfigFile( './tests/server/jasmine.json' );
+if (process.argv.length > 2) {
+	jasmine.specFiles = process.argv.slice(2)
+		.map(f => path.join(process.cwd(), f));
+}
+
+// Mocking the time
 
 jasmine.jasmine.clock().install();
 jasmine.jasmine.clock().mockDate(new Date(2019, 1, 1, 12, 0, 0));
@@ -20,16 +28,47 @@ afterAll(() => {
 	jasmine.jasmine.clock().uninstall();
 });
 
-// Load mjs specs
-glob('**/*-test.mjs', function (er, files) {
-	Promise.all(
-		files
-			.map(f => f.replace('tests/server/', './'))
-			.map(f => import(f)
-				.catch(e => {
-					console.error('jasmine-run: error loading', f, ': ', e);
-					process.exit(1);
-				}))
-	)
-		.then(() => jasmine.execute());
+// Starting the App
+
+import Spectron from 'spectron';
+import electronPath from 'electron';
+
+const spectronApp = new Spectron.Application({
+	path: electronPath,
+	args: [
+		'./main.js'
+		// path.join(process.cwd(), 'main.js'),
+		// '-f',
+		// 'tests/kiosk.yml'
+	]
 });
+
+console.log(spectronApp);
+
+console.log('Starting spectron app ???');
+spectronApp.start()
+	.then(() => {
+		console.log('started');
+	})
+	.then(() => {
+		afterAll(async () => spectronApp.stop());
+
+		// Load mjs specs
+		Promise.all(
+			jasmine.specFiles.filter(f => f.endsWith('.mjs')).map(f => {
+				f = f.replace(path.join(process.cwd(), 'tests/server/'), './');
+				// console.log('MJS: ', f);
+				return import(f)
+					.catch(e => {
+						console.error('jasmine-run: error loading', f, ': ', e);
+						process.exit(1);
+					});
+			})
+		).then(() => {
+			jasmine.specFiles = jasmine.specFiles.filter(f => f.endsWith('.js'));
+
+			console.log('JS: ', jasmine.specFiles);
+			jasmine.execute();
+		});
+	})
+	.catch(e => console.error(e));

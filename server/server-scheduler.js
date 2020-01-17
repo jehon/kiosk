@@ -1,11 +1,11 @@
 
 // https://www.npmjs.com/package/cron
-import CronJob from '../node_modules/cron/lib/cron.js';
-import cronstrue from '../node_modules/cronstrue/dist/cronstrue.js';
+const CronJob = require('cron');
+const cronstrue = require('cronstrue');
 
-import loggerFactory from './server-logger.mjs';
+const loggerFactory = require('./server-logger.js');
 
-export default class Scheduler {
+module.exports = class Scheduler {
 	logger;
 	bus;
 
@@ -48,4 +48,4 @@ export default class Scheduler {
 		job.start();
 		return () => job.stop();
 	}
-}
+};

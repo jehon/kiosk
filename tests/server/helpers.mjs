@@ -1,5 +1,7 @@
 
-import { ServerAPI } from '../../server/server-api.mjs';
+import serverAPIFactory from '../../server/server-api.js';
+// import spectronApp from './spectron-helper.mjs';
+const { ServerAPI } = serverAPIFactory;
 
 // Eventname is the shortname, because it is the way it was called
 // from the class, outside of any context

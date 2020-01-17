@@ -5,7 +5,7 @@
 	 *    - [^.] => treat as global key
 	 */
 
-export default function contextualize(contextRaw) {
+function contextualize(contextRaw) {
 	const context = contextRaw.split(':')[0];
 	return function(key) {
 		if ((typeof(key) == 'string' && key[0] == '.')
@@ -22,7 +22,7 @@ export default function contextualize(contextRaw) {
 	};
 }
 
-export function ctxForFunction(context) {
+function ctxForFunction(context) {
 	// Return a function to apply on contextualization function
 	return (fn) =>
 		// The new function will have its first argument contextualized
@@ -30,3 +30,6 @@ export function ctxForFunction(context) {
 			return fn(contextualize(context)(key), ...args);
 		};
 }
+
+module.exports = contextualize;
+module.exports.ctxForFunction = ctxForFunction;

@@ -6,18 +6,20 @@ import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('camera');
 
-let state = {
+let status = {
 	enabled: false
 };
 
-app.subscribe('.status', data => {
-	state = data;
-	if (state.enabled) {
+app.subscribe('.status', () => {
+	status = { ...require('electron').remote.require('./packages/camera/camera-server.js').getStatus() };
+	if (status.enabled) {
 		app.changePriority(50);
 	} else {
 		app.changePriority(1000);
 	}
 });
+
+app.dispatch('.status');
 
 class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	// Working with connected/disconnected to avoid movie running in background
@@ -37,11 +39,22 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	adapt() {
-		if (state.enabled) {
-			this.innerHTML = `<div class='full full-background-image' style='background-image: url("${state.liveFeedUrl}")'></div>`;
+		if (status.enabled) {
+
+			// this.innerHTML = `<img src="${status.host + status.videoFeed}?${Date.now()}"/>`;
+
+			this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
+
+			// We need the iframe to be loaded for the 'login' event to happen
+			setTimeout(() => {
+				this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
+			}, 2000);
+
+			// TODO: add sound
+
 		} else {
 			// TODO: icon "not available"
-			this.innerHTML = '<div>Camera is not available</div>';
+			this.innerHTML = `<div>Camera is not available: ${status.errMessage}</div>`;
 		}
 	}
 }
@@ -50,5 +63,5 @@ customElements.define('kiosk-camera', KioskCamera);
 app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
-	.menuBasedOnIcon('/packages/camera/camera.png')
+	.menuBasedOnIcon('../packages/camera/camera.png')
 ;

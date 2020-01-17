@@ -1,18 +1,15 @@
 
-import fs from 'fs';
-import path from 'path';
-import yargs from 'yargs';
-import url from 'url';
+const fs = require('fs');
+const path = require('path');
+const yargs = require('yargs');
 
-import yaml from 'js-yaml';
-import deepMerge  from 'deepmerge';
-import objectPath from 'object-path';
+const yaml = require('js-yaml');
+const deepMerge  = require('deepmerge');
+const objectPath = require('object-path');
 
-import loggerFactory, { enableDebugForRegexp } from './server-logger.mjs';
+const loggerFactory = require('./server-logger.js');
 const logger = loggerFactory('core:server:config');
-
-// TODO: legacy, but difficult to remove
-export const rootDir = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));
+const rootDir = path.dirname(__dirname);
 
 //
 // Parameters
@@ -37,20 +34,15 @@ if (typeof(jasmine) != 'undefined') {
 
 const cmdLineOptions = yargs
 	.options({
-		'port': {
-			alias: 'p',
-			type: 'integer',
-			describe: 'The port to listen to',
-			default: 0
-		},
 		'file': {
 			alias: 'f',
 			type: 'string',
 			describe: 'additionnal file configuration'
 		},
-		'server-only': {
+		'devMode': {
+			alias: [ '-d', '--dev-mode' ],
 			type: 'boolean',
-			describe: 'start only the server, not the browser'
+			describe: 'activate the dev mode'
 		}
 	})
 	.help()
@@ -74,9 +66,7 @@ if (cmdLineOptions.file) {
 
 let config = {
 	core: {
-		root: rootDir,
-		port: 3000,
-		serverOnly: false
+		root: rootDir
 	}
 };
 
@@ -92,7 +82,7 @@ for(const i in configFiles) {
 		if (txt) {
 			const doc = yaml.safeLoad(txt);
 			config = deepMerge(config, doc);
-			logger.info('Loaded config file ' + f);
+			logger.debug('Loaded config file ' + f);
 			break;
 		}
 		logger.error('Skipping empty config file ' + f);
@@ -109,12 +99,11 @@ logger.debug('Config object after loading files', config);
 //
 // Override with command line options
 //
-if (cmdLineOptions.port > 0) {
-	config.core.port  = cmdLineOptions.port;
-}
-
-if (cmdLineOptions.serverOnly > 0) {
-	config.core.serverOnly  = cmdLineOptions.serverOnly;
+if (cmdLineOptions.devMode) {
+	config.core.devMode = true;
+	logger.debug('Versions', process.versions);
+	logger.info('Node version: ', process.versions['node']);
+	logger.info('Chrome version: ', process.versions['chrome']);
 }
 
 logger.debug('Final config: ', config);
@@ -124,8 +113,8 @@ logger.debug('Final config: ', config);
 //
 if (config.core.loggers) {
 	for(const re of config.core.loggers) {
-		logger.info('Enabling logging level due to configuration: ', re);
-		enableDebugForRegexp(re);
+		logger.debug('Enabling logging level due to configuration: ', re);
+		loggerFactory.enableDebugForRegexp(re);
 	}
 }
 
@@ -133,7 +122,7 @@ if (config.core.loggers) {
 // Main function to get a config
 //
 const getConfigLogger = logger.extend('get');
-export default function getConfig(path = false, def = undefined) {
+module.exports = function getConfig(path = false, def = undefined) {
 	if (path) {
 		if (objectPath.has(config, path)) {
 			const val = objectPath.get(config, path);
@@ -145,25 +134,33 @@ export default function getConfig(path = false, def = undefined) {
 	}
 	getConfigLogger.debug('Getting all config');
 	return JSON.parse(JSON.stringify(config));
-}
+};
+
+module.exports.set = function(path, val) {
+	objectPath.set(config, path, val);
+};
 
 //
 // for testing purposes
 //
 
 let configTestBackup = false;
-export function testingConfigOverride(configOverride) {
+function testingConfigOverride(configOverride) {
 	if (configTestBackup !== false) {
 		throw 'testingConfigOverride could not be called twice, please restore config before with testingConfigRestore()';
 	}
 	configTestBackup = config;
 	config = configOverride;
 }
+module.exports.testingConfigOverride = testingConfigOverride;
 
-export function testingConfigRestore() {
+function testingConfigRestore() {
 	if (configTestBackup === false) {
 		throw 'testingConfigRestore called when no backup was present. Please override first with testingConfigOverride(<config object>)';
 	}
 	config = configTestBackup;
 	configTestBackup = false;
 }
+module.exports.testingConfigRestore = testingConfigRestore;
+
+module.exports.rootDir = rootDir;

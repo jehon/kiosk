@@ -7,16 +7,8 @@ xset +dpms
 
 KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 
-fixCrash() {
-	sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' "$1"
-	sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' "$1"
-}
-
-fixCrash "$HOME/.config/chromium/Default/Preferences"
-fixCrash "$HOME/.config/chromium/Local State"
-
 (
 	echo "********** Starting session kiosk ************************"
 	pushd "$KIOSK_APP" > /dev/null
-	/usr/bin/node --experimental-modules main.mjs
+	npm run start
 ) 2>&1 | tee /tmp/kiosk-xsession.log

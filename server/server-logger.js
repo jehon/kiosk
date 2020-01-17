@@ -1,9 +1,9 @@
 
 // Colors for the process logger
-import '../node_modules/colors/lib/index.js';
+require('colors');
 
-import _ from '../node_modules/lodash-es/lodash.js';
-import debugFactory from 'debug';
+const _ = require('lodash');
+const debugFactory = require('debug');
 
 function renderError(e) {
 	const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
@@ -44,14 +44,6 @@ class Logger {
 		return new Logger(this.namespace + ':' + name);
 	}
 
-	// enableDebug() {
-	// 	debugFactory.enable(this.namespace);
-	// }
-
-	// disableDebug() {
-	// 	debugFactory.disable(this.namespace);
-	// }
-
 	error(...args) {
 		this.streams.log(generateMessage('ERROR', ...args).red);
 		return this;
@@ -69,9 +61,9 @@ class Logger {
 }
 
 const logger = new Logger('core:server:logger');
-logger.info('To have the list of available lgogers, enable this one');
+logger.info('To have the list of available loggers, enable this one');
 
-export default (rawNamespace) => {
+function loggerFactory(rawNamespace) {
 	const namespace = canonizeNamespace(rawNamespace);
 
 	if (loggersList.has(namespace)) {
@@ -82,19 +74,29 @@ export default (rawNamespace) => {
 	}
 	logger.debug('creating logger ' + namespace);
 	return new Logger(namespace);
-};
+}
+module.exports = loggerFactory;
 
 let enabled = process.env.DEBUG;
-export function enableDebugForRegexp(regexp) {
+module.exports.enableDebugForRegexp = function enableDebugForRegexp(regexp) {
 	// Protect agains DEBUG not being defined
 	enabled = (enabled ? enabled + ',' : '') + regexp;
 	debugFactory.enable(enabled);
-}
+};
 
-export function getEnabledDebugRegexp() {
+module.exports.getEnabledDebugRegexp = function getEnabledDebugRegexp() {
 	return enabled;
-}
+};
 
-export function getLoggerList() {
+module.exports.getLoggerList = function getLoggerList() {
 	return Array.from(loggersList.keys());
-}
+};
+
+module.exports.fromRemote = function(name, category, data) {
+	if (! [ 'error', 'info', 'debug'].includes(category)) {
+		throw 'Invalid category';
+	}
+
+	// Make the call to the right logger
+	loggerFactory(name + ':client')[category](name, ...data);
+};

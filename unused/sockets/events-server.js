@@ -25,14 +25,14 @@ var socketForEvents = net.createServer((stream) => {
 		buffer = Buffer.concat([ buffer, c ]);
 	});
 	stream.on('end', function() {
-		console.info('sending event [external]: ', buffer.toString());
+		logger.debug('sending event [external]: ', buffer.toString());
 		pushEvents(buffer.toString());
 		buffer = Buffer.alloc(0);
 	});
 });
 
 function sendEvent(origin, type, value = {}, info = {}) {
-	console.info('sending event [internal]: ', origin, type);
+	logger.debug('sending event [internal]: ', origin, type);
 	pushEvents(JSON.stringify({
 		timestamp: new Date(),
 		origin: origin,
@@ -43,7 +43,7 @@ function sendEvent(origin, type, value = {}, info = {}) {
 }
 
 socketForEvents.listen(socketForEventsPath, () => {
-	console.info(`Listening for events on ${socketForEventsPath}`);
+	logger.debug(`Listening for events on ${socketForEventsPath}`);
 });
 
 module.exports = function(app) {

@@ -1,5 +1,5 @@
 
-import '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
+import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import AppFactory from '../../client/client-api.js';
 
@@ -56,7 +56,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 		this.attachShadow({ mode: 'open' });
 		// See https://getbootstrap.com/docs/4.0/components/carousel/
 		this.shadowRoot.innerHTML = `
-		<link rel='stylesheet' type='text/css' href='/node_modules/bootstrap/dist/css/bootstrap.min.css'>
+		<link rel='stylesheet' type='text/css' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>
 		<style>
 			:host([inactive]) .hideOnInactive {
 				display: none;
@@ -165,7 +165,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
-					<img src="${v.webname}">
+					<img src="${v.filepath}">
 					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
@@ -174,7 +174,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 			this.carousel.thumbs.insertAdjacentHTML('beforeend',
 				`<div class="thumb" data-target="#myCarousel" data-slide-to="${i}">
-					<img src="${v.webname}?thumb=1&height=50">
+					<img src="${v.filepath}?thumb=1&height=50">
 				</div>`);
 		}
 		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
@@ -197,6 +197,9 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
 
+picturesList = require('electron').remote.require('./packages/photo-frame/photo-frame-server.js').getSelectedPictures();
+updatePicture();
+
 app.subscribe('.listing', listing => {
 	picturesList = listing; //Object.keys(listing).map(function (key) { return listing[key]; });
 	pictureIndex = -1;
@@ -207,5 +210,5 @@ app.subscribe('.listing', listing => {
 app
 	.withPriority(50)
 	.withMainElement(new KioskPhotoFrame())
-	.menuBasedOnIcon('/packages/photo-frame/photo-frame.png')
+	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 ;
