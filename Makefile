@@ -119,7 +119,6 @@ remote-restart-dm:
 #
 deploy: dump
 	npm run build
-
 	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
 		--exclude .vagrant \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
@@ -129,7 +128,6 @@ deploy: dump
 
 	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
 	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
-
 	ssh $(HOST) truncate --size 0 /tmp/kiosk-xsession.log
 
 	ssh $(HOST) "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
