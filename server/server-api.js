@@ -1,6 +1,4 @@
 
-const { app: electronApp } = require('electron');
-
 // Common
 const Bus                                        = require('../common/bus');
 const contextualize                              = require('../common/contextualize');
