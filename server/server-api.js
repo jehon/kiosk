@@ -63,7 +63,7 @@ class ServerAPI {
 		//
 		electronApp.on('login', (event, webContents, details, authInfo, callback) => {
 			if (details.url.startsWith(url)) {
-				this.info(`Auto fill in credentials for ${details}`);
+				this.info(`Auto fill in credentials of ${details.url} for ${url} with ${username}`);
 				event.preventDefault();
 				callback(username, password);
 			}
