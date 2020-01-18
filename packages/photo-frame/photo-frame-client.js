@@ -165,7 +165,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
-					<img src="${v.filepath}">
+					<img src="${v.url}">
 					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
 						<p>${v.data.date}</p>
@@ -174,7 +174,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 			this.carousel.thumbs.insertAdjacentHTML('beforeend',
 				`<div class="thumb" data-target="#myCarousel" data-slide-to="${i}">
-					<img src="${v.filepath}?thumb=1&height=50">
+					<img src="${v.url}?thumb=1&height=50">
 				</div>`);
 		}
 		this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
