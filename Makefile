@@ -101,6 +101,9 @@ remote-logs-cycle:
 		sleep 1s; \
 	done
 
+remote-exec:
+	ssh pi@$(HOST) -X -t "cd $(TARGET) && exec npm run start-dp"
+
 #
 #
 # Control
