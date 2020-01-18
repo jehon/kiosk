@@ -125,7 +125,6 @@ deploy: dump
 	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
 		--exclude .vagrant \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
-		--exclude "/media"                --filter "protect /media/"            \
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
 
