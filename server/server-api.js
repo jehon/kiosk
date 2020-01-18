@@ -5,7 +5,7 @@ const contextualize                              = require('../common/contextual
 const loggerFactory                              = require('./server-logger');
 const Scheduler                                  = require('./server-scheduler');
 const getConfig                                  = require('./server-config');
-const { dispatchToBrowser, registerCredentials } = require('./core-browser');
+const { dispatchToBrowser, registerCredentials } = require('./server-launch-browser');
 const { rootDir }                                = require('./server-config');
 const webServer                                  = require('./server-webserver.js');
 

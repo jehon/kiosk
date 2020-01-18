@@ -2,7 +2,7 @@
 const { app: electronApp } = require('electron');
 const app = require('./server-api.js')('server');
 
-const browser = require('./core-browser.js');
+const browser = require('./server-launch-browser.js');
 const webServer = require('./server-webserver.js');
 
 const { loadServerFiles } = require('./server-packages');
