@@ -164,6 +164,8 @@ async function generateListing(_data = null) {
 		return a.data.date < b.data.date ? -1 : a.data.date == b.data.date ? 0 : 1;
 	});
 
+	newSelectedPictures = newSelectedPictures.map(f => f.url = encodeURI(f.filepath));
+
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
 	buildingLogger.debug('Updating listing to', selectedPictures);
