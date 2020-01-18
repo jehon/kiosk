@@ -11,7 +11,7 @@ let serverListener = false;
 app.use('/media', express.static('/media'));
 app.use(express.static('.'));
 
-async function start(port = getConfig('core.port')) {
+async function start(port = getConfig('server.webserver.port', 0)) {
 	return new Promise(resolve => {
 		if (serverListener) {
 			const realPort = getPort();
@@ -21,7 +21,7 @@ async function start(port = getConfig('core.port')) {
 		serverListener = app.listen(port, () => {
 			const realPort = getPort();
 			logger.debug(`Listening on port ${realPort}!`);
-			getConfig.set('core.webserver.port', realPort);
+			getConfig.set('server.webserver.port', realPort);
 			resolve(realPort);
 		});
 	});

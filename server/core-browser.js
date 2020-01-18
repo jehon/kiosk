@@ -52,7 +52,9 @@ module.exports.start = async function() {
 
 	win = new BrowserWindow(opts);
 	// win.loadFile('client/index.html');
-	win.loadURL(`http://localhost:${getConfig('core.webserver.port')}client/index.html`);
+	const url = `http://localhost:${getConfig('server.webserver.port')}/client/index.html`;
+	logger.debug(`Loading url: ${url}`);
+	win.loadURL(url);
 
 	if (devMode) {
 		win.webContents.openDevTools();

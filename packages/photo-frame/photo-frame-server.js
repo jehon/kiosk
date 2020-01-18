@@ -110,10 +110,6 @@ function generateListingForTopFolder(folderConfig) {
 		...folderConfig,
 	};
 
-	if (folderConfig.folder[0] != '/') {
-		folderConfig.folder = path.join(app.getConfig('core.root') , folderConfig.folder);
-	}
-
 	buildingLogger.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
@@ -164,7 +160,7 @@ async function generateListing(_data = null) {
 		return a.data.date < b.data.date ? -1 : a.data.date == b.data.date ? 0 : 1;
 	});
 
-	newSelectedPictures = newSelectedPictures.map(f => f.url = encodeURI(f.filepath));
+	newSelectedPictures = newSelectedPictures.map(f => { f.url = encodeURI(f.filepath); return f; });
 
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
