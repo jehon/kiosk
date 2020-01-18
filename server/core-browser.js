@@ -2,7 +2,8 @@
 const { app: electronApp, BrowserWindow } = require('electron');
 
 const logger = require('./server-logger.js')('core:browser');
-const devMode = require('./server-config.js')('core.devMode', false);
+const getConfig = require('./server-config.js');
+const devMode = getConfig('core.devMode', false);
 
 let win;
 
@@ -51,7 +52,7 @@ module.exports.start = async function() {
 
 	win = new BrowserWindow(opts);
 	// win.loadFile('client/index.html');
-	win.loadURL('http://localhost:1234/client/index.html');
+	win.loadURL(`http://localhost:${getConfig('core.webserver.port')}client/index.html`);
 
 	if (devMode) {
 		win.webContents.openDevTools();
