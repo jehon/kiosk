@@ -46,7 +46,7 @@ class RemoteLogger {
 
 export default function remoteLoggerFactory(name)  { return new RemoteLogger(name); }
 
-const globalCatcher = new RemoteLogger('core:client:global');
+const globalCatcher = new RemoteLogger('client:catch');
 window.addEventListener('error', (event) => {
 	globalCatcher.error(event.message,
 		event.filename ?

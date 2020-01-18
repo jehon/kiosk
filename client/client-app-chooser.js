@@ -1,7 +1,7 @@
 
 import clientAPIFactory, { getApplicationsList } from './client-api.js';
 
-const app = clientAPIFactory('core:client:chooser');
+const app = clientAPIFactory('client:chooser');
 let currentApplication = null;
 let manualSelectionTimer = false;
 

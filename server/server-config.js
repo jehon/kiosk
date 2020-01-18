@@ -65,9 +65,6 @@ if (cmdLineOptions.file) {
 //
 
 let config = {
-	core: {
-		root: rootDir
-	},
 	server: {
 		devMode: false,
 		root: rootDir
@@ -115,8 +112,8 @@ logger.debug('Final config: ', config);
 //
 // Activate some loggers
 //
-if (config.core.loggers) {
-	for(const re of config.core.loggers) {
+if (config.server.loggers) {
+	for(const re of config.server.loggers) {
 		logger.debug('Enabling logging level due to configuration: ', re);
 		loggerFactory.enableDebugForRegexp(re);
 	}
