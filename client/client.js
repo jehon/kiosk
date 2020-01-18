@@ -2,7 +2,7 @@
 import clientAPIFactory from './client-api.js';
 import './client-app-chooser.js';
 
-const app = clientAPIFactory('core:client');
+const app = clientAPIFactory('client');
 
 /* global toastr */
 /* configure the toastr */

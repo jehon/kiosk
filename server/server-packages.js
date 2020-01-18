@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const app = require( './server-api.js')('core:server:packages');
+const app = require( './server-api.js')('server:packages');
 
 const root = app.getConfig('server.root');
 const pkgRoot = path.join(root, 'packages');
