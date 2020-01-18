@@ -8,7 +8,7 @@ KIOSK_APP="$(dirname "$(dirname "$(dirname "$( realpath "$0" )")")")"
 
 KIOSK_APP="$(dirname "$(dirname "$(dirname "$( realpath "$0" )")")")"
 
-NHOSTNAME=$( "$KIOSK_APP/bin/scripts/read-kiosk-config.mjs" "core.hostname" "kiosk" )
+NHOSTNAME=$( "$KIOSK_APP/bin/scripts/read-kiosk-config.mjs" "server.hostname" "kiosk" )
 
 echo "Set hostname to '$NHOSTNAME'"
 

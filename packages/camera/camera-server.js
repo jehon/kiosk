@@ -100,6 +100,6 @@ app.addSchedule('.recheck', config['cron-recheck']);
 
 module.exports.getStatus = function() {
 	return { ...status, ...config,
-		frameURL: `http://localhost:${app.getConfig('core.webserver.port')}/camera/frame`
+		frameURL: `http://localhost:${app.getConfig('server.webserver.port')}/camera/frame`
 	};
 };

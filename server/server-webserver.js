@@ -3,8 +3,7 @@ const express = require('express');
 const app = express();
 
 const getConfig = require('./server-config.js');
-const logger = require('./server-logger.js')('core:webserver');
-
+const logger = require('./server-logger.js')('server:webserver');
 let serverListener = false;
 
 // TODO: restrict the static to exclude some files!

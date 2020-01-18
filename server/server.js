@@ -7,7 +7,7 @@ const webServer = require('./server-webserver.js');
 
 const { loadServerFiles } = require('./server-packages');
 
-const devMode = app.getConfig('core.devMode');
+const devMode = app.getConfig('server.devMode');
 
 if (devMode) {
 	// https://electronjs.org/docs/api/chrome-command-line-switches

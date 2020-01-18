@@ -3,7 +3,7 @@
 const fs = require('fs-extra');
 const net = require('net');
 const serverAPIFactory = require('./server-api.mjs');
-const app = serverAPIFactory('core.socket');
+const app = serverAPIFactory('server.socket');
 
 let socketPath = false;
 

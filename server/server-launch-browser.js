@@ -1,9 +1,9 @@
 
 const { app: electronApp, BrowserWindow } = require('electron');
 
-const logger = require('./server-logger.js')('core:browser');
+const logger = require('./server-logger.js')('server:browser');
 const getConfig = require('./server-config.js');
-const devMode = getConfig('core.devMode', false);
+const devMode = getConfig('server.devMode', false);
 
 let win;
 
@@ -46,6 +46,7 @@ module.exports.start = async function() {
 	if (devMode) {
 		true;
 	} else {
+		true;
 		// opts.fullscreen = true;
 		// opts.kiosk = true; // #
 	}
