@@ -1,11 +1,11 @@
 ---
-core:
+server:
   loggers:
-    - "core:server:logger"
-    - "core:server:config"
-    - "core:client:global"
-#    - "core:client:chooser"
-#    - "core:client:bus"
+    - "server:logger"
+    - "server:config"
+    - "client:global"
+#    - "client:chooser"
+#    - "client:bus"
   path:
     var: /tmp/
 

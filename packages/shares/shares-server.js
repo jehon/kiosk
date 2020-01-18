@@ -6,7 +6,7 @@ const { promisify } = require('util');
 
 const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('shares');
-const rootDir = app.getConfig('core.root');
+const rootDir = app.getConfig('server.root');
 
 const mountedList = {};
 

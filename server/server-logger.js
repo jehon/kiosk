@@ -60,7 +60,7 @@ class Logger {
 	}
 }
 
-const logger = new Logger('core:server:logger');
+const logger = new Logger('server:logger');
 logger.info('To have the list of available loggers, enable this one');
 
 function loggerFactory(rawNamespace) {

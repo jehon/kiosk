@@ -9,7 +9,7 @@ const { dispatchToBrowser, registerCredentials } = require('./server-launch-brow
 const { rootDir }                                = require('./server-config');
 const webServer                                  = require('./server-webserver.js');
 
-const bus       = new Bus(loggerFactory('core:server:bus'));
+const bus       = new Bus(loggerFactory('server:bus'));
 const scheduler = new Scheduler(bus);
 
 module.exports = function serverAPIFactory(name) {

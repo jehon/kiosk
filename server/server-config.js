@@ -8,7 +8,7 @@ const deepMerge  = require('deepmerge');
 const objectPath = require('object-path');
 
 const loggerFactory = require('./server-logger.js');
-const logger = loggerFactory('core:server:config');
+const logger = loggerFactory('server:config');
 const rootDir = path.dirname(__dirname);
 
 //
@@ -67,6 +67,10 @@ if (cmdLineOptions.file) {
 let config = {
 	core: {
 		root: rootDir
+	},
+	server: {
+		devMode: false,
+		root: rootDir
 	}
 };
 
@@ -100,7 +104,7 @@ logger.debug('Config object after loading files', config);
 // Override with command line options
 //
 if (cmdLineOptions.devMode) {
-	config.core.devMode = true;
+	config.server.devMode = true;
 	logger.debug('Versions', process.versions);
 	logger.info('Node version: ', process.versions['node']);
 	logger.info('Chrome version: ', process.versions['chrome']);

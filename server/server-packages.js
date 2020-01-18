@@ -5,7 +5,7 @@ const util = require('util');
 
 const app = require( './server-api.js')('core:server:packages');
 
-const root = app.getConfig('core.root');
+const root = app.getConfig('server.root');
 const pkgRoot = path.join(root, 'packages');
 app.debug('Packages should be located in ' + pkgRoot);
 

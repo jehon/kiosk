@@ -9,7 +9,7 @@ import Bus from '../common.es6/bus.js';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
-const bus = new Bus(loggerFactory('core:client:bus'));
+const bus = new Bus(loggerFactory('client:bus'));
 const apps = {};
 
 /**

@@ -11,7 +11,7 @@ module.exports = class Scheduler {
 
 	constructor(bus) {
 		this.bus    = bus;
-		this.logger = loggerFactory('core:server:scheduler');
+		this.logger = loggerFactory('server:scheduler');
 	}
 
 	/**
