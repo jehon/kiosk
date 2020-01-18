@@ -73,7 +73,7 @@ class Bus {
 				// The listener is called "sync", ie. the result is sent back synchronously
 				// as a Promise. If we make promise.then, then it become async
 				if (typeof(listener) != 'function') {
-					this.logger.error('Not a function for ${eventName} at ${i}: ', typeof(listener), listener);
+					this.logger.error(`Not a function for ${eventName}: ${typeof(listener)}`, listener);
 				} else {
 					await listener(data);
 				}
