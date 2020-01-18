@@ -17,7 +17,7 @@ class Bus {
 	 * @param {function(eventName, data) {}} cb
 	 */
 	subscribe(eventName, cb) {
-		if (!( cb instanceof Function)) {
+		if (typeof(cb) != 'function') {
 			throw `Subscribing to ${eventName} with something that is not a function: ${cb}`;
 		}
 
@@ -72,7 +72,11 @@ class Bus {
 			try {
 				// The listener is called "sync", ie. the result is sent back synchronously
 				// as a Promise. If we make promise.then, then it become async
-				await listener(data);
+				if (typeof(listener) != 'function') {
+					this.logger.error('Not a function for ${eventName} at ${i}: ', typeof(listener), listener);
+				} else {
+					await listener(data);
+				}
 			} catch (e) {
 				this.logger.error(`Error when notifying ${eventName}`, data, ': ', e);
 			}
