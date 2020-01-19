@@ -110,6 +110,10 @@ function generateListingForTopFolder(folderConfig) {
 		...folderConfig,
 	};
 
+	if (folderConfig.folder[0] != '/') {
+		folderConfig.folder = path.join(app.getConfig('core.root') , folderConfig.folder);
+	}
+
 	buildingLogger.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
