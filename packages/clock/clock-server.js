@@ -1,6 +1,6 @@
 
 const serverAPIFactory = require('../../server/server-api.js');
-const app = serverAPIFactory('clock:server');
+const app = serverAPIFactory('clock');
 
 const config = {
 	tickers: [],

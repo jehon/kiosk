@@ -24,7 +24,7 @@ module.exports.getSavedState = function getSavedState() {
 class ServerAPI {
 	constructor(name) {
 		this.name = name;
-		this.logger = loggerFactory(this.name);
+		this.logger = loggerFactory(this.name + ':server');
 		this.c = contextualize(this.name);
 		this.debug('Registering app', this.getName(), this);
 	}

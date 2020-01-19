@@ -13,7 +13,7 @@ const exifParser = require('./exif-parser.js');
 const exifReaderLimiter = pLimitFactory(1);
 
 const serverAPIFactory = require('../../server/server-api.js');
-const app = serverAPIFactory('photo-frame:server');
+const app = serverAPIFactory('photo-frame');
 
 const buildingLogger = app.getChildLogger('building');
 
