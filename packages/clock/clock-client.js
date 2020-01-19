@@ -48,6 +48,7 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 		}
 		if (this.cron) {
 			clearInterval(this.cron);
+			this.cron = false;
 		}
 	}
 
