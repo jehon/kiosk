@@ -2,7 +2,7 @@
 const { spawn } = require('child_process');
 
 const serverAPIFactory = require('../../server/server-api.js');
-const app = serverAPIFactory('caffeine:server');
+const app = serverAPIFactory('caffeine');
 
 const config = {
 	cron: '* 7-22 * * *',

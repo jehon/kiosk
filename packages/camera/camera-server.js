@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const btoa = require('btoa');
 
 const serverAPIFactory = require('../../server/server-api.js');
-const app = serverAPIFactory('camera:server');
+const app = serverAPIFactory('camera');
 
 let successes = 0;
 let status = {

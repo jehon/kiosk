@@ -1,7 +1,7 @@
 
 import AppFactory from '../../client/client-api.js';
 
-const app = AppFactory('caffeine:client');
+const app = AppFactory('caffeine');
 
 // Initialize to false
 app.dispatch('.activity', false);
