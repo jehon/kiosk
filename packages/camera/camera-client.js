@@ -12,6 +12,7 @@ let status = {
 
 app.subscribe('.status', () => {
 	status = { ...require('electron').remote.require('./packages/camera/camera-server.js').getStatus() };
+	app.debug('Status received', status);
 	if (status.enabled) {
 		app.changePriority(50);
 	} else {
