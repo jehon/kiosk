@@ -93,7 +93,7 @@ remote-logs-lightdm:
 	ssh $(HOST) journalctl -f -u lightdm
 
 remote-logs:
-	ssh $(HOST) tail -n 100 -f /tmp/kiosk-xsession.log
+	ssh $(HOST) tail -n 1000 -f /tmp/kiosk-xsession.log
 
 remote-logs-cycle:
 	while true; do \
