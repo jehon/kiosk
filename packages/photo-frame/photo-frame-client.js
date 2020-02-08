@@ -28,6 +28,7 @@ function prev(i) {
 
 // Select the next picture
 function updatePicture() {
+	app.debug('Selecting next picture', pictureIndex);
 	if (updatePictureTimeout) {
 		clearTimeout(updatePictureTimeout);
 	}
@@ -40,6 +41,18 @@ function updatePicture() {
 	}
 	updatePictureTimeout= setTimeout(updatePicture, 15 * 1000);
 }
+
+function updatePictureList() {
+	app.debug('Refreshing listing');
+	picturesList = require('electron').remote.require('./packages/photo-frame/photo-frame-server.js').getSelectedPictures();
+	app.debug('New listing has ', picturesList.length);
+	pictureIndex = -1;
+	app.dispatch('.list.changed');
+	updatePicture();
+}
+
+updatePictureList();
+app.subscribe('.listing', () => updatePictureList());
 
 class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 	carousel = false
@@ -196,16 +209,6 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 }
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
-
-picturesList = require('electron').remote.require('./packages/photo-frame/photo-frame-server.js').getSelectedPictures();
-updatePicture();
-
-app.subscribe('.listing', listing => {
-	picturesList = listing; //Object.keys(listing).map(function (key) { return listing[key]; });
-	pictureIndex = -1;
-	app.dispatch('.list.changed');
-	updatePicture(); // Will reprogram it
-});
 
 app
 	.withPriority(50)
