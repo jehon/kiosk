@@ -15,4 +15,4 @@ git clone git@github.com:jehon/kiosk.git .
 
 chmod +x ./bin/*
 
-./bin/initialize.sh
+./bin/kiosk-initialize.sh
