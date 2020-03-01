@@ -32,7 +32,7 @@ CFG_MIN_APT=("${CFG_MIN_APT[@]}" gcc g++ make) # Build of native extensions
 #CFG_MIN_APT=("${CFG_MIN_APT[@]}" ) # 
 
 # Kiosk specific
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq crudini xdotool) # System kiosk
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq crudini xdotool unclutter) # System kiosk
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev) # Extension image fast ?
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils) # Package 'shares'
 #CFG_MIN_APT=("${CFG_MIN_APT[@]}" )
@@ -51,7 +51,7 @@ export CFG_MIN_APT
 CFG_DEV_APT=(htop exiftran exif gnupg2 less xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2)
 export CFG_DEV_APT
 
-CFG_MIN_NODE_VERSION="12.1"
+CFG_MIN_NODE_VERSION="13.5"
 export CFG_MIN_NODE_VERSION
 
 header "Enforce minimal dependencies"
