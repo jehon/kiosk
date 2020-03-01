@@ -11,7 +11,7 @@
 set -e
 
 # Later on, this will be set by profile...
-KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
+KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}" )" )"
 export KIOSK_APP
 
 # shellcheck source=./lib.sh
@@ -66,11 +66,14 @@ header "Redirect sound output to jack first card"
 cp "$KIOSK_APP"/bin/files/asound.conf /etc/
 chmod 640 /etc/asound.conf
 
-header "Set the hostname"
-"$KIOSK_APP"/bin/scripts/change-hostname.sh
+#header "Set the hostname"
+#"$KIOSK_APP"/bin/scripts/change-hostname.sh
 
 header "Restarting the service"
 "$KIOSK_APP"/bin/kiosk-restart.sh
 
 header "Finished with success"
 echo "For this changes to take effect, please restart the server"
+
+echo "arch=armv7l" > /root/.npmrc
+echo "arch=armv7l" > /home/pi/.npmrc
