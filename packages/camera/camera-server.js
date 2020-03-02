@@ -64,7 +64,7 @@ async function _check() {
 			if (response.ok) {
 				if ((++newStatus.successes) < config.nbCheck) {
 					// We want enough sucesses before showing it (= 10 seconds) ...
-					app.debug('Waiting for enough successes');
+					app.debug('Waiting for ${config.nbCheck} successes');
 					newStatus.message = `Stabilizing (${newStatus.successes}/${config.nbCheck})`;
 					newStatus.code = 10 + newStatus.successes;
 				} else {
