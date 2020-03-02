@@ -36,7 +36,7 @@ app.subscribe('.status', () => {
 	if (status.code == C_READY) {
 		app.debug("Camera is ready, show toastr");
 		app.changePriority(50);
-		toastrElement = toastr.info("Ready", "Camera", { timeOut: 5000 })
+		toastrElement = toastr.success("Ready", "Camera", { timeOut: 5000 })
 	} else {
 		app.changePriority(1000);
 		if (status.code > 0) {
