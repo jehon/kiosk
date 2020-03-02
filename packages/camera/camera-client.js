@@ -1,5 +1,9 @@
 
 import AppFactory from '../../client/client-api.js';
+const C_READY = require('electron').remote.require('./packages/camera/camera-server.js').C_READY;
+
+// TODO: manage http errors
+const C_ERROR = require('electron').remote.require('./packages/camera/camera-server.js').C_ERROR;
 
 // TODO: handle when the app is selected, but the camera is not available
 //  --> it should show an error message
@@ -7,26 +11,56 @@ import AppFactory from '../../client/client-api.js';
 const app = AppFactory('camera');
 
 let status = {
-	enabled: false
+	code: 0
 };
 
+let toastrElement = false;
+let toastrLastCode = 0;
+
 app.subscribe('.status', () => {
+	if (toastrElement) {
+		toastrElement.remove();
+		// toastr.remove(toastrElement);
+		toastrElement = false;
+	}
 	status = { ...require('electron').remote.require('./packages/camera/camera-server.js').getStatus() };
-	app.debug('Status received', status);
-	if (status.enabled) {
+	app.debug('Status received', status, 'while being in', toastrLastCode);
+
+	if (toastrLastCode == status.code) {
+		app.debug("Skipping update, already there");
+		return;
+	}
+	toastrLastCode = status.code;
+
+	// Let's adapt and show status
+	if (status.code == C_READY) {
+		app.debug("Camera is ready, show toastr");
 		app.changePriority(50);
+		toastrElement = toastr.info("Ready", "Camera", { timeOut: 5000 })
 	} else {
 		app.changePriority(1000);
+		if (status.code > 0) {
+			toastrElement = toastr.info(status.message, "Camera")
+		}
 	}
 });
 
-app.dispatch('.status');
+// TODO: core.ready?
+setTimeout(() => app.dispatch('.status'), 5000);
 
 class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	// Working with connected/disconnected to avoid movie running in background
 	get kioskEventListeners() {
 		return {
-			'.status': () => this.adapt()
+			'.status': () => {
+				console.log("???", this._lastCode, status.code, status);
+				if (this._lastCode == status.code) {
+					// Idempotency
+					console.log("idempotency", this._lastCode, status.code);
+					return;
+				}
+				this.adapt();
+			}
 		};
 	}
 
@@ -40,10 +74,9 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	adapt() {
-		if (status.enabled) {
+		if (status.code == C_READY) {
 
-			// this.innerHTML = `<img src="${status.host + status.videoFeed}?${Date.now()}"/>`;
-
+			// First load an IFrame to trigger authentication
 			this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
 
 			// We need the iframe to be loaded for the 'login' event to happen
@@ -55,8 +88,9 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 		} else {
 			// TODO: icon "not available"
-			this.innerHTML = `<div>Camera is not available: ${status.errMessage}</div>`;
+			this.innerHTML = `<div>Camera is not available: #${status.code}: ${status.message}</div>`;
 		}
+		this._lastCode = status.code;
 	}
 }
 customElements.define('kiosk-camera', KioskCamera);
@@ -65,4 +99,4 @@ app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
 	.menuBasedOnIcon('../packages/camera/camera.png')
-;
+	;
