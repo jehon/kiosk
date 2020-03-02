@@ -36,11 +36,13 @@ app.subscribe('.status', () => {
 	if (status.code == C_READY) {
 		app.debug("Camera is ready, show toastr");
 		app.changePriority(50);
-		toastrElement = toastr.success("Ready", "Camera", { timeOut: 5000 })
+		toastrElement = toastr.success("Ready", "Camera", { timeOut: 15000 })
 	} else {
 		app.changePriority(1000);
 		if (status.code > 0) {
 			toastrElement = toastr.info(status.message, "Camera")
+		} else {
+			toastr.error("Lost connection to camera");
 		}
 	}
 });
