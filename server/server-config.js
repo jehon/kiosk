@@ -4,7 +4,7 @@ const path = require('path');
 const yargs = require('yargs');
 
 const yaml = require('js-yaml');
-const deepMerge  = require('deepmerge');
+const deepMerge = require('deepmerge');
 const objectPath = require('object-path');
 
 const loggerFactory = require('./server-logger.js');
@@ -20,50 +20,9 @@ const configFiles = [
 	'etc/kiosk.yml'
 ];
 
-if (typeof(jasmine) != 'undefined') {
-	/* eslint-disable-next-line no-console */
-	console.warn('Test mode: loading only tests/kiosk.yml');
-	configFiles.length = 0;
-	configFiles[0] = 'tests/kiosk.yml';
-}
-
 //
-// Parse command lines
-//   it could add some configuration files
+// Default config
 //
-
-const cmdLineOptions = yargs
-	.options({
-		'file': {
-			alias: 'f',
-			type: 'string',
-			describe: 'additionnal file configuration'
-		},
-		'devMode': {
-			alias: [ '-d', '--dev-mode' ],
-			type: 'boolean',
-			describe: 'activate the dev mode'
-		}
-	})
-	.help()
-	.recommendCommands()
-	.strict()
-	.argv;
-
-logger.debug('Command line parsed options: ', cmdLineOptions);
-
-//
-// Load all the files
-//
-if (cmdLineOptions.file) {
-	logger.debug('Adding configuration file at the end:', cmdLineOptions.file);
-	configFiles.unshift(cmdLineOptions.file);
-}
-
-//
-// Load the configuration files
-//
-
 let config = {
 	server: {
 		devMode: false,
@@ -71,11 +30,62 @@ let config = {
 	}
 };
 
+if (typeof (jasmine) != 'undefined') {
+	/* eslint-disable-next-line no-console */
+	console.warn('Test mode: loading only tests/kiosk.yml');
+	configFiles.length = 0;
+	configFiles[0] = 'tests/kiosk.yml';
+} else {
+
+	//
+	// Parse command lines
+	//   it could add some configuration files
+	//
+
+	const cmdLineOptions = yargs
+		.options({
+			'file': {
+				alias: 'f',
+				type: 'string',
+				describe: 'additionnal file configuration'
+			},
+			'devMode': {
+				alias: ['-d', '--dev-mode'],
+				type: 'boolean',
+				describe: 'activate the dev mode'
+			}
+		})
+		.help()
+		.recommendCommands()
+		.strict()
+		.argv;
+
+	logger.debug('Command line parsed options: ', cmdLineOptions);
+	//
+	// Load all the files
+	//
+	if (cmdLineOptions.file) {
+		logger.debug('Adding configuration file at the end:', cmdLineOptions.file);
+		configFiles.unshift(cmdLineOptions.file);
+	}
+
+	//
+	// Override with command line options
+	//
+	if (cmdLineOptions.devMode) {
+		config.server.devMode = true;
+		logger.debug('Versions', process.versions);
+		logger.info('Node version: ', process.versions['node']);
+		logger.info('Chrome version: ', process.versions['chrome']);
+	}
+
+}
+
 //
 // Setup some general configs
 //
 
-for(const i in configFiles) {
+for (const i in configFiles) {
 	const f = configFiles[i];
 	try {
 		logger.debug('Loading config file: ', f);
@@ -97,23 +107,13 @@ for(const i in configFiles) {
 }
 logger.debug('Config object after loading files', config);
 
-//
-// Override with command line options
-//
-if (cmdLineOptions.devMode) {
-	config.server.devMode = true;
-	logger.debug('Versions', process.versions);
-	logger.info('Node version: ', process.versions['node']);
-	logger.info('Chrome version: ', process.versions['chrome']);
-}
-
 logger.debug('Final config: ', config);
 
 //
 // Activate some loggers
 //
 if (config.server.loggers) {
-	for(const re of config.server.loggers) {
+	for (const re of config.server.loggers) {
 		logger.debug('Enabling logging level due to configuration: ', re);
 		loggerFactory.enableDebugForRegexp(re);
 	}
@@ -137,7 +137,7 @@ module.exports = function getConfig(path = false, def = undefined) {
 	return JSON.parse(JSON.stringify(config));
 };
 
-module.exports.set = function(path, val) {
+module.exports.set = function (path, val) {
 	objectPath.set(config, path, val);
 };
 

@@ -1,8 +1,8 @@
 
-import serverAPIFactory from'../../server/server-api.js';
+const serverAPIFactory = require('../../server/server-api.js');
 const { ServerAPI, testingConfigOverride, testingConfigRestore } = serverAPIFactory;
 
-import * as photoFrameAPI from '../../packages/photo-frame/photo-frame-server.js';
+const photoFrameAPI = require('../../packages/photo-frame/photo-frame-server.js');
 
 const app = serverAPIFactory('photo-frame:test');
 
@@ -10,24 +10,24 @@ function baseConfig() {
 	return JSON.parse(JSON.stringify(app.getConfig()));
 }
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeEach(() => {
 		spyOn(ServerAPI.prototype, 'dispatchToBrowser');
 	});
 
-	it('should force regenerate on request', async function() {
+	it('should force regenerate on request', async function () {
 		await app.dispatch('photo-frame.refresh');
 		expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalled();
 	});
 
-	it('should generate with config', async() =>  {
+	it('should generate with config', async () => {
 		let listing = await photoFrameAPI.generateListing();
 		expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalled();
 		expect(listing).not.toBeNull();
 		expect(listing.length).toBe(3);
 	});
 
-	it('should handle when not enough files are provided', async() =>  {
+	it('should handle when not enough files are provided', async () => {
 		let cfg = baseConfig();
 		cfg['photo-frame'].folders.photo.folder = cfg['photo-frame'].folders.photo.folder + '/f1';
 		testingConfigOverride(cfg);
@@ -39,7 +39,7 @@ describe(import.meta.url, () => {
 	});
 
 
-	it('should handle when not enough files are provided', async() =>  {
+	it('should handle when not enough files are provided', async () => {
 		let cfg = baseConfig();
 		cfg['photo-frame'].folders.photo.quantity = 100;
 		testingConfigOverride(cfg);
@@ -50,10 +50,10 @@ describe(import.meta.url, () => {
 		testingConfigRestore();
 	});
 
-	it('should exclude files', async() => {
+	it('should exclude files', async () => {
 		let cfg = baseConfig();
 		cfg['photo-frame'].folders.photo.quantity = 100;
-		cfg['photo-frame'].folders.photo.excludes = [ 'f1' ];
+		cfg['photo-frame'].folders.photo.excludes = ['f1'];
 		testingConfigOverride(cfg);
 		let listing = await photoFrameAPI.generateListing();
 		expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalled();

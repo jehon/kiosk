@@ -1,9 +1,11 @@
 
+/* global toastr */
+
 import AppFactory from '../../client/client-api.js';
 const C_READY = require('electron').remote.require('./packages/camera/camera-server.js').C_READY;
 
 // TODO: manage http errors
-const C_ERROR = require('electron').remote.require('./packages/camera/camera-server.js').C_ERROR;
+// const C_ERROR = require('electron').remote.require('./packages/camera/camera-server.js').C_ERROR;
 
 // TODO: handle when the app is selected, but the camera is not available
 //  --> it should show an error message
@@ -27,22 +29,22 @@ app.subscribe('.status', () => {
 	app.debug('Status received', status, 'while being in', toastrLastCode);
 
 	if (toastrLastCode == status.code) {
-		app.debug("Skipping update, already there");
+		app.debug('Skipping update, already there');
 		return;
 	}
 	toastrLastCode = status.code;
 
 	// Let's adapt and show status
 	if (status.code == C_READY) {
-		app.debug("Camera is ready, show toastr");
+		app.debug('Camera is ready, show toastr');
 		app.changePriority(50);
-		toastrElement = toastr.success("Ready", "Camera", { timeOut: 15000 });
+		toastrElement = toastr.success('Ready', 'Camera', { timeOut: 15000 });
 	} else {
 		app.changePriority(1000);
 		if (status.code > 0) {
-			toastrElement = toastr.info(status.message, "Camera", { timeOut: 0 });
+			toastrElement = toastr.info(status.message, 'Camera', { timeOut: 0 });
 		} else {
-			toastr.error("Lost connection to camera", "Camera", { timeOut: 15000 });
+			toastr.error('Lost connection to camera', 'Camera', { timeOut: 15000 });
 		}
 	}
 });
@@ -55,10 +57,8 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	get kioskEventListeners() {
 		return {
 			'.status': () => {
-				console.log("???", this._lastCode, status.code, status);
 				if (this._lastCode == status.code) {
 					// Idempotency
-					console.log("idempotency", this._lastCode, status.code);
 					return;
 				}
 				this.adapt();
@@ -101,4 +101,4 @@ app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
 	.menuBasedOnIcon('../packages/camera/camera.png')
-	;
+;

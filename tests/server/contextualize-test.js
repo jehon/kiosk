@@ -1,8 +1,8 @@
 
-import contextualize from '../../common/contextualize.js';
+const contextualize = require('../../common/contextualize.js');
 const { ctxForFunction } = contextualize;
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	it('should contextualize relative keys', () => {
 		const ctx = contextualize('test');
 		expect(ctx('.brol')).toBe('test.brol');

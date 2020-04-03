@@ -1,11 +1,11 @@
 
-import serverAPIFactory from '../../server/server-api.js';
+const serverAPIFactory = require('../../server/server-api.js');
 // import spectronApp from './spectron-helper.mjs';
 const { ServerAPI } = serverAPIFactory;
 
 // Eventname is the shortname, because it is the way it was called
 // from the class, outside of any context
-export async function expectBrowserEvent(eventName, testFn) {
+module.exports.expectBrowserEvent = async function (eventName, testFn) {
 	if (ServerAPI.prototype.dispatchToBrowser.calls) {
 		ServerAPI.prototype.dispatchToBrowser.calls.reset();
 	} else {
@@ -14,10 +14,10 @@ export async function expectBrowserEvent(eventName, testFn) {
 	await testFn();
 	const res = [];
 	const c = ServerAPI.prototype.dispatchToBrowser.calls.argsFor;
-	for(let i = 0; i < ServerAPI.prototype.dispatchToBrowser.calls.argsFor.length; i++) {
+	for (let i = 0; i < ServerAPI.prototype.dispatchToBrowser.calls.argsFor.length; i++) {
 		if (c(i)[0] == eventName) {
-			res.push(c(i)[1]);
+			res.push(c(i));
 		}
 	}
 	return res;
-}
+};

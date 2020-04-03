@@ -1,8 +1,8 @@
 
-import getConfig  from '../../server/server-config.js';
+const getConfig = require('../../server/server-config.js');
 const { testingConfigOverride, testingConfigRestore } = getConfig;
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	beforeEach(() => {
 		testingConfigOverride({
 			test: {
