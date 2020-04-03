@@ -39,7 +39,7 @@ function updatePicture() {
 		pictureIndex = next(pictureIndex);
 		app.dispatch('.picture.changed', pictureIndex);
 	}
-	updatePictureTimeout= setTimeout(updatePicture, 15 * 1000);
+	updatePictureTimeout = setTimeout(updatePicture, 15 * 1000);
 }
 
 function updatePictureList() {
@@ -86,6 +86,15 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			}
 			.carousel-caption {
 				text-shadow: 1px 1px 2px black, 0 0 1em grey, 0 0 0.2em grey
+			}
+
+			/* image */
+			.data {
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: white;
+				background-color: gray;
 			}
 
 			/* thumbs */
@@ -173,11 +182,12 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 		this.carousel.content.innerHTML = '';
 		this.carousel.thumbs.innerHTML = '';
 
-		for(let i = 0; i < picturesList.length; i++) {
+		for (let i = 0; i < picturesList.length; i++) {
 			const v = picturesList[i];
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
+					<pre class="hideOnInactive data" >${JSON.stringify(v, null, 4)}</pre>
 					<img src="${v.url}">
 					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
@@ -197,7 +207,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	changePicture() {
-		if (!this.carousel)	{
+		if (!this.carousel) {
 			return;
 		}
 		this.carousel.mainFn(pictureIndex);
@@ -213,5 +223,4 @@ customElements.define('kiosk-photo-frame', KioskPhotoFrame);
 app
 	.withPriority(50)
 	.withMainElement(new KioskPhotoFrame())
-	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
-;
+	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png');

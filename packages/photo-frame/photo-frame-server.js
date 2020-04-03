@@ -25,8 +25,7 @@ const previouslySelected = [];
 function getFilesFromFolder(folderConfig) {
 	return fs.readdirSync(folderConfig.folder)
 		.filter(file => !(file in ['.', '..']))
-		.filter(file => folderConfig.excludes.reduce((acc, val) => acc && !minimatch(file, val), true))
-	;
+		.filter(file => folderConfig.excludes.reduce((acc, val) => acc && !minimatch(file, val), true));
 }
 
 function getFilesFromFolderByMime(folderConfig) {
@@ -85,7 +84,7 @@ function generateListingForPath(folderConfig) {
 				.map(e => path.join(folderConfig.folder, e));
 			buildingLogger.debug(folderConfig.folder, '# 3.2 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
 
-			listing.push(...imgList);
+			listing.push(... (imgList.map(filepath => { filepath, folderConfig; })));
 			continue;
 		}
 
@@ -154,9 +153,9 @@ async function generateListing(_data = null) {
 	buildingLogger.debug('Extracting exif data for all files');
 	newSelectedPictures = await Promise.all(
 		newSelectedPictures.map(
-			filepath => exifReaderLimiter(() => exifParser(filepath))
+			img => exifReaderLimiter(() => exifParser(img.filepath))
 				.catch(e => { app.debug('Could not read exif: ', e); return {}; })
-				.then(data => ({ filepath, data }))
+				.then(data => ({ ...img, data }))
 		));
 	buildingLogger.debug('Extracting exif data done');
 
