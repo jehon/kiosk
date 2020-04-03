@@ -81,10 +81,11 @@ function generateListingForPath(folderConfig) {
 				.slice(0, Math.min(folderConfig.quantity,
 					images.length,
 					folderConfig.quantity - listing.length))
-				.map(e => path.join(folderConfig.folder, e));
+				.map(e => path.join(folderConfig.folder, e))
+				.map(filepath => ({ filepath, folderConfig }));
 			buildingLogger.debug(folderConfig.folder, '# 3.2 - getFilesFromFolderPath: selecting pictures: ', imgList.length, imgList);
 
-			listing.push(... (imgList.map(filepath => { filepath, folderConfig; })));
+			listing.push(...imgList);
 			continue;
 		}
 
@@ -160,6 +161,13 @@ async function generateListing(_data = null) {
 	buildingLogger.debug('Extracting exif data done');
 
 	newSelectedPictures.sort((a, b) => {
+		if (!a.data.date && !b.data.date) {
+			return 0;
+		} else if (!a.data.date) {
+			return -1;
+		} else if (!b.data.date) {
+			return 1;
+		}
 		return a.data.date < b.data.date ? -1 : a.data.date == b.data.date ? 0 : 1;
 	});
 
