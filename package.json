@@ -31,9 +31,9 @@
     "yargs": "15.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.7.7",
-    "@babel/core": "7.7.7",
-    "babel-eslint": "10.0.3",
+    "@babel/cli": "7.8.4",
+    "@babel/core": "7.9.0",
+    "babel-eslint": "10.1.0",
     "babel-plugin-transform-commonjs": "1.1.6",
     "depcheck": "0.9.1",
     "devtron": "1.4.0",
