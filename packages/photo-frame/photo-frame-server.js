@@ -24,7 +24,7 @@ const previouslySelected = [];
 
 function getFilesFromFolder(folderConfig) {
 	return fs.readdirSync(folderConfig.folder)
-		.filter(file => !(file in [ '.', '..' ]))
+		.filter(file => !(file in ['.', '..']))
 		.filter(file => folderConfig.excludes.reduce((acc, val) => acc && !minimatch(file, val), true))
 	;
 }
@@ -33,7 +33,7 @@ function getFilesFromFolderByMime(folderConfig) {
 	return getFilesFromFolder(folderConfig)
 		.filter(f => {
 			let mt = mime.lookup(path.join(folderConfig.folder, f));
-			if (typeof(mt) != 'string') {
+			if (typeof (mt) != 'string') {
 				return false;
 			}
 			return mt.match(folderConfig.mimeTypePattern);
@@ -56,16 +56,16 @@ function getFoldersFromFolder(folderConfig) {
  * @param folderConfig
  */
 function generateListingForPath(folderConfig) {
-	buildingLogger.debug(folderConfig.folder ,'3.0 - getFilesFromFolderPath: ', folderConfig);
+	buildingLogger.debug(folderConfig.folder, '3.0 - getFilesFromFolderPath: ', folderConfig);
 	// Symlinks are resolved to allow thumbnails to be more precisely generated
 	// but Samba does not allow links, so they are resolved by samba
 	// and invisible here
 	// let folder = fs.realpathSync(folderLinked);
 
-	const folders = shuffleArray([ '.' ].concat(getFoldersFromFolder(folderConfig)));
+	const folders = shuffleArray(['.'].concat(getFoldersFromFolder(folderConfig)));
 	const listing = [];
 
-	while(folders.length > 0 && listing.length < folderConfig.quantity) {
+	while (folders.length > 0 && listing.length < folderConfig.quantity) {
 		const f = folders.pop();
 
 		// Special case: we take the pictures
@@ -104,20 +104,20 @@ function generateListingForTopFolder(folderConfig) {
 	buildingLogger.debug(folderConfig.folder, '# 2.0 - generateListingForTopFolder: given options: ', folderConfig);
 	folderConfig = {
 		excludes: [],
-		mimeTypePattern: [ 'image/*' ],
+		mimeTypePattern: ['image/*'],
 		quantity: 10,
 		...app.getConfig('.folder-defaults', {}),
 		...folderConfig,
 	};
 
 	if (folderConfig.folder[0] != '/') {
-		folderConfig.folder = path.join(app.getConfig('core.root') , folderConfig.folder);
+		folderConfig.folder = path.join(app.getConfig('server.root'), folderConfig.folder);
 	}
 
 	buildingLogger.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
 		fs.statSync(folderConfig.folder);
-	} catch(_e) {
+	} catch (_e) {
 		app.error(`Could not find folder '${folderConfig.folder}'`);
 		return [];
 	}
@@ -140,7 +140,7 @@ async function generateListing(_data = null) {
 	// TODO: manage the data selection
 	const folders = app.getConfig('.folders', []);
 	buildingLogger.debug('1 - generateListing: Found top folders', folders);
-	for(const i in folders) {
+	for (const i in folders) {
 		const f = folders[i];
 		buildingLogger.debug('1.1 - generateListing: Using folder', f);
 		newSelectedPictures = newSelectedPictures.concat(generateListingForTopFolder(f));
@@ -197,7 +197,7 @@ app.subscribe('.check-has-list', async () => {
 });
 
 // Refresh the list sometimes
-const refreshSchedule  = app.getConfig('.refresh-cron', '0 0 5 * * *');
+const refreshSchedule = app.getConfig('.refresh-cron', '0 0 5 * * *');
 app.debug('Programming resfresh at', refreshSchedule);
 app.addSchedule('.refresh', refreshSchedule);
 app.subscribe('.refresh', (data) => generateListing(data));

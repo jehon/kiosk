@@ -1,8 +1,8 @@
 
-import Bus from '../../common/bus.js';
+const Bus = require('../../common/bus.js');
 
-describe(import.meta.url, () => {
-	it('should notify', async function() {
+describe(__filename, () => {
+	it('should notify', async function () {
 		const bus = new Bus();
 		let i = 0;
 		bus.subscribe('test', (data) => {
@@ -13,22 +13,22 @@ describe(import.meta.url, () => {
 		expect(i).toBe(1);
 	});
 
-	it('should handle errors', async function(done) {
+	it('should handle errors', async function (done) {
 		const bus = new Bus();
-		spyOn(console, 'error').and.callFake(() => {});
+		spyOn(console, 'error').and.callFake(() => { });
 		bus.subscribe('test', () => {
 			throw Error('test error');
 		});
 		try {
 			await bus.dispatch('test');
-		} catch(e) {
+		} catch (e) {
 			done.fail('Should not see the error');
 		}
 		expect(console.error).toHaveBeenCalled();
 		done();
 	});
 
-	it('should dispatch with data', async function() {
+	it('should dispatch with data', async function () {
 		const bus = new Bus();
 		let i = 0;
 		bus.subscribe('test', (data) => {
@@ -39,7 +39,7 @@ describe(import.meta.url, () => {
 		expect(i).toBe(1);
 	});
 
-	it('should unregister', async function() {
+	it('should unregister', async function () {
 		const bus = new Bus();
 		let i = 0;
 		let unregister = bus.subscribe('test', () => {
@@ -53,8 +53,8 @@ describe(import.meta.url, () => {
 		expect(i).toBe(1);
 	});
 
-	it('should not fire events on status quo', async function() {
-		spyOn(console, 'debug').and.callFake(() => {});
+	it('should not fire events on status quo', async function () {
+		spyOn(console, 'debug').and.callFake(() => { });
 		// This is linked with console by default
 		const bus = new Bus();
 		let i = 0;
@@ -90,7 +90,7 @@ describe(import.meta.url, () => {
 		expect(console.debug).toHaveBeenCalled();
 	});
 
-	it('should fire last status on event registration', async function() {
+	it('should fire last status on event registration', async function () {
 		const bus = new Bus();
 		let i = 0;
 		await bus.dispatch('test', 123);

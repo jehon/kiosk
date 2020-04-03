@@ -1,8 +1,8 @@
 
-import serverAPIFactory from '../../server/server-api.js';
+const serverAPIFactory = require('../../server/server-api.js');
 const { ServerAPI } = serverAPIFactory;
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	describe('should serverAPI without context', () => {
 		it('should have a bus', async () => {
 			const app = serverAPIFactory('test');
@@ -16,7 +16,7 @@ describe(import.meta.url, () => {
 		it('should be mockable', async () => {
 			const app = serverAPIFactory('test');
 
-			const tt = async() => {
+			const tt = async () => {
 				await app.dispatch('test.brol');
 			};
 			spyOn(ServerAPI.prototype, 'dispatch');

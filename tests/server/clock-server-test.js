@@ -1,26 +1,25 @@
 
-import serverAPIFactory from '../../server/server-api.js';
-const { ServerAPI, testingConfigOverride, testingConfigRestore } = serverAPIFactory;
+const { ServerAPI, testingConfigOverride, testingConfigRestore } = require('../../server/server-api.js');
 
-import { expectBrowserEvent } from './helpers.mjs';
+const { expectBrowserEvent } = require('./helpers.js');
 
-import '../../packages/clock/clock-server.js';
+require('../../packages/clock/clock-server.js');
 
-describe(import.meta.url, () => {
-	beforeEach(function() {
+describe(__filename, () => {
+	beforeEach(function () {
 		spyOn(ServerAPI.prototype, 'dispatchToBrowser').and.callThrough();
 		testingConfigOverride({});
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		testingConfigRestore();
 	});
 
-	it('should trigger tickers', async function() {
+	it('should trigger tickers', async function () {
 		testingConfigRestore();
 		testingConfigOverride({
 			'clock': {
-				'tickers':  {
+				'tickers': {
 					'clock-server-test-label': {
 						cron: '*/2 * * * * *',
 						duration: 1

@@ -1,10 +1,10 @@
 
-describe(__dirname, () => {
+describe(__filename, () => {
 	it('should be true', () => {
 		expect(true).toBeTruthy();
 	});
 
-	describe('shoudl handle timeout', function() {
+	describe('shoudl handle timeout', function () {
 		it('inside of test environment', () => {
 			let i = 0;
 			setTimeout(() => {

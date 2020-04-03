@@ -1,7 +1,7 @@
 
-import packageManager from '../../server/server-packages.js';
+const packageManager = require('../../server/server-packages.js');
 
-describe(import.meta.url, () => {
+describe(__filename, () => {
 	it('should detect packages', async () => {
 		const pkgList = await packageManager.getManifests();
 		expect(pkgList.length).toBeGreaterThanOrEqual(3);

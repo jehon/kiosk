@@ -49,7 +49,7 @@ const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
 const defaultStatus = {
 	message: '',
 	code: 0
-}
+};
 const status = Object.assign({}, defaultStatus);
 
 async function _check() {
@@ -87,18 +87,18 @@ async function _check() {
 			newStatus.successes = 0;
 			app.debug('Received network error, disabling camera', _err.message, '[' + _err.code + ']');
 
-			// TODO: affine here -> code = 2 if 
+			// TODO: affine here -> code = 2 if
 			newStatus.code = 0;
 			switch (_err.code) {
-				case "ECONNREFUSED":
-				case "ETIMEDOUT":
-					newStatus.code = 2;
-					newStatus.message = "Starting up..."
-					break;
+			case 'ECONNREFUSED':
+			case 'ETIMEDOUT':
+				newStatus.code = 2;
+				newStatus.message = 'Starting up...';
+				break;
 
-				case "EHOSTUNREACH":
-				default:
-					newStatus.message = 'Received network error, disabling camera:' + (_err.message ? _err.message : '-no message-');
+			case 'EHOSTUNREACH':
+			default:
+				newStatus.message = 'Received network error, disabling camera:' + (_err.message ? _err.message : '-no message-');
 			}
 
 			// Forcing leaving to camera
@@ -107,7 +107,7 @@ async function _check() {
 		.then((newStatus) => {
 			Object.assign(status, newStatus);
 			return app.dispatchToBrowser('.status');
-		})
+		});
 }
 module.exports._check = _check;
 
@@ -115,7 +115,7 @@ module.exports._check = _check;
 _check()
 	.then(() => _check())
 	.then(() => _check())
-	;
+;
 
 app.subscribe('.recheck', _check);
 app.addSchedule('.recheck', config['cron-recheck']);

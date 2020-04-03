@@ -9,29 +9,31 @@ let win;
 
 const credentialsMap = new Map();
 
-electronApp.on('login', (event, webContents, details, authInfo, callback) => {
+if (electronApp) {
+	electronApp.on('login', (event, webContents, details, authInfo, callback) => {
 
-	// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
-	// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
+		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
+		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
 
-	logger.debug(`login request for ${details.url}`);
-	for(const url of credentialsMap.keys()) {
-		const v = credentialsMap.get(url);
-		if (details.url.startsWith(url)) {
-			logger.debug(`Auto fill in credentials of ${details.url} for ${url} with ${v.username}`);
-			event.preventDefault();
-			callback(v.username, v.password);
-			break;
+		logger.debug(`login request for ${details.url}`);
+		for (const url of credentialsMap.keys()) {
+			const v = credentialsMap.get(url);
+			if (details.url.startsWith(url)) {
+				logger.debug(`Auto fill in credentials of ${details.url} for ${url} with ${v.username}`);
+				event.preventDefault();
+				callback(v.username, v.password);
+				break;
+			}
 		}
-	}
-});
+	});
+}
 
-module.exports.registerCredentials = function(url, data) {
+module.exports.registerCredentials = function (url, data) {
 	logger.debug(`Registering credentials for ${data.username}@${url}: #${data.password.length} characters`);
 	credentialsMap.set(url, data);
 };
 
-module.exports.start = async function() {
+module.exports.start = async function () {
 	const opts = {
 		autoHideMenuBar: true,
 		webPreferences: {
