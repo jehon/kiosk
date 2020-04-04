@@ -28,7 +28,7 @@
     "p-limit": "2.2.2",
     "shuffle-array": "1.0.1",
     "toastr": "2.1.4",
-    "yargs": "15.1.0"
+    "yargs": "15.3.1"
   },
   "devDependencies": {
     "@babel/cli": "7.8.4",
