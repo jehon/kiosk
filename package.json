@@ -26,7 +26,7 @@
     "minimatch": "3.0.4",
     "node-fetch": "2.6.0",
     "object-path": "0.11.4",
-    "p-limit": "2.3.0",
+    "p-limit": "3.0.0",
     "shuffle-array": "1.0.1",
     "toastr": "2.1.4",
     "yargs": "15.3.1"
