@@ -51,7 +51,7 @@
     "start": "electron .",
     "start-dp": "electron . --dev-mode",
     "start-dev": "npm run build && electron . -f tests/kiosk.yml --dev-mode",
-    "test": "npm run test-server && npm run lint",
+    "test": "npm run clean && npm run test-server && npm run lint",
     "test-server": "jasmine --config=tests/server/jasmine.json",
     "test-server-esm": "node tests/server/jasmine-run.mjs",
     "lint": "eslint --ignore-path .gitignore --ignore-pattern /unused .",
