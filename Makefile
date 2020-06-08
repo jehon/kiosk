@@ -93,7 +93,7 @@ remote-logs-lightdm:
 	ssh $(HOST) journalctl -f -u lightdm
 
 remote-logs:
-	ssh $(HOST) tail -n 1000 -f /tmp/kiosk-xsession.log
+	ssh $(HOST) tail -n 1000 -f /home/pi/kiosk-xsession.log
 
 remote-logs-cycle:
 	while true; do \
@@ -130,6 +130,6 @@ deploy: dump
 
 	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
 	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
-	ssh $(HOST) truncate --size 0 /tmp/kiosk-xsession.log
+	ssh $(HOST) truncate --size 0 /home/pi/kiosk-xsession.log
 
 	ssh $(HOST) "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
