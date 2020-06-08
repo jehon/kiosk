@@ -13,8 +13,6 @@
 
 set -e
 
-
-
 # shellcheck source=./scripts/lib.sh
 . "$(dirname "$BASH_SOURCE" )"/scripts/lib.sh
 
@@ -27,6 +25,16 @@ PKG_INST=var/package.json.installed
 if [ -r "$PKG_INST" ] && [ "$(cat "$PKG" | md5sum)" == "$(cat "$PKG_INST" | md5sum)" ]; then
 	header "Already up-to-date"
 else
+	if [ ! -r "$PKG_INST" ]; then
+		echo "$PKG_INST does not exists"
+	fi
+	if [ "$(cat "$PKG" | md5sum)" != "$(cat "$PKG_INST" | md5sum)" ]; then
+		echo "MD5Sum does not match"
+		echo "md5sum from $PKG"
+		cat "$PKG" | md5sum
+		echo "md5sum from $PKG_INST"
+		cat "$PKG_INST" | md5sum
+	fi
 	header "Need an update"
 
 	header_sub "** install **"
