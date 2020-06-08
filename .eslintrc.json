@@ -13,8 +13,8 @@
   },
   "rules": {
     "indent": [
-        "error",
-        "tab"
+      "error",
+      "tab"
     ],
     "linebreak-style": [
       "error",
@@ -25,8 +25,8 @@
       "single"
     ],
     "semi": [
-        "error",
-        "always"
+      "error",
+      "always"
     ],
     "no-unused-vars": [
       "error",
@@ -35,7 +35,17 @@
       }
     ],
     "no-console": [
-      "error"
+      "error",
+      [
+        {
+          "allow": [
+            "warn",
+            "error",
+            "info",
+            "assert"
+          ]
+        }
+      ]
     ],
     "no-trailing-spaces": [
       "error"

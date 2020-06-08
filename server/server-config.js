@@ -31,7 +31,6 @@ let config = {
 };
 
 if (typeof (jasmine) != 'undefined') {
-	/* eslint-disable-next-line no-console */
 	console.warn('Test mode: loading only tests/kiosk.yml');
 	configFiles.length = 0;
 	configFiles[0] = 'tests/kiosk.yml';
