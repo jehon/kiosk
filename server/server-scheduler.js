@@ -10,19 +10,19 @@ module.exports = class Scheduler {
 	bus;
 
 	constructor(bus) {
-		this.bus    = bus;
+		this.bus = bus;
 		this.logger = loggerFactory('server:scheduler');
 	}
 
 	/**
-	 * @param {string} eventNameOrFunction
+	 * @param {string} eventName
 	 * @param {string} cron 5/6 stars ([secs] min hours dom month dow) (if empty, make nothing [usefull for testing])
-	 * @param {int}    duration in minutes
+	 * @param {number} duration in minutes
 	 * @param {*}      data to pass to the signal (will be completed)
 	 */
 	addCron(eventName, cron, duration, data) {
 		if (cron == '') {
-			return () => {};
+			return () => { };
 		}
 
 		this.logger.debug(`Programming event ${eventName}: ${cronstrue.toString(cron)}`);
@@ -36,12 +36,14 @@ module.exports = class Scheduler {
 			const now = new Date();
 			now.setMilliseconds(0);
 			try {
-				await this.bus.dispatch(eventName, { stat: {
-					start: now,
-					end: new Date(now.getTime() + duration * 60 * 1000),
-					duration // minutes
-				}, ...data});
-			} catch(e) {
+				await this.bus.dispatch(eventName, {
+					stat: {
+						start: now,
+						end: new Date(now.getTime() + duration * 60 * 1000),
+						duration // minutes
+					}, ...data
+				});
+			} catch (e) {
 				this.logger.error('notifying ${eventName} gave an error: ', e);
 			}
 		});
