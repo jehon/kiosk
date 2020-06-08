@@ -62,6 +62,9 @@ crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-user" "pi"
 crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-session" "kiosk"
 crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-user" "pi"
 
+rm -f /etc/systemd/system/default.target
+ln -s /lib/systemd/system/graphical.target /etc/systemd/system/default.target
+
 header "Redirect sound output to jack first card"
 cp "$KIOSK_APP"/bin/files/asound.conf /etc/
 chmod 640 /etc/asound.conf
