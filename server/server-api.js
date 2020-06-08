@@ -45,7 +45,13 @@ class ServerAPI {
 		this.logger.debug(...data);
 	}
 
-	getConfig(opath, def)  {
+	/**
+	 * Get some config if it exists, return def otherwise
+	 * @param {string} opath - the path in the json
+	 * @param {*} def
+	 * @returns {string} the key or def(null) if it does not exists
+	 */
+	getConfig(opath, def = null)  {
 		if (opath) {
 			return getConfig(this.c(opath), def);
 		}
