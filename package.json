@@ -58,7 +58,7 @@
     "test": "npm run clean && npm run test-server && npm run lint",
     "test-server": "jasmine --config=tests/server/jasmine.json",
     "test-server-esm": "node tests/server/jasmine-run.mjs",
-    "lint": "eslint --ignore-path .gitignore --ignore-pattern /unused .",
+    "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "depcheck": "depcheck"
   },
