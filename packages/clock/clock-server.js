@@ -8,7 +8,7 @@ const config = {
 };
 
 app.debug('Programming config cron\'s');
-for(const l of Object.keys(config.tickers)) {
+for (const l of Object.keys(config.tickers)) {
 	const f = config.tickers[l];
 	app.debug('Programming: ', l, f);
 	app.addSchedule('.ticker', f.cron, f.duration, {
@@ -17,10 +17,16 @@ for(const l of Object.keys(config.tickers)) {
 	});
 }
 
+/**
+ * Resolve a promise on a certain date
+ *
+ * @param {Date} date the date on which the promise will be resolved
+ * @returns {Promise<void>} a promise resolving on date
+ */
 async function onDate(date) {
 	app.debug('onDate: Programming for ', date);
 	return new Promise((resolve, _reject) => {
-		if (typeof(onDate) == 'string') {
+		if (typeof (onDate) == 'string') {
 			date = new Date(date);
 		}
 		const now = new Date();
@@ -31,7 +37,7 @@ async function onDate(date) {
 		setTimeout(() => {
 			app.debug('onDate: is now the wanted time ', date);
 			resolve();
-		}, date - now);
+		}, date.getTime() - now.getTime());
 	});
 }
 

@@ -3,6 +3,12 @@ const isRendered = Symbol('isRendered');
 const unsubscriber = Symbol('unsubscriber');
 const mixinLogger = Symbol('mixinLogger');
 
+/**
+ *
+ * @param {*} app
+ * @param {HTMLElement} cls
+ * @returns {HTMLElement}
+ */
 export const kioskEventListenerMixin = (app, cls) => class extends cls {
 	_events = {}
 
@@ -22,12 +28,12 @@ export const kioskEventListenerMixin = (app, cls) => class extends cls {
 			this.render();
 		}
 		const listing = this.kioskEventListeners;
-		for(const k in listing) {
+		for (const k in listing) {
 			this[mixinLogger].debug('Registering for event ' + k);
 			this[unsubscriber][k] = app.subscribe(k,
 				// Callback function
 				(status) => {
-					if (typeof(status) != 'undefined')  {
+					if (typeof (status) != 'undefined') {
 						// Store the value locally
 						this._events[k] = status;
 					}
@@ -38,10 +44,10 @@ export const kioskEventListenerMixin = (app, cls) => class extends cls {
 	}
 
 	disconnectedCallback() {
-		for(const k of Object.keys(this[unsubscriber])) {
+		for (const k of Object.keys(this[unsubscriber])) {
 			this[mixinLogger].debug('Unregistering for event ' + k);
 			this[unsubscriber][k]();
-			delete(this[unsubscriber][k]);
+			delete (this[unsubscriber][k]);
 		}
 		if (super.disconnectedCallback) {
 			super.disconnectedCallback();
