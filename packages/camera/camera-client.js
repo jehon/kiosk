@@ -2,10 +2,9 @@
 /* global toastr */
 
 import AppFactory from '../../client/client-api.js';
-const C_READY = require('electron').remote.require('./packages/camera/camera-server.js').C_READY;
+const TriStates = require('electron').remote.require('./packages/camera/constants.js').TriStates;
 
 // TODO: manage http errors
-// const C_ERROR = require('electron').remote.require('./packages/camera/camera-server.js').C_ERROR;
 
 // TODO: handle when the app is selected, but the camera is not available
 //  --> it should show an error message
@@ -35,7 +34,7 @@ app.subscribe('.status', () => {
 	toastrLastCode = status.code;
 
 	// Let's adapt and show status
-	if (status.code == C_READY) {
+	if (status.code == TriStates.READY) {
 		app.debug('Camera is ready, show toastr');
 		app.changePriority(50);
 		toastrElement = toastr.success('Ready', 'Camera', { timeOut: 15000 });
@@ -76,14 +75,16 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 	}
 
 	adapt() {
-		if (status.code == C_READY) {
+		if (status.code == TriStates.READY) {
+			this.innerHTML = '<video style="width: 100%; height: 100%" autoplay=1 preload="none" ><source src="/camera/feed"></video>';
 
 			// First load an IFrame to trigger authentication
-			this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
+			// this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
 
 			// We need the iframe to be loaded for the 'login' event to happen
 			setTimeout(() => {
-				this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
+				// this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
+				// this.innerHTML = `<div class='full full-background-image' style='background-image: url("/camera/feed?${Date.now()}")'></div>`;
 			}, 2000);
 
 			// TODO: add sound
@@ -101,4 +102,4 @@ app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
 	.menuBasedOnIcon('../packages/camera/camera.png')
-;
+	;
