@@ -50,6 +50,17 @@ const cameraAPI = {
 
 		child.stdio[1].pipe(res);
 
+		// child.on('close', () => console.log('\nclose\n'));
+		// child.on('exit', () => console.log('\nexit\n'));
+		// child.on('error', () => console.log('\nerror\n'));
+
+		res.on('close', () => {
+			console.log('killing ffmpeg');
+			child.kill();
+		});
+		// res.on('exit', () => console.log('\nres exit\n'));
+		// res.on('error', () => console.log('\nres error\n'));
+
 	}
 };
 
