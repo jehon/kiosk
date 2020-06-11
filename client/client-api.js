@@ -26,7 +26,7 @@ const apps = {};
 
 let idCounter = 1;
 
-let selectApplication = () => {};
+let selectApplication = () => { };
 import('./client-app-chooser.js').then(mod => {
 	selectApplication = mod.default;
 });
@@ -81,7 +81,7 @@ export class ClientAPI {
 		return this;
 	}
 
-	menuBasedOnIcon(url, text) {
+	menuBasedOnIcon(url, text = '') {
 		if (!text) {
 			text = this.getName();
 		}
@@ -102,7 +102,7 @@ export class ClientAPI {
 	}
 
 	withPriority(p) {
-		if (typeof(p) != 'number') {
+		if (typeof (p) != 'number') {
 			p = parseInt(p);
 		}
 		this.priority = p;
@@ -139,6 +139,9 @@ export class ClientAPI {
 	// Gui
 	//
 	//
+	/**
+	 * @returns {function(HTMLElement): HTMLElement}
+	 */
 	getKioskEventListenerMixin() {
 		return (element) => kioskEventListenerMixin(this, element);
 	}
@@ -173,6 +176,9 @@ export default (space) => new ClientAPI(space);
  *
  */
 
+/**
+ * @param name
+ */
 export function getApplicationByName(name) {
 	if (!(name in apps)) {
 		throw `Unknown app: ${name}. Available: ${Object.keys(apps).join(' ')}`;
@@ -180,6 +186,9 @@ export function getApplicationByName(name) {
 	return apps[name];
 }
 
+/**
+ *
+ */
 export function getApplicationsList() {
 	const papps = Object.keys(apps)
 		.map(k => apps[k]);
@@ -190,9 +199,12 @@ export function getApplicationsList() {
 	return papps;
 }
 
+/**
+ *
+ */
 export function _testEmptyApplicationList() {
-	for(const k of Object.keys(apps)) {
-		delete(apps[k]);
+	for (const k of Object.keys(apps)) {
+		delete (apps[k]);
 	}
 }
 

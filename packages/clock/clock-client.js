@@ -12,18 +12,47 @@ const handLengths = {
 	m: 80,
 	s: 89
 };
-
+/**
+ * @param {number} hours 0..12
+ * @returns {number} the angle (radian) correspondign to the hours
+ */
 const angleFromHours = hours => hours * Math.PI * 2 / 12 - Math.PI / 2;
+/**
+ * @param {number} minutes 0..59
+ * @returns {number} the angle (radian) correspondign to the minutes
+ */
 const angleFromMinutes = minutes => minutes * Math.PI * 2 / 60 - Math.PI / 2;
+
+/**
+ * @param {number} minutes 0..59
+ * @param {number} seconds 0..59
+ * @returns {number} the angle (radian) correspondign to the seconds
+ */
 const angleFromMinutesSeconds = (minutes, seconds) => (angleFromMinutes(minutes) + (seconds * Math.PI * 2 / 60 / 60));
 
+/**
+ * @param {number} r polar radius
+ * @param {number} theta polar angle (radian)
+ * @returns {number} X axis
+ */
 const polar2cartesianX = (r, theta) => r * Math.cos(theta);
+/**
+ * @param {number} r polar radius
+ * @param {number} theta polar angle (radian)
+ * @returns {number} Y axis
+ */
 const polar2cartesianY = (r, theta) => r * Math.sin(theta);
 
-let ticker = false;
+let ticker = null;
 
 // Thanks to https://jsfiddle.net/upsidown/e6dx9oza/
-function describeArc(radius, startAngle, endAngle){
+/**
+ * @param {number} radius polar radius
+ * @param {number} startAngle (radius)
+ * @param {number} endAngle (radius)
+ * @returns {string} the SVG description of the arc
+ */
+function describeArc(radius, startAngle, endAngle) {
 	const start = { x: polar2cartesianX(radius, endAngle), y: polar2cartesianY(radius, endAngle) };
 	const end = { x: polar2cartesianX(radius, startAngle), y: polar2cartesianY(radius, startAngle) };
 
@@ -33,12 +62,15 @@ function describeArc(radius, startAngle, endAngle){
 }
 
 class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
-	cron = false
+	/**
+	 * @type {number}
+	 */
+	cron = 0
 
 	connectedCallback() {
 		super.connectedCallback();
 		if (!this.cron) {
-			this.cron = setInterval(() => this.adapt(), 1000);
+			this.cron = window.setInterval(() => this.adapt(), 1000);
 		}
 	}
 
@@ -47,8 +79,8 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 			super.disconnectedCallback();
 		}
 		if (this.cron) {
-			clearInterval(this.cron);
-			this.cron = false;
+			window.clearInterval(this.cron);
+			this.cron = 0;
 		}
 	}
 
@@ -69,7 +101,7 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 		`;
 
 		const numbersEl = this.querySelector('#numbers');
-		for(let i = 1; i <= 12; i++) {
+		for (let i = 1; i <= 12; i++) {
 			numbersEl.insertAdjacentHTML('beforeend', `<text text-anchor="middle" alignment-baseline="central" fill="orange" font-size="10"
 				x="${polar2cartesianX(87, angleFromHours(i))}"
 				y="${polar2cartesianY(87, angleFromHours(i))}"
@@ -84,7 +116,7 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 		}
 
 		if (!this.hasAttribute('no-date')) {
-			for(let i = 0; i < 60; i++) {
+			for (let i = 0; i < 60; i++) {
 				numbersEl.insertAdjacentHTML('beforeend', `<text text-anchor="middle" alignment-baseline="central" fill="red" font-size="3"
 				x="${polar2cartesianX(92, angleFromMinutes(i))}"
 				y="${polar2cartesianY(92, angleFromMinutes(i))}"
@@ -143,7 +175,7 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 			this.dowEl.style.display = 'initial';
 			let dow = (now.day() - 1 + 7) % 7; // Handle negative numbers
 			// dow = Math.floor(second % 7); // Debug
-			const dows = [ 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche' ];
+			const dows = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 			this.dowEl.innerHTML = dows[dow];
 			this.dowEl.setAttribute('x', (dow * 200 / 7) - 100);
 		}

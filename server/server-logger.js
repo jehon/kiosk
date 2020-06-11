@@ -5,20 +5,34 @@ require('colors');
 const _ = require('lodash');
 const debugFactory = require('debug');
 
+/**
+ * @param e
+ */
 function renderError(e) {
 	const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
 	return `${e.message}\n  at ${stack}`;
 }
 
+/**
+ * @param level
+ * @param {...any} args
+ */
 function generateMessage(level, ...args) {
 	return `[${level}] ` + args.map(v =>
-		(typeof(v) == 'object'
+		(typeof (v) == 'object'
 			? (v instanceof Error) ? renderError(v) : JSON.stringify(v)
 			: v)
 	).join(' ');
 }
 
+/**
+ * @param {string} n - non normalized namespace
+ * @returns {string} the normalized namespace
+ */
 function canonizeNamespace(n) {
+	if (!n.startsWith('kiosk')) {
+		n = 'kiosk:' + n;
+	}
 	return n.split('.').join(':');
 }
 
@@ -63,6 +77,12 @@ class Logger {
 const logger = new Logger('server:logger');
 logger.info('To have the list of available loggers, enable this one');
 
+/**
+ * Create a logger in the given namespace
+ *
+ * @param {string} rawNamespace - the namespace in which this will live (should not start with kiosk:)
+ * @returns {Logger} a logger
+ */
 function loggerFactory(rawNamespace) {
 	const namespace = canonizeNamespace(rawNamespace);
 
@@ -92,8 +112,8 @@ module.exports.getLoggerList = function getLoggerList() {
 	return Array.from(loggersList.keys());
 };
 
-module.exports.fromRemote = function(name, category, data) {
-	if (! [ 'error', 'info', 'debug'].includes(category)) {
+module.exports.fromRemote = function (name, category, data) {
+	if (!['error', 'info', 'debug'].includes(category)) {
 		throw 'Invalid category';
 	}
 

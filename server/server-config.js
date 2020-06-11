@@ -122,7 +122,14 @@ if (config.server.loggers) {
 // Main function to get a config
 //
 const getConfigLogger = logger.extend('get');
-module.exports = function getConfig(path = false, def = undefined) {
+
+/**
+ *
+ * @param {string} path the key path (dot separated)
+ * @param {*} [def] the default value in case the value is not found
+ * @returns {*} the value or the object
+ */
+module.exports = function getConfig(path = '', def = undefined) {
 	if (path) {
 		if (objectPath.has(config, path)) {
 			const val = objectPath.get(config, path);
@@ -145,6 +152,9 @@ module.exports.set = function (path, val) {
 //
 
 let configTestBackup = false;
+/**
+ * @param configOverride
+ */
 function testingConfigOverride(configOverride) {
 	if (configTestBackup !== false) {
 		throw 'testingConfigOverride could not be called twice, please restore config before with testingConfigRestore()';
@@ -154,6 +164,9 @@ function testingConfigOverride(configOverride) {
 }
 module.exports.testingConfigOverride = testingConfigOverride;
 
+/**
+ *
+ */
 function testingConfigRestore() {
 	if (configTestBackup === false) {
 		throw 'testingConfigRestore called when no backup was present. Please override first with testingConfigOverride(<config object>)';

@@ -1,15 +1,15 @@
 
 // Common
-const Bus                                        = require('../common/bus');
-const contextualize                              = require('../common/contextualize');
-const loggerFactory                              = require('./server-logger');
-const Scheduler                                  = require('./server-scheduler');
-const getConfig                                  = require('./server-config');
+const Bus = require('../common/bus');
+const contextualize = require('../common/contextualize');
+const loggerFactory = require('./server-logger');
+const Scheduler = require('./server-scheduler');
+const getConfig = require('./server-config');
 const { dispatchToBrowser, registerCredentials } = require('./server-launch-browser');
-const { rootDir }                                = require('./server-config');
-const webServer                                  = require('./server-webserver.js');
+const { rootDir } = require('./server-config');
+const webServer = require('./server-webserver.js');
 
-const bus       = new Bus(loggerFactory('server:bus'));
+const bus = new Bus(loggerFactory('server:bus'));
 const scheduler = new Scheduler(bus);
 
 module.exports = function serverAPIFactory(name) {
@@ -47,11 +47,12 @@ class ServerAPI {
 
 	/**
 	 * Get some config if it exists, return def otherwise
-	 * @param {string} opath - the path in the json
-	 * @param {*} def
-	 * @returns {string} the key or def(null) if it does not exists
+	 *
+	 * @param {string} [opath] the path in the json
+	 * @param {*} [def] - the default value if the key is not found
+	 * @returns {object|any} the key or def(null) if it does not exists
 	 */
-	getConfig(opath, def = null)  {
+	getConfig(opath, def = null) {
 		if (opath) {
 			return getConfig(this.c(opath), def);
 		}
@@ -91,7 +92,7 @@ class ServerAPI {
 	}
 
 	addSchedule(signal, cron, duration = 0, data = {}) {
-		return scheduler.addCron(this.c(signal), cron, duration , data);
+		return scheduler.addCron(this.c(signal), cron, duration, data);
 	}
 
 	getChildLogger(name) {
