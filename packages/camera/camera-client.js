@@ -71,6 +71,11 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 	disconnectedCallback() {
 		// Avoid background load
+		const v = this.querySelector('video');
+		if (v) {
+			v.src = '';
+			v.load();
+		}
 		this.innerHTML = '';
 	}
 
