@@ -3,6 +3,9 @@
  * @typedef {import('./constants.js').CheckResponse} CheckResponse
  * @typedef {import('./constants.js').CameraAPI} CameraAPI
  * @typedef {import('./constants.js').TriStates} TriStates
+ *
+ * @typedef {import('../../server/server-logger.js').Logger} Logger
+ *
  */
 
 const { TriStates } = require('./constants.js');
@@ -48,7 +51,7 @@ async function _check() {
 		code: TriStates.DOWN,
 		successes: status.successes
 	});
-	return camera.check(config, app)
+	return camera.check(app.logger, config)
 		.then(checkResponse => {
 			switch (checkResponse.state) {
 				case TriStates.READY:
@@ -112,7 +115,7 @@ _check()
 	.then(() => _check())
 	.then(() => _check());
 
-app.getExpressApp().get('/camera/feed', (_req, res) => camera.generateFlow(res, config));
+app.getExpressApp().get('/camera/feed', (_req, res) => camera.generateFlow(app.logger, res, config));
 
 // app.getExpressApp().get('/camera/frame', (_req, res) => res.send(`
 // 	<div class='full full-background-image' style='background-image: url("${config.host + config.videoFeed}?${Date.now()}")'></div>
