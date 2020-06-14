@@ -1,3 +1,6 @@
+/**
+ * @typedef {import('../../server/server-logger.js').Logger} Logger
+ */
 
 const serverAPIFactory = require('../../server/server-api.js');
 
@@ -27,7 +30,7 @@ module.exports.TriStates = TriStates;
 
 /**
  * @typedef CameraAPI
- * @property {function(object, object):Promise} init - tell if the camera is ready / up / down
- * @property {function(object, object):Promise<CheckResponse>} check - tell if the camera is ready / up / down
- * @property {function(object, object):void} generateFlow - generate the flow on the paramter response
+ * @property {function(Logger, object):Promise} init - tell if the camera is ready / up / down
+ * @property {function(Logger, object):Promise<CheckResponse>} check - tell if the camera is ready / up / down
+ * @property {function(Logger, object, object):void} generateFlow - generate the flow on the paramter response
  */
