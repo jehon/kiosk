@@ -1,12 +1,14 @@
 
 // Colors for the process logger
+
 require('colors');
 
 const _ = require('lodash');
 const debugFactory = require('debug');
 
 /**
- * @param e
+ * @param {Error} e - the reror to be rendered
+ * @returns {string} the error in a string presentation
  */
 function renderError(e) {
 	const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
@@ -14,8 +16,9 @@ function renderError(e) {
 }
 
 /**
- * @param level
- * @param {...any} args
+ * @param {string} level - the level to be shown in the debug
+ * @param {...any} args - anything to print
+ * @returns {string} the message formatted for display
  */
 function generateMessage(level, ...args) {
 	return `[${level}] ` + args.map(v =>
@@ -43,6 +46,11 @@ class Logger {
 	namespace = '';
 	streams = {};
 
+	/**
+	 * Create a logger for a given namespace
+	 *
+	 * @param {*} namespace - the namespace (dot separated if sub namespace is used)
+	 */
 	constructor(namespace) {
 		this.namespace = canonizeNamespace(namespace);
 
@@ -54,23 +62,54 @@ class Logger {
 		loggersMap.set(loggersList.get(this.namespace), this);
 	}
 
+	/**
+	 * Create a sub logger
+	 *
+	 * @param {*} name - name of the sub logger
+	 * @returns {Logger} - the new logger
+	 */
 	extend(name) {
 		return new Logger(this.namespace + ':' + name);
 	}
 
+	/**
+	 * Log flow always enabled and displayed in red
+	 *
+	 * @param  {...any} args - things to display
+	 * @returns {Logger} this
+	 */
 	error(...args) {
 		this.streams.log(generateMessage('ERROR', ...args).red);
 		return this;
 	}
 
+	/**
+	 * Log flow always enabled
+	 *
+	 * @param  {...any} args - things to display
+	 * @returns {Logger} this
+	 */
 	info(...args) {
 		this.streams.log(generateMessage('INFO', ...args));
 		return this;
 	}
 
+	/**
+	 * Log enabled by debug facility
+	 *
+	 * @param  {...any} args - things to display
+	 * @returns {Logger} this
+	 */
 	debug(...args) {
 		this.streams.debug(generateMessage('DEBUG', ...args));
 		return this;
+	}
+
+	/**
+	 * @returns {boolean} true if debug is enabled (and displayed)
+	 */
+	isDebugEnabled() {
+		return this.streams.debug.enabled;
 	}
 }
 
@@ -96,6 +135,8 @@ function loggerFactory(rawNamespace) {
 	return new Logger(namespace);
 }
 module.exports = loggerFactory;
+
+module.exports.Logger = Logger;
 
 let enabled = process.env.DEBUG;
 module.exports.enableDebugForRegexp = function enableDebugForRegexp(regexp) {
