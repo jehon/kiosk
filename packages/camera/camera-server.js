@@ -28,6 +28,7 @@ const camera = (/** @type {CameraAPI} */ require('./types/foscam-r2m.js'));
  * @property {string} message - user friendly message
  * @property {TriStates} code - see above
  * @property {number} successes - number of TriStates.READY received
+ * @property {boolean} initialized - if the camera has been initialized or not
  */
 
 /**
@@ -35,8 +36,9 @@ const camera = (/** @type {CameraAPI} */ require('./types/foscam-r2m.js'));
  */
 const defaultStatus = {
 	message: '',
-	code: 0,
-	successes: 0
+	code: TriStates.DOWN,
+	successes: 0,
+	initialized: false
 };
 const status = Object.assign({}, defaultStatus);
 
@@ -50,7 +52,8 @@ async function _check() {
 	let newStatus = Object.assign({}, {
 		message: '',
 		code: TriStates.DOWN,
-		successes: status.successes
+		successes: status.successes,
+		initialized: status.initialized
 	});
 	return camera.check(app.logger, config)
 		.then(checkResponse => {
@@ -94,10 +97,22 @@ async function _check() {
 					case 'EHOSTUNREACH':
 					default:
 						// default message is ok
+						newStatus.initialized = false;
 						break;
 				}
 			}
 			throw newStatus;
+		})
+		.then(newStatus => {
+			if (newStatus.code == TriStates.READY && !newStatus.initialized) {
+				app.debug('initializing the camera');
+				return camera.init(app.logger, config)
+					.then(() => {
+						newStatus.initialized = true;
+						return newStatus;
+					});
+			}
+			return newStatus;
 		})
 		.finally(() => {
 			if (status.code != newStatus.code) {
