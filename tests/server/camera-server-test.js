@@ -1,11 +1,12 @@
 
 const nock = require('nock');
 
-const host = 'http://localhost';
+const host = 'http://localhost:80';
 
 const { testingConfigOverride, testingConfigRestore } = require('../../server/server-config.js');
 const cameraAPI = require('../../packages/camera/camera-server.js');
 const { expectBrowserEvent } = require('./helpers.js');
+const { TriStates } = require('../../packages/camera/constants.js');
 
 // import spectronApp from './spectron-helper.mjs';
 
@@ -25,8 +26,8 @@ describe(__filename, () => {
 	it('should adapt to http conditions', async function () {
 		// Install the whole flow
 		const nockImage = () => nock(host)
-			.filteringPath(_path => '/image.jpg')
-			.get('/image.jpg');
+			.filteringPath(_path => '/cgi-bin/CGIProxy.fcgi')
+			.get('/cgi-bin/CGIProxy.fcgi');
 
 		{ // With success...
 			nockImage()
@@ -39,7 +40,7 @@ describe(__filename, () => {
 				await cameraAPI._check();
 			});
 			expect(l.length).toBeGreaterThan(0);
-			expect(cameraAPI.getStatus().code).toBe(100);
+			expect(cameraAPI.getStatus().code).toBe(TriStates.READY);
 			nock.cleanAll();
 		}
 
@@ -50,7 +51,7 @@ describe(__filename, () => {
 
 			let l = await expectBrowserEvent('.status', async () => {
 				await cameraAPI._check();
-				expect(cameraAPI.getStatus().code).toBeLessThan(12);
+				expect(cameraAPI.getStatus().code).toBe(TriStates.DOWN);
 			});
 			expect(l.length).toBeGreaterThan(0);
 			nock.cleanAll();
@@ -66,7 +67,7 @@ describe(__filename, () => {
 				await cameraAPI._check();
 				await cameraAPI._check();
 				await cameraAPI._check();
-				expect(cameraAPI.getStatus().code).toBe(100);
+				expect(cameraAPI.getStatus().code).toBe(TriStates.READY);
 			});
 			expect(l.length).toBeGreaterThan(0);
 			nock.cleanAll();
