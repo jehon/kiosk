@@ -81,7 +81,7 @@ class KioskCamera extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 	adapt() {
 		if (status.code == TriStates.READY) {
-			this.innerHTML = '<video style="width: 100%; height: 100%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="/camera/feed"></video>';
+			this.innerHTML = '<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="/camera/feed"></video>';
 
 			// First load an IFrame to trigger authentication
 			// this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
@@ -106,5 +106,4 @@ customElements.define('kiosk-camera', KioskCamera);
 app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
-	.menuBasedOnIcon('../packages/camera/camera.png')
-;
+	.menuBasedOnIcon('../packages/camera/camera.png');
