@@ -10,9 +10,9 @@
     "bootstrap": "4.5.0",
     "btoa": "1.2.1",
     "colors": "1.4.0",
-    "css-inherit": "github:jehon/css-inherit",
     "cron": "1.8.2",
     "cronstrue": "1.94.0",
+    "css-inherit": "github:jehon/css-inherit",
     "debug": "4.1.1",
     "deepmerge": "4.2.2",
     "electron": "9.0.4",
@@ -29,6 +29,7 @@
     "p-limit": "3.0.1",
     "shuffle-array": "1.0.1",
     "toastr": "2.1.4",
+    "xml2js": "^0.4.23",
     "yargs": "15.3.1"
   },
   "devDependencies": {

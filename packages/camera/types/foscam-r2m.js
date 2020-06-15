@@ -1,10 +1,24 @@
 
 const { TriStates } = require('../constants.js');
 const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
+const xml2js = require('xml2js').parseString;
 
 /** @typedef {import('../camera-server.js').Logger} Logger */
 
-let initialized = false;
+/**
+ * From the XML response, get the data
+ *
+ * @param {Response} response - http response
+ * @returns {Promise<object>} The parsed response
+ * @see https://stackoverflow.com/a/41009103/1954789
+ */
+async function responseXMLParser(response) {
+	return response.text()
+		.then(str => new Promise(resolve => xml2js(str, (err, data) => {
+			if (err) throw err;
+			resolve(data);
+		})));
+}
 
 /**
  * @param {Logger} logger - where to send the logs
@@ -23,7 +37,44 @@ function getUrl(logger, config, data, cgi = '/cgi-bin/CGIProxy.fcgi?') {
  * @type {import('../constants.js').CameraAPI}
  */
 const cameraAPI = {
-	init: async (_logger, _config) => { },
+	init: async (logger, config) => {
+		// /cgi-bin/CGIProxy.fcgi?cmd=getPTZPresetPointList
+		// /cgi-bin/CGIProxy.fcgi?cmd=ptzGotoPresetPoint&name=test&usr=
+
+		const now = new Date();
+		fetch(getUrl(logger, config, {
+			cmd: 'setSystemTime',
+			timeSource: 1,
+			year: now.getFullYear(),
+			mon: now.getMonth() + 1,
+			day: now.getDate(),
+			hour: now.getHours(),
+			minute: now.getMinutes(),
+			sec: now.getSeconds()
+		}));
+
+		fetch(getUrl(logger, config, { cmd: 'getPTZPresetPointList' }))
+			.then(responseXMLParser)
+			.then(data => {
+				const vals = [];
+				for (const k of Object.keys(data.CGI_Result)) {
+					if (k.startsWith('point')) {
+						const v = data.CGI_Result[k][0];
+						if (v) {
+							vals.push(v);
+						}
+					}
+				}
+
+				logger.info('Available positions: ', vals);
+			}, err => logger.error('In getting position\'s names: ', err));
+
+
+		fetch(getUrl(logger, config, { cmd: 'ptzGotoPresetPoint', name: config.position }))
+			.then(responseXMLParser)
+			.then(data => logger.debug('Setting time: ', data), err => logger.error('In setting time: ', err));
+
+	},
 
 	/**
 		* @param {Logger} logger - where to send the logs
@@ -34,12 +85,6 @@ const cameraAPI = {
 		return fetch(getUrl(logger, config, { cmd: 'getDevInfo' }), { method: 'GET' })
 			.then(response => {
 				if (response.ok) {
-					if (!initialized) {
-						const urlTime = `${config.host}/cgi-bin/CGIProxy.fcgi?cmd=setSystemTime&timeSource=0&usr=${config.username}&pwd=${config.password}`;
-						logger.debug('Setting time: ', urlTime);
-						fetch(urlTime);
-						initialized = true;
-					}
 					return { state: TriStates.READY };
 				}
 				return {
@@ -47,7 +92,6 @@ const cameraAPI = {
 					message: response.status + ': ' + response.statusText
 				};
 			}, err => {
-				initialized = false;
 				throw err;
 			});
 	},
@@ -63,6 +107,7 @@ const cameraAPI = {
 
 		res.header('content-type', 'video/webm');
 
+		const cmd = `ffmpeg -i rtsp://${config.username}:${config.password}@${config.host}:${config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`.split(' ');
 		logger.debug('ffmpeg command: ', cmd);
 
 		var child = child_process.spawn(cmd[0], cmd.splice(1), {
@@ -71,17 +116,10 @@ const cameraAPI = {
 
 		child.stdio[1].pipe(res);
 
-		// child.on('close', () => console.log('\nclose\n'));
-		// child.on('exit', () => console.log('\nexit\n'));
-		// child.on('error', () => console.log('\nerror\n'));
-
 		res.on('close', () => {
-			console.log('killing ffmpeg');
+			logger.debug('Http flow ended, killing ffmpeg');
 			child.kill();
 		});
-		// res.on('exit', () => console.log('\nres exit\n'));
-		// res.on('error', () => console.log('\nres error\n'));
-
 	}
 };
 
