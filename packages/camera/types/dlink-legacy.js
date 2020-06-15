@@ -49,7 +49,7 @@ const cameraAPI = {
 			});
 	},
 
-	generateFlow: function (res) { }
+	generateFlow: function (_res) { }
 };
 
 module.exports = cameraAPI;

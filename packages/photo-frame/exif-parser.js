@@ -7,21 +7,24 @@ const translation = {
 	'Exif.Image.Orientation': 'orientation'
 };
 
+/**
+ * @param {...any} params
+ */
 function runExiv(...params) {
 	//
 	// Error here ? check exiv is installed :-)
 	//
 	let processResult = spawnSync('exiv2', params);
 	switch(processResult.status) {
-	case 0:   // ok, continue
-		break;
-	case 1:   // The file contains data of an unknown image type
-	case 253: // No exif data found in file
-		return '';
-	case 255: // File does not exists
-		return '';
-	default:
-		throw new Error('\n\nrunExiv process: ' + processResult.status + ' with [ ' + params.join(' , ') + ' ] => '
+		case 0:   // ok, continue
+			break;
+		case 1:   // The file contains data of an unknown image type
+		case 253: // No exif data found in file
+			return '';
+		case 255: // File does not exists
+			return '';
+		default:
+			throw new Error('\n\nrunExiv process: ' + processResult.status + ' with [ ' + params.join(' , ') + ' ] => '
 			+ (processResult.stderr ? processResult.stderr.toString() : 'no error message'));
 	}
 	if (processResult.stdout != null) {
@@ -31,6 +34,9 @@ function runExiv(...params) {
 }
 
 // TODO: use exiftool (more easy to use)
+/**
+ * @param filePath
+ */
 async function exivReadAll(filePath) {
 	const data = runExiv('-g', 'Exif.*', filePath);
 	const result = {

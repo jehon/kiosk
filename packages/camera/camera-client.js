@@ -107,4 +107,4 @@ app
 	.withPriority(1000)
 	.withMainElement(new KioskCamera())
 	.menuBasedOnIcon('../packages/camera/camera.png')
-	;
+;
