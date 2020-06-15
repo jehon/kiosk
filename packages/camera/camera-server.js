@@ -14,7 +14,8 @@ const { app } = require('./constants.js');
 
 const config = {
 	'cron-recheck': '*/10 * * * * *',
-	host: 'http://localhost',
+	host: 'localhost',
+	port: 80,
 	username: '',
 	password: '',
 	...app.getConfig('.')
