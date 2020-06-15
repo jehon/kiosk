@@ -2,19 +2,36 @@
 const { TriStates } = require('../constants.js');
 const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
 
+/** @typedef {import('../camera-server.js').Logger} Logger */
+
 let initialized = false;
+
+/**
+ * @param {Logger} logger - where to send the logs
+ * @param {object} config - the configuration of the camera
+ * @param {object} data - data to pass
+ * @param {string} [cgi] - the cgi script to be called
+ * @returns {string} the url to be called
+ */
+function getUrl(logger, config, data, cgi = '/cgi-bin/CGIProxy.fcgi?') {
+	const url = `http://${config.host}:${config.port}${cgi}?usr=${config.username}&pwd=${config.password}&random-no-cache=${(new Date).getTime()}&` + (new URLSearchParams(data).toString());
+	logger.debug('Using url: ' + url);
+	return url;
+}
 
 /**
  * @type {import('../constants.js').CameraAPI}
  */
 const cameraAPI = {
-	init: async (_app, _config) => { },
+	init: async (_logger, _config) => { },
 
-	check: async (config, logger) => {
-		const url = `${config.host}/cgi-bin/CGIProxy.fcgi?usr=${config.username}&pwd=${config.password}&cmd=getDevInfo&random-no-cache=${(new Date).getTime()}`;
-		logger.debug('Checking url: ' + url);
-
-		return fetch(url, { method: 'GET' })
+	/**
+		* @param {Logger} logger - where to send the logs
+		* @param {object} config - camera config
+		* @returns {Promise<import('../constants.js').CheckResponse>} when check is successfull
+		*/
+	check: async (logger, config) => {
+		return fetch(getUrl(logger, config, { cmd: 'getDevInfo' }), { method: 'GET' })
 			.then(response => {
 				if (response.ok) {
 					if (!initialized) {
@@ -35,14 +52,18 @@ const cameraAPI = {
 			});
 	},
 
-	generateFlow: function (res, config) {
+	/**
+	 * @param {Logger} logger - where to send the logs
+	 * @param {any} res - the expressjs response object
+	 * @param {object} config - the camera config
+	 */
+	generateFlow: function (logger, res, config) {
 		// Thanks to https://stackoverflow.com/q/28946904/1954789
 		const child_process = require('child_process');
 
 		res.header('content-type', 'video/webm');
 
-		const cmd = `ffmpeg -i rtsp://${config.username}:${config.password}@${config.host.replace('http://', '')}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`.split(' ');
-		console.log('cmd: ', cmd);
+		logger.debug('ffmpeg command: ', cmd);
 
 		var child = child_process.spawn(cmd[0], cmd.splice(1), {
 			stdio: ['ignore', 'pipe', process.stderr]
