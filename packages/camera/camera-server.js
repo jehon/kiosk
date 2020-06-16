@@ -66,17 +66,17 @@ async function _check() {
 		return checkRunning;
 	}
 
-	const config = getConfig();
+	const fullConfig = getConfig();
 	let newCode = TriStates.DOWN;
-	checkRunning = camera.check(app.logger, config)
+	checkRunning = camera.check(app.logger, fullConfig)
 		.then(checkResponse => {
 			switch (checkResponse.state) {
 				case TriStates.READY:
-					if ((++status.successes) < config.nbCheck) {
+					if ((++status.successes) < fullConfig.nbCheck) {
 						// We want enough sucesses before showing it (= 10 seconds) ...
-						app.debug(`Waiting for ${config.nbCheck} successes (${status.successes})`);
+						app.debug(`Waiting for ${fullConfig.nbCheck} successes (${status.successes})`);
 						newCode = TriStates.UP_NOT_READY;
-						status.message = `Stabilizing (${status.successes}/${config.nbCheck})`;
+						status.message = `Stabilizing (${status.successes}/${fullConfig.nbCheck})`;
 					} else {
 						status.message = 'Ready !';
 						newCode = TriStates.READY;
