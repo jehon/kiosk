@@ -3,7 +3,12 @@ const _ = require('lodash');
 
 // Inspired from https://gist.github.com/mudge/5830382
 
+/** @typedef { import('../server/server-logger.js').Logger } Logger */
+
 class Bus {
+	/**
+	 * @param {Logger|*} logger - where to send the logs
+	 */
 	constructor(logger = console) {
 		this.logger = logger;
 		this.events = {};
@@ -13,11 +18,12 @@ class Bus {
 	/**
 	 * Register a listener on events
 	 *
-	 * @param {string} eventName
-	 * @param {function(eventName, data) {}} cb
+	 * @param {string} eventName is the name of the event to listen to
+	 * @param {function(string): any} cb - a callback to be called when event is fired
+	 * @returns {function()} to unsubscribe from this event
 	 */
 	subscribe(eventName, cb) {
-		if (typeof(cb) != 'function') {
+		if (typeof (cb) != 'function') {
 			throw `Subscribing to ${eventName} with something that is not a function: ${cb}`;
 		}
 
@@ -36,22 +42,23 @@ class Bus {
 	}
 
 	/**
-	 * Send a notification to the system
+		* Send a notification to the system
+		*
+		* If data is specified:
+		* - the notification is related to a 'status'
+		* - status is only fired on change
+		* - status is fired on registration
 	 *
-	 * If data is specified:
-	 * - the notification is related to a 'status'
-	 * - status is only fired on change
-	 * - status is fired on registration
-	 *
-	 * @param {string} eventName: the name of the event
-	 * @param {*} data: the associated data
-	 */
+		* @param {string} eventName - the name of the event
+		* @param {*} data - the associated data
+		* @returns {Promise} fired when everybody received the message
+		*/
 	async dispatch(eventName, data) {
 		this.logger.debug(`Nofity ${eventName}`, data);
-		if (typeof(data) != 'undefined') {
+		if (typeof (data) != 'undefined') {
 			if (eventName in this.stateValues && _.isEqual(this.stateValues[eventName], data)) {
 				this.logger.debug('notify: skipping ', eventName, data);
-				return ;
+				return;
 			}
 		}
 		this.stateValues[eventName] = _.cloneDeep(data);
@@ -72,8 +79,8 @@ class Bus {
 			try {
 				// The listener is called "sync", ie. the result is sent back synchronously
 				// as a Promise. If we make promise.then, then it become async
-				if (typeof(listener) != 'function') {
-					this.logger.error(`Not a function for ${eventName}: ${typeof(listener)}`, listener);
+				if (typeof (listener) != 'function') {
+					this.logger.error(`Not a function for ${eventName}: ${typeof (listener)}`, listener);
 				} else {
 					await listener(data);
 				}
