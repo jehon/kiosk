@@ -30,7 +30,8 @@ module.exports.TriStates = TriStates;
 
 /**
  * @typedef CameraAPI
- * @property {function(Logger, object):Promise} init - tell if the camera is ready / up / down
+ * @property {function():object} defaultConfig - return the default config of the camera
+ * @property {function(object):Promise} init - configure the camera once, when up (or again if connection is lost)
  * @property {function(Logger, object):Promise<CheckResponse>} check - tell if the camera is ready / up / down
  * @property {function(Logger, object, object):void} generateFlow - generate the flow on the paramter response
  */
