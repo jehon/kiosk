@@ -1,7 +1,7 @@
 
 const nock = require('nock');
 
-const host = 'http://localhost:80';
+const host = 'localhost';
 
 const { testingConfigOverride, testingConfigRestore } = require('../../server/server-config.js');
 const cameraAPI = require('../../packages/camera/camera-server.js');
@@ -11,6 +11,10 @@ const { TriStates } = require('../../packages/camera/constants.js');
 // import spectronApp from './spectron-helper.mjs';
 
 describe(__filename, () => {
+	const nockImage = () => nock('http://localhost:88')
+		.filteringPath(_path => '/cgi-bin/CGIProxy.fcgi')
+		.get('/cgi-bin/CGIProxy.fcgi');
+
 	beforeAll(async () => {
 		testingConfigOverride({
 			camera: {
@@ -25,16 +29,15 @@ describe(__filename, () => {
 
 	it('should adapt to http conditions', async function () {
 		// Install the whole flow
-		const nockImage = () => nock(host)
-			.filteringPath(_path => '/cgi-bin/CGIProxy.fcgi')
-			.get('/cgi-bin/CGIProxy.fcgi');
 
 		{ // With success...
 			nockImage()
 				.reply(200, 'ok')
 				.persist();
 
+
 			let l = await expectBrowserEvent('.status', async () => {
+				await cameraAPI._check(); // Finish the currently running check who might not have the mock in place
 				await cameraAPI._check();
 				await cameraAPI._check();
 				await cameraAPI._check();
@@ -50,6 +53,7 @@ describe(__filename, () => {
 				.persist();
 
 			let l = await expectBrowserEvent('.status', async () => {
+				await cameraAPI._check(); // Finish the currently running check who might not have the mock in place
 				await cameraAPI._check();
 				expect(cameraAPI.getStatus().code).toBe(TriStates.DOWN);
 			});
@@ -64,6 +68,7 @@ describe(__filename, () => {
 				.persist();
 
 			let l = await expectBrowserEvent('.status', async () => {
+				await cameraAPI._check(); // Finish the currently running check who might not have the mock in place
 				await cameraAPI._check();
 				await cameraAPI._check();
 				await cameraAPI._check();

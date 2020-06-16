@@ -12,23 +12,32 @@ const { TriStates } = require('./constants.js');
 
 const { app } = require('./constants.js');
 
-const config = {
-	'cron-recheck': '*/10 * * * * *',
-	host: 'localhost',
-	port: 80,
-	username: '',
-	password: '',
-	...app.getConfig('.')
-};
+app.logger.enableDebug();
 
 const camera = (/** @type {CameraAPI} */ require('./types/foscam-r2m.js'));
+
+/**
+ * @returns {object} A configuration
+ */
+function getConfig() {
+	return {
+		'cron-recheck': '*/10 * * * * *',
+		host: 'localhost',
+		port: 80,
+		username: '',
+		password: '',
+		nbCheck: 3,
+		...camera.defaultConfig(),
+		...app.getConfig('.')
+	};
+}
 
 /**
  * @typedef Status
  * @property {string} message - user friendly message
  * @property {TriStates} code - see above
  * @property {number} successes - number of TriStates.READY received
- * @property {boolean} initialized - if the camera has been initialized or not
+ * @property {TriStates} initialized - if the camera has been initialized or not
  */
 
 /**
@@ -38,9 +47,14 @@ const defaultStatus = {
 	message: '',
 	code: TriStates.DOWN,
 	successes: 0,
-	initialized: false
+	initialized: TriStates.DOWN
 };
 const status = Object.assign({}, defaultStatus);
+
+/**
+ * @type {Promise<status>}
+ */
+let checkRunning = null;
 
 /**
  * Check if the camera is up and running
@@ -48,80 +62,82 @@ const status = Object.assign({}, defaultStatus);
  * @returns {Promise<Status>} resolve when check is done and result dispatched to the browser
  */
 async function _check() {
-	/** @type {Status} */
-	let newStatus = Object.assign({}, {
-		message: '',
-		code: TriStates.DOWN,
-		successes: status.successes,
-		initialized: status.initialized
-	});
-	return camera.check(app.logger, config)
+	if (checkRunning != null) {
+		return checkRunning;
+	}
+
+	const config = getConfig();
+	let newCode = TriStates.DOWN;
+	checkRunning = camera.check(app.logger, config)
 		.then(checkResponse => {
 			switch (checkResponse.state) {
 				case TriStates.READY:
-					if ((++newStatus.successes) < config.nbCheck) {
+					if ((++status.successes) < config.nbCheck) {
 						// We want enough sucesses before showing it (= 10 seconds) ...
-						app.debug('Waiting for ${nbCheck} successes');
-						newStatus.code = TriStates.UP_NOT_READY;
-						newStatus.message = `Stabilizing (${newStatus.successes}/${config.nbCheck})`;
-						newStatus.code = TriStates.UP_NOT_READY;
+						app.debug(`Waiting for ${config.nbCheck} successes (${status.successes})`);
+						newCode = TriStates.UP_NOT_READY;
+						status.message = `Stabilizing (${status.successes}/${config.nbCheck})`;
 					} else {
-						newStatus.message = 'Ready !';
-						newStatus.code = TriStates.READY;
+						status.message = 'Ready !';
+						newCode = TriStates.READY;
 					}
 					break;
 				case TriStates.UP_NOT_READY:
 					// Go to the "catch" phase
 					// TODO: should pop up and say: hey, we have a problem ! -> activate applic + special image
-					newStatus.code = TriStates.DOWN;
-					newStatus.message = checkResponse.message;
-					newStatus.successes = 0;
+					newCode = TriStates.DOWN;
+					status.message = checkResponse.message;
+					status.successes = 0;
 					break;
 				case TriStates.DOWN:
 					throw 'down';
 			}
-			return newStatus;
+			return newCode;
 		}, err => {
-			newStatus.code = TriStates.DOWN;
-			newStatus.successes = 0;
-			newStatus.message = 'Received network error, disabling camera:' + (err.message ? err.message : '-no message-');
+			newCode = TriStates.DOWN;
+			status.successes = 0;
+			status.message = 'Received network error, disabling camera:' + (err.message ? err.message : '-no message-');
 
-			app.debug(newStatus.message);
+			app.debug(status.message);
 			if (err.code) {
 				switch (err.code) {
 					case 'ECONNREFUSED':
 					case 'ETIMEDOUT':
-						newStatus.code = TriStates.UP_NOT_READY;
-						newStatus.message = 'Starting up...';
+						newCode = TriStates.UP_NOT_READY;
+						status.message = 'Starting up...';
 						break;
 					case 'EHOSTUNREACH':
 					default:
 						// default message is ok
-						newStatus.initialized = false;
+						status.initialized = TriStates.DOWN;
 						break;
 				}
 			}
-			throw newStatus;
-		})
-		.then(newStatus => {
-			if (newStatus.code == TriStates.READY && !newStatus.initialized) {
-				app.debug('initializing the camera');
-				return camera.init(app.logger, config)
-					.then(() => {
-						newStatus.initialized = true;
-						return newStatus;
-					});
-			}
-			return newStatus;
+			throw newCode;
 		})
 		.finally(() => {
-			if (status.code != newStatus.code) {
-				app.debug(`Going from ${status.code} to ${newStatus.code}`);
+			if (status.code != newCode) {
+				app.debug(`Going from ${status.code} to ${newCode}`);
 			}
-			Object.assign(status, newStatus);
+			status.code = newCode;
 			return app.dispatchToBrowser('.status');
 		})
-		.then(() => newStatus, () => newStatus);
+		.then((newCode) => {
+			// We do this on the shared object
+			if (status.code == TriStates.READY && status.initialized == TriStates.DOWN) {
+				status.initialized = TriStates.UP_NOT_READY;
+				app.debug('initializing the camera');
+				return camera.init(app)
+					.finally(() => {
+						status.initialized = TriStates.READY;
+						return newCode;
+					});
+			}
+			return newCode;
+		})
+		.then(() => status, () => status)
+		.finally(() => { checkRunning = null; });
+	return checkRunning;
 }
 
 module.exports._check = _check;
@@ -131,18 +147,18 @@ _check()
 	.then(() => _check())
 	.then(() => _check());
 
-app.getExpressApp().get('/camera/feed', (_req, res) => camera.generateFlow(app.logger, res, config));
+app.getExpressApp().get('/camera/feed', (_req, res) => camera.generateFlow(app.logger, res, getConfig()));
 
 // app.getExpressApp().get('/camera/frame', (_req, res) => res.send(`
 // 	<div class='full full-background-image' style='background-image: url("${config.host + config.videoFeed}?${Date.now()}")'></div>
 // `.trim()));
 
 app.subscribe('.recheck', _check);
-app.addSchedule('.recheck', config['cron-recheck']);
+app.addSchedule('.recheck', getConfig()['cron-recheck']);
 
 module.exports.getStatus = function () {
 	return {
-		...config,
+		...getConfig(),
 		frameURL: `http://localhost:${app.getConfig('server.webserver.port')}/camera/frame`,
 		...status
 	};
