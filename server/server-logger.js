@@ -111,6 +111,17 @@ class Logger {
 	isDebugEnabled() {
 		return this.streams.debug.enabled;
 	}
+
+	/**
+		* Enable the debug stream
+	 *
+		* @param {boolean} [enable] - whether to enable or not
+		* @returns {Logger} this
+		*/
+	enableDebug(enable = true) {
+		this.streams.debug.enabled = enable;
+		return this;
+	}
 }
 
 const logger = new Logger('server:logger');

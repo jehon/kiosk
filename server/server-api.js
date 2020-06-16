@@ -33,16 +33,44 @@ class ServerAPI {
 		return this.name;
 	}
 
+	/**
+	 *
+	 * @param  {...any} data - what to print
+	 * @returns {ServerAPI} this
+	 */
 	error(...data) {
 		this.logger.error(...data);
+		return this;
 	}
 
+	/**
+	 *
+	 * @param  {...any} data - what to print
+	 * @returns {ServerAPI} this
+	 */
 	info(...data) {
 		this.logger.info(...data);
+		return this;
 	}
 
+	/**
+	 *
+	 * @param  {...any} data - what to print
+	 * @returns {ServerAPI} this
+	 */
 	debug(...data) {
 		this.logger.debug(...data);
+		return this;
+	}
+
+	/**
+	 * Enable the debug stream
+	 *
+	 * @returns {ServerAPI} this
+	 */
+	enableDebug() {
+		this.logger.enableDebug();
+		return this;
 	}
 
 	/**
@@ -77,6 +105,7 @@ class ServerAPI {
 		// 		callback(username, password);
 		// 	}
 		// });
+		return this;
 	}
 
 	dispatchToBrowser(eventName) {
