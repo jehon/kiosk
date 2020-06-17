@@ -16,8 +16,8 @@ const cameraAPI = {
 		port: 88
 	}),
 
-	init: async (app) => {
-		// return createWorker(path.join(__dirname, 'foscam-r2m-worker.js'), app);
+	init: async (app, fullConfig) => {
+		return createWorker(path.join(__dirname, 'foscam-r2m-worker.js'), app, fullConfig);
 	},
 
 	/**
@@ -26,7 +26,7 @@ const cameraAPI = {
 	 * @returns {Promise<import('../constants.js').CheckResponse>} when check is successfull
 	 */
 	check: async (logger, config) => {
-		return fetch(getUrl((...args) => logger.debug(...args), config, { cmd: 'getDevInfo' }), { method: 'GET' })
+		return fetch(getUrl('health check', logger, config, { cmd: 'getDevInfo' }), { method: 'GET' })
 			.then(response => {
 				if (response.ok) {
 					return { state: TriStates.READY };
