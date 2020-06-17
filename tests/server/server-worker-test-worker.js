@@ -2,7 +2,7 @@
 const { initWorker } = require('../../server/server-worker.js');
 
 
-const { logger, config, data } = initWorker('server-worker-test');
+const { logger, data } = initWorker('server-worker-test');
 
 
 logger.debug('test log debug');
@@ -18,10 +18,9 @@ function res() {
 	if (data.exit) {
 		process.exit(data.test);
 	}
-	return true;
 }
 
-if (config.test == 1) {
+if (data.test == 1) {
 	if (data.async) {
 		setTimeout(res, 1000);
 	} else {

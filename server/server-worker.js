@@ -2,12 +2,17 @@
 const { Worker, workerData, isMainThread } = require('worker_threads');
 const loggerFactory = require('./server-logger');
 
+/**
+ * @param {string} file - the file containing the worker
+ * @param {object} app - to get some context (logger, etc...)
+ * @param {object} data - to pass to the worker (data)
+ * @returns {Promise<void>} - when the worker terminate
+ */
 module.exports.createWorker = function (file, app, data) {
 	return new Promise((resolve, reject) => {
 		const worker = new Worker(file, {
 			workerData: {
 				namespace: app.logger.namespace,
-				config: app.getConfig('.'),
 				data
 			}
 		});
@@ -26,7 +31,6 @@ module.exports.initWorker = function (scope) {
 	const logger = loggerFactory(workerData.namespace).extend(scope);
 	return {
 		logger,
-		config: workerData.config,
 		data: workerData.data
 	};
 };

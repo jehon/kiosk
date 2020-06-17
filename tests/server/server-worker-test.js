@@ -3,7 +3,6 @@ const path = require('path');
 
 const { createWorker } = require('../../server/server-worker.js');
 
-const { testingConfigOverride, testingConfigRestore } = require('../../server/server-config.js');
 const serverAPIFactory = require('../../server/server-api.js');
 
 describe(__filename, () => {
@@ -11,34 +10,31 @@ describe(__filename, () => {
 	const app = serverAPIFactory('server-worker-test');
 
 	describe('with config', function () {
-		beforeEach(() => testingConfigOverride({ 'server-worker-test': { test: 1 } }));
-		afterEach(() => testingConfigRestore());
-
 		describe('sync', function () {
 			it('should create working worker', async function () {
-				return createWorker(workerFile, app, {});
+				return createWorker(workerFile, app, { test: 1 });
 			});
 
 			it('should throw if exit with > 0', async function () {
-				expectAsync(createWorker(workerFile, app, { exit: 1 })).toBeRejectedWithError();
+				expectAsync(createWorker(workerFile, app, { test: 1, exit: 1 })).toBeRejectedWithError();
 			});
 
 			it('should throw if thrown', async function () {
-				expectAsync(createWorker(workerFile, app, { throw: true })).toBeRejectedWithError();
+				expectAsync(createWorker(workerFile, app, { test: 1, throw: true })).toBeRejectedWithError();
 			});
 		});
 
 		describe('async', function () {
 			it('should create working worker', async function () {
-				return createWorker(workerFile, app, { async: true });
+				return createWorker(workerFile, app, { test: 1, async: true });
 			});
 
 			it('should throw if exit with > 0', async function () {
-				expectAsync(createWorker(workerFile, app, { async: true, exit: 1 })).toBeRejectedWithError();
+				expectAsync(createWorker(workerFile, app, { test: 1, async: true, exit: 1 })).toBeRejectedWithError();
 			});
 
 			it('should throw if thrown', async function () {
-				expectAsync(createWorker(workerFile, app, { async: true, throw: true })).toBeRejectedWithError();
+				expectAsync(createWorker(workerFile, app, { test: 1, async: true, throw: true })).toBeRejectedWithError();
 			});
 		});
 	});

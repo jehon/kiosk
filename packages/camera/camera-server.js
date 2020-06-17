@@ -127,7 +127,7 @@ async function _check() {
 			if (status.code == TriStates.READY && status.initialized == TriStates.DOWN) {
 				status.initialized = TriStates.UP_NOT_READY;
 				app.debug('initializing the camera');
-				return camera.init(app)
+				return camera.init(app, fullConfig)
 					.finally(() => {
 						status.initialized = TriStates.READY;
 						return newCode;
