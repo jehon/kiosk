@@ -30,7 +30,7 @@
     "shuffle-array": "1.0.1",
     "toastr": "2.1.4",
     "xml2js": "0.4.23",
-    "yargs": "15.3.1"
+    "yargs": "15.4.0"
   },
   "devDependencies": {
     "@babel/cli": "7.10.4",
