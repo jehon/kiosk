@@ -45,7 +45,7 @@
     "eslint": "7.5.0",
     "eslint-plugin-jsdoc": "30.0.3",
     "eslint-plugin-cypress": "2.11.1",
-    "jasmine": "3.6.0",
+    "jasmine": "3.6.1",
     "jasmine-core": "3.6.0",
     "nock": "13.0.2",
     "spectron": "11.1.0"
