@@ -17,7 +17,7 @@
     "deepmerge": "4.2.2",
     "electron": "9.1.2",
     "express": "4.17.1",
-    "fetch-mock": "9.10.5",
+    "fetch-mock": "9.10.6",
     "fs-extra": "9.0.1",
     "js-yaml": "3.14.0",
     "lodash": "4.17.19",
