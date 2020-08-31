@@ -11,7 +11,7 @@
     "btoa": "1.2.1",
     "colors": "1.4.0",
     "cron": "1.8.2",
-    "cronstrue": "1.97.0",
+    "cronstrue": "1.99.0",
     "css-inherit": "github:jehon/css-inherit",
     "debug": "4.1.1",
     "deepmerge": "4.2.2",
