@@ -43,7 +43,7 @@
     "depcheck": "1.2.0",
     "devtron": "1.4.0",
     "eslint": "7.9.0",
-    "eslint-plugin-jsdoc": "30.4.2",
+    "eslint-plugin-jsdoc": "30.5.1",
     "eslint-plugin-cypress": "2.11.1",
     "jasmine": "3.6.1",
     "jasmine-core": "3.6.0",
