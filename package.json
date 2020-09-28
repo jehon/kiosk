@@ -44,7 +44,7 @@
     "devtron": "1.4.0",
     "eslint": "7.10.0",
     "eslint-plugin-jsdoc": "30.6.1",
-    "eslint-plugin-cypress": "2.11.1",
+    "eslint-plugin-cypress": "2.11.2",
     "jasmine": "3.6.1",
     "jasmine-core": "3.6.0",
     "nock": "13.0.4",
