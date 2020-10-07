@@ -5,7 +5,7 @@
 # Default target
 #
 #
-auto: 
+auto:
 
 #
 #
@@ -26,11 +26,13 @@ SHELL := /bin/bash
 ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 HOST   ?= kiosk
 TARGET ?= /opt/kiosk
+NODE_MOD = "$(ROOT)/node_modules/.bin"
 
 dump:
 	$(info ROOT:   $(ROOT))
 	$(info HOST:   $(HOST))
 	$(info TARGET: $(TARGET))
+	$(info PATH:   $(PATH))
 
 #
 #
@@ -61,9 +63,71 @@ endef
 
 ######################
 #
-# Runtime 
+# Runtime
 #
 ######################
+
+clean:
+	rm -fr parts tmp
+	rm -fr node_modules
+
+.PHONY: start
+start: build
+	$(NODE_MOD)/electron .
+
+.PHONY: start-dev-with-prod-config
+start-dev-with-prod-config: build
+	$(NODE_MOD)/electron . --dev-mode
+
+.PHONY: start-dev-with-test-config
+start-dev-with-test-config: build
+	$(NODE_MOD)/electron . -f tests/kiosk.yml --dev-mode
+
+.PHONY: build
+build: \
+		dependencies \
+		common.es6/bus.js \
+		common.es6/contextualize.js
+
+.PHONY: dependencies
+dependencies: node_modules/.dependencies
+node_modules/.dependencies: package.json package-lock.json
+	npm install
+	touch package-lock.json
+	touch node_modules/.dependencies
+
+common.es6/contextualize.js: common/contextualize.js
+	babel "$?" --out-dir common.es6
+
+common.es6/bus.js: common/bus.js
+	babel "$?" --out-dir common.es6
+	sed -i 's:from "lodash":from "../node_modules/lodash-es/lodash.js":' "$@"
+
+.PHONY: test
+test: test-server
+
+.PHONY: test-server
+test-server: test-server-cjs test-server-esm
+
+.PHONY: test-server-cjs
+test-server-cjs:
+	$(NODE_MOD)/jasmine --config=tests/server/jasmine.json
+
+.PHONY: test-server-esm
+test-server-esm:
+	node tests/server/jasmine-run.mjs
+
+.PHONY: lint
+lint:
+	$(NODE_MOD)/eslint .
+
+.PHONY: lint-fix
+lint-fix:
+	$(NODE_MOD)/eslint . --fix
+
+.PHONY: depcheck
+depcheck:
+	$(NODE_MOD)/depcheck
 
 #
 #
