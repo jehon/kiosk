@@ -110,9 +110,9 @@ function generateListingForTopFolder(folderConfig) {
 		...folderConfig,
 	};
 
-	if (folderConfig.folder[0] != '/') {
-		folderConfig.folder = path.join(app.getConfig('server.root'), folderConfig.folder);
-	}
+	// if (folderConfig.folder[0] != '/') {
+	// 	folderConfig.folder = path.join(app.getConfig('server.root'), folderConfig.folder);
+	// }
 
 	buildingLogger.debug(folderConfig.folder, '# 2.1 - generateListingForTopFolder: resolved options: ', folderConfig);
 	try {
@@ -171,7 +171,14 @@ async function generateListing(_data = null) {
 		return a.data.date < b.data.date ? -1 : a.data.date == b.data.date ? 0 : 1;
 	});
 
-	newSelectedPictures = newSelectedPictures.map(f => { f.url = encodeURI(f.filepath); return f; });
+	newSelectedPictures = newSelectedPictures.map(f => {
+		f.url = encodeURI(f.filepath);
+		if (f.url[0] != '/') {
+			// Relative to CWD
+			f.url = '/' + f.url;
+		}
+		return f;
+	});
 
 	selectedPictures = newSelectedPictures;
 	hasAnUpdatedList = true;
