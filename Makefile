@@ -107,7 +107,7 @@ common.es6/bus.js: common/bus.js
 test: test-server
 
 .PHONY: test-server
-test-server: test-server-cjs test-server-esm
+test-server: test-server-cjs # TODO: test-server-esm
 
 .PHONY: test-server-cjs
 test-server-cjs:

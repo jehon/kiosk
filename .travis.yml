@@ -29,5 +29,5 @@ install:
   - npm ci
 
 script:
-  - npm run test
-  - npm run lint
+  - make test
+  - make lint
