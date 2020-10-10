@@ -97,10 +97,10 @@ node_modules/.dependencies: package.json package-lock.json
 	touch node_modules/.dependencies
 
 common.es6/contextualize.js: common/contextualize.js
-	babel "$?" --out-dir common.es6
+	$(NODE_MOD)/babel "$?" --out-dir common.es6
 
 common.es6/bus.js: common/bus.js
-	babel "$?" --out-dir common.es6
+	$(NODE_MOD)/babel "$?" --out-dir common.es6
 	sed -i 's:from "lodash":from "../node_modules/lodash-es/lodash.js":' "$@"
 
 .PHONY: test
