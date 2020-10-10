@@ -5,8 +5,6 @@ const app = require('./server-api.js')('server');
 const browser = require('./server-launch-browser.js');
 const webServer = require('./server-webserver.js');
 
-const { loadServerFiles } = require('./server-packages');
-
 const devMode = app.getConfig('server.devMode');
 
 if (devMode) {
@@ -17,9 +15,25 @@ if (devMode) {
 	app.info('** Remote debugging available on port http://localhost:9223/');
 }
 
+/**
+ * @param {string} name of the package
+ */
+async function loadPackage(name) {
+	try {
+		require(`../packages/${name}/${name}-server.js`);
+	} catch(err) {
+		// TODO: transform into logger !
+		console.error(`Error loading ${name}: `, err);
+	}
+}
+
 electronApp.on('ready', () => {
 	webServer.start()
-		.then(() => loadServerFiles())
+		.then(() => loadPackage('caffeine'))
+		.then(() => loadPackage('camera'))
+		.then(() => loadPackage('clock'))
+		.then(() => loadPackage('menu'))
+		.then(() => loadPackage('photo-frame'))
 		.then(() => browser.start())
 	;
 });

@@ -22,12 +22,18 @@ let hasAnUpdatedList = false;
 let selectedPictures = [];
 const previouslySelected = [];
 
+/**
+ * @param folderConfig
+ */
 function getFilesFromFolder(folderConfig) {
 	return fs.readdirSync(folderConfig.folder)
 		.filter(file => !(file in ['.', '..']))
 		.filter(file => folderConfig.excludes.reduce((acc, val) => acc && !minimatch(file, val), true));
 }
 
+/**
+ * @param folderConfig
+ */
 function getFilesFromFolderByMime(folderConfig) {
 	return getFilesFromFolder(folderConfig)
 		.filter(f => {
@@ -39,6 +45,9 @@ function getFilesFromFolderByMime(folderConfig) {
 		});
 }
 
+/**
+ * @param folderConfig
+ */
 function getFoldersFromFolder(folderConfig) {
 	return getFilesFromFolder(folderConfig)
 		.filter(f => fs.statSync(path.join(folderConfig.folder, f)).isDirectory());
@@ -100,6 +109,9 @@ function generateListingForPath(folderConfig) {
 	return listing;
 }
 
+/**
+ * @param folderConfig
+ */
 function generateListingForTopFolder(folderConfig) {
 	buildingLogger.debug(folderConfig.folder, '# 2.0 - generateListingForTopFolder: given options: ', folderConfig);
 	folderConfig = {
@@ -131,6 +143,9 @@ function generateListingForTopFolder(folderConfig) {
 // Main entry-point
 //  -> Generate a selection
 //
+/**
+ * @param _data
+ */
 async function generateListing(_data = null) {
 	app.debug('Generate listing');
 	hasAnUpdatedList = false;
@@ -203,21 +218,19 @@ module.exports.generateListing = generateListing;
 // We check that we have a list
 const checkHasListSchedule = app.getConfig('.check-cron', '0 0/5 * * * *');
 app.debug('Programming checking for presence of listing at', checkHasListSchedule);
-app.addSchedule('.check-has-list', checkHasListSchedule);
-app.subscribe('.check-has-list', async () => {
+app.addSchedule(async () => {
 	if (selectedPictures.length == 0 || !hasAnUpdatedList) {
 		await generateListing();
 	}
-});
+}, checkHasListSchedule);
 
 // Refresh the list sometimes
 const refreshSchedule = app.getConfig('.refresh-cron', '0 0 5 * * *');
 app.debug('Programming resfresh at', refreshSchedule);
-app.addSchedule('.refresh', refreshSchedule);
-app.subscribe('.refresh', (data) => generateListing(data));
+app.addSchedule((data) => generateListing(data), refreshSchedule);
 
 // Force a first go !
-app.dispatch('.refresh');
+generateListing();
 
 module.exports.getSelectedPictures = function getSelectedPictures() {
 	return selectedPictures;

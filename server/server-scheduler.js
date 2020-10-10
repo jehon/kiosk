@@ -7,25 +7,23 @@ const loggerFactory = require('./server-logger.js');
 
 module.exports = class Scheduler {
 	logger;
-	bus;
 
-	constructor(bus) {
-		this.bus = bus;
+	constructor() {
 		this.logger = loggerFactory('server:scheduler');
 	}
 
 	/**
-	 * @param {string} eventName
+	 * @param {Function} cb callback
 	 * @param {string} cron 5/6 stars ([secs] min hours dom month dow) (if empty, make nothing [usefull for testing])
 	 * @param {number} duration in minutes
-	 * @param {*}      data to pass to the signal (will be completed)
+	 * @param {*} data to pass to the signal (will be completed)
 	 */
-	addCron(eventName, cron, duration, data) {
+	addCron(cb, cron, duration, data) {
 		if (cron == '') {
 			return () => { };
 		}
 
-		this.logger.debug(`Programming event ${eventName}: ${cronstrue.toString(cron)}`);
+		this.logger.debug(`Programming event: ${cronstrue.toString(cron)}`);
 
 		if (cron.split(' ').length == 5) {
 			// Add second's
@@ -36,7 +34,7 @@ module.exports = class Scheduler {
 			const now = new Date();
 			now.setMilliseconds(0);
 			try {
-				await this.bus.dispatch(eventName, {
+				await cb({
 					stat: {
 						start: now,
 						end: new Date(now.getTime() + duration * 60 * 1000),

@@ -10,6 +10,9 @@ const config = {
 	...app.getConfig()
 };
 
+/**
+ *
+ */
 async function wakeUp() {
 	// Handle return code and errors
 	return new Promise((resolve, reject) => {
@@ -39,6 +42,4 @@ async function wakeUp() {
 }
 
 app.debug('Programming caffeine cron\'s ');
-app.addSchedule('.wakeup', config.cron);
-
-app.subscribe('.wakeup', wakeUp);
+app.addSchedule(wakeUp, config.cron);
