@@ -1,6 +1,5 @@
 
 // Common
-const Bus = require('../common/bus');
 const contextualize = require('../common/contextualize');
 const loggerFactory = require('./server-logger');
 const Scheduler = require('./server-scheduler');
@@ -9,17 +8,14 @@ const { dispatchToBrowser, registerCredentials } = require('./server-launch-brow
 const { rootDir } = require('./server-config');
 const webServer = require('./server-webserver.js');
 
-const bus = new Bus(loggerFactory('server:bus'));
-const scheduler = new Scheduler(bus);
+const scheduler = new Scheduler();
+const electron = require('electron');
 
 module.exports = function serverAPIFactory(name) {
 	return new ServerAPI(name);
 };
 
 module.exports.rootDir = rootDir;
-module.exports.getSavedState = function getSavedState() {
-	return bus.getSavedState();
-};
 
 class ServerAPI {
 	constructor(name) {
@@ -112,16 +108,12 @@ class ServerAPI {
 		return dispatchToBrowser(this.c(eventName));
 	}
 
-	dispatch(eventName, msg) {
-		return bus.dispatch(this.c(eventName), msg);
+	handleBrowser(eventName, cb) {
+		electron.ipcMain.handle(eventName, cb);
 	}
 
-	subscribe(eventName, cb) {
-		return bus.subscribe(this.c(eventName), cb);
-	}
-
-	addSchedule(signal, cron, duration = 0, data = {}) {
-		return scheduler.addCron(this.c(signal), cron, duration, data);
+	addSchedule(cb, cron, duration = 0, data = {}) {
+		return scheduler.addCron(cb, cron, duration, data);
 	}
 
 	getChildLogger(name) {

@@ -37,20 +37,24 @@ module.exports.start = async function () {
 	const opts = {
 		autoHideMenuBar: true,
 		webPreferences: {
+			titleBarStyle: 'hiddenInset',
 			nodeIntegration: true,
-			titleBarStyle: 'hiddenInset'
+			enableRemoteModule: true,
+			// worldSafeExecuteJavaScript: false,
+			// allowRunningInsecureContent: true
 		},
-		frame: false
+		frame: false,
+		width: 1980,
+		height: 1080
+		//fullscreen: true,
+		//kiosk: true
 	};
-	opts.width = 1980;
-	opts.height = 1080;
 
 	if (devMode) {
-		true;
+		opts.width = 1000;
+		opts.height = 900;
 	} else {
 		true;
-		// opts.fullscreen = true;
-		// opts.kiosk = true; // #
 	}
 
 	win = new BrowserWindow(opts);
@@ -68,6 +72,9 @@ module.exports.start = async function () {
 	});
 };
 
+/**
+ * @param eventName
+ */
 function dispatchToBrowser(eventName) {
 	logger.debug(`Sending '${eventName}'`);
 

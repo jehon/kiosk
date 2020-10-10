@@ -2,6 +2,7 @@
 // Colors for the process logger
 
 require('colors');
+const electron = require('electron');
 
 const _ = require('lodash');
 const debugFactory = require('debug');
@@ -113,11 +114,11 @@ class Logger {
 	}
 
 	/**
-		* Enable the debug stream
+	 * Enable the debug stream
 	 *
-		* @param {boolean} [enable] - whether to enable or not
-		* @returns {Logger} this
-		*/
+	 * @param {boolean} [enable] - whether to enable or not
+	 * @returns {Logger} this
+	 */
 	enableDebug(enable = true) {
 		this.streams.debug.enabled = enable;
 		return this;
