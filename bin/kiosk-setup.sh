@@ -27,15 +27,14 @@ KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 header "Set variables"
 CFG_MIN_APT=()
 # System wide
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" wget apt-transport-https) # Required by nodejs install 
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" wget apt-transport-https) # Required by nodejs install
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" gcc g++ make) # Build of native extensions
-#CFG_MIN_APT=("${CFG_MIN_APT[@]}" ) # 
 
 # Kiosk specific
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq crudini xdotool unclutter) # System kiosk
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev) # Extension image fast ?
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils) # Package 'shares'
-#CFG_MIN_APT=("${CFG_MIN_APT[@]}" )
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" ffmpget) # Package 'camera'
 
 case "$(lsb_release -i -s)" in
 	"Debian" )
@@ -86,7 +85,7 @@ else
 fi
 
 
-# 
+#
 #
 # Enforce some folders
 #
@@ -98,10 +97,10 @@ chmod a+rwX "$KIOSK_APP/etc"
 
 #
 #
-# Checkpoint: 
+# Checkpoint:
 #  - the base system is operationnal
 #  - kiosk is already hooked into the system
-#                  
+#
 #
 
 header "Installing server dependencies"

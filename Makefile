@@ -184,8 +184,7 @@ remote-restart-dm:
 # Deploy
 #
 #
-deploy: dump
-	npm run build
+deploy: dump build
 	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
 		--exclude .vagrant \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
