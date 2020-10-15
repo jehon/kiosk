@@ -2,23 +2,43 @@
 import AppFactory from '../../client/client-api.js';
 
 const app = AppFactory('caffeine');
+const body = document.querySelector('body');
+
+/**
+ * @param {boolean} activity to be set (true if current activity)
+ */
+function setActivity(activity = true) {
+	if (activity) {
+		app.debug('Activity up');
+		body.removeAttribute('inactive');
+
+		// TODO: other hook
+		body.removeAttribute('nodebug');
+	} else {
+		app.debug('Activity down');
+		body.setAttribute('inactive', 'inactive');
+
+		// TODO: other hook
+		body.setAttribute('nodebug', 'activity');
+	}
+}
 
 // Initialize to false
-app.dispatch('.activity', false);
+setActivity(false);
 
 let eraser = false;
 
 const lastPosition = {};
 memorizePosition(new MouseEvent(''));
 
+/**
+ * @param e
+ */
 function memorizePosition(e) {
 	lastPosition.x = e.clientX;
 	lastPosition.y = e.clientY;
 	lastPosition.time = new Date();
 }
-
-// TODO: debug
-const body = document.querySelector('body');
 
 body.addEventListener('mousemove', e => {
 	const now = new Date();
@@ -33,16 +53,14 @@ body.addEventListener('mousemove', e => {
 
 	// A big movement in a short time, it's an activity
 	if (dist2 > Math.pow(50, 2)) {
-		app.debug('Activity up');
-		app.dispatch('.activity', true);
+		setActivity();
 
 		// Reprogram the 'down' activity
 		clearTimeout(eraser);
 		eraser = setTimeout(() => {
 			clearTimeout(eraser);
 			eraser = false;
-			app.debug('Activity down');
-			app.dispatch('.activity', false);
+			setActivity(false);
 		}, 5 * 1000);
 	}
 });

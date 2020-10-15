@@ -167,6 +167,13 @@ export class ClientAPI {
 		return bus.subscribe(this.c(name), cb);
 	}
 
+	subscribeToServerEvent(name, cb) {
+		require('electron').ipcRenderer.on(this.c(name), (event, message) => {
+			this.debug('Received: ', event, message);
+			cb(message);
+		});
+	}
+
 	async invokeServer(name, params) {
 		return require('electron').ipcRenderer.invoke(name, ...params);
 	}
