@@ -42,17 +42,17 @@ class Bus {
 	}
 
 	/**
-		* Send a notification to the system
-		*
-		* If data is specified:
-		* - the notification is related to a 'status'
-		* - status is only fired on change
-		* - status is fired on registration
+	 * Send a notification to the system
 	 *
-		* @param {string} eventName - the name of the event
-		* @param {*} data - the associated data
-		* @returns {Promise} fired when everybody received the message
-		*/
+	 * If data is specified:
+	 * - the notification is related to a 'status'
+	 * - status is only fired on change
+	 * - status is fired on registration
+	 *
+	 * @param {string} eventName - the name of the event
+	 * @param {*} data - the associated data
+	 * @returns {Promise} fired when everybody received the message
+	 */
 	async dispatch(eventName, data) {
 		this.logger.debug(`Nofity ${eventName}`, data);
 		if (typeof (data) != 'undefined') {

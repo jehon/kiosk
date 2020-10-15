@@ -7,16 +7,6 @@ const config = {
 	...app.getConfig()
 };
 
-app.debug('Programming config cron\'s');
-for (const l of Object.keys(config.tickers)) {
-	const f = config.tickers[l];
-	app.debug('Programming: ', l, f);
-	app.addSchedule('.ticker', f.cron, f.duration, {
-		label: l,
-		...f
-	});
-}
-
 /**
  * Resolve a promise on a certain date
  *
@@ -43,7 +33,11 @@ async function onDate(date) {
 
 // TODO: should be initiated by previous ticker on startup
 let ticker = null;
-app.subscribe('.ticker', (data) => {
+
+/**
+ * @param data
+ */
+function onTicker(data) {
 	ticker = data;
 	app.dispatchToBrowser('.ticker');
 
@@ -55,7 +49,16 @@ app.subscribe('.ticker', (data) => {
 			app.dispatchToBrowser('.ticker');
 		}
 	});
+}
 
-});
+app.debug('Programming config cron\'s');
+for (const l of Object.keys(config.tickers)) {
+	const f = config.tickers[l];
+	app.debug('Programming: ', l, f);
+	app.addSchedule(onTicker, f.cron, f.duration, {
+		label: l,
+		...f
+	});
+}
 
 module.exports.getCurrentTicker = () => ticker;

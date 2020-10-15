@@ -47,7 +47,7 @@ function waitMilliseconds(ms) {
  */
 function getUrl(subject, logger, config, data, cgi = '/cgi-bin/CGIProxy.fcgi?') {
 	const url = `http://${config.host}:${config.port}${cgi}?usr=${config.username}&pwd=${config.password}&random-no-cache=${(new Date).getTime()}&` + (new URLSearchParams(data).toString());
-	logger.debug('Using url for ${subject}: ' + url);
+	logger.debug(`Using url for ${subject}: ${url}`);
 	return url;
 }
 module.exports.getUrl = getUrl;

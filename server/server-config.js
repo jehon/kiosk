@@ -151,12 +151,12 @@ module.exports.set = function (path, val) {
 // for testing purposes
 //
 
-let configTestBackup = false;
+let configTestBackup = null;
 /**
  * @param configOverride
  */
 function testingConfigOverride(configOverride) {
-	if (configTestBackup !== false) {
+	if (configTestBackup !== null) {
 		throw 'testingConfigOverride could not be called twice, please restore config before with testingConfigRestore()';
 	}
 	configTestBackup = config;
@@ -168,11 +168,11 @@ module.exports.testingConfigOverride = testingConfigOverride;
  *
  */
 function testingConfigRestore() {
-	if (configTestBackup === false) {
+	if (configTestBackup === null) {
 		throw 'testingConfigRestore called when no backup was present. Please override first with testingConfigOverride(<config object>)';
 	}
 	config = configTestBackup;
-	configTestBackup = false;
+	configTestBackup = null;
 }
 module.exports.testingConfigRestore = testingConfigRestore;
 

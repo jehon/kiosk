@@ -52,16 +52,26 @@ app.subscribe('apps.current', (wishedApp) => {
 // Load other packages
 //
 
-require('electron').remote.require('./server/server-packages.js').getClientFiles()
-	.then(list => list.map(s => {
-		app.debug(`Loading ${s}`);
-		return import(s)
-			.then(() => app.debug(`Loading ${s} done`),
-				e => app.error(`Loading ${s} error`, e));
-	}));
-
-const devMode = require('electron').remote.require('./server/server-config.js')('server.devMode');
-if (devMode) {
-	// https://electronjs.org/devtron
-	require('devtron').install();
+/**
+ * @param {string} name of the package
+ */
+async function loadPackage(name) {
+	app.debug(`Loading ${name}`);
+	import(`../packages/${name}/${name}-client.js`)
+		.then(() => app.debug(`Loading ${name} done`),
+			e => app.error(`Loading ${name} error`, e));
 }
+
+Promise.all([
+	loadPackage('caffeine'),
+	loadPackage('camera'),
+	loadPackage('clock'),
+	loadPackage('menu'),
+	loadPackage('photo-frame')
+]);
+
+// const devMode = require('electron').remote.require('./server/server-config.js')('server.devMode');
+// if (devMode) {
+// 	// https://electronjs.org/devtron
+// 	require('devtron').install();
+// }

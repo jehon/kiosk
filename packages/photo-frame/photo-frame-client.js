@@ -9,6 +9,9 @@ let pictureIndex = 0;
 let picturesList = [];
 let updatePictureTimeout = false;
 
+/**
+ * @param i
+ */
 function next(i) {
 	let res = i + 1;
 	if (res >= picturesList.length) {
@@ -17,6 +20,9 @@ function next(i) {
 	return res;
 }
 
+/**
+ * @param i
+ */
 function prev(i) {
 	let res = i - 1;
 	if (res <= 0) {
@@ -27,6 +33,9 @@ function prev(i) {
 
 
 // Select the next picture
+/**
+ *
+ */
 function updatePicture() {
 	app.debug('Selecting next picture', pictureIndex);
 	if (updatePictureTimeout) {
@@ -42,6 +51,9 @@ function updatePicture() {
 	updatePictureTimeout = setTimeout(updatePicture, 15 * 1000);
 }
 
+/**
+ *
+ */
 function updatePictureList() {
 	app.debug('Refreshing listing');
 	picturesList = require('electron').remote.require('./packages/photo-frame/photo-frame-server.js').getSelectedPictures();
@@ -52,14 +64,13 @@ function updatePictureList() {
 }
 
 updatePictureList();
-app.subscribe('.listing', () => updatePictureList());
+app.subscribeToServerEvent('.listing', updatePictureList);
 
 class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 	carousel = false
 
 	get kioskEventListeners() {
 		return {
-			'caffeine.activity': active => this.adaptToActivity(active),
 			'.list.changed': () => this.adaptList(),
 			'.picture.changed': () => this.changePicture(),
 		};
@@ -71,7 +82,11 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 		this.shadowRoot.innerHTML = `
 		<link rel='stylesheet' type='text/css' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>
 		<style>
-			:host([inactive]) .hideOnInactive {
+			:host-context(body[inactive]) .hideOnInactive {
+				display: none;
+			}
+
+			:host-context(body[nodebug]) .debug {
 				display: none;
 			}
 
@@ -114,7 +129,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 				border: solid 2px gray;
 			}
 
-			.carousel-item img, 
+			.carousel-item img,
 			.carousel-indicators img {
 				display: block;
 				height: 100%;
@@ -187,7 +202,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			// TODO: date legend: should be clean up for not significant numbers!
 			this.carousel.content.insertAdjacentHTML('beforeend',
 				`<div class="carousel-item " data-slide-number="${i}">
-					<pre class="hideOnInactive data" >${JSON.stringify(v, null, 4)}</pre>
+					<pre class="debug data" >${JSON.stringify(v, null, 4)}</pre>
 					<img src="${v.url}">
 					<div class="hideOnInactive carousel-caption d-none d-md-block">
 						<h5>${v.data.comment}</h5>
@@ -211,10 +226,6 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			return;
 		}
 		this.carousel.mainFn(pictureIndex);
-	}
-
-	adaptToActivity(active) {
-		this.toggleAttribute('inactive', !active);
 	}
 }
 

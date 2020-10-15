@@ -153,8 +153,7 @@ app.getExpressApp().get('/camera/feed', (_req, res) => camera.generateFlow(app.l
 // 	<div class='full full-background-image' style='background-image: url("${config.host + config.videoFeed}?${Date.now()}")'></div>
 // `.trim()));
 
-app.subscribe('.recheck', _check);
-app.addSchedule('.recheck', getConfig()['cron-recheck']);
+app.addSchedule(_check, getConfig()['cron-recheck']);
 
 module.exports.getStatus = function () {
 	return {
