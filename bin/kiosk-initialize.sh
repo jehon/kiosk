@@ -14,7 +14,7 @@ set -e
 KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}" )" )"
 export KIOSK_APP
 
-# shellcheck source=./lib.sh
+# shellcheck source=/dev/null
 . "$KIOSK_APP"/bin/scripts/lib.sh
 
 header "Store configuration into environment variables"
@@ -44,8 +44,8 @@ fi
 ##    the packages are installed by kiosk-setup.sh
 ##
 
-header "Installing cron to update kiosk daily"
-ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
+# header "Installing cron to update kiosk daily"
+# ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
 
 header "Install the frontend session"
 cat > "/usr/share/xsessions/kiosk.desktop" <<EOF

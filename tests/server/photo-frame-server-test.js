@@ -6,6 +6,9 @@ const photoFrameAPI = require('../../packages/photo-frame/photo-frame-server.js'
 
 const app = serverAPIFactory('photo-frame:test');
 
+/**
+ *
+ */
 function baseConfig() {
 	return JSON.parse(JSON.stringify(app.getConfig()));
 }
@@ -16,7 +19,7 @@ describe(__filename, () => {
 	});
 
 	it('should force regenerate on request', async function () {
-		await app.dispatch('photo-frame.refresh');
+		await photoFrameAPI.generateListing();
 		expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalled();
 	});
 

@@ -5,6 +5,9 @@ const app = AppFactory('menu');
 
 // Loading all apps (sent by the server)
 app.subscribe('.apps', () => updateApps());
+/**
+ *
+ */
 function updateApps() {
 	const apps = require('electron').remote.require('./packages/menu/menu-server.js').getAppConfigs();
 	for(const appName of Object.keys(apps)) {
@@ -47,6 +50,10 @@ app
 
 document.querySelector('body').insertAdjacentHTML('beforeend', `
 <style>
+	body[inactive] > #app-menu {
+		display: none;
+	}
+
 	body > #app-menu {
 			position: absolute;
 			top: var(--generic-space);
@@ -72,11 +79,6 @@ appMenuElement.addEventListener('click', () => {
 	// Go to menu list application
 	app.debug('Going to the menu pane');
 	selectApplication(app);
-});
-
-app.subscribe('caffeine.activity', active => {
-	app.debug('Activity recieved', active);
-	appMenuElement.style.display = (active ? '' : 'none');
 });
 
 updateApps();

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e 
+set -e
 
 #
 #
@@ -15,7 +15,7 @@ fi
 
 # Go where to install it (/opt/kiosk)
 
-git clone https://github.com/jehon/kiosk.git .
+git clone https://github.com/jehon/kiosk.git
 
 cd kiosk || exit 255
 

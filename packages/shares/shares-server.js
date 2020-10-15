@@ -12,6 +12,10 @@ const mountedList = {};
 
 const sharesRoot = path.join(rootDir, 'media');
 
+/**
+ * @param name
+ * @param mountPoint
+ */
 async function mount(name, mountPoint) {
 	app.info(`Mounting ${name} with ${mountPoint}`);
 	const target = path.join(sharesRoot, name);
@@ -41,8 +45,9 @@ async function mount(name, mountPoint) {
 		});
 		app.debug(`Mounted ${name}`);
 		mount[name] = mountPoint;
-		app.dispatch('.mounted.' + name);
-		app.dispatch('.mounted.list', getMountedList());
+		// TODO
+		// app.dispatch('.mounted.' + name);
+		// app.dispatch('.mounted.list', getMountedList());
 
 		return name;
 	} catch (e) {
@@ -57,6 +62,9 @@ async function mount(name, mountPoint) {
 }
 module.exports.mount = mount;
 
+/**
+ *
+ */
 function getMountedList() {
 	return mountedList;
 }

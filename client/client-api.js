@@ -166,6 +166,17 @@ export class ClientAPI {
 		});
 		return bus.subscribe(this.c(name), cb);
 	}
+
+	subscribeToServerEvent(name, cb) {
+		require('electron').ipcRenderer.on(this.c(name), (event, message) => {
+			this.debug('Received: ', event, message);
+			cb(message);
+		});
+	}
+
+	async invokeServer(name, params) {
+		return require('electron').ipcRenderer.invoke(name, ...params);
+	}
 }
 
 export default (space) => new ClientAPI(space);
@@ -177,7 +188,7 @@ export default (space) => new ClientAPI(space);
  */
 
 /**
- * @param name
+ * @param {string} name of the application
  */
 export function getApplicationByName(name) {
 	if (!(name in apps)) {

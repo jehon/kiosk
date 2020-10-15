@@ -10,5 +10,5 @@ KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
 (
 	echo "********** Starting session kiosk ************************"
 	pushd "$KIOSK_APP" > /dev/null
-	npm run start
+	npm start
 ) 2>&1 | tee $HOME/kiosk-xsession.log

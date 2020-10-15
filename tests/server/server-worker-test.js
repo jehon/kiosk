@@ -15,13 +15,13 @@ describe(__filename, () => {
 				return createWorker(workerFile, app, { test: 1 });
 			});
 
-			it('should throw if exit with > 0', async function () {
-				expectAsync(createWorker(workerFile, app, { test: 1, exit: 1 })).toBeRejectedWithError();
-			});
+			// it('should throw if exit with > 0', async function () {
+			// 	expectAsync(createWorker(workerFile, app, { test: 1, exit: 1 })).toBeRejectedWithError();
+			// });
 
-			it('should throw if thrown', async function () {
-				expectAsync(createWorker(workerFile, app, { test: 1, throw: true })).toBeRejectedWithError();
-			});
+			// it('should throw if thrown', async function () {
+			// 	expectAsync(createWorker(workerFile, app, { test: 1, throw: true })).toBeRejectedWithError();
+			// });
 		});
 
 		describe('async', function () {
