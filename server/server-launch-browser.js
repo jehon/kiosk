@@ -5,8 +5,6 @@ const logger = require('./server-logger.js')('server:browser');
 const getConfig = require('./server-config.js');
 const devMode = getConfig('server.devMode', false);
 
-let win;
-
 const credentialsMap = new Map();
 
 if (electronApp) {
@@ -40,8 +38,6 @@ module.exports.start = async function () {
 			titleBarStyle: 'hiddenInset',
 			nodeIntegration: true,
 			enableRemoteModule: true,
-			// worldSafeExecuteJavaScript: false,
-			// allowRunningInsecureContent: true
 		},
 		frame: false,
 		width: 1980,
@@ -57,7 +53,7 @@ module.exports.start = async function () {
 		true;
 	}
 
-	win = new BrowserWindow(opts);
+	const win = new BrowserWindow(opts);
 	// win.loadFile('client/index.html');
 	const url = `http://localhost:${getConfig('server.webserver.port')}/client/index.html`;
 	logger.debug(`Loading url: ${url}`);
@@ -66,10 +62,6 @@ module.exports.start = async function () {
 	if (devMode) {
 		win.webContents.openDevTools();
 	}
-
-	win.on('closed', () => {
-		win = null;
-	});
 };
 
 /**
@@ -77,9 +69,6 @@ module.exports.start = async function () {
  */
 function dispatchToBrowser(eventName) {
 	logger.debug(`Sending '${eventName}'`);
-
-	if (win) {
-		win.webContents.send(eventName);
-	}
+	BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName));
 }
 module.exports.dispatchToBrowser = dispatchToBrowser;
