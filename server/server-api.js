@@ -3,14 +3,12 @@
 const contextualize = require('../common/contextualize');
 const loggerFactory = require('./server-logger');
 const getConfig = require('./server-config');
-const { dispatchToBrowser, registerCredentials } = require('./server-launch-browser');
+const { dispatchToBrowser, registerCredentials, registerFunction } = require('./server-electron');
 const webServer = require('./server-webserver.js');
 
 // https://www.npmjs.com/package/cron
 const CronJob = require('cron');
 const cronstrue = require('cronstrue');
-
-const electron = require('electron');
 
 module.exports = function serverAPIFactory(name) {
 	return new ServerAPI(name);
@@ -108,7 +106,7 @@ class ServerAPI {
 	}
 
 	handleBrowser(eventName, cb) {
-		electron.ipcMain.handle(eventName, cb);
+		registerFunction(eventName, cb);
 	}
 
 	/**
