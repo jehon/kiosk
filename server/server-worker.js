@@ -1,6 +1,6 @@
 
 const { Worker, workerData, isMainThread } = require('worker_threads');
-const loggerFactory = require('./server-logger');
+const serverAPIFactory = require('./server-api');
 
 /**
  * @param {string} file - the file containing the worker
@@ -12,7 +12,8 @@ module.exports.createWorker = function (file, app, data) {
 	return new Promise((resolve, reject) => {
 		const worker = new Worker(file, {
 			workerData: {
-				namespace: app.logger.namespace,
+				namespace: app.name,
+				loggerNamespace: app.loggerNamespace,
 				data
 			}
 		});
@@ -28,9 +29,9 @@ module.exports.createWorker = function (file, app, data) {
 };
 
 module.exports.initWorker = function (scope) {
-	const logger = loggerFactory(workerData.namespace).extend(scope);
+	const app = serverAPIFactory(workerData.namespace, workerData.loggerNamespace).extend(scope);
 	return {
-		logger,
+		app,
 		data: workerData.data
 	};
 };

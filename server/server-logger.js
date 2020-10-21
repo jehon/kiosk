@@ -2,7 +2,6 @@
 // Colors for the process logger
 
 require('colors');
-const electron = require('electron');
 
 const _ = require('lodash');
 const debugFactory = require('debug');
