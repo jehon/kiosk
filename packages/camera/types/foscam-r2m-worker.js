@@ -2,7 +2,7 @@
 const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
 // const xml2js = require('xml2js').parseString;
 
-const { initWorker, isMainThread } = require('../../../server/server-worker.js');
+const { startWorker } = require('../../../server/server-worker.js');
 
 
 /** @typedef {import('../camera-server.js').Logger} Logger */
@@ -53,17 +53,17 @@ function getUrl(subject, logger, config, data, cgi = '/cgi-bin/CGIProxy.fcgi?') 
 module.exports.getUrl = getUrl;
 
 /**
- * @param {Logger} logger - where to send the logs
+ * @param {*} app - where to send the logs
  * @param {object} config - the initial config
  * @returns {Promise} resolve when configure is done
  */
-async function configure(logger, config) {
+async function configure(app, config) {
 	/** @type {Promise<*>} */
 	let p = Promise.resolve();
 
 	const now = new Date();
 	p = p
-		.then(() => fetch(getUrl('setting time', logger, config, {
+		.then(() => fetch(getUrl('setting time', app, config, {
 			cmd: 'setSystemTime',
 			timeSource: 1,
 			year: now.getFullYear(),
@@ -94,7 +94,7 @@ async function configure(logger, config) {
 
 	if (config.position) {
 		p = p
-			.then(() => fetch(getUrl('reset position', logger, config, {
+			.then(() => fetch(getUrl('reset position', app, config, {
 				cmd: 'ptzReset'
 			})))
 			.then(waitMilliseconds(5000));
@@ -102,11 +102,11 @@ async function configure(logger, config) {
 		const move = (field, command) => {
 			if (config.position[field]) {
 				p = p
-					.then(() => fetch(getUrl(`moving ${field}`, logger, config, {
+					.then(() => fetch(getUrl(`moving ${field}`, app, config, {
 						cmd: command
 					})))
 					.then(waitMilliseconds(config.position[field]))
-					.then(() => fetch(getUrl(`stop mouvement ${field}`, logger, config, {
+					.then(() => fetch(getUrl(`stop mouvement ${field}`, app, config, {
 						cmd: 'ptzStopRun'
 					})));
 			}
@@ -121,7 +121,4 @@ async function configure(logger, config) {
 	return p;
 }
 
-if (!isMainThread) {
-	const { logger, data } = initWorker('foscam-r2m-worker');
-	configure(logger, data);
-}
+startWorker('foscam-r2m-worker', (app, data) => configure(app, data));
