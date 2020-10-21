@@ -2,13 +2,15 @@
 // Common
 const contextualize = require('../common/contextualize');
 const loggerFactory = require('./server-logger');
-const Scheduler = require('./server-scheduler');
 const getConfig = require('./server-config');
 const { dispatchToBrowser, registerCredentials } = require('./server-launch-browser');
 const { rootDir } = require('./server-config');
 const webServer = require('./server-webserver.js');
 
-const scheduler = new Scheduler();
+// https://www.npmjs.com/package/cron
+const CronJob = require('cron');
+const cronstrue = require('cronstrue');
+
 const electron = require('electron');
 
 module.exports = function serverAPIFactory(name) {
@@ -112,8 +114,42 @@ class ServerAPI {
 		electron.ipcMain.handle(eventName, cb);
 	}
 
+	/**
+	 * @param {Function} cb callback
+	 * @param {string} cron 5/6 stars ([secs] min hours dom month dow) (if empty, make nothing [usefull for testing])
+	 * @param {number} duration in minutes
+	 * @param {*} data to pass to the signal (will be completed)
+	 * @returns {Function} stop to halt the cron
+	 */
 	addSchedule(cb, cron, duration = 0, data = {}) {
-		return scheduler.addCron(cb, cron, duration, data);
+		if (cron == '') {
+			return () => { };
+		}
+
+		this.debug(`Programming event: ${cronstrue.toString(cron)}`);
+
+		if (cron.split(' ').length == 5) {
+			// Add second's
+			cron = '0 ' + cron;
+		}
+
+		const job = new CronJob.CronJob(cron, async () => {
+			const now = new Date();
+			now.setMilliseconds(0);
+			try {
+				await cb({
+					stat: {
+						start: now,
+						end: new Date(now.getTime() + duration * 60 * 1000),
+						duration // minutes
+					}, ...data
+				});
+			} catch (e) {
+				this.error('notifying ${eventName} gave an error: ', e);
+			}
+		});
+		job.start();
+		return () => job.stop();
 	}
 
 	getChildLogger(name) {
