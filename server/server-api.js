@@ -4,7 +4,6 @@ const contextualize = require('../common/contextualize');
 const loggerFactory = require('./server-logger');
 const getConfig = require('./server-config');
 const { dispatchToBrowser, registerCredentials, registerFunction } = require('./server-electron');
-const webServer = require('./server-webserver.js');
 
 // https://www.npmjs.com/package/cron
 const CronJob = require('cron');
@@ -15,9 +14,9 @@ module.exports = function serverAPIFactory(name) {
 };
 
 class ServerAPI {
-	constructor(name) {
+	constructor(name, loggerScope = '') {
 		this.name = name;
-		this.logger = loggerFactory(this.name + ':server');
+		this.logger = loggerFactory(this.name + ( loggerScope ? ':' + loggerScope : '') + ':server');
 		this.c = contextualize(this.name);
 		this.debug('Registering app', this.getName(), this);
 	}
@@ -147,12 +146,8 @@ class ServerAPI {
 		return () => job.stop();
 	}
 
-	getChildLogger(name) {
-		return this.logger.extend(name);
-	}
-
-	getExpressApp() {
-		return webServer.getExpressApp();
+	extend(subLoggerName) {
+		return new ServerAPI(this.name, subLoggerName);
 	}
 }
 module.exports.ServerAPI = ServerAPI;

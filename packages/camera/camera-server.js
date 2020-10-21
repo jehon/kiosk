@@ -12,6 +12,8 @@ const { TriStates } = require('./constants.js');
 
 const { app } = require('./constants.js');
 
+const expressApp = require('../../server/server-webserver.js').getExpressApp();
+
 app.logger.enableDebug();
 
 const camera = (/** @type {CameraAPI} */ require('./types/foscam-r2m.js'));
@@ -147,11 +149,7 @@ _check()
 	.then(() => _check())
 	.then(() => _check());
 
-app.getExpressApp().get('/camera/feed', (_req, res) => camera.generateFlow(app.logger, res, getConfig()));
-
-// app.getExpressApp().get('/camera/frame', (_req, res) => res.send(`
-// 	<div class='full full-background-image' style='background-image: url("${config.host + config.videoFeed}?${Date.now()}")'></div>
-// `.trim()));
+expressApp.get('/camera/feed', (_req, res) => camera.generateFlow(app.logger, res, getConfig()));
 
 app.addSchedule(_check, getConfig()['cron-recheck']);
 

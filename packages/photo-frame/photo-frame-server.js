@@ -15,7 +15,7 @@ const exifReaderLimiter = pLimitFactory(1);
 const serverAPIFactory = require('../../server/server-api.js');
 const app = serverAPIFactory('photo-frame');
 
-const buildingLogger = app.getChildLogger('building');
+const buildingLogger = app.extend('building');
 
 // Historical files, to avoid taking twice the same folder
 let hasAnUpdatedList = false;
