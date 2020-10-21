@@ -9,15 +9,16 @@ const { dispatchToBrowser, registerCredentials, registerFunction } = require('./
 const CronJob = require('cron');
 const cronstrue = require('cronstrue');
 
-module.exports = function serverAPIFactory(name) {
-	return new ServerAPI(name);
+module.exports = function serverAPIFactory(name, loggerNamespace) {
+	return new ServerAPI(name, loggerNamespace);
 };
 
 class ServerAPI {
-	constructor(name, loggerScope = '') {
+	constructor(name, loggerNamespace = '') {
 		this.name = name;
-		this.logger = loggerFactory(this.name + ( loggerScope ? ':' + loggerScope : '') + ':server');
 		this.c = contextualize(this.name);
+		this.loggerNamespace = this.c(loggerNamespace);
+		this.logger = loggerFactory(this.loggerNamespace + '.server');
 		this.debug('Registering app', this.getName(), this);
 	}
 
@@ -147,7 +148,7 @@ class ServerAPI {
 	}
 
 	extend(subLoggerName) {
-		return new ServerAPI(this.name, subLoggerName);
+		return new ServerAPI(this.name, '.' + subLoggerName);
 	}
 }
 module.exports.ServerAPI = ServerAPI;
