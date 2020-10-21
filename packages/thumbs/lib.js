@@ -5,7 +5,7 @@ const { promisify } = require('util');
 
 const mime = require('mime-types');
 
-const { rootDir } = require('../../server/server-api.js');
+const { rootDir } = require('../../server/server-config');
 
 module.exports.getCurrentPath = function getCurrentPath(req, absolute = true) {
 	const dir = decodeURI(req.originalUrl).split('?')[0];
