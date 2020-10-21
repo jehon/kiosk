@@ -28,12 +28,11 @@ module.exports.createWorker = function (file, app, data) {
 	});
 };
 
-module.exports.initWorker = function (scope) {
+module.exports.startWorker = function (scope, cb) {
+	if (isMainThread) {
+		// We are not the worker
+		return;
+	}
 	const app = serverAPIFactory(workerData.namespace, workerData.loggerNamespace).extend(scope);
-	return {
-		app,
-		data: workerData.data
-	};
+	cb(app, workerData.data);
 };
-
-module.exports.isMainThread = isMainThread;
