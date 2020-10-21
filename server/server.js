@@ -1,9 +1,9 @@
 
 const { app: electronApp } = require('electron');
-const app = require('./server-api.js')('server');
+const app = require('./server-api')('server');
 
-const browser = require('./server-launch-browser.js');
-const webServer = require('./server-webserver.js');
+const browser = require('./server-electron');
+const webServer = require('./server-webserver');
 
 const devMode = app.getConfig('server.devMode');
 

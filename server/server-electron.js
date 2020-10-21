@@ -1,5 +1,6 @@
 
 const { app: electronApp, BrowserWindow } = require('electron');
+const electron = require('electron');
 
 const logger = require('./server-logger.js')('server:browser');
 const getConfig = require('./server-config.js');
@@ -8,7 +9,7 @@ const devMode = getConfig('server.devMode', false);
 const credentialsMap = new Map();
 
 if (electronApp) {
-	electronApp.on('login', (event, webContents, details, authInfo, callback) => {
+	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
 
 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
 		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
@@ -65,10 +66,19 @@ module.exports.start = async function () {
 };
 
 /**
- * @param eventName
+ * @param {string} eventName to be sent
  */
 function dispatchToBrowser(eventName) {
 	logger.debug(`Sending '${eventName}'`);
 	BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName));
 }
 module.exports.dispatchToBrowser = dispatchToBrowser;
+
+/**
+ * @param eventName
+ * @param cb
+ */
+function registerFunction(eventName, cb) {
+	electron.ipcMain.handle(eventName, cb);
+}
+module.exports.registerFunction = registerFunction;
