@@ -1,14 +1,15 @@
 
 const express = require('express');
-const app = express();
+const expressApp = express();
 
-const getConfig = require('./server-config.js');
-const logger = require('./server-logger.js')('server:webserver');
+const getConfig = require('./server-config');
+const app = require('./server-api')('server:webserver');
+
 let serverListener = null;
 
 // TODO: restrict the static to exclude some files!
-app.use('/media', express.static('/media'));
-app.use(express.static('.'));
+expressApp.use('/media', express.static('/media'));
+expressApp.use(express.static('.'));
 
 /**
  * @param {number} [port] where to listen
@@ -18,12 +19,12 @@ async function start(port = getConfig('server.webserver.port', 0)) {
 	return new Promise(resolve => {
 		if (serverListener) {
 			const realPort = getPort();
-			logger.debug(`It was already started on ${realPort}`);
+			app.debug(`It was already started on ${realPort}`);
 			resolve(realPort);
 		}
-		serverListener = app.listen(port, () => {
+		serverListener = expressApp.listen(port, () => {
 			const realPort = getPort();
-			logger.debug(`Listening on port ${realPort}!`);
+			app.debug(`Listening on port ${realPort}!`);
 			getConfig.set('server.webserver.port', realPort);
 			resolve(realPort);
 		});
@@ -42,7 +43,7 @@ function getPort() {
  */
 function stop() {
 	if (!serverListener) {
-		logger.debug('Webserver was not started');
+		app.debug('Webserver was not started');
 		return;
 	}
 	serverListener.close();
@@ -53,5 +54,5 @@ module.exports = {
 	start,
 	stop,
 	getPort,
-	getExpressApp: () => app
+	getExpressApp: () => expressApp
 };
