@@ -1,11 +1,13 @@
 ---
-server:
+core:
   loggers:
-    - "server:logger"
-    - "server:config"
-    - "client:global"
-#    - "client:chooser"
-#    - "client:bus"
+    - kiosk:loggers
+    - kiosk:core:server
+    # - kiosk:core:server:config
+    # - kiosk:core:server:gui
+    - kiosk:clock:server
+    - kiosk:menu:server
+server:
   path:
     var: /tmp/
 
@@ -40,4 +42,4 @@ menu:
     priority: 5100
     url: "https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083"
     icon: "https://www.buienalarm.be/favicon.ico"
-    label: "Buien Alarm"  
+    label: "Buien Alarm"

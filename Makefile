@@ -59,6 +59,8 @@ define git-files
 	$(shell git ls-files --cached --modified --others --full-name "$(ROOT)/$(1)" )
 endef
 
+setup:
+	sudo apt install xdotool exiv2
 
 
 ######################
@@ -81,13 +83,17 @@ start-dev-with-prod-config: build
 
 .PHONY: start-dev-with-test-config
 start-dev-with-test-config: build
-	$(NODE_MOD)/electron . -f tests/kiosk.yml --dev-mode
+	DEBUG="kiosk:loggers" $(NODE_MOD)/electron . -f tests/kiosk.yml --dev-mode
+
+.PHONY: start-dev-with-test-config-brk
+start-dev-with-test-config-brk: build
+	$(NODE_MOD)/electron --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode
+
 
 .PHONY: build
 build: \
 		dependencies \
-		common.es6/bus.js \
-		common.es6/contextualize.js
+		# common.es6/contextualize.js
 
 .PHONY: dependencies
 dependencies: node_modules/.dependencies
@@ -96,26 +102,15 @@ node_modules/.dependencies: package.json package-lock.json
 	touch package-lock.json
 	touch node_modules/.dependencies
 
-common.es6/contextualize.js: common/contextualize.js
-	$(NODE_MOD)/babel "$?" --out-dir common.es6
-
-common.es6/bus.js: common/bus.js
-	$(NODE_MOD)/babel "$?" --out-dir common.es6
-	sed -i 's:from "lodash":from "../node_modules/lodash-es/lodash.js":' "$@"
+# common.es6/contextualize.js: common/contextualize.js
+# 	$(NODE_MOD)/babel "$?" --out-dir common.es6
 
 .PHONY: test
 test: test-server
 
 .PHONY: test-server
-test-server: test-server-cjs # TODO: test-server-esm
-
-.PHONY: test-server-cjs
-test-server-cjs:
+test-server:
 	$(NODE_MOD)/jasmine --config=tests/server/jasmine.json
-
-.PHONY: test-server-esm
-test-server-esm:
-	node tests/server/jasmine-run.mjs
 
 .PHONY: lint
 lint:

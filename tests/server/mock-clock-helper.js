@@ -1,3 +1,4 @@
+
 beforeAll(() => {
 	// Mocking the time
 	const mockDate = new Date(2019, 1, 1, 12, 0, 0);

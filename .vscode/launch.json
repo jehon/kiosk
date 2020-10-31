@@ -9,17 +9,25 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "runtimeExecutable": "jh-wsl-profile.sh",
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
       "args": [
+        "${workspaceFolder}/node_modules/.bin/electron",
         ".",
         "-f",
         "tests/kiosk.yml",
         "--dev-mode"
       ],
       "outputCapture": "std"
+    },
+    {
+      "name": "Electron: Main attach",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "timeout": 30000
     },
     // {
     //   "name": "Electron: Renderer",
