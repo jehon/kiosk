@@ -1,5 +1,0 @@
-{
-  "api": 1,
-  "server": "menu-server.js",
-  "client": "menu-client.js"
-}

@@ -6,7 +6,7 @@ const app = clientAPIFactory('client');
 
 /* global toastr */
 /* configure the toastr */
-toastr.options.timeOut = 10*1000;
+toastr.options.timeOut = 10 * 1000;
 
 //
 // Main initialization of gui
@@ -39,7 +39,7 @@ app.subscribe('apps.current', (wishedApp) => {
 
 			mainAppElement.innerHTML = '';
 			const me = wishedApp.mainElement;
-			if (typeof(me) == 'function') {
+			if (typeof (me) == 'function') {
 				me(mainAppElement);
 			} else {
 				mainAppElement.appendChild(me);
