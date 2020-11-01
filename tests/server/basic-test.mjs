@@ -1,5 +1,7 @@
 
-describe(__filename, () => {
+import { fn } from './at-helper.mjs';
+
+describe(fn(import.meta.url), () => {
 	it('should be true', () => {
 		expect(true).toBeTruthy();
 	});

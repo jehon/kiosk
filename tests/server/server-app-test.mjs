@@ -1,19 +1,17 @@
 
-describe(__filename, () => {
-	let api;
-	beforeAll(async function () {
-		api = await import('../../server/server-app.mjs');
-	});
+import serverAppFactory from '../../server/server-app.mjs';
+import { fn } from './at-helper.mjs';
 
+describe(fn(import.meta.url), () => {
 	it('should build', function () {
-		const app = api.default('test');
+		const app = serverAppFactory('test');
 		expect(app.name).toBe('test');
 		expect(app.streams.log.namespace).toBe('kiosk:test:server*');
 		expect(app.streams.debug.namespace).toBe('kiosk:test:server');
 	});
 
 	it('should extend', function () {
-		const appMain = api.default('test');
+		const appMain = serverAppFactory('test');
 		const app = appMain.extend('child');
 		expect(app.name).toBe('test');
 		expect(app.streams.log.namespace).toBe('kiosk:test:server:child*');
@@ -27,7 +25,7 @@ describe(__filename, () => {
 
 	it('should handle cron with 6 elements', function () {
 		let i = 0;
-		const app = api.default('test');
+		const app = serverAppFactory('test');
 
 		jasmine.clock().withMock(function () {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
@@ -49,7 +47,7 @@ describe(__filename, () => {
 
 	it('should handle cron with 5 elements', function () {
 		let i = 0;
-		const app = api.default('test');
+		const app = serverAppFactory('test');
 
 		jasmine.clock().withMock(function () {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
@@ -71,7 +69,7 @@ describe(__filename, () => {
 
 	it('should handle cron with past duration', function () {
 		let i = 0;
-		const app = api.default('test');
+		const app = serverAppFactory('test');
 
 		jasmine.clock().withMock(function () {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
@@ -89,7 +87,7 @@ describe(__filename, () => {
 
 	it('should handle cron with duration', function () {
 		let i = 0;
-		const app = api.default('test');
+		const app = serverAppFactory('test');
 
 		jasmine.clock().withMock(function () {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
@@ -107,13 +105,13 @@ describe(__filename, () => {
 
 
 	it('should handle config', function () {
-		const app = api.default('server');
+		const app = serverAppFactory('server');
 		expect(app.getConfig('server.root')).not.toBeNull();
 		expect(app.getConfig('.root')).not.toBeNull();
 	});
 
 	it('should not throw', function () {
-		const app = api.default('test');
+		const app = serverAppFactory('test');
 
 		app.setState({});
 		app.setState({ a: 1 });
