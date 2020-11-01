@@ -29,31 +29,82 @@ describe(__filename, () => {
 		let i = 0;
 		const app = api.default('test');
 
-		let cancelCron = app.cron(() => i++, '* * * * * *', 0, 2);
+		jasmine.clock().withMock(function () {
+			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
-		jasmine.clock().tick(2000);
-		expect(i).toBeGreaterThan(0);
-		cancelCron();
+			// Every seconds
+			let cancelCron = app.cron(() => i++, '* * * * * *', 0, 2);
 
-		i = 0;
-		jasmine.clock().tick(2000);
-		expect(i).toBe(0);
+			jasmine.clock().tick(2000 + 1);
+			expect(i).toBe(2);
+			cancelCron();
+
+			i = 0;
+			jasmine.clock().tick(2000 + 1);
+			expect(i).toBe(0);
+
+		});
+
 	});
 
 	it('should handle cron with 5 elements', function () {
 		let i = 0;
 		const app = api.default('test');
 
-		let cancelCron = app.cron(() => i++, '* * * * * *', 0, 2);
+		jasmine.clock().withMock(function () {
+			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
-		jasmine.clock().tick(2 * 60 * 1000);
-		expect(i).toBeGreaterThan(0);
-		cancelCron();
+			// Without the first element (seconds), seconds are taken as "0" i.e. every minute
+			let cancelCron = app.cron(() => i++, '* * * * *', 0, 2);
 
-		i = 0;
-		jasmine.clock().tick(2000);
-		expect(i).toBe(0);
+			jasmine.clock().tick(2 * 60 * 1000 + 1);
+			expect(i).toBe(2);
+			cancelCron();
+
+			i = 0;
+			jasmine.clock().tick(2000 + 1);
+			expect(i).toBe(0);
+
+		});
+
 	});
+
+	it('should handle cron with past duration', function () {
+		let i = 0;
+		const app = api.default('test');
+
+		jasmine.clock().withMock(function () {
+			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
+
+			// At 5:00, for 2 hours
+			let cancelCron = app.cron(() => i++, '0 5 * * *', 2 * 60, 2);
+
+			// It should not have fired
+
+			expect(i).toBe(0);
+			cancelCron();
+		});
+
+	});
+
+	it('should handle cron with duration', function () {
+		let i = 0;
+		const app = api.default('test');
+
+		jasmine.clock().withMock(function () {
+			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
+
+			// At 11:00, for 2 hours
+			let cancelCron = app.cron(() => i++, '0 11 * * *', 2 * 60, 2);
+
+			// It should have fired
+
+			expect(i).toBe(1);
+			cancelCron();
+		});
+
+	});
+
 
 	it('should handle config', function () {
 		const app = api.default('server');
