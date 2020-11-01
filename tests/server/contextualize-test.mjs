@@ -1,18 +1,12 @@
 
-// let contextualize = require('../../common/contextualize.js');
-// const { ctxForFunction } = contextualize;
+import ctxFactory from '../../common/contextualize.mjs';
 
+import { fn } from './at-helper.mjs';
 
-
-describe(__filename, () => {
-	let api;
-
-	beforeAll(async function() {
-		api = await import('../../common/contextualize.js');
-	});
+describe(fn(import.meta.url), () => {
 
 	it('should contextualize relative keys', () => {
-		const ctx = api.default('test');
+		const ctx = ctxFactory('test');
 		expect(ctx('.brol')).toBe('test.brol');
 		expect(ctx('brol')).toBe('brol');
 
