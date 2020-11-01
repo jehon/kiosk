@@ -1,9 +1,16 @@
 
 import serverAppFactory from '../../server/server-app.mjs';
 
+/**
+ * @typedef { import('../../server/server-app.mjs').ServerApp } ServerApp
+ */
+
+/**
+ * @type {ServerApp}
+ */
 const app = serverAppFactory('menu');
 
-/** @typedef { import('../../server/server-app.mjs').ServerApp } ServerApp */
+export default app;
 
 /**
  * Initialize the application
@@ -17,7 +24,5 @@ export function init() {
 	app.setState(appConfigs);
 	return app;
 }
-
-export default app;
 
 init();

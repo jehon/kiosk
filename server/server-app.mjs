@@ -200,7 +200,7 @@ export class ServerApp {
 		 *
 		 * @param {Date} when the start of the ticker (could be now)
 		 */
-		const onCron = async function (when = new Date()) {
+		const onCron = async (when = new Date()) => {
 			const now = new Date();
 			now.setMilliseconds(0);
 			try {
@@ -212,7 +212,7 @@ export class ServerApp {
 					}, ...data
 				});
 			} catch (e) {
-				this.error('notifying ${eventName} gave an error: ', e);
+				this.error(`notifying on ${cron} gave an error: `, e);
 			}
 		};
 
