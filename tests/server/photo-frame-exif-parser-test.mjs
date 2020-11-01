@@ -1,7 +1,9 @@
 
-const exifParser = require('../../packages/photo-frame/exif-parser.js');
+import exifParser from '../../packages/photo-frame/exif-parser.mjs';
 
-describe(__filename, () => {
+import { fn } from './at-helper.mjs';
+
+describe(fn(import.meta.url), () => {
 	it('should parse file infos on f1', async () => {
 		const data = await exifParser('tests/server/data/photo-frame/f1/i1.png');
 		expect(data['comment']).not.toBeUndefined();

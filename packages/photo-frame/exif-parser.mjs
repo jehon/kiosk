@@ -1,5 +1,5 @@
 
-const { spawnSync } = require('child_process');
+import { spawnSync } from 'child_process';
 
 const translation = {
 	'Exif.Photo.UserComment': 'comment',
@@ -8,14 +8,15 @@ const translation = {
 };
 
 /**
- * @param {...any} params
+ * @param {...any} params of the exiv run
+ * @returns {string} the output
  */
 function runExiv(...params) {
 	//
 	// Error here ? check exiv is installed :-)
 	//
 	let processResult = spawnSync('exiv2', params);
-	switch(processResult.status) {
+	switch (processResult.status) {
 		case 0:   // ok, continue
 			break;
 		case 1:   // The file contains data of an unknown image type
@@ -25,7 +26,7 @@ function runExiv(...params) {
 			return '';
 		default:
 			throw new Error('\n\nrunExiv process: ' + processResult.status + ' with [ ' + params.join(' , ') + ' ] => '
-			+ (processResult.stderr ? processResult.stderr.toString() : 'no error message'));
+				+ (processResult.stderr ? processResult.stderr.toString() : 'no error message'));
 	}
 	if (processResult.stdout != null) {
 		return processResult.stdout.toString();
@@ -35,9 +36,10 @@ function runExiv(...params) {
 
 // TODO: use exiftool (more easy to use)
 /**
- * @param filePath
+ * @param {string} filePath of the image
+ * @returns {object} the parsed informations
  */
-async function exivReadAll(filePath) {
+export default async function exivReadAll(filePath) {
 	const data = runExiv('-g', 'Exif.*', filePath);
 	const result = {
 		'comment': '',
@@ -69,5 +71,3 @@ async function exivReadAll(filePath) {
 	});
 	return result;
 }
-
-module.exports = exivReadAll;
