@@ -46,18 +46,6 @@ resetConfig()
 	.then(() => whenReady())
 	.then(() => {
 		/**
-		 * @param {string} name of the package
-		 */
-		async function loadPackageCJS(name) {
-			try {
-				require(`../packages/${name}/${name}-server.js`);
-			} catch (err) {
-				// TODO: transform into logger !
-				app.error(`Error loading ${name}: `, err);
-			}
-		}
-
-		/**
 		 * @param name
 		 */
 		async function loadPackage(name) {
@@ -72,11 +60,11 @@ resetConfig()
 
 		// // webServer.start()
 		return Promise.resolve()
-			// 	.then(() => loadPackageCJS('caffeine'))
-			// 	.then(() => loadPackageCJS('camera'))
-			.then(() => loadPackage('clock'))
 			.then(() => loadPackage('menu'))
-			// 	.then(() => loadPackageCJS('photo-frame'))
+			.then(() => loadPackage('caffeine'))
+			.then(() => loadPackage('clock'))
+			// 	.then(() => loadPackage('camera'))
+			// 	.then(() => loadPackage('photo-frame'))
 			;
 	})
 	.then(() =>

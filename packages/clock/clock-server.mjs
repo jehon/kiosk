@@ -1,5 +1,13 @@
 
 import serverAppFactory from '../../server/server-app.mjs';
+
+/**
+ * @typedef { import('../../server/server-app.mjs').ServerApp } ServerApp
+ */
+
+/**
+ * @type {ServerApp}
+ */
 const app = serverAppFactory('clock');
 
 export default app;
@@ -53,7 +61,9 @@ function onTicker(data) {
 const registered = [];
 
 /**
+ * Initialize the package
  *
+ * @returns {ServerApp} the app
  */
 export function init() {
 	app.setState(status);
@@ -77,6 +87,7 @@ export function init() {
 			...aTickerConfig
 		}));
 	}
+	return app;
 }
 
 init();

@@ -30,7 +30,7 @@ export function whenReady() {
  */
 export async function start(serverApp) {
 	const app = serverApp.extend('gui');
-	const devMode = app.getConfig('.devMode');
+	const devMode = app.getConfig('server.devMode');
 
 	if (devMode) {
 		// https://electronjs.org/docs/api/chrome-command-line-switches
@@ -93,6 +93,12 @@ export async function start(serverApp) {
 		win.webContents.openDevTools();
 	}
 
+	win.on('did-finish-load', function () {
+		historySent.forEach((data, eventName) => {
+			win.webContents.send(eventName, data);
+		});
+	});
+
 	// Quit when all windows are closed.
 	electronApp.on('window-all-closed', () => electronApp.quit());
 
@@ -115,12 +121,16 @@ export async function start(serverApp) {
 	});
 }
 
+const historySent = new Map();
+
 /**
  * @param {string} eventName to be sent
+ * @param {object} data to be sent
  */
-export function dispatchToBrowser(eventName) {
+export function dispatchToBrowser(eventName, data) {
+	historySent.set(eventName, data);
 	if (electronApp) {
-		BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName));
+		BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName, data));
 	}
 }
 
