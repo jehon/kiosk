@@ -6,12 +6,18 @@ describe(__filename, () => {
 
 	describe('shoudl handle timeout', function () {
 		it('inside of test environment', () => {
-			let i = 0;
-			setTimeout(() => {
-				i++;
-			}, 1000);
-			jasmine.clock().tick(2000);
-			expect(i).toBeGreaterThan(0);
+			const mockDate = new Date(2019, 0, 1, 12, 10, 0);
+			jasmine.clock().withMock(function () {
+				jasmine.clock().mockDate(mockDate);
+
+				let i = 0;
+				setTimeout(() => {
+					i++;
+				}, 1000);
+				jasmine.clock().tick(2000);
+				expect(i).toBeGreaterThan(0);
+
+			});
 		});
 	});
 });

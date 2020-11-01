@@ -8,6 +8,13 @@ describe(fn(import.meta.url), () => {
 	let cfg;
 	beforeAll(() => {
 		cfg = getConfig();
+	});
+
+	afterAll(() => {
+		setConfig('', cfg);
+	});
+
+	it('should set state', function () {
 		setConfig('', {
 			'menu': {
 				'Meteo': {
@@ -24,13 +31,6 @@ describe(fn(import.meta.url), () => {
 				}
 			}
 		});
-	});
-
-	afterAll(() => {
-		setConfig('', cfg);
-	});
-
-	it('should set state', function () {
 		init();
 		expect(app.getState().Meteo).not.toBeFalsy();
 	});

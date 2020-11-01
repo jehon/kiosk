@@ -2,10 +2,7 @@
 import serverAppFactory from '../../server/server-app.mjs';
 const app = serverAppFactory('clock');
 
-const config = {
-	tickers: [],
-	...app.getConfig('.')
-};
+export default app;
 
 const status = {
 	currentTicker: null
@@ -53,14 +50,33 @@ function onTicker(data) {
 	});
 }
 
-app.debug('Programming config cron\'s');
-for (const l of Object.keys(config.tickers)) {
-	const aTickerConfig = config.tickers[l];
-	app.debug('Programming:', l, aTickerConfig);
-	app.cron(onTicker, aTickerConfig.cron, aTickerConfig.duration, {
-		label: l,
-		...aTickerConfig
-	});
+const registered = [];
+
+/**
+ *
+ */
+export function init() {
+	app.setState(status);
+
+	while (registered.length > 0) {
+		const stop = registered.pop();
+		stop();
+	}
+
+	const config = {
+		tickers: [],
+		...app.getConfig('.')
+	};
+
+	app.debug('Programming config cron\'s', config);
+	for (const l of Object.keys(config.tickers)) {
+		const aTickerConfig = config.tickers[l];
+		app.debug('Programming:', l, aTickerConfig);
+		registered.push(app.cron(onTicker, aTickerConfig.cron, aTickerConfig.duration, {
+			name: l,
+			...aTickerConfig
+		}));
+	}
 }
 
-// TODO: manage currently running tickers
+init();

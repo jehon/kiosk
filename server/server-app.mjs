@@ -3,7 +3,8 @@ import chalk from 'chalk';
 import _ from 'lodash';
 import debugFactory from 'debug';
 import CronJob from 'cron'; // https://www.npmjs.com/package/cron
-import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/cron
+import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
+import cronParser from 'cron-parser';
 
 import contextualize from '../common/contextualize.mjs';
 import getConfig from './server-lib-config.mjs';
@@ -194,21 +195,40 @@ export class ServerApp {
 			cron = '0 ' + cron;
 		}
 
-		const job = new CronJob.CronJob(cron, async () => {
+		/**
+		 * When cron is triggered
+		 *
+		 * @param {Date} when the start of the ticker (could be now)
+		 */
+		const onCron = async function (when = new Date()) {
 			const now = new Date();
 			now.setMilliseconds(0);
 			try {
 				await cb({
 					stat: {
-						start: now,
-						end: new Date(now.getTime() + duration * 60 * 1000),
+						start: when,
+						end: new Date(when.getTime() + duration * 60 * 1000),
 						duration // minutes
 					}, ...data
 				});
 			} catch (e) {
 				this.error('notifying ${eventName} gave an error: ', e);
 			}
-		});
+		};
+
+		if (duration > 0) {
+			const prevCron = cronParser.parseExpression(cron).prev();
+			const prevCronEnd = prevCron.setMinutes(prevCron.getMinutes() + duration);
+			const isRunning = prevCronEnd.toDate() > new Date();
+			// console.log('*', cron, isRunning);
+			if (isRunning) {
+				this.debug(`Initiating past cron for ${cron} (${cronstrue.toString(cron)}) about ${prevCronEnd.toString()} on ${new Date()} with duration ${duration}`);
+				// TODO: manage currently running tickers
+				onCron(prevCronEnd.toDate());
+			}
+		}
+
+		const job = new CronJob.CronJob(cron, onCron);
 		job.start();
 		return () => job.stop();
 	}

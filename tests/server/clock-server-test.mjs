@@ -1,5 +1,5 @@
 
-import '../../packages/clock/clock-server.mjs';
+import app, { init } from '../../packages/clock/clock-server.mjs';
 import getConfig, { setConfig } from '../../server/server-lib-config.mjs';
 
 import { fn } from './at-helper.mjs';
@@ -19,21 +19,51 @@ describe(fn(import.meta.url), () => {
 			'clock': {
 				'tickers': {
 					'clock-server-test-label': {
-						cron: '*/2 * * * * *',
+						cron: '*/2 * * * *',
 						duration: 1
 					}
 				}
 			}
 		});
 
-		const i = new Date();
-		jasmine.clock().tick(((i.getMinutes() - i.getMinutes() % 2 + 2) * 60) * 1000);
+		jasmine.clock().withMock(function () {
+			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 1, 1));
 
-		// 	}, () => {
-		// 		expect(ServerAPI.prototype.dispatchToBrowser).toHaveBeenCalledTimes(4);
-		// 		expect(ServerAPI.prototype.dispatchToBrowser.calls.argsFor(0)[0]).toBe('clock.ticker');
-		// 		expect(ServerAPI.prototype.dispatchToBrowser.calls.argsFor(0)[1].label).toBe('clock-server-test-label');
-		// 		expect(ServerAPI.prototype.dispatchToBrowser.calls.argsFor(0)[1].duration).toBe(1);
-		// 	});
+			init();
+			expect(app.getState().currentTicker).toBeDefined();
+			expect(app.getState().currentTicker).toBeNull();
+
+			// Jump 1 minute
+			jasmine.clock().tick(60 * 1000);
+
+			expect(app.getState().currentTicker).toBeDefined();
+			expect(app.getState().currentTicker).not.toBeNull();
+			expect(app.getState().currentTicker.name).toBe('clock-server-test-label');
+		});
+	});
+
+	it('should trigger past tickers according to duration', async function () {
+		setConfig('', {
+			'clock': {
+				'tickers': {
+					'clock-server-test-duration': {
+						// At 11:00
+						cron: '0 11 * * *',
+						// For 2 hours
+						duration: 2 * 60 * 1000
+					}
+				}
+			}
+		});
+
+		jasmine.clock().withMock(function () {
+			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
+
+			init();
+
+			expect(app.getState().currentTicker).toBeDefined();
+			expect(app.getState().currentTicker).not.toBeNull();
+			expect(app.getState().currentTicker.name).toBe('clock-server-test-duration');
+		});
 	});
 });
