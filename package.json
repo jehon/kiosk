@@ -56,6 +56,6 @@
   "scripts": {
     "start": "electron ."
   },
-  "x-type": "module",
-  "main": "main.js"
+  "type": "module",
+  "main": "main.cjs"
 }
