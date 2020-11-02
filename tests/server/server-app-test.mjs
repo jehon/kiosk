@@ -1,5 +1,5 @@
 
-import serverAppFactory from '../../server/server-app.mjs';
+import serverAppFactory from '../../server/server-app.js';
 import { fn } from './at-helper.mjs';
 
 describe(fn(import.meta.url), () => {

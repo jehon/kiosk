@@ -1,4 +1,4 @@
 
 // require('./server/server.js');
 
-import('./server/server.mjs');
+import('./server/server.js');

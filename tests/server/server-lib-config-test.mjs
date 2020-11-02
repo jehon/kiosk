@@ -1,6 +1,6 @@
 
-import serverAppFactory from '../../server/server-app.mjs';
-import getConfig, { setConfig, loadConfigFromFile, resetConfig } from '../../server/server-lib-config.mjs';
+import serverAppFactory from '../../server/server-app.js';
+import getConfig, { setConfig, loadConfigFromFile, resetConfig } from '../../server/server-lib-config.js';
 import { fn } from './at-helper.mjs';
 
 const app = serverAppFactory('server');

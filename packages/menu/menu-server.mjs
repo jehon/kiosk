@@ -1,8 +1,8 @@
 
-import serverAppFactory from '../../server/server-app.mjs';
+import serverAppFactory from '../../server/server-app.js';
 
 /**
- * @typedef { import('../../server/server-app.mjs').ServerApp } ServerApp
+ * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
  */
 
 /**

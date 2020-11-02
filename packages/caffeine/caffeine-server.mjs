@@ -1,9 +1,9 @@
 
-import serverAppFactory from '../../server/server-app.mjs';
+import serverAppFactory from '../../server/server-app.js';
 import { spawn } from 'child_process';
 
 /**
- * @typedef { import('../../server/server-app.mjs').ServerApp } ServerApp
+ * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
  */
 
 /**

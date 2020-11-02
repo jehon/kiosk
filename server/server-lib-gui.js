@@ -6,7 +6,7 @@ const { BrowserWindow, app: electronApp } = require('electron');
 
 const credentialsMap = new Map();
 
-/** @typedef { import('./server-app.mjs').ServerApp } ServerApp */
+/** @typedef { import('./server-app.js').ServerApp } ServerApp */
 
 // /**
 //  * @param {string} url - start of the url to register credentials

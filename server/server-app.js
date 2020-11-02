@@ -7,8 +7,8 @@ import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
 import cronParser from 'cron-parser';
 
 import contextualize from '../common/contextualize.mjs';
-import getConfig from './server-lib-config.mjs';
-import { dispatchToBrowser } from './server-lib-gui.mjs';
+import getConfig from './server-lib-config.js';
+import { dispatchToBrowser } from './server-lib-gui.js';
 
 const loggersCreationStream = debugFactory('kiosk:loggers');
 
@@ -239,6 +239,6 @@ export class ServerApp {
  * @param {string|undefined} loggerNamespace - if specified, a sub logger is created
  * @returns {ServerApp} the application
  */
-export default function serverAppFactory(name, loggerNamespace) {
+export default function serverAppFactory(name, loggerNamespace = undefined) {
 	return new ServerApp(name, loggerNamespace);
 }
