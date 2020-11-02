@@ -1,59 +1,73 @@
 
-const { app: electronApp } = require('electron');
-const app = require('./server-api')('server');
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
-const browser = require('./server-electron');
-const webServer = require('./server-webserver');
+import { start, whenReady } from './server-lib-gui.js';
+import serverAppFactory from './server-app.js';
+import { loadConfigFromCommandLine, loadConfigFromFile, enableDebugFor } from './server-lib-config.js';
+import { resetConfig } from './server-lib-config.js';
 
-const devMode = app.getConfig('server.devMode');
+const app = serverAppFactory('core');
 
-if (devMode) {
-	// https://electronjs.org/docs/api/chrome-command-line-switches
-	electronApp.commandLine.appendSwitch('remote-debugging-port', '9223');
-	electronApp.commandLine.appendSwitch('inspect', '9222');
-	app.info('** Inspect available on port 9222: http://localhost:9222/');
-	app.info('** Remote debugging available on port http://localhost:9223/');
-}
+// // Enable this one for early debug:
+// enableDebugFor('kiosk:loggers');
 
-/**
- * @param {string} name of the package
- */
-async function loadPackage(name) {
-	try {
-		require(`../packages/${name}/${name}-server.js`);
-	} catch(err) {
-		// TODO: transform into logger !
-		console.error(`Error loading ${name}: `, err);
-	}
-}
+resetConfig()
+	.then(() => loadConfigFromCommandLine(app))
+	.then((cmdConfig) => {
+		if (cmdConfig.devMode) {
+			enableDebugFor('kiosk:loggers');
+		}
+		return cmdConfig;
+	})
+	.then((cmdConfig) => loadConfigFromFile(app, [cmdConfig.file, 'etc/kiosk.yml']))
+	.then((config) => {
+		//
+		// Override with command line options
+		//
+		if (app.getConfig('server.devMode', false)) {
+			app.debug('Versions', process.versions);
+			app.info('Node version: ', process.versions['node']);
+			app.info('Chrome version: ', process.versions['chrome']);
+		}
 
-electronApp.on('ready', () => {
-	webServer.start()
-		.then(() => loadPackage('caffeine'))
-		.then(() => loadPackage('camera'))
-		.then(() => loadPackage('clock'))
-		.then(() => loadPackage('menu'))
-		.then(() => loadPackage('photo-frame'))
-		.then(() => browser.start())
-	;
-});
+		app.debug('Final config: ', config);
 
-// Quit when all windows are closed.
-electronApp.on('window-all-closed', () => electronApp.quit());
+		//
+		// Activate some loggers
+		//
+		if (config.core.loggers) {
+			for (const re of config.core.loggers) {
+				app.info('Enabling logging level due to configuration: ', re);
+				enableDebugFor(re);
+			}
+		}
+	})
+	.then(() => whenReady())
+	.then(() => {
+		/**
+		 * @param name
+		 */
+		async function loadPackage(name) {
+			try {
+				app.debug(`loading ${name}`);
+				import(`../packages/${name}/${name}-server.mjs`);
+				app.debug(`loading ${name}`);
+			} catch (err) {
+				app.error(`Error loading ${name}: `, err);
+			}
+		}
 
-// https://electronjs.org/docs/tutorial/security
-electronApp.on('web-contents-created', (event, contents) => {
-	// https://electronjs.org/docs/tutorial/security#12-disable-or-limit-navigation
-	contents.on('will-navigate', (event, _navigationUrl) => event.preventDefault());
-
-	// https://electronjs.org/docs/tutorial/security#13-disable-or-limit-creation-of-new-windows
-	contents.on('new-window', async (event, _navigationUrl) => event.preventDefault());
-
-	// https://electronjs.org/docs/tutorial/security#16-filter-the-remote-module
-	electronApp.on('remote-get-global', (event, _webContents, _moduleName) => event.preventDefault());
-	electronApp.on('remote-get-current-window', (event, _webContents) => event.preventDefault());
-	electronApp.on('remote-get-current-web-contents', (event, _webContents) => event.preventDefault());
-	if (!devMode) {
-		electronApp.on('remote-get-builtin', (event, _webContents, _moduleName) => event.preventDefault());
-	}
-});
+		return Promise.resolve()
+			.then(() => loadPackage('menu'))
+			.then(() => loadPackage('caffeine'))
+			.then(() => loadPackage('clock'))
+			// .then(() => loadPackage('photo-frame'))
+			// .then(() => loadPackage('camera'))
+			;
+	})
+	.then(() =>
+		// Start the GUI
+		start(app)
+	)
+	.then(() => app.info('GUI is started'));

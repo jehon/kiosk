@@ -1,6 +1,6 @@
 
 import app, { init } from '../../packages/menu/menu-server.mjs';
-import getConfig, { setConfig } from '../../server/server-lib-config.mjs';
+import getConfig, { setConfig } from '../../server/server-lib-config.js';
 
 import { fn } from './at-helper.mjs';
 

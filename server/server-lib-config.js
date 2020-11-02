@@ -8,7 +8,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import deepMerge from 'deepmerge';
 
-/** @typedef { import('./server-app.mjs').ServerApp } ServerApp */
+/** @typedef { import('./server-app.js').ServerApp } ServerApp */
 
 let config = {};
 

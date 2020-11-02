@@ -1,6 +1,6 @@
 
 import app, { init, wakeUp } from '../../packages/caffeine/caffeine-server.mjs';
-import getConfig, { setConfig } from '../../server/server-lib-config.mjs';
+import getConfig, { setConfig } from '../../server/server-lib-config.js';
 
 import { fn } from './at-helper.mjs';
 
