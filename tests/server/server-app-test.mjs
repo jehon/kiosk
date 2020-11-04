@@ -17,10 +17,10 @@ describe(fn(import.meta.url), () => {
 		expect(app.streams.log.namespace).toBe('kiosk:test:server:child*');
 		expect(app.streams.debug.namespace).toBe('kiosk:test:server:child');
 
-		const app2 = app.extend('grandchildre');
+		const app2 = app.extend('grandchild');
 		expect(app2.name).toBe('test');
-		expect(app2.streams.log.namespace).toBe('kiosk:test:server:child:grandchildre*');
-		expect(app2.streams.debug.namespace).toBe('kiosk:test:server:child:grandchildre');
+		expect(app2.streams.log.namespace).toBe('kiosk:test:server:child:grandchild*');
+		expect(app2.streams.debug.namespace).toBe('kiosk:test:server:child:grandchild');
 	});
 
 	it('should handle cron with 6 elements', function () {
@@ -116,17 +116,5 @@ describe(fn(import.meta.url), () => {
 		app.setState({});
 		app.setState({ a: 1 });
 		app.setState('test');
-
-		app.error('an error in logs');
-		app.info('an info in logs');
-		app.debug('a debug in logs should not be visible');
-
-		app.enableDebug(true);
-		expect(app.isDebugEnabled()).toBeTrue();
-		app.debug('a debug in logs should be visible');
-
-		app.enableDebug(false);
-		expect(app.isDebugEnabled()).toBeFalse();
-		app.debug('a debug in logs should not be visible');
 	});
 });
