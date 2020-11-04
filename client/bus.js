@@ -1,5 +1,5 @@
 
-import _ from 'lodash';
+import _ from '../node_modules/lodash-es/lodash.js';
 
 // Inspired from https://gist.github.com/mudge/5830382
 
