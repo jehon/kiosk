@@ -118,32 +118,67 @@ export class ServerLogger {
 }
 
 /**
+ * @typedef {object} LogMessage to send log messages to the server
+ * @property {string} type is a hardcoded constant 'log'
+ * @property {string} data.namespace of the remote logger
+ * @property {string} data.level of the remote logger
+ * @property {Array<*>} data.content the real message
+ */
+
+
+/**
  * Allow remote* to log on the server
  *
- * @param {object} data recevied from channel
- * @member {string} namespace of the remote logger
- * @member {string} level of the remote logger
- * @member {Array<any>} message of the remote logger
+ * @param {LogMessage} message to be received
  */
-export function remoteLogger(data) {
-	const namespace = data.namespace;
+export function loggerAsMessageListener(/** @type {LogMessage} */ message) {
+	if (message.type != 'log') {
+		// Hardcoded type for log
+		return;
+	}
+
+	// TODO: handle namespace locally ?
+	const namespace = message.namespace ?? 'test';
 	let logger;
 	if (loggerMap.has(namespace)) {
 		logger = loggerMap.get(namespace);
 	} else {
 		logger = new ServerLogger(namespace);
 	}
-	switch (data.level) {
+	switch (message.level) {
 		case ServerLogger.LEVEL_ERROR:
-			logger.error(...data.message);
+			logger.error(...message.content);
 			break;
 		case ServerLogger.LEVEL_INFO:
-			logger.info(...data.message);
+			logger.info(...message.content);
 			break;
 		case ServerLogger.LEVEL_DEBUG:
-			logger.this.debug(...data.message);
+			logger.debug(...message.content);
 			break;
 		default:
 			break;
+	}
+}
+
+export class LoggerSender {
+	constructor(sendFunction, loggerNamespace = '') {
+		this.sendFunction = sendFunction;
+		this.proxy = (level, ...args) => sendFunction({
+			loggerNamespace,
+			level,
+			content: args
+		});
+	}
+
+	error(...content) {
+		this.proxy(ServerLogger.LEVEL_ERROR, ...content);
+	}
+
+	info(...content) {
+		this.proxy(ServerLogger.LEVEL_INFO, ...content);
+	}
+
+	debug(...content) {
+		this.proxy(ServerLogger.LEVEL_DEBUG, ...content);
 	}
 }
