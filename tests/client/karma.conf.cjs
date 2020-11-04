@@ -3,6 +3,9 @@
 // ???
 // process.env.CHROME_BIN = require('puppeteer').executablePath();
 
+/**
+ * @param config
+ */
 module.exports = function (config) {
 	config.set({
 		// logLevel: config.LOG_DEBUG,
@@ -10,15 +13,10 @@ module.exports = function (config) {
 		// base path that will be used to resolve all patterns (eg. files, exclude)
 		basePath: __dirname + '/../../',
 
-		// frameworks to use
-		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: [
-			'jasmine',
-			'jasmine-html'
+			'jasmine'
 		],
 
-		// list of files / patterns to load in the browser
-		// @see https://karma-runner.github.io/3.0/config/files.html
 		files: [
 			{ pattern: 'tests/client/**/*.js', type: 'module' },
 			{ pattern: '**/node_modules/**/*', watched: false, included: false },
