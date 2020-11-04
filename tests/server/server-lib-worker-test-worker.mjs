@@ -1,21 +1,26 @@
 
 import {
-	workerGetData,
-	workerSendData,
-	workerGetLogger
+	workerGetConfig,
+	workerSendMessage,
+	workerGetLogger,
+	workerOnMessage
 } from '../../server/server-lib-worker.js';
 
 const logger = workerGetLogger();
-const data = workerGetData();
+const data = workerGetConfig();
 
 console.log('data', data);
 
 logger.debug('test log debug');
 logger.info('test log info');
 
+const stop = workerOnMessage('ping', (data) => {
+	workerSendMessage('pong', data * 100);
+});
+
 if (data.arg) {
-	logger.debug('Sending message', 'test', data.arg);
-	workerSendData('test', data.arg);
+	logger.debug('Sending message', 'pong', data.arg);
+	workerSendMessage('pong', data.arg);
 }
 
 if (data.throw) {
@@ -31,4 +36,13 @@ if (data.throwError) {
 if (data.exit) {
 	logger.debug('Exiting with ', data.exit);
 	process.exit(data.exit);
+}
+
+if (data.wait) {
+	logger.info('Waiting', data.wait);
+	setTimeout(() => {
+		stop();
+	}, data.wait);
+} else {
+	stop();
 }

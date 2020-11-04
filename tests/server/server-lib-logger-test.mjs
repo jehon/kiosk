@@ -12,7 +12,7 @@ import { fn } from './at-helper.mjs';
 describe(fn(import.meta.url), () => {
 	it('should instanciate', function () {
 		const app = new ServerLogger('test');
-		expect(app.loggerNamespace).toBe('test');
+		expect(app.loggerNamespace).toBe('kiosk:test');
 		expect(app.streams.log.namespace).toBe('kiosk:test*');
 		expect(app.streams.debug.namespace).toBe('kiosk:test');
 

@@ -1,26 +1,50 @@
 
-const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
-// const xml2js = require('xml2js').parseString;
+import express from 'express';
+import fetch from 'node-fetch';
+import child_process from 'child_process';
 
-const { startWorker } = require('../../../server/server-worker.js');
+import { getUrl } from './foscam-r2m-common.js';
+import { workerGetLogger, workerGetConfig, workerSendMessage } from '../../../server/server-lib-worker.js';
+import { LoggerSender } from '../../../server/server-lib-logger.js';
 
+/** @type {LoggerSender} logger - where to send the logs */
+const logger = workerGetLogger();
+const config = workerGetConfig();
 
-/** @typedef {import('../camera-server.js').Logger} Logger */
+logger.debug('Worker is starting');
 
-// /**
-//  * From the XML response, get the data
-//  *
-//  * @param {Response} response - http response
-//  * @returns {Promise<object>} The parsed response
-//  * @see https://stackoverflow.com/a/41009103/1954789
-//  */
-// async function responseXMLParser(response) {
-// 	return response.text()
-// 		.then(str => new Promise(resolve => xml2js(str, (err, data) => {
-// 			if (err) throw err;
-// 			resolve(data);
-// 		})));
-// }
+const expressApp = express();
+let serverListener = null;
+let ffmpeg = null;
+
+expressApp.get('/video', (_req, res) => {
+	// Thanks to https://stackoverflow.com/q/28946904/1954789
+
+	// Only one at a time ?
+	// if (ffmpeg) {
+	// 	logger.debug('Killing previous ffmpeg');
+	// 	ffmpeg.kill();
+	// 	ffmpeg = false;
+	// }
+
+	res.header('content-type', 'video/webm');
+
+	const cmd = `ffmpeg -loglevel fatal -i rtsp://${config.username}:${config.password}@${config.host}:${config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`.split(' ');
+	logger.debug('ffmpeg command: ', cmd);
+
+	ffmpeg = child_process.spawn(cmd[0], cmd.splice(1), {
+		stdio: ['ignore', 'pipe', 'ignore']
+		// stdio: ['ignore', 'pipe', process.stderr]
+	});
+
+	ffmpeg.stdio[1].pipe(res);
+
+	res.on('close', () => {
+		logger.debug('Http flow ended, killing ffmpeg');
+		ffmpeg.kill();
+		ffmpeg = null;
+	});
+});
 
 /**
  * @param {number} ms - milliseconds to wait before resolving the promise
@@ -38,32 +62,20 @@ function waitMilliseconds(ms) {
 }
 
 /**
- * @param {string} subject - shown in debug logs
- * @param {Logger} logger - where to send the logs
- * @param {object} config - the configuration of the camera
- * @param {object} data - data to pass
- * @param {string} [cgi] - the cgi script to be called
- * @returns {string} the url to be called
- */
-function getUrl(subject, logger, config, data, cgi = '/cgi-bin/CGIProxy.fcgi?') {
-	const url = `http://${config.host}:${config.port}${cgi}?usr=${config.username}&pwd=${config.password}&random-no-cache=${(new Date).getTime()}&` + (new URLSearchParams(data).toString());
-	logger.debug(`Using url for ${subject}: ${url}`);
-	return url;
-}
-module.exports.getUrl = getUrl;
-
-/**
- * @param {*} app - where to send the logs
- * @param {object} config - the initial config
  * @returns {Promise} resolve when configure is done
  */
-async function configure(app, config) {
+export async function configure() {
+	if (!config.configure) {
+		logger.info('Skipping configure by config');
+		return;
+	}
+
 	/** @type {Promise<*>} */
 	let p = Promise.resolve();
 
 	const now = new Date();
 	p = p
-		.then(() => fetch(getUrl('setting time', app, config, {
+		.then(() => fetch(getUrl('setting time', logger, config, {
 			cmd: 'setSystemTime',
 			timeSource: 1,
 			year: now.getFullYear(),
@@ -74,7 +86,7 @@ async function configure(app, config) {
 			sec: now.getSeconds()
 		})));
 
-	// fetch(getUrl(logger, config, { cmd: 'getPTZPresetPointList' }))
+	// fetch(getUrl('init', logger, config, { cmd: 'getPTZPresetPointList' }))
 	// 	.then(responseXMLParser)
 	// 	.then(data => {
 	// 		const vals = [];
@@ -89,12 +101,12 @@ async function configure(app, config) {
 	// 		logger.info('Available positions: ', vals);
 	// 	}, err => logger.error('In getting position\'s names: ', err));
 	//
-	// fetch(getUrl(logger, config, { cmd: 'ptzGotoPresetPoint', name: config.position }))
+	// fetch(getUrl('goto', logger, config, { cmd: 'ptzGotoPresetPoint', name: config.position }))
 	// 	.then(responseXMLParser)
 
 	if (config.position) {
 		p = p
-			.then(() => fetch(getUrl('reset position', app, config, {
+			.then(() => fetch(getUrl('reset position', logger, config, {
 				cmd: 'ptzReset'
 			})))
 			.then(waitMilliseconds(5000));
@@ -102,11 +114,11 @@ async function configure(app, config) {
 		const move = (field, command) => {
 			if (config.position[field]) {
 				p = p
-					.then(() => fetch(getUrl(`moving ${field}`, app, config, {
+					.then(() => fetch(getUrl(`moving ${field}`, logger, config, {
 						cmd: command
 					})))
 					.then(waitMilliseconds(config.position[field]))
-					.then(() => fetch(getUrl(`stop mouvement ${field}`, app, config, {
+					.then(() => fetch(getUrl(`stop mouvement ${field}`, logger, config, {
 						cmd: 'ptzStopRun'
 					})));
 			}
@@ -121,4 +133,24 @@ async function configure(app, config) {
 	return p;
 }
 
-startWorker('foscam-r2m-worker', (app, data) => configure(app, data));
+/**
+ * Start the webserver
+ *
+ * @returns {Promise<string>} with the url
+ */
+async function generateFlow() {
+	return new Promise(resolve => {
+		serverListener = expressApp.listen(config.videoPort, () => {
+			const realPort = serverListener.address().port;
+			const url = `http://localhost:${realPort}/video`;
+			logger.debug(`Listening at ${url}`);
+			workerSendMessage('url', url);
+			resolve(url);
+		});
+	});
+}
+
+generateFlow()
+	.then(() => configure())
+	.catch(e => console.error(e));
+
