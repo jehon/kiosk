@@ -1,6 +1,6 @@
 
 
-import { createWorker, masterWaitWorkerToFinish, masterOnMessage } from '../../server/server-lib-worker.js';
+import { createWorker, masterWaitWorkerToFinish, masterOnMessage, masterSendMessage } from '../../server/server-lib-worker.js';
 import { ServerLogger } from '../../server/server-lib-logger.js';
 
 import path from 'path';
@@ -13,15 +13,36 @@ describe(fn(import.meta.url), () => {
 	const workerFile = path.join(__dirname, 'server-lib-worker-test-worker.mjs');
 
 	it('should launch', async function () {
-		const worker = createWorker(workerFile, logger, {
-			test: 1
-		});
+		const worker = createWorker(workerFile, logger, {});
 		await masterWaitWorkerToFinish(worker);
+	});
+
+	it('should get data', async function () {
+		const worker = createWorker(workerFile, logger, { arg: 1 });
+		let i = 0;
+		masterOnMessage(worker, 'pong', (payload) => {
+			i = i + payload;
+		});
+
+		await masterWaitWorkerToFinish(worker);
+		expect(i).toBe(1);
+	});
+
+	it('should exchange messages', async function () {
+		const worker = createWorker(workerFile, logger, { arg: 1, wait: 100 });
+		let i = 0;
+		masterOnMessage(worker, 'pong', (payload) => {
+			i = i + payload;
+		});
+
+		masterSendMessage(worker, 'ping', 2);
+
+		await masterWaitWorkerToFinish(worker);
+		expect(i).toBe(201);
 	});
 
 	it('should launch and catch message', async function (done) {
 		const worker = createWorker(workerFile, logger, {
-			test: 1,
 			throw: 'test'
 		});
 		try {
@@ -34,7 +55,6 @@ describe(fn(import.meta.url), () => {
 
 	it('should launch and catch Error', async function (done) {
 		const worker = createWorker(workerFile, logger, {
-			test: 1,
 			throwError: 'test'
 		});
 		try {
@@ -47,7 +67,6 @@ describe(fn(import.meta.url), () => {
 
 	it('should launch and get exit code', async function (done) {
 		const worker = createWorker(workerFile, logger, {
-			test: 1,
 			exit: 12
 		});
 		try {

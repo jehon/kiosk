@@ -61,7 +61,7 @@ export function setConfig(path = '', val = {}) {
 
 /**
  * @param {string} name to be enabled above env
- * @returns {string} the final regexp
+ * @returns {Array<string>} the final regexp
  */
 export function enableDebugFor(name) {
 	// Protect agains DEBUG not being defined
@@ -71,7 +71,7 @@ export function enableDebugFor(name) {
 }
 
 /**
- * @returns {string} the enabled debuggers
+ * @returns {Array<string>} the enabled debuggers
  */
 export function getEnabledDebugRegexp() {
 	return enabledDebugger;
@@ -80,7 +80,7 @@ export function getEnabledDebugRegexp() {
 // istanbul-ignore-next
 /**
  * @param {ServerApp} serverApp where to log
- * @returns {*} the parsed options
+ * @returns {Promise<object>} the parsed options
  */
 export async function loadConfigFromCommandLine(serverApp) {
 	const app = serverApp.extend('config');
@@ -123,7 +123,7 @@ export async function loadConfigFromCommandLine(serverApp) {
 /**
  * @param {ServerApp} serverApp where to log
  * @param {Array<string>} configFiles in order, first one found will be loaded
- * @returns {object} the current config
+ * @returns {Promise<object>} the current config
  */
 export async function loadConfigFromFile(serverApp, configFiles = config.files) {
 	const app = serverApp.extend('config');

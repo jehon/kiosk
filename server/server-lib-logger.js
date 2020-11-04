@@ -55,14 +55,13 @@ export class ServerLogger {
 	}
 
 	constructor(loggerNamespace) {
-		this.loggerNamespace = loggerNamespace;
-		const loggerNamespaceCanonized = loggerCanonizeNamespace(loggerNamespace);
-		this.streams.debug = debugFactory(loggerNamespaceCanonized);
-		this.streams.log = debugFactory(loggerNamespaceCanonized + '*');
-		loggersCreationStream(`Creating logger '${loggerNamespaceCanonized}'`);
+		this.loggerNamespace = loggerCanonizeNamespace(loggerNamespace);
+		this.streams.debug = debugFactory(this.loggerNamespace);
+		this.streams.log = debugFactory(this.loggerNamespace + '*');
+		loggersCreationStream(`Creating logger '${this.loggerNamespace}'`);
 
 		// Store in cache for dynamic logger
-		loggerMap.set(loggerNamespaceCanonized, this);
+		loggerMap.set(this.loggerNamespace, this);
 	}
 
 	/**
@@ -132,11 +131,6 @@ export class ServerLogger {
  * @param {LogMessage} message to be received
  */
 export function loggerAsMessageListener(/** @type {LogMessage} */ message) {
-	if (message.type != 'log') {
-		// Hardcoded type for log
-		return;
-	}
-
 	// TODO: handle namespace locally ?
 	const namespace = message.namespace ?? 'test';
 	let logger;
@@ -164,7 +158,7 @@ export class LoggerSender {
 	constructor(sendFunction, loggerNamespace = '') {
 		this.sendFunction = sendFunction;
 		this.proxy = (level, ...args) => sendFunction({
-			loggerNamespace,
+			namespace: loggerNamespace,
 			level,
 			content: args
 		});

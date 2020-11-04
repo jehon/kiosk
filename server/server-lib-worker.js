@@ -3,6 +3,11 @@ import { Worker, parentPort, workerData } from 'worker_threads';
 
 import { loggerAsMessageListener, LoggerSender } from './server-lib-logger.js';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+export const __dirname = (url) => dirname(fileURLToPath(url));
+
+
 /**
  * @param {string} file - the file containing the worker
  * @param {ServerApp} app - to get some context (logger, etc...)
@@ -10,14 +15,16 @@ import { loggerAsMessageListener, LoggerSender } from './server-lib-logger.js';
  * @returns {Worker} - the worker
  */
 export function createWorker(file, app, data) {
+	const wNs = app.loggerNamespace + ':worker';
+	app.debug(`Creating worker ${file} on ${wNs} with`, data);
 	const worker = new Worker(file, {
 		workerData: {
-			loggerNamespace: app.loggerNamespace,
+			loggerNamespace: wNs,
 			data
 		}
 	});
 
-	worker.on('message', loggerAsMessageListener);
+	masterOnMessage(worker, 'log', (payload) => loggerAsMessageListener(payload));
 
 	worker.on('error', err => app.error(`Worker: ${file} emitted an error: ${err}`));
 
@@ -54,12 +61,26 @@ export function masterOnMessage(worker, type, callback) {
 	 */
 	function cb(data) {
 		if (data.type == type) {
-			callback(data);
+			callback(data.payload);
 		}
 	}
 
 	worker.on('message', cb);
 	return () => worker.removeListener('message', cb);
+}
+
+/**
+ * Send a message to the worker
+ *
+ * @param {Worker} worker where to send
+ * @param {string} type of the message
+ * @param {any} payload to be sent
+ */
+export function masterSendMessage(worker, type, payload) {
+	worker.postMessage({
+		type,
+		payload
+	});
 }
 
 /**
@@ -69,7 +90,7 @@ export function masterOnMessage(worker, type, callback) {
  */
 export function workerGetLogger() {
 	return new LoggerSender(
-		(data) => workerSendData('log', data),
+		(data) => workerSendMessage('log', data),
 		workerData?.loggerNamespace ?? 'worker'
 	);
 }
@@ -77,7 +98,7 @@ export function workerGetLogger() {
 /**
  * @returns {object} the passed argument
  */
-export function workerGetData() {
+export function workerGetConfig() {
 	return workerData?.data ?? {};
 }
 
@@ -85,11 +106,28 @@ export function workerGetData() {
  * Send a message to the master
  *
  * @param {string} type of the message
- * @param {*} data to be sent
+ * @param {*} payload to be sent
  */
-export function workerSendData(type, data) {
+export function workerSendMessage(type, payload) {
 	parentPort?.postMessage({
 		type,
-		data
+		payload
 	});
+}
+
+/**
+ * @param {string} type of message
+ * @param {function(object): void} callback to be called
+ * @returns {function(void):void} to unregister the listener
+ */
+export function workerOnMessage(type, callback) {
+	const cb = function (data) {
+		if (data.type == type) {
+			callback(data.payload);
+		}
+	};
+
+	parentPort.on('message', cb);
+
+	return () => parentPort.removeListener('message', cb);
 }

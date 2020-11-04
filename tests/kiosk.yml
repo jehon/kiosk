@@ -2,11 +2,12 @@
 core:
   loggers:
     - kiosk:loggers
-    - kiosk:core:server
+    - kiosk:camera:server:worker
+    #- kiosk:core:server
     # - kiosk:core:server:config
     # - kiosk:core:server:gui
-    - kiosk:clock:server
-    - kiosk:menu:server
+    #- kiosk:clock:server
+    #- kiosk:menu:server
 server:
   path:
     var: /tmp/
@@ -18,7 +19,8 @@ photo-frame:
       quantity: 3
 
 camera:
-#  host: "http://127.0.0.1"
+  videoPort: 4411
+  configure: false
   username: any
   password: any
 

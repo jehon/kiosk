@@ -1,7 +1,9 @@
 
-const Bus = require('../../common/bus.js');
+import Bus from '../../common/bus.js';
 
-describe(__filename, () => {
+import { fn } from './at-helper.mjs';
+
+describe(fn(import.meta.url), () => {
 	it('should notify', async function () {
 		const bus = new Bus();
 		let i = 0;

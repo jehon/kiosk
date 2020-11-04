@@ -62,8 +62,8 @@ resetConfig()
 			.then(() => loadPackage('menu'))
 			.then(() => loadPackage('caffeine'))
 			.then(() => loadPackage('clock'))
-			// .then(() => loadPackage('photo-frame'))
-			// .then(() => loadPackage('camera'))
+			.then(() => loadPackage('photo-frame'))
+			.then(() => loadPackage('camera'))
 			;
 	})
 	.then(() =>

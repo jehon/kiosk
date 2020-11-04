@@ -1,17 +1,9 @@
-/**
- * @typedef {import('../../server/server-logger.js').Logger} Logger
- */
-
-const serverAPIFactory = require('../../server/server-api.js');
-
-const app = serverAPIFactory('camera');
-module.exports.app = app;
 
 /**
  * @readonly
  * @enum {string}
  */
-const TriStates = {
+export const TriStates = {
 	/** Could show the video feed */
 	READY: 'READY',
 	/** Camera is up, but video feed is not ready */
@@ -20,7 +12,6 @@ const TriStates = {
 	DOWN: 'DOWN'
 };
 Object.freeze(TriStates);
-module.exports.TriStates = TriStates;
 
 /**
  * @typedef CheckResponse
@@ -29,9 +20,40 @@ module.exports.TriStates = TriStates;
  */
 
 /**
- * @typedef CameraAPI
- * @property {function():object} defaultConfig - return the default config of the camera
- * @property {function(object, any):Promise} init - configure the camera once, when up (or again if connection is lost)
- * @property {function(Logger, object):Promise<CheckResponse>} check - tell if the camera is ready / up / down
- * @property {function(Logger, object, object):void} generateFlow - generate the flow on the paramter response
+ * @typedef Status
+ * @property {string} message - user friendly message
+ * @property {TriStates} code - see above
+ * @property {number} successes - number of TriStates.READY received
+ * @property {string} url of the video feed
  */
+
+export class CameraAPI {
+	constructor(app, config) {
+		this.app = app;
+		this.config = {
+			'cron-recheck': '*/10 * * * * *',
+			host: 'localhost',
+			port: 80,
+			username: '',
+			password: '',
+			nbCheck: 3,
+			...this.defaultConfig(),
+			...config
+		};
+
+		/**
+		 * @type {Status}
+		 */
+		this.status = {
+			message: '',
+			code: TriStates.DOWN,
+			successes: 0,
+			url: ''
+		};
+	}
+
+	defaultConfig() { return {}; }
+	async check() { }
+	async up() { }
+	async down() { }
+}

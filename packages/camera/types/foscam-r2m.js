@@ -1,70 +1,57 @@
 
-const { TriStates } = require('../constants.js');
-const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
-const path = require('path');
+import { TriStates, CameraAPI } from '../constants.js';
+import fetch from 'node-fetch';
+import path from 'path';
 
-/** @typedef {import('../camera-server.js').Logger} Logger */
-
-const { getUrl } = require('./foscam-r2m-worker.js');
-const { createWorker } = require('../../../server/server-worker.js');
+import { getUrl } from './foscam-r2m-common.js';
+import { createWorker, masterOnMessage, __dirname } from '../../../server/server-lib-worker.js';
 
 /**
  * @type {import('../constants.js').CameraAPI}
  */
-const cameraAPI = {
-	defaultConfig: () => ({
-		port: 88
-	}),
+export default class extends CameraAPI {
+	defaultConfig() {
+		return {
+			configure: true,
+			videoPort: 0,
+			port: 88,
+		};
+	}
 
-	init: async (app, fullConfig) => {
-		return createWorker(path.join(__dirname, 'foscam-r2m-worker.js'), app, fullConfig);
-	},
-
-	/**
-	 * @param {Logger} logger - where to send the logs
-	 * @param {object} config - camera config
-	 * @returns {Promise<import('../constants.js').CheckResponse>} when check is successfull
-	 */
-	check: async (logger, config) => {
-		return fetch(getUrl('health check', logger, config, { cmd: 'getDevInfo' }), { method: 'GET' })
+	async check() {
+		return fetch(getUrl('health check', this.app, this.config, { cmd: 'getDevInfo' }), { method: 'GET' })
 			.then(response => {
-				if (response.ok) {
-					return { state: TriStates.READY };
+				if (!response.ok) {
+					this.app.debug('Check response error', response);
+					throw new Error(response.status + ': ' + response.statusText);
 				}
-				return {
-					state: TriStates.UP_NOT_READY,
-					message: response.status + ': ' + response.statusText
-				};
+				this.app.debug('Check successfull');
+				return { state: TriStates.READY };
 			}, err => {
+				this.app.debug('Camera in error', err);
 				throw err;
 			});
-	},
+	}
 
-	/**
-	 * @param {Logger} logger - where to send the logs
-	 * @param {any} res - the expressjs response object
-	 * @param {object} config - the camera config
-	 */
-	generateFlow: function (logger, res, config) {
-		// Thanks to https://stackoverflow.com/q/28946904/1954789
-		const child_process = require('child_process');
+	async up() {
+		if (this.worker) {
+			await this.down();
+		}
+		this.worker = createWorker(path.join(__dirname(import.meta.url), 'foscam-r2m-worker.js'), this.app, this.config);
 
-		res.header('content-type', 'video/webm');
-
-		const cmd = `ffmpeg -i rtsp://${config.username}:${config.password}@${config.host}:${config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`.split(' ');
-		logger.debug('ffmpeg command: ', cmd);
-
-		var child = child_process.spawn(cmd[0], cmd.splice(1), {
-			stdio: ['ignore', 'pipe', process.stderr]
-		});
-
-		child.stdio[1].pipe(res);
-
-		res.on('close', () => {
-			logger.debug('Http flow ended, killing ffmpeg');
-			child.kill();
+		masterOnMessage(this.worker, 'url', (url) => {
+			this.app.debug('Url is ' + url);
+			this.app.setState({
+				...this.app.getState(),
+				url
+			});
 		});
 	}
-};
 
-module.exports = cameraAPI;
+	async down() {
+		if (this.worker) {
+			this.worker.terminate();
+			this.worker = null;
+		}
+	}
+}

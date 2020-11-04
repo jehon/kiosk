@@ -21,9 +21,9 @@ module.exports = function (config) {
 		// @see https://karma-runner.github.io/3.0/config/files.html
 		files: [
 			{ pattern: 'tests/client/**/*.js', type: 'module' },
-			{ pattern: '**/node_modules/**/*', watched: false, included: false, served: true },
-			{ pattern: 'client/*.js',          watched: true,  included: false, served: true },
-			{ pattern: '**/*', 		           watched: false, included: false, served: true },
+			{ pattern: '**/node_modules/**/*', watched: false, included: false },
+			{ pattern: 'client/*.js', watched: true, included: false },
+			{ pattern: '**/*', watched: false, included: false },
 		],
 
 		// list of files / patterns to exclude
@@ -36,7 +36,7 @@ module.exports = function (config) {
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: [ 'progress' ],
+		reporters: ['progress'],
 
 		// web server port
 		port: 9876,
@@ -56,7 +56,7 @@ module.exports = function (config) {
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
 		// browsers: [ 'ChromiumHeadless' ],
-		browsers: [ 'ChromiumHeadless' ],
+		browsers: ['ChromiumHeadless'],
 
 
 		// Continuous Integration mode
