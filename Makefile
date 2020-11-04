@@ -91,9 +91,7 @@ start-dev-with-test-config-brk: build
 
 
 .PHONY: build
-build: \
-		dependencies \
-		# common.es6/contextualize.js
+build: dependencies
 
 .PHONY: dependencies
 dependencies: node_modules/.dependencies
@@ -102,14 +100,11 @@ node_modules/.dependencies: package.json package-lock.json
 	touch package-lock.json
 	touch node_modules/.dependencies
 
-# common.es6/contextualize.js: common/contextualize.js
-# 	$(NODE_MOD)/babel "$?" --out-dir common.es6
-
 .PHONY: test
 test: test-server
 
 .PHONY: test-server
-test-server:
+test-server: build
 	$(NODE_MOD)/jasmine --config=tests/server/jasmine.json
 
 .PHONY: lint

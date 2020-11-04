@@ -1,11 +1,11 @@
 
-const _ = require('lodash');
+import _ from 'lodash';
 
 // Inspired from https://gist.github.com/mudge/5830382
 
 /** @typedef { import('../server/server-logger.js').Logger } Logger */
 
-class Bus {
+export default class Bus {
 	/**
 	 * @param {Logger|*} logger - where to send the logs
 	 */
@@ -95,4 +95,3 @@ class Bus {
 	}
 }
 
-module.exports = Bus;
