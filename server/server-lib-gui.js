@@ -63,9 +63,11 @@ export async function start(serverApp) {
 		autoHideMenuBar: true,
 		webPreferences: {
 			titleBarStyle: 'hiddenInset',
+
 			nodeIntegration: true,
+			// TODO: affine this
 			enableRemoteModule: true,
-			contextIsolation: true
+			// contextIsolation: true
 		},
 		frame: false,
 		width: 1980,
@@ -75,7 +77,7 @@ export async function start(serverApp) {
 	};
 
 	if (devMode) {
-		opts.width = 1000;
+		opts.width = 1500;
 		opts.height = 900;
 	} else {
 		true;
