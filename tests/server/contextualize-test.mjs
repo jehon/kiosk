@@ -1,5 +1,5 @@
 
-import ctxFactory from '../../common/contextualize.mjs';
+import ctxFactory from '../../common/contextualize.js';
 
 import { fn } from './at-helper.mjs';
 

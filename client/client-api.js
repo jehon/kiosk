@@ -5,7 +5,7 @@ import './elements/css-inherit.js';
 
 import loggerFactory from './client-logger.js';
 import contextualize from '../common/contextualize.js';
-import Bus from '../common.es6/bus.js';
+import Bus from '../common/bus.js';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 

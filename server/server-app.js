@@ -1,67 +1,24 @@
 
-import chalk from 'chalk';
-import _ from 'lodash';
-import debugFactory from 'debug';
+import { ServerLogger } from './server-lib-logger.js';
+
 import CronJob from 'cron'; // https://www.npmjs.com/package/cron
 import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
 import cronParser from 'cron-parser';
 
-import contextualize from '../common/contextualize.mjs';
+import contextualize from '../common/contextualize.js';
 import getConfig from './server-lib-config.js';
 import { dispatchToBrowser } from './server-lib-gui.js';
 
-const loggersCreationStream = debugFactory('kiosk:loggers');
-
-/**
- * @param {string} n - non normalized namespace
- * @returns {string} the normalized namespace
- */
-function loggerCanonizeNamespace(n) {
-	if (!n.startsWith('kiosk')) {
-		n = 'kiosk.' + n;
-	}
-	return n.split('.').join(':').replace(/:+/g, ':');
-}
-
-/**
- * @param {Error} e - the reror to be rendered
- * @returns {string} the error in a string presentation
- */
-function loggerRenderError(e) {
-	const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
-	return `${e.message}\n  at ${stack}`;
-}
-
-/**
- * @param {string} level - the level to be shown in the debug
- * @param {...any} args - anything to print
- * @returns {string} the message formatted for display
- */
-function loggerGenerateMessage(level, ...args) {
-	return `[${level}] ` + args.map(v =>
-		(typeof (v) == 'object'
-			? (v instanceof Error) ? loggerRenderError(v) : JSON.stringify(v)
-			: v)
-	).join(' ');
-}
-
-export class ServerApp {
-	name = '';
-	ctxfn = (_c) => { };
-	streams = {
-		debug: (..._args) => { },
-		log: (..._args) => { }
-	}
+export class ServerApp extends ServerLogger {
+	name;
+	ctxfn;
 
 	constructor(name, loggerNamespace = '.server') {
-		this.name = name;
-		this.loggerNamespace = loggerNamespace;
-		this.ctxfn = contextualize(this.name);
+		const ctxfn = contextualize(name);
+		super(ctxfn(loggerNamespace));
 
-		const loggerNamespaceCanonized = loggerCanonizeNamespace(this.ctxfn(loggerNamespace));
-		this.streams.debug = debugFactory(loggerNamespaceCanonized);
-		this.streams.log = debugFactory(loggerNamespaceCanonized + '*');
-		loggersCreationStream('Creating logger ' + loggerNamespaceCanonized);
+		this.name = name;
+		this.ctxfn = ctxfn;
 	}
 
 	/**
@@ -91,57 +48,6 @@ export class ServerApp {
 	 */
 	getState() {
 		return this.state;
-	}
-
-	/**
-	 * Log an error
-	 *
-	 * @param  {...any} data - what to print
-	 * @returns {ServerApp} this
-	 */
-	error(...data) {
-		this.streams.log(chalk.red(loggerGenerateMessage('ERROR', ...data)));
-		return this;
-	}
-
-	/**
-	 * Log an info
-	 *
-	 * @param  {...any} data - what to print
-	 * @returns {ServerApp} this
-	 */
-	info(...data) {
-		this.streams.log(loggerGenerateMessage('INFO', ...data));
-		return this;
-	}
-
-	/**
-	 * Log a debug message
-	 *
-	 * @param  {...any} data - what to print
-	 * @returns {ServerApp} this
-	 */
-	debug(...data) {
-		this.streams.debug(loggerGenerateMessage('DEBUG', ...data));
-		return this;
-	}
-
-	/**
-	 * Enable the debug stream
-	 *
-	 * @param {boolean} enable to be enabled
-	 * @returns {ServerApp} this
-	 */
-	enableDebug(enable = true) {
-		this.streams.debug.enabled = enable;
-		return this;
-	}
-
-	/**
-	 * @returns {boolean} true if debug is enabled (and displayed)
-	 */
-	isDebugEnabled() {
-		return this.streams.debug.enabled;
 	}
 
 	/**
