@@ -1,5 +1,0 @@
-{
-  "api": 1,
-  "server": "caffeine-server.js",
-  "client": "caffeine-client.js"
-}

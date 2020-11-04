@@ -1,5 +1,0 @@
-{
-  "api": 1,
-  "server": "clock-server.js",
-  "client": "clock-client.js"
-}
