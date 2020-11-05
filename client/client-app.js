@@ -3,7 +3,7 @@
 import './elements/img-loading.js';
 import './elements/css-inherit.js';
 
-import loggerFactory from './client-logger.js';
+import loggerFactory from './client-lib-logger.js';
 import Bus from './client-lib-bus.js';
 import contextualize from '../common/contextualize.js';
 
@@ -50,6 +50,14 @@ export class ClientApp {
 			this.onStatusChanged(status);
 		});
 		this.dispatchAppChanged();
+	}
+
+	toJSON() {
+		return this.name + '#' + this.id;
+	}
+
+	getState() {
+		return this.status;
 	}
 
 	onStatusChanged(status) {

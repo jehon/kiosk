@@ -1,10 +1,10 @@
 
 import {
 	ServerLogger,
-	LoggerSender,
 	loggerAsMessageListener
 } from '../../server/server-lib-logger.js';
 import { EventEmitter } from 'events';
+import { LoggerSender } from '../../common/logger-sender.js';
 
 import { fn } from './at-helper.mjs';
 

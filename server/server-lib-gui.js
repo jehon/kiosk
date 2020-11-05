@@ -2,9 +2,11 @@
 // Must use require for electron (why???)
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { BrowserWindow, app: electronApp } = require('electron');
+const { BrowserWindow, app: electronApp, ipcMain } = require('electron');
 
-const credentialsMap = new Map();
+import { LoggerSender } from '../common/logger-sender.js';
+import { loggerAsMessageListener } from './server-lib-logger.js';
+// const credentialsMap = new Map();
 
 /** @typedef { import('./server-app.js').ServerApp } ServerApp */
 
@@ -40,24 +42,22 @@ export async function start(serverApp) {
 		app.info('** Remote debugging available on port http://localhost:9223/');
 	}
 
-	if (electronApp) {
-		electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
+	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
 
-			// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
-			// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
+	// 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
+	// 		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
 
-			app.debug(`login request for ${details.url}`);
-			for (const url of credentialsMap.keys()) {
-				const v = credentialsMap.get(url);
-				if (details.url.startsWith(url)) {
-					app.debug(`Auto fill in credentials of ${details.url} for ${url} with ${v.username}`);
-					event.preventDefault();
-					callback(v.username, v.password);
-					break;
-				}
-			}
-		});
-	}
+	// 		app.debug(`login request for ${details.url}`);
+	// 		for (const url of credentialsMap.keys()) {
+	// 			const v = credentialsMap.get(url);
+	// 			if (details.url.startsWith(url)) {
+	// 				app.debug(`Auto fill in credentials of ${details.url} for ${url} with ${v.username}`);
+	// 				event.preventDefault();
+	// 				callback(v.username, v.password);
+	// 				break;
+	// 			}
+	// 		}
+	// 	});
 
 	const opts = {
 		autoHideMenuBar: true,
@@ -86,6 +86,9 @@ export async function start(serverApp) {
 	const win = new BrowserWindow(opts);
 	const url = 'client/index.html';
 	// const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
+
+	// Enable logging
+	ipcMain.on(LoggerSender.CHANNEL_NAME, (_event, message) => loggerAsMessageListener(message));
 
 	app.debug(`Loading: ${url}`);
 	// win.loadURL(url);

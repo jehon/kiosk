@@ -1,7 +1,8 @@
 
 import { Worker, parentPort, workerData } from 'worker_threads';
 
-import { loggerAsMessageListener, LoggerSender } from './server-lib-logger.js';
+import { loggerAsMessageListener } from './server-lib-logger.js';
+import { LoggerSender } from '../common/logger-sender.js';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -24,7 +25,7 @@ export function createWorker(file, app, data) {
 		}
 	});
 
-	masterOnMessage(worker, 'log', (payload) => loggerAsMessageListener(payload));
+	masterOnMessage(worker, LoggerSender.MESSAGE_TYPE, (payload) => loggerAsMessageListener(payload));
 
 	worker.on('error', err => app.error(`Worker: ${file} emitted an error: ${err}`));
 
@@ -90,7 +91,7 @@ export function masterSendMessage(worker, type, payload) {
  */
 export function workerGetLogger() {
 	return new LoggerSender(
-		(data) => workerSendMessage('log', data),
+		(data) => workerSendMessage(LoggerSender.MESSAGE_TYPE, data),
 		workerData?.loggerNamespace ?? 'worker'
 	);
 }

@@ -73,7 +73,7 @@ export function enableDebugFor(name) {
 /**
  * @returns {Array<string>} the enabled debuggers
  */
-export function getEnabledDebugRegexp() {
+export function getEnabledDebug() {
 	return enabledDebugger;
 }
 

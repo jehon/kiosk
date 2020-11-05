@@ -3,23 +3,14 @@ import _ from 'lodash';
 import debugFactory from 'debug';
 import chalk from 'chalk';
 
+import { LoggerSender, loggerCanonizeNamespace } from '../common/logger-sender.js';
+
 const loggersCreationStream = debugFactory('kiosk:loggers');
 
 /**
  * For dynamic loggers
  */
 const loggerMap = new Map();
-
-/**
- * @param {string} n - non normalized namespace
- * @returns {string} the normalized namespace
- */
-function loggerCanonizeNamespace(n) {
-	if (!n.startsWith('kiosk')) {
-		n = 'kiosk.' + n;
-	}
-	return n.split('.').join(':').replace(/:+/g, ':');
-}
 
 /**
  * @param {Error} e - the error to be rendered
@@ -45,10 +36,6 @@ function loggerGenerateMessage(level, ...args) {
 }
 
 export class ServerLogger {
-	static LEVEL_ERROR = 'error'
-	static LEVEL_INFO = 'info'
-	static LEVEL_DEBUG = 'debug'
-
 	streams = {
 		debug: (..._args) => { },
 		log: (..._args) => { }
@@ -117,20 +104,11 @@ export class ServerLogger {
 }
 
 /**
- * @typedef {object} LogMessage to send log messages to the server
- * @property {string} type is a hardcoded constant 'log'
- * @property {string} data.namespace of the remote logger
- * @property {string} data.level of the remote logger
- * @property {Array<*>} data.content the real message
- */
-
-
-/**
  * Allow remote* to log on the server
  *
  * @param {LogMessage} message to be received
  */
-export function loggerAsMessageListener(/** @type {LogMessage} */ message) {
+export function loggerAsMessageListener(message) {
 	// TODO: handle namespace locally ?
 	const namespace = message.namespace ?? 'test';
 	let logger;
@@ -140,39 +118,16 @@ export function loggerAsMessageListener(/** @type {LogMessage} */ message) {
 		logger = new ServerLogger(namespace);
 	}
 	switch (message.level) {
-		case ServerLogger.LEVEL_ERROR:
+		case LoggerSender.LEVEL_ERROR:
 			logger.error(...message.content);
 			break;
-		case ServerLogger.LEVEL_INFO:
+		case LoggerSender.LEVEL_INFO:
 			logger.info(...message.content);
 			break;
-		case ServerLogger.LEVEL_DEBUG:
+		case LoggerSender.LEVEL_DEBUG:
 			logger.debug(...message.content);
 			break;
 		default:
 			break;
-	}
-}
-
-export class LoggerSender {
-	constructor(sendFunction, loggerNamespace = '') {
-		this.sendFunction = sendFunction;
-		this.proxy = (level, ...args) => sendFunction({
-			namespace: loggerNamespace,
-			level,
-			content: args
-		});
-	}
-
-	error(...content) {
-		this.proxy(ServerLogger.LEVEL_ERROR, ...content);
-	}
-
-	info(...content) {
-		this.proxy(ServerLogger.LEVEL_INFO, ...content);
-	}
-
-	debug(...content) {
-		this.proxy(ServerLogger.LEVEL_DEBUG, ...content);
 	}
 }
