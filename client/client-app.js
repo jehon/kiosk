@@ -4,8 +4,8 @@ import './elements/img-loading.js';
 import './elements/css-inherit.js';
 
 import loggerFactory from './client-logger.js';
+import Bus from './client-lib-bus.js';
 import contextualize from '../common/contextualize.js';
-import Bus from './bus.js';
 
 import { kioskEventListenerMixin } from './client-api-mixins.js';
 
@@ -31,12 +31,13 @@ import('./client-app-chooser.js').then(mod => {
 	selectApplication = mod.default;
 });
 
-export class ClientAPI {
+export class ClientApp {
 	id = idCounter++;
 	name; // private
 	c; // contextualizer - private
 	logger;
 	priority = 1000;
+	unsubscribeElectronStatus = null;
 
 	constructor(name) {
 		this.name = name;
@@ -44,7 +45,15 @@ export class ClientAPI {
 		this.c = contextualize(this.name);
 		this.debug('Registering app', this.getName(), this);
 		apps[this.getName()] = this;
+
+		this.unsubscribeElectronStatus = require('electron').ipcRenderer.on(this.c('.status'), (event, status) => {
+			this.onStatusChanged(status);
+		});
 		this.dispatchAppChanged();
+	}
+
+	onStatusChanged(status) {
+		this.status = status;
 	}
 
 	error(...data) {
@@ -158,28 +167,15 @@ export class ClientAPI {
 	}
 
 	subscribe(name, cb) {
-		// TODO here:
-
-		require('electron').ipcRenderer.on(this.c(name), (event, message) => {
-			this.debug('Received: ', event, message);
-			cb(message);
-		});
 		return bus.subscribe(this.c(name), cb);
 	}
 
-	subscribeToServerEvent(name, cb) {
-		require('electron').ipcRenderer.on(this.c(name), (event, message) => {
-			this.debug('Received: ', event, message);
-			cb(message);
-		});
-	}
-
-	async invokeServer(name, params) {
-		return require('electron').ipcRenderer.invoke(name, ...params);
-	}
+	// async invokeServer(name, params) {
+	// 	return require('electron').ipcRenderer.invoke(name, ...params);
+	// }
 }
 
-export default (space) => new ClientAPI(space);
+export default (space) => new ClientApp(space);
 
 /*
  *

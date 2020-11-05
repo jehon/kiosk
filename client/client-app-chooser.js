@@ -1,10 +1,13 @@
 
-import clientAPIFactory, { getApplicationsList } from './client-api.js';
+import clientAPIFactory, { getApplicationsList } from './client-app.js';
 
 const app = clientAPIFactory('client:chooser');
 let currentApplication = null;
 let manualSelectionTimer = false;
 
+/**
+ *
+ */
 function relaunchActivity() {
 	// Forget previous timer
 	if (manualSelectionTimer) {
@@ -28,6 +31,9 @@ function relaunchActivity() {
 	}, 2 * 60 * 1000);
 }
 
+/**
+ *
+ */
 function dispatchApp() {
 	if (currentApplication) {
 		app.debug('New currentMainApplication', currentApplication.name);
@@ -35,12 +41,18 @@ function dispatchApp() {
 	}
 }
 
+/**
+ * @param list
+ */
 function autoSelectApp(list) {
 	currentApplication = list.filter(a => a.mainElement && a.priority)[0];
 	app.debug('Selecting application automatically', currentApplication ? currentApplication.name : 'no available');
 	dispatchApp();
 }
 
+/**
+ * @param app
+ */
 export default function selectApplication(app) {
 	relaunchActivity();
 	currentApplication = app;

@@ -3,8 +3,6 @@ import _ from '../node_modules/lodash-es/lodash.js';
 
 // Inspired from https://gist.github.com/mudge/5830382
 
-/** @typedef { import('../server/server-logger.js').Logger } Logger */
-
 export default class Bus {
 	/**
 	 * @param {Logger|*} logger - where to send the logs

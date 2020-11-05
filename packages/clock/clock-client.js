@@ -1,6 +1,6 @@
 /* global moment */
 
-import AppFactory from '../../client/client-api.js';
+import AppFactory from '../../client/client-app.js';
 const app = AppFactory('clock');
 
 const defaultPriority = 1250;
