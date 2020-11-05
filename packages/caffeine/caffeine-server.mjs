@@ -3,11 +3,7 @@ import serverAppFactory from '../../server/server-app.js';
 import { spawn } from 'child_process';
 
 /**
- * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
- */
-
-/**
- * @type {ServerApp}
+ * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('caffeine');
 
@@ -63,7 +59,7 @@ export async function wakeUp() {
 /**
  * Initialize the package
  *
- * @returns {ServerApp} the app
+ * @returns {module:server/ServerApp} the app
  */
 export function init() {
 	app.setState({

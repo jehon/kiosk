@@ -2,11 +2,7 @@
 import serverAppFactory from '../../server/server-app.js';
 
 /**
- * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
- */
-
-/**
- * @type {ServerApp}
+ * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('clock');
 
@@ -63,7 +59,7 @@ const registered = [];
 /**
  * Initialize the package
  *
- * @returns {ServerApp} the app
+ * @returns {module:server/ServerApp} the app
  */
 export function init() {
 	app.setState(status);
