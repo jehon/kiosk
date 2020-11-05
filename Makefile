@@ -115,6 +115,10 @@ test-client: build
 test-client-continuously: build
 	$(NODE_MOD)/karma start tests/client/karma.conf.cjs
 
+.PHONY: test-app
+test-app: build
+	node ./spectron.cjs
+
 .PHONY: lint
 lint:
 	$(NODE_MOD)/eslint .
