@@ -5,9 +5,7 @@ import child_process from 'child_process';
 
 import { getUrl } from './foscam-r2m-common.js';
 import { workerGetLogger, workerGetConfig, workerSendMessage } from '../../../server/server-lib-worker.js';
-import { LoggerSender } from '../../../server/server-lib-logger.js';
 
-/** @type {LoggerSender} logger - where to send the logs */
 const logger = workerGetLogger();
 const config = workerGetConfig();
 

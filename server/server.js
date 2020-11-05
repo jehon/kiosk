@@ -1,10 +1,7 @@
 
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
 import { start, whenReady } from './server-lib-gui.js';
 import serverAppFactory from './server-app.js';
-import { loadConfigFromCommandLine, loadConfigFromFile, enableDebugFor } from './server-lib-config.js';
+import { loadConfigFromCommandLine, loadConfigFromFile, enableDebugFor, getEnabledDebug } from './server-lib-config.js';
 import { resetConfig } from './server-lib-config.js';
 
 const app = serverAppFactory('core');
@@ -42,6 +39,12 @@ resetConfig()
 				enableDebugFor(re);
 			}
 		}
+	})
+	.then(() => {
+		app.setState({
+			devMode: app.getConfig('core.devMode'),
+			enabledDebug: getEnabledDebug()
+		})
 	})
 	.then(() => whenReady())
 	.then(() => {

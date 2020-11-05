@@ -20,8 +20,8 @@ module.exports = function (config) {
 		],
 
 		files: [
-			{ pattern: 'tests/client/*-helper.js' },
-			{ pattern: 'tests/client/*-test.mjs', type: 'module' },
+			{ pattern: 'tests/client/*-test.js', type: 'module' },
+			{ pattern: 'tests/client/*.js', watched: true, included: false },
 			{ pattern: 'client/*.js', watched: true, included: false },
 			// { pattern: 'client/*.mjs', watched: true, included: false },
 			{ pattern: '**/*', watched: false, included: false },
