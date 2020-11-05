@@ -1,5 +1,5 @@
 
-import Bus from '../../client/bus.js';
+import Bus from '../../client/client-lib-bus.js';
 
 import { fn } from './at-helper.mjs';
 

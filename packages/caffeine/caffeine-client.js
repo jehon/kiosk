@@ -1,5 +1,5 @@
 
-import AppFactory from '../../client/client-api.js';
+import AppFactory from '../../client/client-app.js';
 
 const app = AppFactory('caffeine');
 const body = document.querySelector('body');
@@ -49,7 +49,7 @@ body.addEventListener('mousemove', e => {
 	}
 
 	const dist2 = Math.pow(e.clientX - lastPosition.x, 2)
-        + Math.pow(e.clientY - lastPosition.y, 2);
+		+ Math.pow(e.clientY - lastPosition.y, 2);
 
 	// A big movement in a short time, it's an activity
 	if (dist2 > Math.pow(50, 2)) {

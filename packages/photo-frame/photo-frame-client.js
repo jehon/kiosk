@@ -1,7 +1,7 @@
 
 import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import AppFactory from '../../client/client-api.js';
+import AppFactory from '../../client/client-app.js';
 
 const app = AppFactory('photo-frame');
 

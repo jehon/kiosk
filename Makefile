@@ -111,6 +111,7 @@ test-server: build
 test-client: build
 	$(NODE_MOD)/karma start tests/client/karma.conf.cjs --single-run
 
+.PHONY: test-client-continuously
 test-client-continuously: build
 	$(NODE_MOD)/karma start tests/client/karma.conf.cjs
 

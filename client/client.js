@@ -1,6 +1,6 @@
 
-import clientAPIFactory from './client-api.js';
-import './client-app-chooser.js';
+import clientAPIFactory from './client-app.js';
+// import './client-app-chooser.js';
 
 const app = clientAPIFactory('client');
 
@@ -63,15 +63,16 @@ async function loadPackage(name) {
 }
 
 Promise.all([
-	loadPackage('caffeine'),
-	loadPackage('camera'),
-	loadPackage('clock'),
 	loadPackage('menu'),
-	loadPackage('photo-frame')
+	// loadPackage('caffeine'),
+	// loadPackage('camera'),
+	// loadPackage('clock'),
+	// loadPackage('photo-frame')
 ]);
 
 // const devMode = require('electron').remote.require('./server/server-config.js')('server.devMode');
-// if (devMode) {
-// 	// https://electronjs.org/devtron
-// 	require('devtron').install();
-// }
+const devMode = false;
+if (devMode) {
+	// https://electronjs.org/devtron
+	require('devtron').install();
+}

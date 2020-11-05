@@ -1,7 +1,7 @@
 
 /* global toastr */
 
-import AppFactory from '../../client/client-api.js';
+import AppFactory from '../../client/client-app.js';
 const TriStates = require('electron').remote.require('./packages/camera/constants.js').TriStates;
 
 // TODO: manage http errors
