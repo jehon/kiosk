@@ -101,11 +101,18 @@ node_modules/.dependencies: package.json package-lock.json
 	touch node_modules/.dependencies
 
 .PHONY: test
-test: test-server
+test: test-server test-client
 
 .PHONY: test-server
 test-server: build
 	$(NODE_MOD)/jasmine --config=tests/server/jasmine.json
+
+.PHONY: test-client
+test-client: build
+	$(NODE_MOD)/karma start tests/client/karma.conf.cjs --single-run
+
+test-client-continuously: build
+	$(NODE_MOD)/karma start tests/client/karma.conf.cjs
 
 .PHONY: lint
 lint:

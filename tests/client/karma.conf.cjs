@@ -1,5 +1,7 @@
 // Karma configuration
 
+const path = require('path');
+
 // ???
 // process.env.CHROME_BIN = require('puppeteer').executablePath();
 
@@ -11,7 +13,7 @@ module.exports = function (config) {
 		// logLevel: config.LOG_DEBUG,
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: __dirname + '/../../',
+		basePath: path.join(__dirname, '../../'),
 
 		frameworks: [
 			'jasmine'
@@ -19,8 +21,8 @@ module.exports = function (config) {
 
 		files: [
 			{ pattern: 'tests/client/**/*.js', type: 'module' },
-			{ pattern: '**/node_modules/**/*', watched: false, included: false },
 			{ pattern: 'client/*.js', watched: true, included: false },
+			// { pattern: 'client/*.mjs', watched: true, included: false },
 			{ pattern: '**/*', watched: false, included: false },
 		],
 
@@ -42,28 +44,11 @@ module.exports = function (config) {
 		// enable / disable colors in the output (reporters and logs)
 		colors: true,
 
-		// level of logging
-		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		// logLevel: config.LOG_INFO,
-
-
 		// enable / disable watching file and executing tests whenever any file changes
 		autoWatch: true,
 
-
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		// browsers: [ 'ChromiumHeadless' ],
 		browsers: ['ChromiumHeadless'],
-
-
-		// Continuous Integration mode
-		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: false,
-
-
-		// Concurrency level
-		// how many browser should be started simultaneous
-		concurrency: Infinity
 	});
 };
