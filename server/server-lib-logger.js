@@ -106,7 +106,7 @@ export class ServerLogger {
 /**
  * Allow remote* to log on the server
  *
- * @param {LogMessage} message to be received
+ * @param {module:common/LogMessage} message to be received
  */
 export function loggerAsMessageListener(message) {
 	// TODO: handle namespace locally ?

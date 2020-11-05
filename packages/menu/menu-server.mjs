@@ -2,11 +2,7 @@
 import serverAppFactory from '../../server/server-app.js';
 
 /**
- * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
- */
-
-/**
- * @type {ServerApp}
+ * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('menu');
 
@@ -15,7 +11,7 @@ export default app;
 /**
  * Initialize the application
  *
- * @returns {ServerApp} the app
+ * @returns {module:server/ServerApp} the app
  */
 export function init() {
 	const appConfigs = app.getConfig('.', []);

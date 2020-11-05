@@ -9,10 +9,6 @@ import minimatch from 'minimatch';
 import exifParser from './exif-parser.mjs';
 
 /**
- * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
- */
-
-/**
  * @typedef FolderConfig
  * @param {string} name - name of the config
  * @param {string} folder relative or absolute
@@ -48,7 +44,7 @@ import exifParser from './exif-parser.mjs';
  */
 
 /**
- * @type {ServerApp}
+ * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('photo-frame');
 
@@ -123,8 +119,8 @@ export async function _getFoldersFromFolder(folder, excludes) {
  * Find "n" files in the folders and build up a list
  * It will recurse to subfolders (up and down) until "n" files are found
  *
- * @param {FolderConfig} folderConfig where to search for TODO: should not be modified
- * @param {number} n of files to take
+ * @param {FolderConfig} folderConfig where to search for
+ * @param {number} n of files to take (will be updated with really taken count)
  * @param {string} subpath where to look for
  * @param {Array<string>} previouslySelected is the list of previously visited folder (relative to folderConfig)
  * @returns {Array<string>} is a list of files relative to folderConfig.folder

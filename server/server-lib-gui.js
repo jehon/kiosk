@@ -8,8 +8,6 @@ import { LoggerSender } from '../common/logger-sender.js';
 import { loggerAsMessageListener } from './server-lib-logger.js';
 // const credentialsMap = new Map();
 
-/** @typedef { import('./server-app.js').ServerApp } ServerApp */
-
 // /**
 //  * @param {string} url - start of the url to register credentials
 //  * @param {string} username of the credentials
@@ -27,8 +25,7 @@ export function whenReady() {
 }
 
 /**
- * @param {ServerApp} app for logging purpose
- * @param serverApp
+ * @param {module:server/ServerApp} serverApp for logging purpose
  */
 export async function start(serverApp) {
 	const app = serverApp.extend('gui');

@@ -8,8 +8,6 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import deepMerge from 'deepmerge';
 
-/** @typedef { import('./server-app.js').ServerApp } ServerApp */
-
 let config = {};
 
 const enabledDebuggerFromEnv = process.env.DEBUG;
@@ -79,7 +77,7 @@ export function getEnabledDebug() {
 
 // istanbul-ignore-next
 /**
- * @param {ServerApp} serverApp where to log
+ * @param {module:server/ServerApp} serverApp where to log
  * @returns {Promise<object>} the parsed options
  */
 export async function loadConfigFromCommandLine(serverApp) {
@@ -121,7 +119,7 @@ export async function loadConfigFromCommandLine(serverApp) {
 }
 
 /**
- * @param {ServerApp} serverApp where to log
+ * @param {module:server/ServerApp} serverApp where to log
  * @param {Array<string>} configFiles in order, first one found will be loaded
  * @returns {Promise<object>} the current config
  */

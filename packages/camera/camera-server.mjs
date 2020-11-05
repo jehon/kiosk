@@ -3,11 +3,7 @@ import serverAppFactory from '../../server/server-app.js';
 import { TriStates } from './constants.js';
 
 /**
- * @typedef { import('../../server/server-app.js').ServerApp } ServerApp
- */
-
-/**
- * @type {ServerApp}
+ * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('camera');
 export default app;
@@ -104,7 +100,7 @@ export async function _check() {
 /**
  * Initialize the package
  *
- * @returns {ServerApp} the app
+ * @returns {module:server/ServerApp} the app
  */
 export function init() {
 	camera = new cameraGeneric(app, app.getConfig());

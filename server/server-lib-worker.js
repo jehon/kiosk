@@ -11,7 +11,7 @@ export const __dirname = (url) => dirname(fileURLToPath(url));
 
 /**
  * @param {string} file - the file containing the worker
- * @param {ServerApp} app - to get some context (logger, etc...)
+ * @param {module:server/ServerApp} app - to get some context (logger, etc...)
  * @param {object} data - to pass to the worker (data)
  * @returns {Worker} - the worker
  */
