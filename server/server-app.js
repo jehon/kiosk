@@ -64,21 +64,6 @@ export class ServerApp extends ServerLogger {
 	// registerCredentials(url, username, password) {
 	// 	this.debug(`Registering credentials for ${username}@${url}: #${password.length} characters`);
 	// 	registerCredentials(url, { username, password });
-
-	// 	// TODO: here - split the registerCredentials -> map + onlogin being on different logger and thread
-	// 	//
-	// 	// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
-	// 	// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
-	// 	//
-
-	// 	// electronApp.on('login', (event, webContents, details, authInfo, callback) => {
-	// 	// 	this.debug(`login request for ${details.url}`);
-	// 	// 	if (details.url.startsWith(url)) {
-	// 	// 		this.debug(`Auto fill in credentials of ${details.url} for ${url} with ${username}`);
-	// 	// 		event.preventDefault();
-	// 	// 		callback(username, password);
-	// 	// 	}
-	// 	// });
 	// 	return this;
 	// }
 

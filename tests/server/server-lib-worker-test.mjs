@@ -5,7 +5,7 @@ import { ServerLogger } from '../../server/server-lib-logger.js';
 
 import path from 'path';
 
-import { fn, __dirname } from './at-helper.mjs';
+import { fn, __dirname } from './helper-main.mjs';
 
 const logger = new ServerLogger('test');
 

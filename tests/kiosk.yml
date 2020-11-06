@@ -1,8 +1,8 @@
 ---
 core:
   loggers:
-    - kiosk:loggers
-    - kiosk:camera:server:worker
+    # - kiosk:loggers
+    # - kiosk:camera:server:worker
     #- kiosk:core:server
     # - kiosk:core:server:config
     # - kiosk:core:server:gui

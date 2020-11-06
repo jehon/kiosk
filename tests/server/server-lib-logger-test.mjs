@@ -6,7 +6,7 @@ import {
 import { EventEmitter } from 'events';
 import { LoggerSender } from '../../common/logger-sender.js';
 
-import { fn } from './at-helper.mjs';
+import { fn } from './helper-main.mjs';
 
 
 describe(fn(import.meta.url), () => {

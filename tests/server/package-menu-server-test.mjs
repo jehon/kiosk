@@ -2,7 +2,7 @@
 import app, { init } from '../../packages/menu/menu-server.mjs';
 import getConfig, { setConfig } from '../../server/server-lib-config.js';
 
-import { fn } from './at-helper.mjs';
+import { fn } from './helper-main.mjs';
 
 describe(fn(import.meta.url), () => {
 	let cfg;
