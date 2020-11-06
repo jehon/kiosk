@@ -79,7 +79,7 @@ start: build
 
 .PHONY: start-dev-with-prod-config
 start-dev-with-prod-config: build
-	$(NODE_MOD)/electron . --dev-mode -f etc/kiosk.yml
+	$(NODE_MOD)/electron . -f etc/kiosk.yml --dev-mode
 
 .PHONY: start-dev-with-test-config
 start-dev-with-test-config: build
