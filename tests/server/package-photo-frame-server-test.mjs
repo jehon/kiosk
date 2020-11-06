@@ -12,7 +12,7 @@ import app, {
 } from '../../packages/photo-frame/photo-frame-server.mjs';
 import getConfig, { setConfig } from '../../server/server-lib-config.js';
 
-import { fn } from './at-helper.mjs';
+import { fn } from './helper-main.mjs';
 
 const testFolderConfig = {
 	'name': 'photo',

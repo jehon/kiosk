@@ -1,7 +1,7 @@
 
 import Callback from '../../common/callback.js';
 
-import { fn } from './at-helper.mjs';
+import { fn } from './helper-main.mjs';
 
 describe(fn(import.meta.url), () => {
 	it('should fire when on change', function () {
@@ -9,7 +9,8 @@ describe(fn(import.meta.url), () => {
 		let i = 0;
 
 		cb.onChange(value => {
-			i += (value ?? 0);
+			expect(value).not.toBeUndefined();
+			i += value;
 		});
 
 		cb.emit(10);
@@ -25,6 +26,7 @@ describe(fn(import.meta.url), () => {
 
 		cb.emit(10);
 		cb.onChange(value => {
+			expect(value).not.toBeUndefined();
 			i += (value ?? 0);
 		});
 
@@ -36,6 +38,7 @@ describe(fn(import.meta.url), () => {
 		let i = 0;
 
 		cb.onChange(value => {
+			expect(value).not.toBeUndefined();
 			i += (value ?? 0);
 		});
 
@@ -48,6 +51,7 @@ describe(fn(import.meta.url), () => {
 		let i = 0;
 
 		let stop = cb.onChange(value => {
+			expect(value).not.toBeUndefined();
 			i += (value ?? 0);
 		});
 

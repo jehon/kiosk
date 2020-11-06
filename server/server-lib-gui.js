@@ -6,6 +6,7 @@ const { BrowserWindow, app: electronApp, ipcMain } = require('electron');
 
 import { LoggerSender } from '../common/logger-sender.js';
 import { loggerAsMessageListener } from './server-lib-logger.js';
+
 // const credentialsMap = new Map();
 
 // /**
@@ -64,7 +65,7 @@ export async function start(serverApp) {
 			nodeIntegration: true,
 			// TODO: affine this
 			enableRemoteModule: true,
-			// contextIsolation: true
+			contextIsolation: false
 		},
 		frame: false,
 		width: 1980,
@@ -95,8 +96,10 @@ export async function start(serverApp) {
 		win.webContents.openDevTools();
 	}
 
-	win.on('did-finish-load', function () {
+	win.webContents.on('did-finish-load', function () {
+		app.debug('Sending history of event');
 		historySent.forEach((data, eventName) => {
+			app.debug('Sending history of event: ', eventName, data);
 			win.webContents.send(eventName, data);
 		});
 	});
@@ -142,18 +145,4 @@ export function dispatchToBrowser(eventName, data) {
 //  */
 // export function registerFunction(eventName, cb) {
 // 	electron.ipcMain.handle(eventName, cb);
-// }
-
-// /**
-//  * @param name
-//  * @param category
-//  * @param data
-//  */
-// function fromRemote(name, category, data) {
-// 	if (!['error', 'info', 'debug'].includes(category)) {
-// 		throw 'Invalid category';
-// 	}
-
-// 	// Make the call to the right logger
-// 	loggerFactory(name + ':client')[category](name, ...data);
 // }

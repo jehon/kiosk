@@ -42,7 +42,7 @@ resetConfig()
 	})
 	.then(() => {
 		app.setState({
-			devMode: app.getConfig('core.devMode'),
+			devMode: app.getConfig('server.devMode', false),
 			enabledDebug: getEnabledDebug()
 		})
 	})

@@ -3,7 +3,7 @@ import getConfig, { setConfig } from '../../server/server-lib-config.js';
 import app, { init, _check } from '../../packages/camera/camera-server.mjs';
 import { TriStates } from '../../packages/camera/constants.js';
 
-import { fn } from './at-helper.mjs';
+import { fn } from './helper-main.mjs';
 
 import nock from 'nock';
 

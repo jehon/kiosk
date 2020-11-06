@@ -1,7 +1,7 @@
 
 import exifParser from '../../packages/photo-frame/exif-parser.mjs';
 
-import { fn } from './at-helper.mjs';
+import { fn } from './helper-main.mjs';
 
 describe(fn(import.meta.url), () => {
 	it('should parse file infos on f1', async () => {

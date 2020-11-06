@@ -17,17 +17,23 @@ function equals(v1, v2) {
 }
 
 export default class Callback {
-	value;
+	state;
 	subscribers = [];
 
-	constructor(value = null) {
-		this.value = value;
+	constructor(value = undefined) {
+		this.state = value;
+	}
+
+	getState() {
+		return this.state;
 	}
 
 	onChange(callback) {
 		let index = 1;
 		this.subscribers.push(callback);
-		callback(this.value, undefined);
+		if (this.state !== undefined) {
+			callback(this.state, undefined);
+		}
 
 		// This returns the unsubscribe handler
 		return () => {
@@ -36,13 +42,12 @@ export default class Callback {
 	}
 
 	async emit(newValue) {
-		const prevValue = this.value;
+		const prevValue = this.state;
 		if (equals(prevValue, newValue)) {
 			return false;
 		}
-		this.value = clone(newValue);
+		this.state = clone(newValue);
 
 		return Promise.all(this.subscribers.map(cb => cb(clone(newValue), clone(prevValue))));
 	}
-
 }
