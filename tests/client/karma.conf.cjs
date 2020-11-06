@@ -20,6 +20,8 @@ module.exports = function (config) {
 		],
 
 		files: [
+			{ pattern: 'node_modules/moment/min/moment-with-locales.min.js', included: true },
+			{ pattern: 'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js', included: true },
 			{ pattern: 'tests/client/*-test.js', type: 'module' },
 			{ pattern: 'tests/client/*.js', watched: true, included: false },
 			{ pattern: 'client/*.js', watched: true, included: false },
