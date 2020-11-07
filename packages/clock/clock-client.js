@@ -1,7 +1,9 @@
 /* global moment */
 
-import AppFactory from '../../client/client-app.js';
-const app = AppFactory('clock');
+import { ClientApp, ClientAppElement } from '../../client/client-app.js';
+
+const app = new ClientApp('clock');
+export default app;
 
 const defaultPriority = 1250;
 const elevatedPriority = 150;
@@ -43,8 +45,6 @@ const polar2cartesianX = (r, theta) => r * Math.cos(theta);
  */
 const polar2cartesianY = (r, theta) => r * Math.sin(theta);
 
-let ticker = null;
-
 // Thanks to https://jsfiddle.net/upsidown/e6dx9oza/
 /**
  * @param {number} radius polar radius
@@ -61,30 +61,13 @@ function describeArc(radius, startAngle, endAngle) {
 	return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${arcSweep} 0 ${end.x} ${end.y} L 0 0 Z`;
 }
 
-class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
+export class KioskClock extends ClientAppElement {
 	/**
 	 * @type {number}
 	 */
 	cron = 0
-
-	connectedCallback() {
-		super.connectedCallback();
-		if (!this.cron) {
-			this.cron = window.setInterval(() => this.adapt(), 1000);
-		}
-	}
-
-	disconnectedCallback() {
-		if (super.disconnectedCallback) {
-			super.disconnectedCallback();
-		}
-		if (this.cron) {
-			window.clearInterval(this.cron);
-			this.cron = 0;
-		}
-	}
-
-	render() {
+	constructor() {
+		super();
 		this.innerHTML = `
 			<svg viewbox="-100 -100 200 210" class="full" preserveAspectRatio="xMidYMid meet" style='height: 95%'>
 				<path id="arcTotal"  fill="#500000" />
@@ -130,11 +113,29 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 			s: this.querySelector('#handS'),
 		};
 		this.arcEl = {
-			total: this.querySelector('#arcTotal'),
-			remain: this.querySelector('#arcRemain'),
+			total: /** @type {HTMLElement} */ (this.querySelector('#arcTotal')),
+			remain: /** @type {HTMLElement} */ (this.querySelector('#arcRemain')),
 		};
-		this.dateEl = this.querySelector('#date');
-		this.dowEl = this.querySelector('#dow');
+		this.dateEl = /** @type {HTMLElement} */ (this.querySelector('#date'));
+		this.dowEl = /** @type {HTMLElement} */ (this.querySelector('#dow'));
+	}
+
+	connectedCallback() {
+		if (!this.cron) {
+			this.cron = window.setInterval(() => this.adapt(), 1000);
+		}
+	}
+
+	disconnectedCallback() {
+		if (this.cron) {
+			window.clearInterval(this.cron);
+			this.cron = 0;
+		}
+	}
+
+	setServerState(status) {
+		super.setServerState(status);
+		this.adapt();
 	}
 
 	adapt() {
@@ -149,19 +150,19 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 		let hourAngle = (hour % 12 * Math.PI / 6) +
 			(minute * Math.PI / (6 * 60)) +
 			(second * Math.PI / (360 * 60));
-		this.hands.h.setAttribute('x2', polar2cartesianX(handLengths.h, hourAngle - Math.PI / 2));
-		this.hands.h.setAttribute('y2', polar2cartesianY(handLengths.h, hourAngle - Math.PI / 2));
+		this.hands.h.setAttribute('x2', '' + polar2cartesianX(handLengths.h, hourAngle - Math.PI / 2));
+		this.hands.h.setAttribute('y2', '' + polar2cartesianY(handLengths.h, hourAngle - Math.PI / 2));
 
 		// hand: minute
 		let minuteAngle = (minute * Math.PI / 30) +
 			(second * Math.PI / (30 * 60));
-		this.hands.m.setAttribute('x2', polar2cartesianX(handLengths.m, minuteAngle - Math.PI / 2));
-		this.hands.m.setAttribute('y2', polar2cartesianY(handLengths.m, minuteAngle - Math.PI / 2));
+		this.hands.m.setAttribute('x2', '' + polar2cartesianX(handLengths.m, minuteAngle - Math.PI / 2));
+		this.hands.m.setAttribute('y2', '' + polar2cartesianY(handLengths.m, minuteAngle - Math.PI / 2));
 
 		// hand: second
 		let secondAngle = (second * Math.PI / 30);
-		this.hands.s.setAttribute('x2', polar2cartesianX(handLengths.s, secondAngle - Math.PI / 2));
-		this.hands.s.setAttribute('y2', polar2cartesianY(handLengths.s, secondAngle - Math.PI / 2));
+		this.hands.s.setAttribute('x2', '' + polar2cartesianX(handLengths.s, secondAngle - Math.PI / 2));
+		this.hands.s.setAttribute('y2', '' + polar2cartesianY(handLengths.s, secondAngle - Math.PI / 2));
 
 		if (this.hasAttribute('no-date')) {
 			this.dateEl.style.display = 'none';
@@ -177,14 +178,14 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 			// dow = Math.floor(second % 7); // Debug
 			const dows = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 			this.dowEl.innerHTML = dows[dow];
-			this.dowEl.setAttribute('x', (dow * 200 / 7) - 100);
+			this.dowEl.setAttribute('x', '' + ((dow * 200 / 7) - 100));
 		}
 
-		if (ticker && ticker.stat.end > new Date()) {
+		if (this.status.currentTicker && this.status.currentTicker.stat.end > new Date()) {
 			this.arcEl.total.style.display = 'initial';
 			this.arcEl.remain.style.display = 'initial';
-			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(ticker.stat.start.getMinutes()), angleFromMinutes(ticker.stat.end.getMinutes())));
-			this.arcEl.remain.setAttribute('d', describeArc(circleRadius, angleFromMinutesSeconds(minute, second), angleFromMinutes(ticker.stat.end.getMinutes())));
+			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(this.status.currentTicker.stat.start.getMinutes()), angleFromMinutes(this.status.currentTicker.stat.end.getMinutes())));
+			this.arcEl.remain.setAttribute('d', describeArc(circleRadius, angleFromMinutesSeconds(minute, second), angleFromMinutes(this.status.currentTicker.stat.end.getMinutes())));
 		} else {
 			this.arcEl.total.style.display = 'none';
 			this.arcEl.remain.style.display = 'none';
@@ -195,15 +196,14 @@ class KioskClock extends app.getKioskEventListenerMixin()(HTMLElement) {
 customElements.define('kiosk-clock', KioskClock);
 
 app
-	.withPriority(defaultPriority)
-	.withMainElement(new KioskClock())
-	.menuBasedOnIcon('../packages/clock/clock.png');
-
-app.subscribe('.ticker', (data) => {
-	ticker = data;
-	if (data) {
-		app.changePriority(elevatedPriority);
-	} else {
-		app.changePriority(defaultPriority);
-	}
-});
+	.setPriority(defaultPriority)
+	.setMainElement(new KioskClock())
+	.menuBasedOnIcon('../packages/clock/clock.png')
+	.onServerStateChanged(status => {
+		if (status.currentTicker) {
+			app.setPriority(elevatedPriority);
+		} else {
+			app.setPriority(defaultPriority);
+		}
+		(/** @type {ClientAppElement} */ (app.getMainElement())).setServerState(status);
+	});

@@ -41,6 +41,7 @@ export default class extends CameraAPI {
 
 		masterOnMessage(this.worker, 'url', (url) => {
 			this.app.debug('Url is ' + url);
+			this.status.url = url;
 			this.app.setState({
 				...this.app.getState(),
 				url

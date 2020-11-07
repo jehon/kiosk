@@ -19,7 +19,6 @@ export let camera;
 /**
  * Check if the camera is up and running
  *
- * @param camera
  * @returns {Promise<Status>} resolve when check is done and result dispatched to the browser
  */
 export async function _check() {
@@ -88,8 +87,12 @@ export async function _check() {
 					await camera.down();
 				}
 			}
-			app.debug('Current status is', camera.status);
-			app.setState(camera.status);
+			app.debug('Received camera status', camera.status);
+			app.setState({
+				...app.getState(),
+				...camera.status
+			});
+			app.debug('CameraApp status is now', app.getState());
 			return newCode;
 		})
 		.finally(() => { checkRunning = null; });
@@ -104,6 +107,9 @@ export async function _check() {
  */
 export function init() {
 	camera = new cameraGeneric(app, app.getConfig());
+	app.setState({
+		...camera.status
+	});
 
 	// Make 2 checks to be sure that we are in the correct state since startup
 	_check()

@@ -3,14 +3,16 @@
 import './elements/img-loading.js';
 import './elements/css-inherit.js';
 
-import loggerFactory from './client-lib-logger.js';
-import Bus from './client-lib-bus.js';
+import Callback from '../common/callback.js';
 import contextualize from '../common/contextualize.js';
+import loggerFactory from './client-lib-logger.js';
+import { registerApp, autoSelectApplication } from './client-lib-chooser.js';
 
-import { kioskEventListenerMixin } from './client-api-mixins.js';
+// import Bus from './client-lib-bus.js';
 
-const bus = new Bus(loggerFactory('client:bus'));
-const apps = {};
+// import { kioskEventListenerMixin } from './client-api-mixins.js';
+
+// const bus = new Bus(loggerFactory('client:bus'));
 
 /**
  * Application priorities
@@ -24,44 +26,41 @@ const apps = {};
  *    5000.5999: link page applications
  */
 
-let idCounter = 1;
-
-let selectApplication = () => { };
-import('./client-app-chooser.js').then(mod => {
-	selectApplication = mod.default;
-});
+export class ClientAppElement extends HTMLElement {
+	setServerState(state) {
+		this.status = state;
+	}
+}
 
 export class ClientApp {
-	id = idCounter++;
+	id = -1;
 	name; // private
 	c; // contextualizer - private
 	logger;
 	priority = 1000;
 	unsubscribeElectronStatus = null;
 
-	constructor(name) {
+	constructor(name, initialState = {}) {
+		this.serverStateCallback = new Callback(initialState);
 		this.name = name;
 		this.logger = loggerFactory(this.name);
 		this.c = contextualize(this.name);
-		this.debug('Registering app', this.getName(), this);
-		apps[this.getName()] = this;
+		this.info('Registering app', this.getName(), this);
 
 		this.unsubscribeElectronStatus = require('electron').ipcRenderer.on(this.c('.status'), (event, status) => {
-			this.onStatusChanged(status);
+			this.serverStateCallback.emit(status);
 		});
-		this.dispatchAppChanged();
+
+		require('electron').ipcRenderer.send('history', this.c('.status'));
+		registerApp(this);
 	}
 
 	toJSON() {
 		return this.name + '#' + this.id;
 	}
 
-	getState() {
-		return this.status;
-	}
-
-	onStatusChanged(status) {
-		this.status = status;
+	getName() {
+		return this.name;
 	}
 
 	error(...data) {
@@ -78,9 +77,74 @@ export class ClientApp {
 
 	//
 	//
+	// Server state
+	//
+	//
+
+	getServerState() {
+		return this.serverStateCallback.getState();
+	}
+
+	onServerStateChanged(callback) {
+		return this.serverStateCallback.onChange(callback);
+	}
+
+	//
+	//
 	// Configuration
 	//
 	//
+
+	dispatchAppChanged() {
+		autoSelectApplication();
+		return this;
+	}
+
+	setPriority(newPriority) {
+		if (typeof (newPriority) != 'number') {
+			newPriority = parseInt(newPriority);
+		}
+		if (this.priority != newPriority) {
+			this.priority = newPriority;
+			this.dispatchAppChanged();
+		}
+		return this;
+	}
+
+	/**
+	 * @param {HTMLElement} element the main element
+	 * @returns {ClientApp} this
+	 */
+	setMainElement(element) {
+		this.mainElement = element;
+		this.dispatchAppChanged();
+		return this;
+	}
+
+	/**
+	 * @returns {HTMLElement} the main element
+	 */
+	getMainElement() {
+		return this.mainElement;
+	}
+
+	/**
+	 * @param {HTMLElement} element the menu element
+	 * @returns {ClientApp} this
+	 */
+	setMenuElement(element) {
+		this.menuElement = element;
+		this.dispatchAppChanged();
+		return this;
+	}
+
+	/**
+	 * @returns {HTMLElement} the menu element
+	 */
+	getMenuElement() {
+		return this.menuElement;
+	}
+
 	mainBasedOnIFrame(url) {
 		const iframe = document.createElement('iframe');
 		iframe.setAttribute('src', url);
@@ -94,7 +158,7 @@ export class ClientApp {
 		// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
 		// sandbox restrict to nothing, but extra attributes re-allow stuff
 		iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals');
-		this.withMainElement(iframe);
+		this.setMainElement(iframe);
 		return this;
 	}
 
@@ -107,48 +171,9 @@ export class ClientApp {
 		element.classList.add('full-background-image');
 		element.style.backgroundImage = `url('${url}')`;
 		element.innerHTML = `<span>${text}</span>`;
-		element.addEventListener('click', () => selectApplication(this));
-		this.withMenuElement(element);
+		// element.addEventListener('click', () => selectApplication(this));
+		this.setMenuElement(element);
 		return this;
-	}
-
-	dispatchAppChanged() { // TODO: Should be static ?
-		// Select the main application
-		this.dispatch('apps.list', getApplicationsList());
-		return this;
-	}
-
-	withPriority(p) {
-		if (typeof (p) != 'number') {
-			p = parseInt(p);
-		}
-		this.priority = p;
-		this.dispatchAppChanged();
-		return this;
-	}
-
-	withMainElement(element) {
-		this.mainElement = element;
-		this.dispatchAppChanged();
-		return this;
-	}
-
-	withMenuElement(element) {
-		this.menuElement = element;
-		this.dispatchAppChanged();
-		return this;
-	}
-
-	changePriority(newPriority) {
-		if (this.priority != newPriority) {
-			this.priority = newPriority;
-			this.dispatchAppChanged();
-		}
-		return this;
-	}
-
-	getName() {
-		return this.name;
 	}
 
 	//
@@ -159,9 +184,9 @@ export class ClientApp {
 	/**
 	 * @returns {function(HTMLElement): HTMLElement}
 	 */
-	getKioskEventListenerMixin() {
-		return (element) => kioskEventListenerMixin(this, element);
-	}
+	// getKioskEventListenerMixin() {
+	// 	return (element) => kioskEventListenerMixin(this, element);
+	// }
 
 	//
 	//
@@ -169,59 +194,19 @@ export class ClientApp {
 	//
 	//
 
-	async dispatch(name, data) {
-		await bus.dispatch(this.c(name), data);
-		return this;
-	}
+	// async dispatch(name, data) {
+	// 	await bus.dispatch(this.c(name), data);
+	// 	return this;
+	// }
 
-	subscribe(name, cb) {
-		return bus.subscribe(this.c(name), cb);
-	}
-
-	// async invokeServer(name, params) {
-	// 	return require('electron').ipcRenderer.invoke(name, ...params);
+	// subscribe(name, cb) {
+	// 	return bus.subscribe(this.c(name), cb);
 	// }
 }
-
-export default (space) => new ClientApp(space);
 
 /*
  *
  * Register apps and links
  *
  */
-
-/**
- * @param {string} name of the application
- */
-export function getApplicationByName(name) {
-	if (!(name in apps)) {
-		throw `Unknown app: ${name}. Available: ${Object.keys(apps).join(' ')}`;
-	}
-	return apps[name];
-}
-
-/**
- *
- */
-export function getApplicationsList() {
-	const papps = Object.keys(apps)
-		.map(k => apps[k]);
-	// TODO: should be done when refreshing the list
-	// TODO: second criteria should be the name
-	// !! split event apps.one.changed (one) into apps.list.updated
-	papps.sort((a, b) => (a.priority - b.priority));
-	return papps;
-}
-
-/**
- *
- */
-export function _testEmptyApplicationList() {
-	for (const k of Object.keys(apps)) {
-		delete (apps[k]);
-	}
-}
-
-
 

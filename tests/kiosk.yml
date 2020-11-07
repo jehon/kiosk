@@ -8,9 +8,10 @@ core:
     # - kiosk:core:server:gui
     #- kiosk:clock:server
     #- kiosk:menu:server
-server:
-  path:
-    var: /tmp/
+    - kiosk:core:server
+    - kiosk:core:server:gui
+    - kiosk:photo-frame:server
+    - kiosk:photo-frame:*
 
 photo-frame:
   folders:

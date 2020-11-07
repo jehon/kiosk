@@ -1,82 +1,56 @@
 
 import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import AppFactory from '../../client/client-app.js';
+import { ClientApp, ClientAppElement } from '../../client/client-app.js';
 
-const app = AppFactory('photo-frame');
+const app = new ClientApp('photo-frame');
 
+// The index of the current pictuer
 let pictureIndex = 0;
+// The list of pictures
 let picturesList = [];
-let updatePictureTimeout = false;
+
+// For manual selection
+let updatePictureTimeout = null;
 
 /**
- * @param i
+ * @returns {number} the next index
  */
-function next(i) {
-	let res = i + 1;
+function next() {
+	let res = pictureIndex + 1;
 	if (res >= picturesList.length) {
 		res = 0;
 	}
+
+	pictureIndex = res;
+
+	(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updatePicture();
+
 	return res;
 }
 
 /**
- * @param i
+ * @returns {number} the previous index
  */
-function prev(i) {
-	let res = i - 1;
-	if (res <= 0) {
+function prev() {
+	let res = pictureIndex - 1;
+	if (res < 0) {
 		res = picturesList.length - 1;
 	}
+
+	pictureIndex = res;
+
+	(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updatePicture();
+
 	return res;
 }
 
+class KioskPhotoFrame extends ClientAppElement {
+	carousel = null
 
-// Select the next picture
-/**
- *
- */
-function updatePicture() {
-	app.debug('Selecting next picture', pictureIndex);
-	if (updatePictureTimeout) {
-		clearTimeout(updatePictureTimeout);
-	}
-	if (picturesList.length == 0) {
-		// Wait for a new list
-		return;
-	} else {
-		pictureIndex = next(pictureIndex);
-		app.dispatch('.picture.changed', pictureIndex);
-	}
-	updatePictureTimeout = setTimeout(updatePicture, 15 * 1000);
-}
+	constructor() {
+		super();
 
-/**
- *
- */
-function updatePictureList() {
-	app.debug('Refreshing listing');
-	picturesList = require('electron').remote.require('./packages/photo-frame/photo-frame-server.js').getSelectedPictures();
-	app.debug('New listing has ', picturesList.length);
-	pictureIndex = -1;
-	app.dispatch('.list.changed');
-	updatePicture();
-}
-
-updatePictureList();
-app.subscribeToServerEvent('.listing', updatePictureList);
-
-class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
-	carousel = false
-
-	get kioskEventListeners() {
-		return {
-			'.list.changed': () => this.adaptList(),
-			'.picture.changed': () => this.changePicture(),
-		};
-	}
-
-	render() {
 		this.attachShadow({ mode: 'open' });
 		// See https://getbootstrap.com/docs/4.0/components/carousel/
 		this.shadowRoot.innerHTML = `
@@ -158,7 +132,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 		this.carousel = {
 			main: this.shadowRoot.querySelector('#myCarousel'),
-			main$: $(this.carousel.main),
+			// main$: $(this.carousel.main),
 			mainFn: (cmd) => $(this.carousel.main).carousel(cmd),
 			content: this.shadowRoot.querySelector('#content'),
 			thumbs: this.shadowRoot.querySelector('#thumbs'),
@@ -168,29 +142,26 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 		/* Next button */
 		this.carousel.next.addEventListener('click', () => {
-			pictureIndex = next(pictureIndex);
-			app.dispatch('.picture.changed', pictureIndex);
+			next();
 		});
 
 		/* Previous button */
 		this.carousel.prev.addEventListener('click', () => {
-			pictureIndex = prev(pictureIndex);
-			app.dispatch('.picture.changed', pictureIndex);
+			prev();
 		});
 
 		/* global $ */
 		this.carousel.mainFn({
 			interval: false
 		});
-
-		// https://getbootstrap.com/docs/4.0/components/carousel/
-		this.adaptList();
 	}
 
-	adaptList() {
-		if (!this.isRendered()) {
-			return;
-		}
+	// setServerState(status) {
+	// 	super.setServerState(status);
+	// 	this.adaptList();
+	// }
+
+	updateList() {
 		if (picturesList.length < 1) {
 			return;
 		}
@@ -221,7 +192,7 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 			el.addEventListener('click', () => this.carousel.mainFn(parseInt(el.dataset.slideTo))));
 	}
 
-	changePicture() {
+	updatePicture() {
 		if (!this.carousel) {
 			return;
 		}
@@ -231,7 +202,41 @@ class KioskPhotoFrame extends app.getKioskEventListenerMixin()(HTMLElement) {
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
 
+
+// Select the next picture
+/**
+ *
+ */
+function autoMoveToNextImage() {
+	app.debug('Selecting next picture', pictureIndex);
+	if (updatePictureTimeout) {
+		clearTimeout(updatePictureTimeout);
+	}
+	if (picturesList.length == 0) {
+		// Wait for a new list
+		return;
+	} else {
+		next();
+	}
+
+	updatePictureTimeout = setTimeout(autoMoveToNextImage, 15 * 1000);
+}
+
 app
-	.withPriority(50)
-	.withMainElement(new KioskPhotoFrame())
-	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png');
+	.setPriority(50)
+	.setMainElement(new KioskPhotoFrame())
+	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
+	.onServerStateChanged((status) => {
+		app.debug('Refreshing listing');
+		if (!status.hasList) {
+			return;
+		}
+		picturesList = status.listing;
+		pictureIndex = 0;
+
+		app.debug('New listing has ', picturesList.length);
+		(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updateList();
+
+
+		autoMoveToNextImage();
+	});

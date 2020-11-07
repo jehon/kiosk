@@ -1,5 +1,5 @@
 
-import selectApplication from '../../client/client-app-chooser.js';
+import { selectApplication } from '../../client/client-lib-chooser.js';
 import AppFactory from '../../client/client-app.js';
 const app = AppFactory('menu');
 
@@ -15,8 +15,7 @@ function updateApps() {
 		AppFactory(appName)
 			.withPriority(apps[appName].priority)
 			.mainBasedOnIFrame(apps[appName].url)
-			.menuBasedOnIcon(apps[appName].icon, apps[appName].label)
-			;
+			.menuBasedOnIcon(apps[appName].icon, apps[appName].label);
 	}
 }
 
@@ -43,8 +42,7 @@ customElements.define('kiosk-menu', KioskMenu);
 
 app
 	.withPriority(1500)
-	.withMainElement(new KioskMenu())
-	;
+	.withMainElement(new KioskMenu());
 
 // Insert the icon on top of the body
 

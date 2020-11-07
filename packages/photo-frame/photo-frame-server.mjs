@@ -234,8 +234,10 @@ export async function _generateListingForTopFolder(folderConfig) {
 		.map(imageData => {
 			imageData.url = encodeURI(imageData.path);
 			if (imageData.url[0] != '/') {
-				// Relative to CWD
-				imageData.url = '/' + imageData.url;
+				// Relative to
+				//  - in "file" mode, relative to the index.html
+				//  - in "server" mode, relative to the CWD
+				imageData.url = '../' + imageData.url;
 			}
 			return imageData;
 		});
@@ -300,14 +302,14 @@ export async function generateListing(_data = null) {
 
 	app.setState(newState);
 
-	app.debug('0.3 - Generating listing done');
+	app.debug('0.3 - Generating listing done', newState);
 	return newState;
 }
 
 /**
  * Initialize the package
  *
- * @returns {ServerApp} the app
+ * @returns {module:server/ServerApp} the app
  */
 export function init() {
 	app.setState({
