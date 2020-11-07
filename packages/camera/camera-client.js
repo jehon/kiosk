@@ -5,6 +5,8 @@ import { ClientApp, ClientAppElement } from '../../client/client-app.js';
 
 import { TriStates } from './constants.js';
 
+const elevatedPriority = 1000;
+
 // TODO: manage http errors
 
 // TODO: handle when the app is selected, but the camera is not available
@@ -80,7 +82,6 @@ customElements.define('kiosk-camera', KioskCamera);
 let lastStatus = TriStates.DOWN;
 
 app
-	.setPriority(1000)
 	.setMainElement(new KioskCamera())
 	.menuBasedOnIcon('../packages/camera/camera.png')
 	.onServerStateChanged(() => {
@@ -90,20 +91,27 @@ app
 			toastrElement = null;
 		}
 		app.debug('Status received', status, 'while being in', lastStatus);
-		if (!status || !('code' in status)) {
+		if (!status) {
 			return;
 		}
 
-		if (status.code == TriStates.READY && lastStatus != TriStates.READY) {
-			toastrElement = toastr.success(status.message, 'Camera', { timeOut: 15000 });
-			app.setPriority(1000);
+		if (status.code == TriStates.READY) {
+			app.debug('ServerStateChanged: up, high priority');
+			app.setPriority(elevatedPriority);
+			if (lastStatus != TriStates.READY) {
+				app.debug('ServerStateChanged: up and say it');
+				toastrElement = toastr.success(status.message, 'Camera', { timeOut: 15000 });
+			}
 		} else {
-			app.setPriority(50);
+			app.debug('ServerStateChanged: not up, low priority');
+			app.setPriority();
 		}
 		if (status.code == TriStates.UP_NOT_READY) {
+			app.debug('ServerStateChanged: warming up');
 			toastrElement = toastr.info(status.message, 'Camera', { timeOut: 15000 });
 		}
 		if (status.code == TriStates.DOWN && lastStatus != TriStates.DOWN) {
+			app.debug('ServerStateChanged: down and say it');
 			toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
 		}
 		lastStatus = status.code;
