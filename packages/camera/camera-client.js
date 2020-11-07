@@ -17,10 +17,11 @@ export default app;
 
 let toastrElement = null;
 
-class KioskCamera extends ClientAppElement {
+export class KioskCamera extends ClientAppElement {
+	actualUrl = ''
+
 	constructor() {
 		super();
-		this.actualUrl = '';
 
 		// this.innerHTML = '<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src=""></source></video>';
 
@@ -59,21 +60,27 @@ class KioskCamera extends ClientAppElement {
 		// - this.statusUrl = the previous url
 		//
 		//
-		if (!this.status || !('code' in this.status)) {
+		if (!this.status) {
+			app.debug('Adapt: no status, skipping');
 			return;
 		}
 
 		if (this.status.code == TriStates.READY && this.status.url) {
+			app.debug('Adapt: up', this.status, this.actualUrl);
 			// Live event
 			if (this.status.url != this.actualUrl) {
+				app.debug('Adapt: go live');
 				this.actualUrl = this.status.url;
 				this.innerHTML = `<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="${this.actualUrl}"></source></video>`;
 			}
 		} else {
+			app.debug('Adapt: down');
 			if (this.actualUrl != '') {
-				this.innerHTML = 'Camera is down';
+				app.debug('Adapt: saying it once');
+				this.innerHTML = 'Camera is down: ' + JSON.stringify(this.status);
 				this.actualUrl = '';
 			}
+			this.actualUrl = '';
 		}
 	}
 }
@@ -116,5 +123,5 @@ app
 		}
 		lastStatus = status.code;
 
-		(/** @type {ClientAppElement} */ (app.getMainElement())).setServerState(status);
+		(/** @type {ClientAppElement} */(app.getMainElement())).setServerState(status);
 	});
