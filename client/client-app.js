@@ -36,7 +36,7 @@ export class ClientApp {
 		this.info('Registering app', this.getName(), this);
 
 		this.unsubscribeElectronStatus = require('electron').ipcRenderer.on(this.c('.status'), (event, status) => {
-			this.serverStateCallback.emit(status);
+			this._setServerState(status);
 		});
 
 		require('electron').ipcRenderer.send('history', this.c('.status'));
@@ -68,6 +68,10 @@ export class ClientApp {
 	// Server state
 	//
 	//
+
+	async _setServerState(status) {
+		return this.serverStateCallback.emit(status);
+	}
 
 	getServerState() {
 		return this.serverStateCallback.getState();

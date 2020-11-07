@@ -20,11 +20,16 @@ module.exports = function (config) {
 		],
 
 		files: [
-			{ pattern: 'node_modules/moment/min/moment-with-locales.min.js', included: true },
-			{ pattern: 'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js', included: true },
+			// imported from index.hml
+			'node_modules/jquery/dist/jquery.min.js',
+			'node_modules/toastr/build/toastr.min.js',
+			'node_modules/moment/min/moment-with-locales.min.js',
+			'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js',
+
 			{ pattern: 'tests/client/*-test.js', type: 'module' },
 			{ pattern: 'tests/client/*.js', watched: true, included: false },
 			{ pattern: 'client/*.js', watched: true, included: false },
+			{ pattern: 'packages/**/*.js', watched: true, included: false },
 			// { pattern: 'client/*.mjs', watched: true, included: false },
 			{ pattern: '**/*', watched: false, included: false },
 		],
