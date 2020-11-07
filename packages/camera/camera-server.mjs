@@ -126,7 +126,7 @@ export async function init() {
 	camera = new cameraGeneric(app, app.getConfig('.hardware'));
 	app.setState({
 		code: TriStates.DOWN,
-		message: 'Not tested',
+		message: '',
 		successes: 0,
 		nbCheck: camera.config.nbCheck,
 		url: ''
