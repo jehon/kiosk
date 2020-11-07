@@ -8,6 +8,7 @@ import cronParser from 'cron-parser';
 import contextualize from '../common/contextualize.js';
 import getConfig from './server-lib-config.js';
 import { dispatchToBrowser } from './server-lib-gui.js';
+import _ from 'lodash';
 
 export class ServerApp extends ServerLogger {
 	name;
@@ -47,7 +48,7 @@ export class ServerApp extends ServerLogger {
 	 * @returns {object} the state of the application
 	 */
 	getState() {
-		return this.state;
+		return _.cloneDeep(this.state);
 	}
 
 	/**

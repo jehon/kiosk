@@ -22,3 +22,12 @@ export function fn(url) {
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 export const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * @param ms
+ */
+export async function waitMillis(ms) {
+	return new Promise(resolve => {
+		setTimeout(() => resolve(), ms);
+	});
+}

@@ -12,24 +12,32 @@ describe(fn(import.meta.url), () => {
 	let nockImage;
 
 	beforeAll(() => {
+		// backup config
 		beforeConfig = getConfig('');
+
+		// install our config and mock
 		setConfig('camera', {
-			host: 'localhost',
-			port: 88
+			cron: '',
+			hardware: {
+				host: 'localhost',
+				port: 88
+			}
 		});
-		const mockUrl = `http://${app.getConfig('.host')}:${app.getConfig('.port')}`;
-		console.log('mockurl', mockUrl);
+		const mockUrl = `http://${app.getConfig('.hardware.host')}:${app.getConfig('.hardware.port')}`;
 		nockImage = () => nock(mockUrl)
 			.filteringPath(_path => '/cgi-bin/CGIProxy.fcgi')
 			.get('/cgi-bin/CGIProxy.fcgi');
 
 	});
 
-	beforeEach(() => {
+	beforeEach(async () => {
+		// Wait for last check to finish
+		await init();
 		nock.cleanAll();
 	});
 
 	afterAll(() => {
+		// restore config
 		setConfig('', beforeConfig);
 		nock.restore();
 	});
@@ -44,12 +52,39 @@ describe(fn(import.meta.url), () => {
 
 			init();
 
-			await _check(); // Finish the currently running check who might not have the mock in place
-			await _check();
-			await _check();
-			await _check();
+			let state;
 
-			expect(app.getState().code).toBe(TriStates.READY);
+			await _check();
+			state = app.getState();
+			expect(state.code).toBe(TriStates.UP_NOT_READY);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(1);
+			expect(state.nbCheck).toBe(3);
+			expect(state.url).toBe('');
+
+			await _check();
+			state = app.getState();
+			expect(state.code).toBe(TriStates.UP_NOT_READY);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(2);
+			expect(state.url).toBe('');
+
+			await _check();
+			state = app.getState();
+			expect(state.code).toBe(TriStates.READY);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(state.nbCheck);
+			expect(state.url).not.toBe('');
+			let url = state.url;
+
+			await _check();
+			state = app.getState();
+			expect(state.code).toBe(TriStates.READY);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(state.nbCheck);
+			expect(state.url).not.toBe('');
+			// Url does not change
+			expect(state.url).toBe(url);
 			nock.cleanAll();
 		}
 
@@ -58,9 +93,15 @@ describe(fn(import.meta.url), () => {
 				.replyWithError('something awful happened')
 				.persist();
 
-			await _check(); // Finish the currently running check who might not have the mock in place
+			let state;
+
 			await _check();
-			expect(app.getState().code).toBe(TriStates.DOWN);
+
+			state = app.getState();
+			expect(state.code).toBe(TriStates.DOWN);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(0);
+			expect(state.url).toBe('');
 			nock.cleanAll();
 		}
 
@@ -69,11 +110,24 @@ describe(fn(import.meta.url), () => {
 				.reply(200, 'ok')
 				.persist();
 
-			await _check(); // Finish the currently running check who might not have the mock in place
+			let state;
+
+			await _check();
+			state = app.getState();
+			expect(state.code).toBe(TriStates.UP_NOT_READY);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(1);
+			expect(state.nbCheck).toBe(3);
+			expect(state.url).toBe('');
+
 			await _check();
 			await _check();
-			await _check();
-			expect(app.getState().code).toBe(TriStates.READY);
+
+			state = app.getState();
+			expect(state.code).toBe(TriStates.READY);
+			expect(state.message).not.toBe('');
+			expect(state.successes).toBe(state.nbCheck);
+			expect(state.url).not.toBe('');
 			nock.cleanAll();
 		}
 	});

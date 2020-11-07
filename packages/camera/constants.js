@@ -19,19 +19,10 @@ Object.freeze(TriStates);
  * @property {string} message  - a message to show to the user
  */
 
-/**
- * @typedef Status
- * @property {string} message - user friendly message
- * @property {TriStates} code - see above
- * @property {number} successes - number of TriStates.READY received
- * @property {string} url of the video feed
- */
-
 export class CameraAPI {
 	constructor(app, config) {
 		this.app = app;
 		this.config = {
-			'cron-recheck': '*/10 * * * * *',
 			host: 'localhost',
 			port: 80,
 			username: '',
@@ -40,20 +31,26 @@ export class CameraAPI {
 			...this.defaultConfig(),
 			...config
 		};
-
-		/**
-		 * @type {Status}
-		 */
-		this.status = {
-			message: '',
-			code: TriStates.DOWN,
-			successes: 0,
-			url: ''
-		};
 	}
 
 	defaultConfig() { return {}; }
+
+	/**
+	 * check if the camera is up and running
+	 *
+	 * @returns {Promise<void>} resolve if success, reject (with the fetch error if present) in any other case
+	 */
 	async check() { }
-	async up() { }
+
+	/**
+	 * turn up the camera
+	 *
+	 * @returns {Promise<string>} with the url of the video
+	 */
+	async up() { return ''; }
+
+	/**
+	 * turn down the camera
+	 */
 	async down() { }
 }
