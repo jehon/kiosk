@@ -139,6 +139,10 @@ export async function loadConfigFromFile(serverApp, configFiles = config.files) 
 
 	for (const i in configFiles) {
 		const f = configFiles[i];
+		if (!f) {
+			// skip null etc...
+			continue;
+		}
 		try {
 			app.debug('Loading config file: ', f);
 			let txt = fs.readFileSync(f, 'utf8');
