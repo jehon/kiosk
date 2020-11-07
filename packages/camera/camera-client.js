@@ -96,15 +96,15 @@ app
 
 		if (status.code == TriStates.READY && lastStatus != TriStates.READY) {
 			toastrElement = toastr.success(status.message, 'Camera', { timeOut: 15000 });
-			app.setPriority(50);
-		} else {
 			app.setPriority(1000);
+		} else {
+			app.setPriority(50);
 		}
 		if (status.code == TriStates.UP_NOT_READY) {
-			toastr.info(status.message, 'Camera', { timeOut: 0 });
+			toastrElement = toastr.info(status.message, 'Camera', { timeOut: 15000 });
 		}
 		if (status.code == TriStates.DOWN && lastStatus != TriStates.DOWN) {
-			toastr.error(status.message, 'Camera', { timeOut: 15000 });
+			toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
 		}
 		lastStatus = status.code;
 
