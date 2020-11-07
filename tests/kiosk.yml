@@ -20,10 +20,11 @@ photo-frame:
       quantity: 3
 
 camera:
-  videoPort: 4411
-  configure: false
-  username: any
-  password: any
+  hardware:
+    videoPort: 4411
+    configure: false
+    username: any
+    password: any
 
 clock:
   tickers:
