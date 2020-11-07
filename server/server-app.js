@@ -109,14 +109,14 @@ export class ServerApp extends ServerLogger {
 		};
 
 		if (duration > 0) {
-			const prevCron = cronParser.parseExpression(cron).prev();
-			const prevCronEnd = prevCron.setMinutes(prevCron.getMinutes() + duration);
-			const isRunning = prevCronEnd.toDate() > new Date();
-			// console.log('*', cron, isRunning);
+			const prevCron = cronParser.parseExpression(cron).prev().toDate();
+			const prevCronEnd = new Date(prevCron);
+			prevCronEnd.setMinutes(prevCron.getMinutes() + duration);
+			const isRunning = prevCronEnd > new Date();
 			if (isRunning) {
-				this.debug(`Initiating past cron for ${cron} (${cronstrue.toString(cron)}) about ${prevCronEnd.toString()} on ${new Date()} with duration ${duration}`);
+				this.debug(`Initiating past cron for ${cron} (${cronstrue.toString(cron)}) about ${prevCronEnd} on ${new Date()} with duration ${duration}`);
 				// TODO: manage currently running tickers
-				onCron(prevCronEnd.toDate());
+				onCron(prevCron);
 			}
 		}
 
