@@ -119,7 +119,10 @@ app
 		}
 		if (status.code == TriStates.DOWN && lastStatus != TriStates.DOWN) {
 			app.debug('ServerStateChanged: down and say it');
-			toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
+			if (status.message) {
+				// At initialization, there are no message
+				toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
+			}
 		}
 		lastStatus = status.code;
 
