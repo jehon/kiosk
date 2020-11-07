@@ -1,7 +1,7 @@
 
 import Bus from '../../client/client-lib-bus.js';
 
-import { fn } from './at-helper.js';
+import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 	it('should notify', async function () {

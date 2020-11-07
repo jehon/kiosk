@@ -1,10 +1,10 @@
 
-import { reset, sentList } from './electron-helper.js';
+import { reset, sentList } from './helper-electron.js';
 
 import clientLoggerFactory from '../../client/client-lib-logger.js';
 import { LoggerSender } from '../../common/logger-sender.js';
 
-import { fn } from './at-helper.js';
+import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 	beforeEach(() => {

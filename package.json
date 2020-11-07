@@ -8,6 +8,7 @@
   "dependencies": {
     "bootstrap": "4.5.3",
     "btoa": "1.2.1",
+    "chalk": "^4.1.0",
     "colors": "1.4.0",
     "cron": "1.8.2",
     "cron-parser": "^2.16.3",

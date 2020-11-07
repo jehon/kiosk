@@ -96,13 +96,20 @@ export async function start(serverApp) {
 		win.webContents.openDevTools();
 	}
 
-	win.webContents.on('did-finish-load', function () {
-		app.debug('Sending history of event');
-		historySent.forEach((data, eventName) => {
-			app.debug('Sending history of event: ', eventName, data);
-			win.webContents.send(eventName, data);
-		});
+	ipcMain.on('history', (event, context) => {
+		if (!historySent.has(context)) {
+			app.error(`Requested history for ${context}, but that is not found`);
+		}
+		win.webContents.send(context, historySent.get(context));
 	});
+
+	// win.webContents.on('did-finish-load', function () {
+	// 	app.debug('Sending history of event');
+	// 	historySent.forEach((data, eventName) => {
+	// 		app.debug('Sending history of event: ', eventName, data);
+	// 		win.webContents.send(eventName, data);
+	// 	});
+	// });
 
 	// Quit when all windows are closed.
 	electronApp.on('window-all-closed', () => electronApp.quit());
