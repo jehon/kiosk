@@ -118,7 +118,7 @@ describe(fn(import.meta.url), () => {
 			.toEqual({
 				subPath: 'f1/i1.png',
 				path: 'tests/server/data/photo-frame/f1/i1.png',
-				url: '/tests/server/data/photo-frame/f1/i1.png', // UNUSED
+				url: '../tests/server/data/photo-frame/f1/i1.png', // UNUSED
 				data: {
 					comment: 'Test comment here',
 					date: '2019-07-01 02:03:04',
