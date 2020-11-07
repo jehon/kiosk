@@ -14,18 +14,6 @@ import { registerApp, autoSelectApplication } from './client-lib-chooser.js';
 
 // const bus = new Bus(loggerFactory('client:bus'));
 
-/**
- * Application priorities
- *
- *    0.. 100: application need special attention
- *  100.. 200: application need temporary attention
- *  200.. 500: ?
- *  500..1000: need focus, but not important
- *
- * 1000..9999: background process
- *    5000.5999: link page applications
- */
-
 export class ClientAppElement extends HTMLElement {
 	setServerState(state) {
 		this.status = state;
@@ -37,7 +25,7 @@ export class ClientApp {
 	name; // private
 	c; // contextualizer - private
 	logger;
-	priority = 1000;
+	priority = 0;
 	unsubscribeElectronStatus = null;
 
 	constructor(name, initialState = {}) {
@@ -100,7 +88,15 @@ export class ClientApp {
 		return this;
 	}
 
-	setPriority(newPriority) {
+	/**
+	 *  101..1000: application need special attention
+	 *  100: Background application (default)
+	 *  0: nothing
+	 *
+	 * @param {number} newPriority - 0 by default mean not priority
+	 * @returns {ClientApp} this
+	 */
+	setPriority(newPriority = 0) {
 		if (typeof (newPriority) != 'number') {
 			newPriority = parseInt(newPriority);
 		}

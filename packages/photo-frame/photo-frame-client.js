@@ -5,6 +5,8 @@ import { ClientApp, ClientAppElement } from '../../client/client-app.js';
 
 const app = new ClientApp('photo-frame');
 
+const elevatedPriority = 100;
+
 // The index of the current pictuer
 let pictureIndex = 0;
 // The list of pictures
@@ -223,7 +225,6 @@ function autoMoveToNextImage() {
 }
 
 app
-	.setPriority(50)
 	.setMainElement(new KioskPhotoFrame())
 	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 	.onServerStateChanged((status) => {
@@ -231,6 +232,9 @@ app
 		if (!status.hasList) {
 			return;
 		}
+
+		app.setPriority(elevatedPriority);
+
 		picturesList = status.listing;
 		pictureIndex = 0;
 

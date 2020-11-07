@@ -25,7 +25,7 @@ export function autoSelectApplication() {
 	const selectedApplication = Array.from(applicationList.values())
 		.filter(a => a.mainElement && a.priority)
 		// < 0 ? a is before b
-		.sort((a, b) => (a.priority - b.priority))[0];
+		.sort((a, b) => (b.priority - a.priority))[0];
 	return renderApplication(selectedApplication);
 }
 
