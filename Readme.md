@@ -38,3 +38,17 @@ arch=armv7l
 ### TODO: common.es6 build
 
 We need to have the dev dependencies to build up the common.es6 versions of common's
+
+## ESLint: TODO
+remove
+    "template-curly-spacing": "off",
+
+add:
+    "indent": [
+      "error",
+      "tab",
+      {
+        "SwitchCase": 1
+
+	  }
+    ],
