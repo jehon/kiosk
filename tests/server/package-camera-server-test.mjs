@@ -17,7 +17,8 @@ describe(fn(import.meta.url), () => {
 
 		// install our config and mock
 		setConfig('camera', {
-			cron: '',
+			intervalSeconds: -1,
+			nbCheck: 2,
 			hardware: {
 				host: 'localhost',
 				port: 88
@@ -59,14 +60,7 @@ describe(fn(import.meta.url), () => {
 			expect(state.code).toBe(TriStates.UP_NOT_READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(1);
-			expect(state.nbCheck).toBe(3);
-			expect(state.url).toBe('');
-
-			await _check();
-			state = app.getState();
-			expect(state.code).toBe(TriStates.UP_NOT_READY);
-			expect(state.message).not.toBe('');
-			expect(state.successes).toBe(2);
+			expect(state.nbCheck).toBe(2);
 			expect(state.url).toBe('');
 
 			await _check();
@@ -117,7 +111,7 @@ describe(fn(import.meta.url), () => {
 			expect(state.code).toBe(TriStates.UP_NOT_READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(1);
-			expect(state.nbCheck).toBe(3);
+			expect(state.nbCheck).toBe(2);
 			expect(state.url).toBe('');
 
 			await _check();

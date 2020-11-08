@@ -23,7 +23,7 @@ import cameraGeneric from './types/foscam-r2m.js';
  * @type {Promise<Status>}
  */
 let checkRunning = null;
-export let camera;
+let camera;
 
 /**
  * Check if the camera is up and running
@@ -119,7 +119,7 @@ let cronStop = null;
  */
 export async function init() {
 	if (cronStop) {
-		cronStop();
+		clearInterval(cronStop);
 		cronStop = null;
 	}
 
@@ -134,7 +134,10 @@ export async function init() {
 
 	// Make 2 checks to be sure that we are in the correct state since startup
 
-	cronStop = app.cron(_check, app.getConfig('.cron', ''));
+	const intervalSeconds = app.getConfig('.intervalSeconds', 15);
+	if (intervalSeconds > 0) {
+		cronStop = setInterval(_check, intervalSeconds * 1000);
+	}
 	if (checkRunning) {
 		await checkRunning;
 	}

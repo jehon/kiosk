@@ -27,7 +27,7 @@ export class CameraAPI {
 			port: 80,
 			username: '',
 			password: '',
-			nbCheck: 3,
+			nbCheck: 2,
 			...this.defaultConfig(),
 			...config
 		};

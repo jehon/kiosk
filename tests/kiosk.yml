@@ -16,6 +16,7 @@ photo-frame:
       quantity: 3
 
 camera:
+  intervalSeconds: 5
   hardware:
     videoPort: 4411
     configure: false
