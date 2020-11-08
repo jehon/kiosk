@@ -1,6 +1,6 @@
 
 /**
- * @param {string} url
+ * @param {string} url is import.meta.url
  * @returns {string} test name
  */
 export function fn(url) {

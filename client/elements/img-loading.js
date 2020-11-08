@@ -1,4 +1,9 @@
-
+/**
+ * Send an event on a element
+ *
+ * @param {HTMLElement} elem on which to send the event
+ * @param {string} name of the event to send
+ */
 function dispatchEvent(elem, name) {
 	var event = new Event(name);
 	elem.dispatchEvent(event);

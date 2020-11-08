@@ -49,7 +49,7 @@ resetConfig()
 	.then(() => whenReady())
 	.then(() => {
 		/**
-		 * @param name
+		 * @param {string} name of the package (xxx without extension)
 		 */
 		async function loadPackage(name) {
 			try {

@@ -2,7 +2,7 @@
 import './helper-electron.js';
 // import './helper-toastr.js';
 
-import app, { KioskCamera } from '../../packages/camera/camera-client.js';
+import app from '../../packages/camera/camera-client.js';
 
 import { fn } from './helper-main.js';
 import { TriStates } from '../../packages/camera/constants.js';

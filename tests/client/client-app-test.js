@@ -6,5 +6,8 @@ import { ClientApp } from '../../client/client-app.js';
 import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
+	it('should instanciate', function () {
+		new ClientApp('test');
+	});
 
 });
