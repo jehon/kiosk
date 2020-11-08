@@ -1,8 +1,23 @@
 
-import AppFactory from '../../client/client-app.js';
+import { ClientApp } from '../../client/client-app.js';
 
-const app = AppFactory('caffeine');
+const app = new ClientApp('caffeine');
 const body = document.querySelector('body');
+
+let debugHook = null;
+window.addEventListener('contextmenu', (event) => {
+	// TODO: debug hook
+	if (debugHook) {
+		clearTimeout(debugHook);
+	}
+	debugHook = setTimeout(() => {
+		app.debug('Removing debug');
+		body.setAttribute('nodebug', 'right-click');
+
+	}, 5 * 1000);
+	app.debug('Activating debug');
+	body.removeAttribute('nodebug');
+});
 
 /**
  * @param {boolean} activity to be set (true if current activity)
@@ -11,28 +26,28 @@ function setActivity(activity = true) {
 	if (activity) {
 		app.debug('Activity up');
 		body.removeAttribute('inactive');
-
-		// TODO: other hook
-		body.removeAttribute('nodebug');
 	} else {
 		app.debug('Activity down');
 		body.setAttribute('inactive', 'inactive');
-
-		// TODO: other hook
-		body.setAttribute('nodebug', 'activity');
 	}
 }
 
 // Initialize to false
 setActivity(false);
 
-let eraser = false;
+let eraser = null;
 
+/**
+ * @type {object} to remember mouse position
+ * @property {number} x where it happened
+ * @property {number} y where it happened
+ * @property {Date} time when it happened
+ */
 const lastPosition = {};
 memorizePosition(new MouseEvent(''));
 
 /**
- * @param e
+ * @param {MouseEvent} e to be memorized
  */
 function memorizePosition(e) {
 	lastPosition.x = e.clientX;
@@ -42,7 +57,7 @@ function memorizePosition(e) {
 
 body.addEventListener('mousemove', e => {
 	const now = new Date();
-	if (now - lastPosition.time > 1000) {
+	if ((now.getTime() - lastPosition.time.getTime()) > 1000) {
 		// Last position is too old, let's start again
 		app.debug('Reset position');
 		memorizePosition(e);
