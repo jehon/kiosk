@@ -1,5 +1,4 @@
 
-import _ from 'lodash';
 import debugFactory from 'debug';
 import chalk from 'chalk';
 
@@ -17,6 +16,7 @@ const loggerMap = new Map();
  * @returns {string} the error in a string presentation
  */
 function loggerRenderError(e) {
+	// import _ from 'lodash';
 	//const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
 	const stack = e.stack;
 	return `${e.message}\n  at ${stack}`;

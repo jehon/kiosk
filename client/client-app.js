@@ -8,12 +8,6 @@ import contextualize from '../common/contextualize.js';
 import loggerFactory from './client-lib-logger.js';
 import { registerApp, autoSelectApplication } from './client-lib-chooser.js';
 
-// import Bus from './client-lib-bus.js';
-
-// import { kioskEventListenerMixin } from './client-api-mixins.js';
-
-// const bus = new Bus(loggerFactory('client:bus'));
-
 export class ClientAppElement extends HTMLElement {
 	setServerState(state) {
 		this.status = state;
