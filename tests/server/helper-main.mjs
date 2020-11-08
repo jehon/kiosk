@@ -1,11 +1,13 @@
 
 /**
  * Count the number of included files
+ *
+ * @type {number}
  */
 export let fnCnt = 0;
 
 /**
- * @param {string} url - import.meta.url
+ * @param {string} url is import.meta.url
  * @returns {string} the filename as a test title
  */
 export function fn(url) {
@@ -24,7 +26,8 @@ import { fileURLToPath } from 'url';
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
- * @param ms
+ * @param {number} ms to wait
+ * @returns {Promise<void>} resolve after ms milliseconds
  */
 export async function waitMillis(ms) {
 	return new Promise(resolve => {
