@@ -11,7 +11,7 @@
     "chalk": "4.1.0",
     "colors": "1.4.0",
     "cron": "1.8.2",
-    "cron-parser": "2.16.3",
+    "cron-parser": "2.17.0",
     "cronstrue": "1.103.0",
     "css-inherit": "github:jehon/css-inherit",
     "debug": "4.2.0",
