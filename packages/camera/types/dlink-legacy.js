@@ -1,3 +1,5 @@
+/* eslint-ignore */
+
 /**
  * From: http://forums.dlink.com/index.php?topic=58565.0
  * view functions:
@@ -16,7 +18,7 @@ const { TriStates } = require('../constants.js');
 const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
 
 /**
- * @type {import('../constants.js').CameraAPI}
+ * @type {module:packages/camera/CameraAPI}}
  */
 const cameraAPI = {
 	init: async function (app, config) {

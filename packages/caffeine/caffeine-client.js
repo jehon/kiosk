@@ -5,7 +5,7 @@ const app = new ClientApp('caffeine');
 const body = document.querySelector('body');
 
 let debugHook = null;
-window.addEventListener('contextmenu', (event) => {
+window.addEventListener('contextmenu', () => {
 	// TODO: debug hook
 	if (debugHook) {
 		clearTimeout(debugHook);

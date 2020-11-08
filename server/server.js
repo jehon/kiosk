@@ -44,7 +44,7 @@ resetConfig()
 		app.setState({
 			devMode: app.getConfig('server.devMode', false),
 			enabledDebug: getEnabledDebug()
-		})
+		});
 	})
 	.then(() => whenReady())
 	.then(() => {
@@ -67,7 +67,7 @@ resetConfig()
 			.then(() => loadPackage('clock'))
 			.then(() => loadPackage('photo-frame'))
 			.then(() => loadPackage('camera'))
-			;
+			.then(() => { });
 	})
 	.then(() =>
 		// Start the GUI
