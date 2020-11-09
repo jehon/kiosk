@@ -1,52 +1,73 @@
 
-import { selectApplication } from '../../client/client-lib-chooser.js';
-import AppFactory from '../../client/client-app.js';
-const app = AppFactory('menu');
+import { selectApplication, getApplicationList, autoSelectApplication } from '../../client/client-lib-chooser.js';
+import { ClientApp, ClientAppElement } from '../../client/client-app.js';
 
-// Loading all apps (sent by the server)
-app.subscribe('.apps', () => updateApps());
-/**
- *
- */
-function updateApps() {
-	const apps = require('electron').remote.require('./packages/menu/menu-server.js').getAppConfigs();
-	for (const appName of Object.keys(apps)) {
-		app.debug(`Registering app by menu: ${appName}`, apps[appName]);
-		AppFactory(appName)
-			.withPriority(apps[appName].priority)
-			.mainBasedOnIFrame(apps[appName].url)
-			.menuBasedOnIcon(apps[appName].icon, apps[appName].label);
-	}
-}
+const app = new ClientApp('menu');
 
-class KioskMenu extends app.getKioskEventListenerMixin()(HTMLElement) {
-	get kioskEventListeners() {
-		return {
-			'apps.list': (list) => this.adaptToList(list)
-		};
+class KioskMenu extends ClientAppElement {
+	setServerState(status) {
+		super.setServerState(status);
+		this.adaptToList();
 	}
 
-	adaptToList(list) {
+	connectedCallback() {
+		this.adaptToList();
+	}
+
+	adaptToList() {
+		/** @type {Array<ClientApp>} */
+		const list = getApplicationList();
+
 		// TODO: optimization -> make the diff ?
 		this.innerHTML = '';
 		this.classList.add('grid');
 		this.classList.add('fit');
 
-		for (const app of list.filter(a => a.menuElement && a.mainElement)) {
-			app.menuElement.setAttribute('data-app', app.name);
-			this.appendChild(app.menuElement);
+		for (const a of list.filter((/** @type {ClientApp} */ a) => a.menuElement && a.mainElement)) {
+			a.menuElement.setAttribute('data-app', a.name);
+			this.appendChild(a.menuElement);
 		}
 	}
 }
 customElements.define('kiosk-menu', KioskMenu);
 
+const body = document.querySelector('body');
+/**
+ * cron that reenable the manual mode
+ */
+const observer = new MutationObserver(() => {
+	const inactive = body.hasAttribute('inactive');
+	if (inactive) {
+		// Trigger a new calculation of the top app
+		app.debug('Back to auto select application');
+		autoSelectApplication();
+	}
+});
+observer.observe(body, { attributes: true });
+
 app
-	.withPriority(1500)
-	.withMainElement(new KioskMenu());
+	.setMainElement(new KioskMenu())
+	.onServerStateChanged((status) => {
+		for (const i in status) {
+			const a = status[i];
+			app.debug(`Registering app by menu: ${a.name}`, a);
+			const ap = new ClientApp(a.name)
+				.mainBasedOnIFrame(a.url)
+				.menuBasedOnIcon(a.icon, a.label);
+			if ('priority' in a) {
+				ap.setPriority(a.priority);
+			}
+
+		}
+	});
 
 // Insert the icon on top of the body
 
-document.querySelector('body').insertAdjacentHTML('beforeend', `
+/**
+ *
+ */
+function init() {
+	document.querySelector('body').insertAdjacentHTML('beforeend', `
 <style>
 	body[inactive] > #app-menu {
 		display: none;
@@ -68,15 +89,15 @@ document.querySelector('body').insertAdjacentHTML('beforeend', `
 </div>
 `);
 
-const appMenuElement = document.querySelector('body > div#app-menu');
-if (appMenuElement == null) {
-	throw 'registerAppMenu: #app-menu is null';
+	const appMenuElement = document.querySelector('body > div#app-menu');
+	if (appMenuElement == null) {
+		throw 'registerAppMenu: #app-menu is null';
+	}
+
+	appMenuElement.addEventListener('click', () => {
+		// Go to menu list application
+		selectApplication(app);
+	});
 }
 
-appMenuElement.addEventListener('click', () => {
-	// Go to menu list application
-	app.debug('Going to the menu pane');
-	selectApplication(app);
-});
-
-updateApps();
+init();

@@ -43,7 +43,7 @@ async function loadPackage(name) {
 }
 
 Promise.all([
-	// loadPackage('menu'),
+	loadPackage('menu'),
 	loadPackage('caffeine'),
 
 	loadPackage('clock'),
