@@ -23,8 +23,6 @@ module.exports = function (config) {
 			// imported from index.hml
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/toastr/build/toastr.min.js',
-			'node_modules/moment/min/moment-with-locales.min.js',
-			'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js',
 
 			{ pattern: 'tests/client/*-test.js', type: 'module' },
 			{ pattern: 'tests/client/*.js', watched: true, included: false },
