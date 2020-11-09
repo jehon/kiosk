@@ -6,7 +6,7 @@ import './elements/css-inherit.js';
 import Callback from '../common/callback.js';
 import contextualize from '../common/contextualize.js';
 import loggerFactory from './client-lib-logger.js';
-import { registerApp, autoSelectApplication } from './client-lib-chooser.js';
+import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
 
 export class ClientAppElement extends HTMLElement {
 	setServerState(state) {
@@ -166,7 +166,7 @@ export class ClientApp {
 		element.classList.add('full-background-image');
 		element.style.backgroundImage = `url('${url}')`;
 		element.innerHTML = `<span>${text}</span>`;
-		// element.addEventListener('click', () => selectApplication(this));
+		element.addEventListener('click', () => selectApplication(this));
 		this.setMenuElement(element);
 		return this;
 	}
