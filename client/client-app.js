@@ -82,6 +82,7 @@ export class ClientApp {
 	//
 
 	dispatchAppChanged() {
+		// TODO: use a proxy in menu-client???
 		autoSelectApplication();
 		return this;
 	}
@@ -169,38 +170,4 @@ export class ClientApp {
 		this.setMenuElement(element);
 		return this;
 	}
-
-	//
-	//
-	// Gui
-	//
-	//
-	/**
-	 * @returns {function(HTMLElement): HTMLElement}
-	 */
-	// getKioskEventListenerMixin() {
-	// 	return (element) => kioskEventListenerMixin(this, element);
-	// }
-
-	//
-	//
-	// Functionnal
-	//
-	//
-
-	// async dispatch(name, data) {
-	// 	await bus.dispatch(this.c(name), data);
-	// 	return this;
-	// }
-
-	// subscribe(name, cb) {
-	// 	return bus.subscribe(this.c(name), cb);
-	// }
 }
-
-/*
- *
- * Register apps and links
- *
- */
-

@@ -33,14 +33,12 @@ clock:
       duration: 1
 
 menu:
-  Meteo:
-    priority: 5100
+  - name: "Meteo"
     url: "http://www.meteo.be"
     icon: "http://www.meteo.be/meteo/html/2011/img/weather_klein/300.png"
     label: "Météo"
 
-  BuienAlarm:
-    priority: 5100
+  - name: "BuienAlarm"
     url: "https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083"
     icon: "https://www.buienalarm.be/favicon.ico"
     label: "Buien Alarm"
