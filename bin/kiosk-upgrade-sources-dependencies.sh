@@ -39,7 +39,12 @@ else
 
 	header_sub "** install **"
 	# See https://docs.npmjs.com/misc/scripts
-	npm install --unsafe-perm
+	if ! npm install --unsafe-perm ; then
+		echo "We are touching locked files, we need to stop the service before"
+		systemctl stop display-manager
+
+		npm install --unsafe-perm
+	fi
 
 	header_sub "** prune **"
 	npm prune --unsafe-perm || true
