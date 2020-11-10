@@ -18,6 +18,8 @@ auto:
 SHELL := /bin/bash
 .SECONDEXPANSION:
 
+PATH := $(shell npm bin):$(PATH)
+
 #
 #
 # System variables
@@ -26,7 +28,6 @@ SHELL := /bin/bash
 ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 HOST   ?= kiosk
 TARGET ?= /opt/kiosk
-NODE_MOD = "$(ROOT)/node_modules/.bin"
 
 dump:
 	$(info ROOT:   $(ROOT))
@@ -75,19 +76,19 @@ clean:
 
 .PHONY: start
 start: build
-	$(NODE_MOD)/electron .
+	electron .
 
 .PHONY: start-dev-with-prod-config
 start-dev-with-prod-config: build
-	$(NODE_MOD)/electron . -f etc/kiosk.yml --dev-mode
+	electron . -f etc/kiosk.yml --dev-mode
 
 .PHONY: start-dev-with-test-config
 start-dev-with-test-config: build
-	DEBUG="kiosk:loggers" $(NODE_MOD)/electron . -f tests/kiosk.yml --dev-mode
+	DEBUG="kiosk:loggers" electron . -f tests/kiosk.yml --dev-mode
 
 .PHONY: start-dev-with-test-config-brk
 start-dev-with-test-config-brk: build
-	$(NODE_MOD)/electron --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode
+	electron --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode
 
 
 .PHONY: build
@@ -105,15 +106,15 @@ test: test-server test-client
 
 .PHONY: test-server
 test-server: build
-	$(NODE_MOD)/jasmine --config=tests/server/jasmine.json
+	jasmine --config=tests/server/jasmine.json
 
 .PHONY: test-client
 test-client: build
-	$(NODE_MOD)/karma start tests/client/karma.conf.cjs --single-run
+	karma start tests/client/karma.conf.cjs --single-run
 
 .PHONY: test-client-continuously
 test-client-continuously: build
-	$(NODE_MOD)/karma start tests/client/karma.conf.cjs
+	karma start tests/client/karma.conf.cjs
 
 .PHONY: test-app
 test-app: build
@@ -121,15 +122,15 @@ test-app: build
 
 .PHONY: lint
 lint:
-	$(NODE_MOD)/eslint .
+	eslint .
 
 .PHONY: lint-fix
 lint-fix:
-	$(NODE_MOD)/eslint . --fix
+	eslint . --fix
 
 .PHONY: depcheck
 depcheck:
-	$(NODE_MOD)/depcheck
+	depcheck
 
 #
 #
