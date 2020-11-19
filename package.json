@@ -14,7 +14,7 @@
     "cron-parser": "2.18.0",
     "cronstrue": "1.105.0",
     "css-inherit": "github:jehon/css-inherit",
-    "debug": "4.2.0",
+    "debug": "4.3.0",
     "deepmerge": "4.2.2",
     "electron": "11.0.1",
     "express": "4.17.1",
