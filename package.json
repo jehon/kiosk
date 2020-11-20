@@ -43,7 +43,7 @@
     "babel-plugin-transform-commonjs": "1.1.6",
     "depcheck": "1.2.0",
     "devtron": "1.4.0",
-    "eslint": "7.13.0",
+    "eslint": "7.14.0",
     "eslint-plugin-cypress": "2.11.2",
     "eslint-plugin-jsdoc": "30.7.8",
     "jasmine": "3.6.3",
