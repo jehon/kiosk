@@ -61,12 +61,14 @@ resetConfig()
 			}
 		}
 
-		return Promise.resolve()
-			.then(() => loadPackage('menu'))
-			.then(() => loadPackage('caffeine'))
-			.then(() => loadPackage('clock'))
-			.then(() => loadPackage('photo-frame'))
-			.then(() => loadPackage('camera'))
+		return Promise.all([
+			loadPackage('menu'),
+			// loadPackage('fire'),
+			loadPackage('caffeine'),
+			loadPackage('clock'),
+			loadPackage('photo-frame'),
+			loadPackage('camera')
+		])
 			.then(() => { });
 	})
 	.then(() =>
