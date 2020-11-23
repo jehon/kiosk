@@ -47,4 +47,4 @@ menu:
 fire:
   cron: "0 30 18 * * *"
   duration: 60
-  url: "tests/server/data/fire.swf"
+  url: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
