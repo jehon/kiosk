@@ -48,5 +48,6 @@ Promise.all([
 
 	loadPackage('camera'),
 	loadPackage('clock'),
+	loadPackage('fire'),
 	loadPackage('photo-frame')
 ]);
