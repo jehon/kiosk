@@ -83,10 +83,16 @@ export class ClientApp {
 	//
 	//
 	onClientStateChanged(characteristic, callback) {
-		const observer = new MutationObserver(() => {
+		const analyser = () => {
 			callback(body.hasAttribute(characteristic));
-		});
+		};
+
+		analyser();
+
+		const observer = new MutationObserver(analyser);
+
 		observer.observe(body, { attributes: true });
+
 		return () => observer.disconnect();
 	}
 
