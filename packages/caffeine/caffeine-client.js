@@ -76,6 +76,6 @@ body.addEventListener('mousemove', e => {
 			clearTimeout(eraser);
 			eraser = false;
 			setActivity(false);
-		}, 5 * 1000);
+		}, (app.getServerState().config['inactivity-seconds'] ?? 60) * 1000);
 	}
 });

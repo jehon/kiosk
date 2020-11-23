@@ -65,7 +65,8 @@ export function init() {
 	app.setState({
 		lastRun: null,
 		errorType: false,
-		error: false
+		error: false,
+		config: app.getConfig()
 	});
 
 	const config = {

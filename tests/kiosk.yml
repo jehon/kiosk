@@ -2,12 +2,9 @@
 core:
   loggers:
     # - kiosk:loggers
-    # - kiosk:camera:server:worker
-    #- kiosk:core:server
-    # - kiosk:core:server:config
-    # - kiosk:core:server:gui
-    #- kiosk:clock:server
-    #- kiosk:menu:server
+
+caffeine:
+  # inactivity-seconds: 15
 
 photo-frame:
   folders:
@@ -46,3 +43,8 @@ menu:
     url: "https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083"
     icon: "https://www.buienalarm.be/favicon.ico"
     label: "Buien Alarm"
+
+fire:
+  cron: "0 30 18 * * *"
+  duration: 60
+  url: "tests/server/data/fire.swf"
