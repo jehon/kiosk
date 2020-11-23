@@ -24,11 +24,15 @@ window.addEventListener('contextmenu', () => {
  */
 function setActivity(activity = true) {
 	if (activity) {
-		app.debug('Activity up');
-		body.removeAttribute('inactive');
+		if (body.hasAttribute('inactive')) {
+			app.debug('Activity up');
+			body.removeAttribute('inactive');
+		}
 	} else {
-		app.debug('Activity down');
-		body.setAttribute('inactive', 'inactive');
+		if (!body.hasAttribute('inactive')) {
+			app.debug('Activity down');
+			body.setAttribute('inactive', 'inactive');
+		}
 	}
 }
 
@@ -76,6 +80,6 @@ body.addEventListener('mousemove', e => {
 			clearTimeout(eraser);
 			eraser = false;
 			setActivity(false);
-		}, (app.getServerState().config['inactivity-seconds'] ?? 60) * 1000);
+		}, ((app.getServerState()?.config ?? [])['inactivity-seconds'] ?? 60) * 1000);
 	}
 });

@@ -8,6 +8,8 @@ import contextualize from '../common/contextualize.js';
 import loggerFactory from './client-lib-logger.js';
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
 
+const body = document.querySelector('body');
+
 export class ClientAppElement extends HTMLElement {
 	setServerState(state) {
 		this.status = state;
@@ -73,6 +75,19 @@ export class ClientApp {
 
 	onServerStateChanged(callback) {
 		return this.serverStateCallback.onChange(callback);
+	}
+
+	//
+	//
+	// Client state
+	//
+	//
+	onClientStateChanged(characteristic, callback) {
+		const observer = new MutationObserver(() => {
+			callback(body.hasAttribute(characteristic));
+		});
+		observer.observe(body, { attributes: true });
+		return () => observer.disconnect();
 	}
 
 	//

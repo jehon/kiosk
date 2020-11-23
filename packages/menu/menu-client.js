@@ -31,19 +31,13 @@ class KioskMenu extends ClientAppElement {
 }
 customElements.define('kiosk-menu', KioskMenu);
 
-const body = document.querySelector('body');
-/**
- * cron that reenable the manual mode
- */
-const observer = new MutationObserver(() => {
-	const inactive = body.hasAttribute('inactive');
+app.onClientStateChanged('inactive', (inactive) => {
 	if (inactive) {
 		// Trigger a new calculation of the top app
 		app.debug('Back to auto select application');
 		autoSelectApplication();
 	}
 });
-observer.observe(body, { attributes: true });
 
 app
 	.setMainElement(new KioskMenu())
