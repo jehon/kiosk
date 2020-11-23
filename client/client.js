@@ -46,7 +46,7 @@ Promise.all([
 	loadPackage('menu'),
 	loadPackage('caffeine'),
 
-	loadPackage('clock'),
 	loadPackage('camera'),
+	loadPackage('clock'),
 	loadPackage('photo-frame')
 ]);
