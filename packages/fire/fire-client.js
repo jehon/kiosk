@@ -33,7 +33,7 @@ export class KioskFire extends ClientAppElement {
 			<video autoplay muted loop controls
 					poster='../packages/fire/fire.jpg'
 					crossorigin='anonymous'
-					style='width: 100%; height: 100%'
+					style='width: 95%; height: 95%'
 				>
 				<source id='source' src=''></source>
 				No source selected
@@ -93,7 +93,6 @@ app
 			app.setPriority(elevatedPriority);
 		} else {
 			app.setPriority();
-			app.setPriority(100000);
 		}
 		(/** @type {ClientAppElement} */ (app.getMainElement())).setServerState(status);
 	});
