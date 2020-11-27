@@ -1,0 +1,10 @@
+--- node_modules/spectron/lib/launcher.js	1985-10-26 09:15:00.000000000 +0100
++++ node_modules.bak/spectron/lib/launcher.js	2020-11-27 15:28:50.434154825 +0100
+@@ -27,6 +27,7 @@
+ });
+
+ const args = appArgs.concat(chromeArgs);
++console.log("***", executablePath, args);
+ const appProcess = ChildProcess.spawn(executablePath, args);
+ appProcess.on('exit', function (code) {
+   process.exit(code);

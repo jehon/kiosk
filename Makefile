@@ -98,8 +98,12 @@ build: dependencies
 dependencies: node_modules/.dependencies
 node_modules/.dependencies: package.json package-lock.json
 	npm install
+	cd node_modules && patch -p1 < ../patch-spectron.patch
 	touch package-lock.json
 	touch node_modules/.dependencies
+
+# dependencies-generate-patch:
+# 	(diff -x package.json -x package-lock.json -rubB node_modules/ node_modules.bak/ || true) > modules.patch
 
 .PHONY: test
 test: test-server test-client
@@ -118,7 +122,9 @@ test-client-continuously: build
 
 .PHONY: test-app
 test-app: build
-	node ./spectron.cjs
+	mkdir -p tmp
+	rm -f tmp/spectron.log
+	xvfb-run ./spectron.cjs
 
 .PHONY: lint
 lint:

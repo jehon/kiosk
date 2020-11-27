@@ -97,7 +97,7 @@ export async function loadConfigFromCommandLine(serverApp) {
 		})
 		.help()
 		.recommendCommands()
-		.strict()
+		// .strict() // TODO: disable strict in case of --spectron-testing (see spectron.cjs)
 		.argv;
 
 	// Transform into config
