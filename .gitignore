@@ -12,9 +12,10 @@ common.es6/
 tmp/
 
 # Nodejs / NPM
-node_modules
+node_modules*
 
 # Others
 .vagrant
 /test.sh
 media/
+*.log
