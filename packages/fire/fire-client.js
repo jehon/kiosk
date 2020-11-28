@@ -42,6 +42,20 @@ export class KioskFire extends ClientAppElement {
 		this.#video = this.querySelector('video');
 		this.#videoSource = this.querySelector('#source');
 		this.adapt();
+
+		// this.#video.addEventListener('click', () => {
+		// 	// https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API/Guide
+		// 	// https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
+		// 	console.log('Full screen ?');
+
+		// 	if (!document.fullscreenElement) {
+		// 		console.log('Full screen go');
+		// 		this.#video.requestFullscreen();
+		// 	} else {
+		// 		console.log('Full screen leaving');
+		// 		document.exitFullscreen();
+		// 	}
+		// });
 	}
 
 	setServerState(status) {
@@ -68,6 +82,9 @@ export class KioskFire extends ClientAppElement {
 		this.#inactiveListener = app.onClientStateChanged('inactive', (inactive) => {
 			if (inactive) {
 				this.#video.removeAttribute('controls');
+				// https://www.electronjs.org/docs/api/web-contents#contentsexecutejavascriptcode-usergesture
+				// https://www.electronjs.org/docs/api/remote
+				//   -> remote.getCurrentWebContents()
 			} else {
 				this.#video.setAttribute('controls', 'controls');
 			}
