@@ -18,6 +18,10 @@ var appLauncher = new spectron.Application({
 
 	startTimeout: 30 * 1000,
 
+	env: {
+		SPECTRON: 1
+	},
+
 	// chromeDriverArgs: [
 	// 	'--enable-logging',
 	// 	'--no-sandbox',

@@ -82,7 +82,7 @@ export function getEnabledDebug() {
  */
 export async function loadConfigFromCommandLine(serverApp) {
 	const app = serverApp.extend('config');
-	const cmdLineOptions = yargs
+	let myargs = yargs
 		.options({
 			'file': {
 				alias: 'f',
@@ -96,9 +96,14 @@ export async function loadConfigFromCommandLine(serverApp) {
 			}
 		})
 		.help()
-		.recommendCommands()
-		// .strict() // TODO: disable strict in case of --spectron-testing (see spectron.cjs)
-		.argv;
+		.recommendCommands();
+
+	// TODO: disable strict in case of --spectron-testing (see spectron.cjs)
+	if (!('SPECTRON' in process.env)) {
+		myargs = myargs.strict();
+	}
+
+	const cmdLineOptions = myargs.argv;
 
 	// Transform into config
 
