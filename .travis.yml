@@ -11,11 +11,7 @@ addons:
     - exiv2
     - libexiv2-dev
     - cifs-utils
-    - chromium-browser
     - libgconf-2-4
-    - xvfb
-
-  chrome: stable
 
 # cache:
 #   npm: true
@@ -23,10 +19,7 @@ addons:
 #   - ~/.cache
 
 install:
-  # https://electronjs.org/docs/tutorial/testing-on-headless-ci
-  - export DISPLAY=':99.0'
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - npm ci
+  - make build
 
 script:
   - make test

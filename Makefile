@@ -97,7 +97,7 @@ build: dependencies
 .PHONY: dependencies
 dependencies: node_modules/.dependencies
 node_modules/.dependencies: package.json package-lock.json
-	npm install
+	npm ci
 	cd node_modules && patch -p1 < ../patch-spectron.patch
 	touch package-lock.json
 	touch node_modules/.dependencies
@@ -122,9 +122,9 @@ test-client-continuously: build
 
 .PHONY: test-app
 test-app: build
-	mkdir -p tmp
-	rm -f tmp/spectron.log
-	xvfb-run ./spectron.cjs
+	rm -fr tmp/app
+	mkdir -p tmp/app
+	xvfb-run --server-args="-screen 0 1024x768x24" ./spectron.cjs
 
 .PHONY: lint
 lint:
