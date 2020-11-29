@@ -14,7 +14,7 @@ var appLauncher = new spectron.Application({
 		'--spectron-testing'
 	],
 
-	chromeDriverLogPath: path.join(__dirname, "tmp/spectron.log"),
+	chromeDriverLogPath: path.join(__dirname, 'tmp/spectron.log'),
 
 	startTimeout: 30 * 1000,
 
@@ -31,27 +31,33 @@ var appLauncher = new spectron.Application({
 	connectionRetryCount: 10,
 });
 
-console.log(new Date(), "Starting");
+// No need to go further...
+setTimeout(() => {
+	console.info('***', new Date(), 'Killing');
+	process.exit(1);
+}, 90 * 1000);
+
+const startTS = Date.now();
+console.info('***', new Date(), 'Starting');
 
 let app;
 
 appLauncher.start()
 	.then(function (_app) {
 		app = _app;
-		console.log("Started", app.isRunning());
+		console.info('*** ', (Date.now() - startTS) / 1000, 'Started', app.isRunning());
 
 		// Check if the window is visible
 		return app.browserWindow.isVisible();
 	})
 	.then(function (isVisible) {
-		console.log("*** isVisible", isVisible);
+		console.info('*** ', (Date.now() - startTS) / 1000, 'isVisible ?', isVisible);
 		// Verify the window is visible
 		assert.equal(isVisible, true);
 	})
 	.catch(async function (error) {
 		// Log any failures
-		console.error(new Date());
-		console.error('*** Test failed', error.message);
+		console.error('*** ', (Date.now() - startTS) / 1000, 'Test failed', error);
 		if (!app) {
 			throw 'No app found';
 		}
@@ -59,25 +65,29 @@ appLauncher.start()
 			app.client.getMainProcessLogs()
 				.then(function (logs) {
 					// logs.forEach(function (log) {
-					console.log("*** Main: ", logs);
+					console.info('*** Main: ', logs);
 					// })
 				}),
 			app.client.getRenderProcessLogs()
 				.then(function (logs) {
 					// logs.forEach(function (log) {
-					console.log("*** Render: ", logs);
+					console.info('*** Render: ', logs);
 					// })
 				}),
-		]).then(() => { throw 'In error'; })
+		]).then(() => { throw 'In error'; });
 	})
 	.finally(() => {
 		// Stop the application
 		if (appLauncher && appLauncher.isRunning()) {
-			console.log("*** Stopping");
+			console.info('*** ', (Date.now() - startTS) / 1000, 'Stopping');
 			return appLauncher.stop();
 		}
+	})
+	.then(() => {
+		console.info('Done done done');
+		process.exit(0);
 	})
 	.catch(e => {
 		console.error(e);
 		process.exit(1);
-	})
+	});
