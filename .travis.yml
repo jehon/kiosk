@@ -12,6 +12,7 @@ addons:
     - libexiv2-dev
     - cifs-utils
     - libgconf-2-4
+    - chromium-browser
 
 # cache:
 #   npm: true
