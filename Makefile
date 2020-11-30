@@ -93,6 +93,7 @@ start-dev-with-test-config-brk: build
 
 .PHONY: build
 build: dependencies
+	mkdir -p tmp
 
 .PHONY: dependencies
 dependencies: node_modules/.dependencies
