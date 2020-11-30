@@ -10,8 +10,8 @@ var assert = require('assert');
 var appLauncher = new spectron.Application({
 	path: electron,
 	args: [
-		// path.join(__dirname, 'main.cjs')
-		'.'
+		'.',
+		'-f', 'tests/kiosk.yml'
 	],
 
 	chromeDriverLogPath: path.join(__dirname, 'tmp/app/spectron.log'),
@@ -19,7 +19,6 @@ var appLauncher = new spectron.Application({
 
 	connectionRetryTimeout: 30 * 1000,
 	startTimeout: 30 * 1000,
-
 	connectionRetryCount: 3,
 
 	env: {
@@ -31,17 +30,19 @@ var appLauncher = new spectron.Application({
 	],
 });
 
-// No need to go further...
-setTimeout(() => {
-	console.info('***', new Date(), 'Killing');
-	process.exit(1);
-}, 90 * 1000);
+// setTimeout(() => {
+// 	//
+// 	// We timebox the testing to not consume too much time
+// 	//
+// 	console.info('***', new Date(), 'Killing');
+// 	process.exit(1);
+// }, 90 * 1000);
 
 const startTS = Date.now();
 console.info('***', new Date(), 'Starting');
 
 /**
- * @param {...any} args
+ * @param {...any} args to be logged
  */
 function log(...args) {
 	console.info('*** ', (Date.now() - startTS) / 1000, ...args);
@@ -55,15 +56,18 @@ appLauncher.start()
 		log('Started', app.isRunning());
 
 		// Check if the window is visible
-		return app.browserWindow.isVisible();
-	})
-	.then(function (isVisible) {
-		log('isVisible ?', isVisible);
-		// Verify the window is visible
-		assert.equal(isVisible, true);
+		return app.browserWindow.isVisible()
+			.then(function (isVisible) {
+				log('isVisible ?', isVisible);
+				// Verify the window is visible
+				assert.equal(isVisible, true);
+			});
 	})
 	.catch(async function (error) {
+		//
 		// Log any failures
+		//
+
 		console.error('*** ', (Date.now() - startTS) / 1000, 'Test failed', error);
 		if (!app) {
 			throw 'No app found';
@@ -84,16 +88,23 @@ appLauncher.start()
 		]).then(() => { throw 'In error'; });
 	})
 	.finally(() => {
+		//
 		// Stop the application
+		//
+
 		if (appLauncher && appLauncher.isRunning()) {
 			log('Stopping');
 			return appLauncher.stop();
 		}
 	})
-	.then(() => {
-		console.info('Done done done');
-		process.exit(0);
-	})
+	// .then(() => {
+	//   //
+	//   // Because we have the timeout, it would stay open if we don't exit
+	//   //
+	//
+	// 	console.info('Done, let\'s exit before waiting for timeout');
+	// 	process.exit(0);
+	// })
 	.catch(e => {
 		console.error(e);
 		process.exit(1);
