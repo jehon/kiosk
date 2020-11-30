@@ -107,7 +107,7 @@ node_modules/.dependencies: package.json package-lock.json
 # 	(diff -x package.json -x package-lock.json -rubB node_modules/ node_modules.bak/ || true) > modules.patch
 
 .PHONY: test
-test: test-server test-client
+test: test-server test-client test-app
 
 .PHONY: test-server
 test-server: build
