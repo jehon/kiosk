@@ -10,13 +10,17 @@ var assert = require('assert');
 var appLauncher = new spectron.Application({
 	path: electron,
 	args: [
-		path.join(__dirname, 'main.cjs')
+		// path.join(__dirname, 'main.cjs')
+		'.'
 	],
 
 	chromeDriverLogPath: path.join(__dirname, 'tmp/app/spectron.log'),
-	webdriverLogPath: path.join(__dirname, 'tmp/app/webdriver'),
+	webdriverLogPath: path.join(__dirname, 'tmp/app/'),
 
+	connectionRetryTimeout: 30 * 1000,
 	startTimeout: 30 * 1000,
+
+	connectionRetryCount: 3,
 
 	env: {
 		SPECTRON: 1
@@ -25,8 +29,6 @@ var appLauncher = new spectron.Application({
 	chromeDriverArgs: [
 		'--enable-logging',
 	],
-
-	connectionRetryCount: 10,
 });
 
 // No need to go further...
@@ -38,18 +40,25 @@ setTimeout(() => {
 const startTS = Date.now();
 console.info('***', new Date(), 'Starting');
 
+/**
+ * @param {...any} args
+ */
+function log(...args) {
+	console.info('*** ', (Date.now() - startTS) / 1000, ...args);
+}
+
 let app;
 
 appLauncher.start()
 	.then(function (_app) {
 		app = _app;
-		console.info('*** ', (Date.now() - startTS) / 1000, 'Started', app.isRunning());
+		log('Started', app.isRunning());
 
 		// Check if the window is visible
 		return app.browserWindow.isVisible();
 	})
 	.then(function (isVisible) {
-		console.info('*** ', (Date.now() - startTS) / 1000, 'isVisible ?', isVisible);
+		log('isVisible ?', isVisible);
 		// Verify the window is visible
 		assert.equal(isVisible, true);
 	})
@@ -77,7 +86,7 @@ appLauncher.start()
 	.finally(() => {
 		// Stop the application
 		if (appLauncher && appLauncher.isRunning()) {
-			console.info('*** ', (Date.now() - startTS) / 1000, 'Stopping');
+			log('Stopping');
 			return appLauncher.stop();
 		}
 	})
