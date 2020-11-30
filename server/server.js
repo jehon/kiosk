@@ -33,7 +33,7 @@ resetConfig()
 		//
 		// Activate some loggers
 		//
-		if (config.core.loggers) {
+		if (config?.core?.loggers) {
 			for (const re of config.core.loggers) {
 				app.info('Enabling logging level due to configuration: ', re);
 				enableDebugFor(re);
