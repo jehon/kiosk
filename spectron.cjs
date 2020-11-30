@@ -17,9 +17,9 @@ var appLauncher = new spectron.Application({
 	chromeDriverLogPath: path.join(__dirname, 'tmp/app/spectron.log'),
 	webdriverLogPath: path.join(__dirname, 'tmp/app/'),
 
-	connectionRetryTimeout: 30 * 1000,
-	startTimeout: 30 * 1000,
-	connectionRetryCount: 3,
+	// connectionRetryTimeout: 30 * 1000,
+	// startTimeout: 30 * 1000,
+	// connectionRetryCount: 3,
 
 	env: {
 		SPECTRON: 1
