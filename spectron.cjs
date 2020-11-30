@@ -10,11 +10,11 @@ var assert = require('assert');
 var appLauncher = new spectron.Application({
 	path: electron,
 	args: [
-		path.join(__dirname, 'main.cjs'),
-		'--spectron-testing'
+		path.join(__dirname, 'main.cjs')
 	],
 
-	chromeDriverLogPath: path.join(__dirname, 'tmp/spectron.log'),
+	chromeDriverLogPath: path.join(__dirname, 'tmp/app/spectron.log'),
+	webdriverLogPath: path.join(__dirname, 'tmp/app/webdriver'),
 
 	startTimeout: 30 * 1000,
 
@@ -22,11 +22,9 @@ var appLauncher = new spectron.Application({
 		SPECTRON: 1
 	},
 
-	// chromeDriverArgs: [
-	// 	'--enable-logging',
-	// 	'--no-sandbox',
-	// 	'--disable-dev-shm-usage'
-	// ],
+	chromeDriverArgs: [
+		'--enable-logging',
+	],
 
 	connectionRetryCount: 10,
 });
