@@ -38,6 +38,8 @@
     "@babel/plugin-proposal-class-properties": "7.12.13",
     "@babel/plugin-proposal-optional-chaining": "7.12.13",
     "@babel/plugin-syntax-import-meta": "7.10.4",
+    "@commitlint/cli": "11.0.0",
+    "@commitlint/config-conventional": "11.0.0",
     "@types/jasmine": "3.6.2",
     "babel-eslint": "10.1.0",
     "babel-plugin-transform-commonjs": "1.1.6",
@@ -45,19 +47,29 @@
     "eslint": "7.19.0",
     "eslint-plugin-cypress": "2.11.2",
     "eslint-plugin-jsdoc": "30.7.13",
+    "husky": "4.3.8",
     "jasmine": "3.6.4",
     "jasmine-core": "3.6.0",
     "karma": "6.1.0",
     "karma-chrome-launcher": "3.1.0",
     "karma-jasmine": "4.0.1",
+    "lint-staged": "10.5.3",
     "nock": "13.0.7",
-    "spectron": "13.0.0"
+    "spectron": "13.0.0",
+    "stylelint": "13.9.0",
+    "stylelint-config-standard": "20.0.0"
   },
   "engines": {
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "eslint": "eslint .",
+    "stylelint": "stylelint **/*.css"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": "eslint",
+    "*.css": "stylelint"
   },
   "type": "module",
   "main": "main.cjs"
