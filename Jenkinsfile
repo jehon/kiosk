@@ -7,11 +7,12 @@ pipeline {
     disableConcurrentBuilds()
   }
   stages {
-    // stage('setup-computer-test') {
-    //   steps {
-    //     sh 'make setup-computer-test'
-    //   }
-    // }
+    stage('setup-computer-test') {
+      steps {
+        sh 'make setup-computer-test'
+      }
+    }
+
     stage('dump') {
       steps {
         sh 'make dump'
