@@ -135,6 +135,7 @@ test-app: build
 .PHONY: lint
 lint:
 	eslint .
+	stylelint **/*.css
 
 .PHONY: lint-fix
 lint-fix:
