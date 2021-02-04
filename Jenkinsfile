@@ -27,6 +27,17 @@ make dependencies
 '''
       }
     }
+    stage('test-server') {
+      steps {
+        sh 'make test-server'
+      }
+    }
+    stage('test-client') {
+      steps {
+        sh 'make test-client'
+      }
+    }
+
 
     stage('test') {
       steps {
