@@ -67,7 +67,7 @@ setup-computer-test:
 	type xdotool
 	type exiv2
 # chromium must be not a snap because jenkins run out of home folder
-	type chromium | grep -v snap
+	type chromium || type chromium-browser
 
 ######################
 #
