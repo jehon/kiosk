@@ -114,7 +114,7 @@ test: test-server test-client test-app
 
 .PHONY: test-server
 test-server: build
-	jasmine --config=tests/server/jasmine.json
+	xvfb-run -a jasmine --config=tests/server/jasmine.json
 
 .PHONY: test-client
 test-client: build
