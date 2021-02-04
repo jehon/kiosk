@@ -28,29 +28,11 @@ make dependencies
       }
     }
 
-    stage('test-server') {
+    stage('test') {
       steps {
-        sh 'make test-server'
+        sh 'make test'
       }
     }
-
-    stage('test-client') {
-      steps {
-        sh 'make test-client'
-      }
-    }
-
-    stage('test-app') {
-      steps {
-        sh 'make test-app'
-      }
-    }
-
-    // stage('test') {
-    //   steps {
-    //     sh 'make test'
-    //   }
-    // }
 
     stage('lint') {
       steps {
