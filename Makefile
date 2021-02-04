@@ -60,9 +60,12 @@ define git-files
 	$(shell git ls-files --cached --modified --others --full-name "$(ROOT)/$(1)" )
 endef
 
-setup:
-	sudo apt install xdotool exiv2
+setup-computer:
+	apt -y install xdotool exiv2
 
+setup-computer-test:
+	type xdotool
+	type exiv2
 
 ######################
 #
