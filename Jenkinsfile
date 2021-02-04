@@ -40,6 +40,12 @@ make dependencies
       }
     }
 
+    stage('test-app') {
+      steps {
+        sh 'make test-app'
+      }
+    }
+
     // stage('test') {
     //   steps {
     //     sh 'make test'
