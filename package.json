@@ -46,7 +46,7 @@
     "depcheck": "1.4.0",
     "eslint": "7.21.0",
     "eslint-plugin-cypress": "2.11.2",
-    "eslint-plugin-jsdoc": "31.6.1",
+    "eslint-plugin-jsdoc": "32.2.0",
     "husky": "5.1.1",
     "jasmine": "3.6.4",
     "jasmine-core": "3.6.0",
