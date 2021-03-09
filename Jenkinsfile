@@ -5,6 +5,7 @@ pipeline {
     lock resource: 'port_kiosk'
     skipStagesAfterUnstable()
     disableConcurrentBuilds()
+    timeout(time: 60, unit: 'MINUTES')
   }
   stages {
     stage('setup-computer-test') {
