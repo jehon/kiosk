@@ -152,7 +152,7 @@ export async function loadConfigFromFile(serverApp, configFiles = config.files) 
 			app.debug('Loading config file: ', f);
 			let txt = fs.readFileSync(f, 'utf8');
 			if (txt) {
-				const doc = yaml.safeLoad(txt);
+				const doc = yaml.load(txt);
 				config = deepMerge(config, doc);
 				app.debug('Loaded config file ' + f);
 				break;

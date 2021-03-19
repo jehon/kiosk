@@ -47,6 +47,7 @@ export function init() {
 	if (cron) {
 		cron();
 	}
+	// TODO: cron could be an array
 	cron = app.cron(onTicker, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
 
 	app.setState(status);

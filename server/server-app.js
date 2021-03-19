@@ -76,6 +76,8 @@ export class ServerApp extends ServerLogger {
 	 * @returns {Function} stop to halt the cron
 	 */
 	cron(cb, cron, duration = 0, data = {}) {
+		// TODO: cron could be an array
+
 		if (cron == '') {
 			return () => { };
 		}
