@@ -82,7 +82,7 @@ export function getEnabledDebug() {
  */
 export async function loadConfigFromCommandLine(serverApp) {
 	const app = serverApp.extend('config');
-	let myargs = yargs
+	let myargs = yargs(process.argv.slice(2))
 		.options({
 			'file': {
 				alias: 'f',
