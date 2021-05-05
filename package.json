@@ -45,7 +45,7 @@
     "babel-plugin-transform-commonjs": "1.1.6",
     "depcheck": "1.4.0",
     "eslint": "7.24.0",
-    "eslint-plugin-cypress": "2.11.2",
+    "eslint-plugin-cypress": "2.11.3",
     "eslint-plugin-jsdoc": "33.0.0",
     "husky": "6.0.0",
     "jasmine": "3.7.0",
