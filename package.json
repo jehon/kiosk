@@ -12,7 +12,7 @@
     "colors": "1.4.0",
     "cron": "1.8.2",
     "cron-parser": "3.3.0",
-    "cronstrue": "1.111.0",
+    "cronstrue": "1.113.0",
     "css-inherit": "github:jehon/css-inherit",
     "debug": "4.3.1",
     "deepmerge": "4.2.2",
