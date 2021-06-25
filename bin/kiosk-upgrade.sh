@@ -11,12 +11,12 @@
 
 set -e
 
-KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
+KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}")")"
 
 # shellcheck source=./scripts/lib.sh
 . "$KIOSK_APP"/bin/scripts/lib.sh
 
-pushd "$KIOSK_APP" > /dev/null
+pushd "$KIOSK_APP" >/dev/null
 
 header "Update the code"
 LCOMMIT="$(git rev-parse HEAD)"
@@ -34,10 +34,10 @@ if ! git pull --all --prune; then
     ORIGIN=$(git branch --remotes --merged "HEAD" | grep -v HEAD)
     header "New origin: $ORIGIN"
 
-    BRANCH="${ORIGIN/origin\/}"
+    BRANCH="${ORIGIN/origin\//}"
     BRANCH="${BRANCH// /}"
     header "New branch: '$BRANCH'"
-  
+
     header "Going on the new branch: $BRANCH"
     git checkout "$BRANCH"
     git pull
@@ -48,8 +48,8 @@ fi
 NCOMMIT="$(git rev-parse HEAD)"
 
 if [ "$LCOMMIT" != "$NCOMMIT" ] || [ ! -e "node_modules" ]; then
-	# No change in the pull'ed commit
-	# And we are already installed...
+    # No change in the pull'ed commit
+    # And we are already installed...
 
     # In Dev, this would go out here,
     # while perhaps, the latest package.json has changed
