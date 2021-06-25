@@ -1,6 +1,21 @@
 # Kiosk
 
-[![Build Status](https://travis-ci.com/jehon/kiosk.svg?branch=master)](https://travis-ci.com/jehon/kiosk)
+## Setup
+
+run kickstart.sh
+
+### Explained
+
+use the ubuntu server image for raspberry-pi
+change the password of the ubuntu setup by ssh on it
+
+run setup-kiosk (package folder)
+  go on the server and clone repository
+
+run bin/kiosk-initialize.sh
+
+copy config to /opt/kiosk/etc/
+
 
 ## Server
 

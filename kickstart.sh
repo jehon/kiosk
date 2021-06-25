@@ -9,7 +9,7 @@ set -e
 #
 #
 
-if ! type git 2>/dev/null >/dev/null ; then
+if ! type git 2>/dev/null >/dev/null; then
     DEBIAN_FRONTEND=noninteractive apt-get -y install git
 fi
 
