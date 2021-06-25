@@ -61,7 +61,9 @@ define git-files
 endef
 
 setup-computer:
-	apt -y install xdotool exiv2
+	sudo apt -y install xdotool exiv2
+	mkdir -p etc/
+	ln -f -s ../../secrets/crypted/kiosk/kiosk.yml etc/
 
 setup-computer-test:
 	type xdotool
@@ -206,7 +208,10 @@ deploy: dump build
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
+		--exclude "etc"                   --filter "protect etc"                \
 		--exclude ".nfs*"
+
+	scp $$JH_SECRETS_FOLDER/crypted/kiosk/kiosk.yml kiosk:$(TARGET)/etc/kiosk.yml
 
 	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
 	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
