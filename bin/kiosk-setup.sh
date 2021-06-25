@@ -19,30 +19,30 @@
 
 set -e
 
-KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE" )" )"
+KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE")")"
 
-# shellcheck source=./lib.sh
+# shellcheck source=../bin/scripts/lib.sh
 . "$KIOSK_APP"/bin/scripts/lib.sh
 
 header "Set variables"
 CFG_MIN_APT=()
 # System wide
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" wget apt-transport-https) # Required by nodejs install
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" gcc g++ make) # Build of native extensions
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" gcc g++ make)             # Build of native extensions
 
 # Kiosk specific
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq crudini xdotool unclutter) # System kiosk
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev) # Extension image fast ?
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils) # Package 'shares'
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" ffmpget) # Package 'camera'
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev)                   # Extension image fast ?
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils)                           # Package 'shares'
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" ffmpeg)                               # Package 'camera'
 
 case "$(lsb_release -i -s)" in
-	"Debian" )
-		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
-		;;
-	* )
-		CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-browser)
-		;;
+"Debian")
+	CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium)
+	;;
+*)
+	CFG_MIN_APT=("${CFG_MIN_APT[@]}" chromium-browser)
+	;;
 esac
 
 export CFG_MIN_APT
@@ -65,25 +65,24 @@ restrictedToDev apt --yes install "${CFG_DEV_APT[@]}"
 
 header_sub "Ensure nodejs with version $CFG_MIN_NODE_VERSION is present"
 install_nodejs() {
-	local MAJ_VERSION=${CFG_MIN_NODE_VERSION/.*}
+	local MAJ_VERSION=${CFG_MIN_NODE_VERSION/.*/}
 	debug "Installing nodejs $MAJ_VERSION"
 	curl -sL https://deb.nodesource.com/setup_${MAJ_VERSION}.x | bash -
 	apt --yes install nodejs
 }
 
-if ! type nodejs > /dev/null; then
+if ! type nodejs >/dev/null; then
 	debug "Nodejs not found on system"
 	install_nodejs
 else
 	nodeVersion=$(node --version 2>&1 | tr -d 'v')
-	if is_version2_sufficient "$CFG_MIN_NODE_VERSION" "$nodeVersion" ; then
+	if is_version2_sufficient "$CFG_MIN_NODE_VERSION" "$nodeVersion"; then
 		debug "Installed version is ok: $nodeVersion"
 	else
 		debug "Nodejs found on system is too old: $nodeVersion"
 		install_nodejs
 	fi
 fi
-
 
 #
 #

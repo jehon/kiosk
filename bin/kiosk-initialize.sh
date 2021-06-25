@@ -11,7 +11,7 @@
 set -e
 
 # Later on, this will be set by profile...
-KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}" )" )"
+KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}")")"
 export KIOSK_APP
 
 # shellcheck source=/dev/null
@@ -23,10 +23,10 @@ header "Store configuration into environment variables"
 	echo "export KIOSK_APP=\"$KIOSK_APP\" "
 	echo "export KIOSK_USER=\"$KIOSK_USER\" "
 	echo "export NODE_ENV=\"$NODE_ENV\""
-) > /etc/profile.d/kiosk-profile.sh
+) >/etc/profile.d/kiosk-profile.sh
 
 header "Ensure user $KIOSK_USER user exists"
-if ! id "$KIOSK_USER" 2>/dev/null >/dev/null ; then
+if ! id "$KIOSK_USER" 2>/dev/null >/dev/null; then
 	debug "adding $KIOSK_USER user"
 	useradd "$KIOSK_USER" --create-home --groups "audio,video,plugdev,netdev,dip,cdrom"
 
@@ -38,7 +38,6 @@ fi
 ##
 "$KIOSK_APP"/bin/kiosk-setup.sh
 
-
 ##
 ## Configure newly installed packages
 ##    the packages are installed by kiosk-setup.sh
@@ -48,7 +47,7 @@ fi
 # ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
 
 header "Install the frontend session"
-cat > "/usr/share/xsessions/kiosk.desktop" <<EOF
+cat >"/usr/share/xsessions/kiosk.desktop" <<EOF
 [Desktop Entry]
 Name=Browser
 Exec=$KIOSK_APP/bin/xsession-kiosk.sh
@@ -69,14 +68,13 @@ header "Redirect sound output to jack first card"
 cp "$KIOSK_APP"/bin/files/asound.conf /etc/
 chmod 640 /etc/asound.conf
 
-#header "Set the hostname"
-#"$KIOSK_APP"/bin/scripts/change-hostname.sh
+echo "arch=armv7l" >/root/.npmrc
+echo "arch=armv7l" >/home/pi/.npmrc
+
+mkdir -p /opt/kiosk/etc
 
 header "Restarting the service"
 "$KIOSK_APP"/bin/kiosk-restart.sh
 
 header "Finished with success"
 echo "For this changes to take effect, please restart the server"
-
-echo "arch=armv7l" > /root/.npmrc
-echo "arch=armv7l" > /home/pi/.npmrc
