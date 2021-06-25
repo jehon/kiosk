@@ -50,7 +50,7 @@ export CFG_MIN_APT
 CFG_DEV_APT=(htop exiftran exif gnupg2 less xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2)
 export CFG_DEV_APT
 
-CFG_MIN_NODE_VERSION="13.5"
+CFG_MIN_NODE_VERSION="16"
 export CFG_MIN_NODE_VERSION
 
 header "Enforce minimal dependencies"
@@ -71,7 +71,7 @@ install_nodejs() {
 	apt --yes install nodejs
 }
 
-if ! type nodejs >/dev/null; then
+if ! type nodejs >/dev/null 2>&1; then
 	debug "Nodejs not found on system"
 	install_nodejs
 else
@@ -104,8 +104,6 @@ chmod a+rwX "$KIOSK_APP/etc"
 
 header "Installing server dependencies"
 pushd "$KIOSK_APP" >/dev/null
-
-header "Upgrade server dependencies"
 "$KIOSK_APP"/bin/kiosk-upgrade-sources-dependencies.sh
 popd >/dev/null
 

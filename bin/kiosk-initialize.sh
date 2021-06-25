@@ -20,8 +20,8 @@ export KIOSK_APP
 header "Store configuration into environment variables"
 (
 	echo "export KIOSK_DEV=\"$KIOSK_DEV\""
-	echo "export KIOSK_APP=\"$KIOSK_APP\" "
-	echo "export KIOSK_USER=\"$KIOSK_USER\" "
+	echo "export KIOSK_APP=\"$KIOSK_APP\""
+	echo "export KIOSK_USER=\"$KIOSK_USER\""
 	echo "export NODE_ENV=\"$NODE_ENV\""
 ) >/etc/profile.d/kiosk-profile.sh
 
@@ -42,9 +42,6 @@ fi
 ## Configure newly installed packages
 ##    the packages are installed by kiosk-setup.sh
 ##
-
-# header "Installing cron to update kiosk daily"
-# ln -fs "$KIOSK_APP"/bin/kiosk-upgrade.sh /etc/cron.daily/kiosk-update
 
 header "Install the frontend session"
 cat >"/usr/share/xsessions/kiosk.desktop" <<EOF

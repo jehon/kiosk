@@ -217,6 +217,6 @@ deploy: dump build
 
 	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
 	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
-	ssh $(HOST) truncate --size 0 /home/pi/kiosk-xsession.log
+	ssh $(HOST) truncate --size 0 /home/kiosk/kiosk-xsession.log
 
 	ssh $(HOST) "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"

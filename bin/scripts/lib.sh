@@ -89,7 +89,7 @@ header_sub() {
 #
 #
 restrictedToDev() {
-    if [ ! -z "$KIOSK_DEV" ]; then
+    if [ -n "$KIOSK_DEV" ]; then
         "$@"
         return $?
     fi
