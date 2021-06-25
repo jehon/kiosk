@@ -63,7 +63,9 @@ endef
 setup-computer:
 	sudo apt -y install xdotool exiv2
 	mkdir -p etc/
-	ln -f -s ../../secrets/crypted/kiosk/kiosk.yml etc/
+	if [ -r $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml ]; then
+		ln -f -s $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml etc/
+	fi
 
 setup-computer-test:
 	type xdotool
