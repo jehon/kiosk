@@ -1,6 +1,6 @@
 # Project
 var/
-etc/
+etc/kiosk.yml
 parts/
 common.es6/
 
