@@ -28,9 +28,7 @@ header "Store configuration into environment variables"
 header "Ensure user $KIOSK_USER user exists"
 if ! id "$KIOSK_USER" 2>/dev/null >/dev/null; then
 	debug "adding $KIOSK_USER user"
-	useradd "$KIOSK_USER" --create-home --groups "audio,video,plugdev,netdev,dip,cdrom"
-
-	restrictedToDev usermod --append --groups "vagrant" "$KIOSK_USER"
+	useradd "$KIOSK_USER" --create-home --groups "audio,video,plugdev,netdev,dip,cdrom,nopasswdlogin kiosk"
 fi
 
 ##
@@ -44,19 +42,10 @@ fi
 ##
 
 header "Install the frontend session"
-cat >"/usr/share/xsessions/kiosk.desktop" <<EOF
-[Desktop Entry]
-Name=Browser
-Exec=$KIOSK_APP/bin/xsession-kiosk.sh
-Type=Application
-EOF
+cp etc/kiosk-xsession.conf /usr/share/xsessions/
 chown root.root /usr/share/xsessions/kiosk.*
 
-header "lightdm will start $KIOSK_USER user"
-crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-session" "kiosk"
-crudini --set /etc/lightdm/lightdm.conf "LightDM" "autologin-user" "pi"
-crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-session" "kiosk"
-crudini --set /etc/lightdm/lightdm.conf "Seat:*" "autologin-user" "pi"
+cp etc/kiosk-lightdm.conf /etc/lightdm.conf.d/
 
 rm -f /etc/systemd/system/default.target
 ln -s /lib/systemd/system/graphical.target /etc/systemd/system/default.target

@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=Kiosk
+Exec=/opt/kiosk/bin/xsession-kiosk.sh
+Type=Application

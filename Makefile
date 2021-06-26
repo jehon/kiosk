@@ -168,7 +168,7 @@ remote-ssh:
 	ssh $(HOST) -X -t "cd $(TARGET) && exec bash --login"
 
 remote-ssh-pi:
-	ssh pi@$(HOST) -X -t "cd $(TARGET) && exec bash --login"
+	ssh kiosk@$(HOST) -X -t "cd $(TARGET) && exec bash --login"
 
 remote-htop:
 	ssh $(HOST) -t htop
@@ -177,7 +177,7 @@ remote-logs-lightdm:
 	ssh $(HOST) journalctl -f -u lightdm
 
 remote-logs:
-	ssh $(HOST) tail -n 1000 -f /home/pi/kiosk-xsession.log
+	ssh $(HOST) tail -n 1000 -f $(TARGET)/tmp/kiosk-xsession.log
 
 remote-logs-cycle:
 	while true; do \
@@ -186,7 +186,7 @@ remote-logs-cycle:
 	done
 
 remote-exec:
-	ssh pi@$(HOST) -X -t "cd $(TARGET) && exec npm run start-dp"
+	ssh kiosk@$(HOST) -X -t "cd $(TARGET) && exec npm run start-dp"
 
 #
 #
@@ -210,13 +210,13 @@ deploy: dump build
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
-		--exclude "etc"                   --filter "protect etc"                \
+		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
 		--exclude ".nfs*"
 
 	scp $$JH_SECRETS_FOLDER/crypted/kiosk/kiosk.yml kiosk:$(TARGET)/etc/kiosk.yml
 
 	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
 	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
-	ssh $(HOST) truncate --size 0 /home/kiosk/kiosk-xsession.log
+	ssh $(HOST) truncate --size 0 $(TARGET)/tmp/kiosk-xsession.log
 
 	ssh $(HOST) "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
