@@ -219,4 +219,4 @@ deploy: dump build
 	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
 	ssh $(HOST) truncate --size 0 $(TARGET)/tmp/kiosk-xsession.log
 
-	ssh $(HOST) "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
+	ssh $(HOST) su kiosk -c "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
