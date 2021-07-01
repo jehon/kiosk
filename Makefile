@@ -220,3 +220,5 @@ deploy: dump build
 	ssh $(HOST) truncate --size 0 $(TARGET)/tmp/kiosk-xsession.log
 
 	ssh $(HOST) su kiosk -c "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
+
+	ssh $(HOST) "$(TARGET)"/bin/kiosk-restart.sh
