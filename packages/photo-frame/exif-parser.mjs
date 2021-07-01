@@ -60,12 +60,18 @@ export default async function exivReadAll(filePath) {
 		}
 
 		if (v) {
-			result[k] = v;
 			if (v.match(/[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/)) {
 				// Match the date element
 				const nd = v.replace(':', '-').replace(':', '-');
-				result[k] = nd;
+				v = nd;
 			}
+
+			// Treat the "charset=abc blablabla"
+			const m = v.match(/charset=\w+ (.*)/);
+			if (m) {
+				v = m[1];
+			}
+			result[k] = v;
 		}
 
 	});
