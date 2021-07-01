@@ -75,6 +75,7 @@ export async function start(serverApp) {
 	};
 
 	if (devMode) {
+		opts.frame = true;
 		opts.width = 1500;
 		opts.height = 900;
 	} else {
