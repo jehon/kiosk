@@ -47,6 +47,3 @@ else
 	header "** mark it as new point **"
 	cp -f "$PKG" "$PKG_INST"
 fi
-
-header "Restarting the service"
-"$KIOSK_APP"/bin/kiosk-restart.sh
