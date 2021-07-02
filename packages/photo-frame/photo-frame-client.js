@@ -1,7 +1,7 @@
 
 import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import { ClientApp, ClientAppElement } from '../../client/client-app.js';
+import { ClientApp, ClientAppElement, forceGC } from '../../client/client-app.js';
 
 const app = new ClientApp('photo-frame');
 
@@ -199,6 +199,7 @@ class KioskPhotoFrame extends ClientAppElement {
 			return;
 		}
 		this.carousel.mainFn(pictureIndex);
+		setTimeout(() => forceGC(), 1000);
 	}
 }
 

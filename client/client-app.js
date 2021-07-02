@@ -192,3 +192,13 @@ export class ClientApp {
 		return this;
 	}
 }
+
+const { webFrame } = require('electron');
+/**
+ * Reset cache
+ * See http://seenaburns.com/debugging-electron-memory-usage/
+ */
+export function forceGC() {
+	webFrame.clearCache();
+}
+
