@@ -1,7 +1,7 @@
 ---
 core:
   loggers:
-    # - kiosk:loggers
+    # - kiosk:loggers (configured in launch)
 
 caffeine:
   # inactivity-seconds: 15
