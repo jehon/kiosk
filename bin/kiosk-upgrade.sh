@@ -54,8 +54,6 @@ if [ "$LCOMMIT" != "$NCOMMIT" ] || [ ! -e "node_modules" ]; then
     # In Dev, this would go out here,
     # while perhaps, the latest package.json has changed
     #
-    # So in dev, we will call the "kiosk-dev.sh"
-    #
     # shellcheck source=./bin/kiosk-setup.sh
     "$KIOSK_APP"/bin/kiosk-setup.sh
 fi
