@@ -63,6 +63,7 @@ function waitMilliseconds(ms) {
  * @returns {Promise} resolve when configure is done
  */
 export async function configure() {
+	// For dev environment !
 	if (!config.configure) {
 		logger.info('Skipping configure by config');
 		return;

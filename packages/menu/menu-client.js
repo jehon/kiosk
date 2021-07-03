@@ -44,6 +44,7 @@ app
 	.onServerStateChanged((status) => {
 		for (const i in status) {
 			const a = status[i];
+			a.name = i;
 			app.debug(`Registering app by menu: ${a.name}`, a);
 			const ap = new ClientApp(a.name)
 				.mainBasedOnIFrame(a.url)
