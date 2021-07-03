@@ -218,8 +218,6 @@ class KioskPhotoFrame extends ClientAppElement {
 
 		this._carouselImg.src = photo.url;
 
-
-		setTimeout(() => forceGC(), 1000);
 	}
 }
 
@@ -265,3 +263,8 @@ app
 
 		autoMoveToNextImage();
 	});
+
+
+setInterval(() => {
+	forceGC();
+}, 60 * 1000);
