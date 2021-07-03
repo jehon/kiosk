@@ -99,7 +99,7 @@ export async function start(serverApp) {
 
 	ipcMain.on('history', (event, context) => {
 		if (!historySent.has(context)) {
-			app.error(`Requested history for ${context}, but that is not found`);
+			app.debug(`Requested history for ${context}, but that is not found`);
 		}
 		win.webContents.send(context, historySent.get(context));
 	});

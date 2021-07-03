@@ -212,6 +212,7 @@ class KioskPhotoFrame extends ClientAppElement {
 		if (picturesList.length > 0) {
 			photo = picturesList[pictureIndex];
 		}
+		app.debug('updatePicture', pictureIndex);
 
 		this._carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
 

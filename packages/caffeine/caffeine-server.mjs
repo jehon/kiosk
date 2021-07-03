@@ -25,6 +25,9 @@ export async function wakeUp() {
 					'DISPLAY': ':0'
 				}
 			});
+
+		app.debug('Running wakeup', cp.spawnfile, cp.spawnargs);
+
 		cp.on('error', err => {
 			app.error('Caffeine launch error returned: ', err);
 			app.setState({
@@ -71,7 +74,6 @@ export function init() {
 
 	const config = {
 		cron: '* 6-22 * * *',
-		user: 'pi',
 		...app.getConfig()
 	};
 
