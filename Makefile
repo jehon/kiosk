@@ -208,19 +208,14 @@ remote-restart-dm:
 #
 #
 deploy: dump build
-	rsync -rlti --delete "$(ROOT)/" "kiosk:$(TARGET)/" \
+	rsync --itemize-changes --recursive --perms --times --links --delete "$(ROOT)/" "kiosk@kiosk:$(TARGET)/" \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
 		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
 		--exclude ".nfs*"
 
-	scp $$JH_SECRETS_FOLDER/crypted/kiosk/kiosk.yml kiosk:$(TARGET)/etc/kiosk.yml
-
-	ssh $(HOST) chmod -R a+rwX "$(TARGET)"
-	ssh $(HOST) chmod -R a+x   "$(TARGET)/bin"
-	ssh $(HOST) truncate --size 0 $(TARGET)/tmp/kiosk-xsession.log
-
-	ssh $(HOST) su kiosk -c "$(TARGET)/bin/kiosk-upgrade-sources-dependencies.sh"
+	scp $$JH_SECRETS_FOLDER/crypted/kiosk/kiosk.yml kiosk@kiosk:$(TARGET)/etc/kiosk.yml
 
 	ssh $(HOST) "$(TARGET)"/bin/kiosk-restart.sh
+
