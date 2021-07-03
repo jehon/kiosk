@@ -54,8 +54,10 @@ header "Redirect sound output to jack first card"
 cp "$KIOSK_APP"/bin/files/asound.conf /etc/
 chmod 640 /etc/asound.conf
 
-echo "arch=armv7l" >/root/.npmrc
-echo "arch=armv7l" >/home/pi/.npmrc
+# Link the kiosk user to mine
+ln -s jehon /etc/ssh_authorized_keys/kiosk
+
+# echo "arch=armv7l" >/home/kiosk/.npmrc
 
 mkdir -p /opt/kiosk/etc
 
