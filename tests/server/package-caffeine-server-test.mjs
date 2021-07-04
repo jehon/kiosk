@@ -17,7 +17,7 @@ describe(fn(import.meta.url), () => {
 	it('should trigger tickers', async function () {
 		setConfig('', {
 			'caffeine': {
-				cron: '*/2 * * * *'
+				simulateActivityMinutes: 0.5
 			}
 		});
 

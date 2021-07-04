@@ -9,6 +9,7 @@ import contextualize from '../common/contextualize.js';
 import getConfig from './server-lib-config.js';
 import { dispatchToBrowser } from './server-lib-gui.js';
 import _ from 'lodash';
+import TimeInterval from '../common/TimeInterval.js';
 
 export class ServerApp extends ServerLogger {
 	name;
@@ -62,11 +63,11 @@ export class ServerApp extends ServerLogger {
 		return getConfig(this.ctxfn(opath), def);
 	}
 
-	// registerCredentials(url, username, password) {
-	// 	this.debug(`Registering credentials for ${username}@${url}: #${password.length} characters`);
-	// 	registerCredentials(url, { username, password });
-	// 	return this;
-	// }
+	addTimeInterval(cb, iSecs) {
+		return new TimeInterval(() => {
+			cb;
+		}, iSecs, this.extend('time-interval'));
+	}
 
 	/**
 	 * @param {Function} cb callback
@@ -146,7 +147,6 @@ export class ServerApp extends ServerLogger {
 			setTimeout(() => resolve(), date.getTime() - now.getTime());
 		});
 	}
-
 }
 
 /**
