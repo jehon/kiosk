@@ -1,7 +1,7 @@
 
 import { ClientApp } from '../../client/client-app.js';
 
-const app = new ClientApp('caffeine');
+const app = new ClientApp('human');
 const body = document.querySelector('body');
 
 let debugHook = null;
@@ -80,6 +80,6 @@ body.addEventListener('mousemove', e => {
 			clearTimeout(eraser);
 			eraser = false;
 			setActivity(false);
-		}, ((app.getServerState()?.config ?? [])['inactivity-seconds'] ?? 60) * 1000);
+		}, ((app.getServerState()?.config ?? [])['inactivitySeconds'] ?? 60) * 1000);
 	}
 });

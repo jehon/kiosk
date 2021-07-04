@@ -1,12 +1,11 @@
 ---
 core:
   loggers:
-    - kiosk:caffeine:*
+    - kiosk:human:*
     # - kiosk:loggers (configured in launch)
 
-caffeine:
+human:
   inactivitySeconds: 15
-  simulateActivityMinutes: 1
 
 photo-frame:
   folders:

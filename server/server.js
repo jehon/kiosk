@@ -64,7 +64,6 @@ resetConfig()
 		return Promise.all([
 			loadPackage('menu'),
 			loadPackage('fire'),
-			loadPackage('caffeine'),
 			loadPackage('clock'),
 			loadPackage('photo-frame'),
 			loadPackage('camera')
