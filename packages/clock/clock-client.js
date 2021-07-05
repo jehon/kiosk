@@ -229,7 +229,7 @@ export class KioskClock extends ClientAppElement {
 customElements.define('kiosk-clock', KioskClock);
 
 app
-	.setMainElement(new KioskClock())
+	.setMainElementBuilder(() => new KioskClock())
 	.menuBasedOnIcon('../packages/clock/clock.png')
 	.onServerStateChanged(status => {
 		if (status.currentTicker) {
@@ -237,5 +237,4 @@ app
 		} else {
 			app.setPriority();
 		}
-		(/** @type {ClientAppElement} */ (app.getMainElement())).setServerState(status);
 	});

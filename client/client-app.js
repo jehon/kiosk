@@ -121,20 +121,27 @@ export class ClientApp {
 	}
 
 	/**
-	 * @param {HTMLElement} element the main element
-	 * @returns {ClientApp} this
+	 *
+	 * @param {function(): HTMLElement} mEBuilder to build the main element
+	 * @returns {ClientApp} for chaining
 	 */
-	setMainElement(element) {
-		this.mainElement = element;
+	setMainElementBuilder(mEBuilder) {
+		this.mainElementBuilder = mEBuilder;
 		this.dispatchAppChanged();
 		return this;
 	}
 
 	/**
-	 * @returns {HTMLElement} the main element
+	 * Build a main element
+	 *
+	 * @returns {HTMLElement} built
 	 */
-	getMainElement() {
-		return this.mainElement;
+	buildMainElement() {
+		const el = this.mainElementBuilder();
+		if ('setApp' in el) {
+			el.setApp(this);
+		}
+		return el;
 	}
 
 	/**
@@ -174,20 +181,20 @@ export class ClientApp {
  * @returns {HTMLElement} of the iFrame
  */
 export function iFrameBuilder(url) {
-		const iframe = document.createElement('iframe');
-		iframe.setAttribute('src', url);
+	const iframe = document.createElement('iframe');
+	iframe.setAttribute('src', url);
 
-		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy
-		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy/microphone
-		// iframe.setAttribute('allow', 'microphone; camera');
-		// iframe.setAttribute('allow', 'microphone *');
-		iframe.setAttribute('allow', 'microphone *; camera *');
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy/microphone
+	// iframe.setAttribute('allow', 'microphone; camera');
+	// iframe.setAttribute('allow', 'microphone *');
+	iframe.setAttribute('allow', 'microphone *; camera *');
 
-		// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
-		// sandbox restrict to nothing, but extra attributes re-allow stuff
-		iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals');
+	// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+	// sandbox restrict to nothing, but extra attributes re-allow stuff
+	iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals');
+
 	return iframe;
-
 }
 
 const { webFrame } = require('electron');
