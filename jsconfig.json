@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "checkJs": true,
+    "checkJs": false,
     "module": "esnext",
     "target": "es2018"
   },
