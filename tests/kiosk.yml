@@ -16,7 +16,7 @@ photo-frame:
 camera:
   intervalSeconds: 5
   hardware:
-    videoPort: 4411
+    videoPort: 4848
     configure: false
     username: any
     password: any
