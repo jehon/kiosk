@@ -1,6 +1,7 @@
 
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp, forceGC } from '../../client/client-app.js';
+import Callback from '../../common/callback.js';
 
 const app = new ClientApp('photo-frame');
 
@@ -14,6 +15,8 @@ let picturesList = [];
 // For manual selection
 let updatePictureTimeout = null;
 
+let updatePictureCallback = new Callback(0);
+
 /**
  * @returns {number} the next index
  */
@@ -25,7 +28,7 @@ function next() {
 
 	pictureIndex = res;
 
-	(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updatePicture();
+	updatePictureCallback.emit(pictureIndex);
 
 	return res;
 }
@@ -41,7 +44,7 @@ function prev() {
 
 	pictureIndex = res;
 
-	(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updatePicture();
+	updatePictureCallback.emit(pictureIndex);
 
 	return res;
 }
@@ -162,7 +165,16 @@ class KioskPhotoFrame extends ClientAppElement {
 		});
 	}
 
-	updateList() {
+	connectedCallback() {
+		super.connectedCallback();
+		this.addUnregister(
+			updatePictureCallback.onChange(
+				() => this.updatePicture()
+			)
+		);
+	}
+
+	onServerStateChanged() {
 		this._carouselThumbs.innerHTML = '';
 		if (picturesList.length >= 1) {
 			// TODO: manage thumbnails ! => need to generate them !
