@@ -2,8 +2,13 @@
 
 # @see man xset
 # 15min to standby mode
-xset +dpms
 # xset dpms 0 0 900
+
+# xset +dpms
+
+xset -dpms
+xset s noblank
+xset s off
 
 KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}")")"
 mkdir -p "$KIOSK_APP/tmp"
