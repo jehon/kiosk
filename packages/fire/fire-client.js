@@ -1,11 +1,7 @@
 
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
-
-const app = new ClientApp('fire');
-export default app;
-
-const elevatedPriority = 300;
+import { priorities } from '../../client/config.js';
 
 export class KioskFire extends ClientAppElement {
 	/**
@@ -103,13 +99,16 @@ export class KioskFire extends ClientAppElement {
 
 customElements.define('kiosk-fire', KioskFire);
 
-app
+const app = new ClientApp('fire')
 	.setMainElementBuilder(() => new KioskFire())
-	.menuBasedOnIcon('../packages/fire/fire.jpg')
-	.onServerStateChanged(status => {
-		if (status.currentTicker) {
-			app.setPriority(elevatedPriority);
-		} else {
-			app.setPriority();
-		}
-	});
+	.menuBasedOnIcon('../packages/fire/fire.jpg');
+
+app.onServerStateChanged((status, app) => {
+	if (status.currentTicker) {
+		app.setPriority(priorities.fire.elevated);
+	} else {
+		app.setPriority(priorities.fire.normal);
+	}
+});
+
+export default app;

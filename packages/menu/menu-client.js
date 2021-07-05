@@ -3,8 +3,6 @@ import { selectApplication, getApplicationList, autoSelectApplication } from '..
 import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
 import ClientAppElement from '../../client/client-app-element.js';
 
-const app = new ClientApp('menu');
-
 class KioskMenu extends ClientAppElement {
 	setServerState(status) {
 		super.setServerState(status);
@@ -32,7 +30,25 @@ class KioskMenu extends ClientAppElement {
 }
 customElements.define('kiosk-menu', KioskMenu);
 
-app.onClientStateChanged('inactive', (inactive) => {
+const app = new ClientApp('menu')
+	.setMainElementBuilder(() => new KioskMenu());
+
+app.onServerStateChanged((status, app) => {
+	for (const i in status) {
+		const a = status[i];
+		a.name = i;
+		app.debug(`Registering app by menu: ${a.name}`, a);
+		const ap = new ClientApp(a.name)
+			.setMainElementBuilder(() => iFrameBuilder(a.url))
+			.menuBasedOnIcon(a.icon, a.label);
+		if ('priority' in a) {
+			ap.setPriority(a.priority);
+		}
+
+	}
+});
+
+app.onClientStateChanged('inactive', (inactive, app) => {
 	if (inactive) {
 		// Trigger a new calculation of the top app
 		app.debug('Back to auto select application');
@@ -40,27 +56,8 @@ app.onClientStateChanged('inactive', (inactive) => {
 	}
 });
 
-app
-	.setMainElementBuilder(() => new KioskMenu())
-	.onServerStateChanged((status) => {
-		for (const i in status) {
-			const a = status[i];
-			a.name = i;
-			app.debug(`Registering app by menu: ${a.name}`, a);
-			const ap = new ClientApp(a.name)
-				.setMainElementBuilder(() => iFrameBuilder(a.url))
-				.menuBasedOnIcon(a.icon, a.label);
-			if ('priority' in a) {
-				ap.setPriority(a.priority);
-			}
-
-		}
-	});
-
-// Insert the icon on top of the body
-
 /**
- *
+ * Insert the icon on top of the body
  */
 function init() {
 	document.querySelector('body').insertAdjacentHTML('beforeend', `

@@ -1,11 +1,7 @@
 
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
-
-const app = new ClientApp('clock');
-export default app;
-
-const elevatedPriority = 200;
+import { priorities } from '../../client/config.js';
 
 const circleRadius = 97;
 const handLengths = {
@@ -228,13 +224,16 @@ export class KioskClock extends ClientAppElement {
 
 customElements.define('kiosk-clock', KioskClock);
 
-app
+const app = new ClientApp('clock')
 	.setMainElementBuilder(() => new KioskClock())
-	.menuBasedOnIcon('../packages/clock/clock.png')
-	.onServerStateChanged(status => {
-		if (status.currentTicker) {
-			app.setPriority(elevatedPriority);
-		} else {
-			app.setPriority();
-		}
-	});
+	.menuBasedOnIcon('../packages/clock/clock.png');
+
+app.onServerStateChanged((status, app) => {
+	if (status.currentTicker) {
+		app.setPriority(priorities.clock.elevated);
+	} else {
+		app.setPriority(priorities.clock.normal);
+	}
+});
+
+export default app;

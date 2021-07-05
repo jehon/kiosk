@@ -58,7 +58,6 @@ export class ClientApp {
 	// Server state
 	//
 	//
-
 	async _setServerState(status) {
 		return this.serverStateCallback.emit(status);
 	}
@@ -67,18 +66,26 @@ export class ClientApp {
 		return this.serverStateCallback.getState();
 	}
 
+	/**
+	 * Triggered when server state change
+	 *
+	 * @param {function(any,ClientApp):any} callback to be called
+	 * @returns {function(void):void} to stop the callback
+	 */
 	onServerStateChanged(callback) {
-		return this.serverStateCallback.onChange(callback);
+		return this.serverStateCallback.onChange((status) => callback(status, this));
 	}
 
-	//
-	//
-	// Client state
-	//
-	//
+	/**
+	 * Client state
+	 *
+	 * @param {string} characteristic to be checked (attribute on body)
+	 * @param {function(any,ClientApp):any} callback to be called
+	 * @returns {function(void):void} to stop the callback
+	 */
 	onClientStateChanged(characteristic, callback) {
 		const analyser = () => {
-			callback(body.hasAttribute(characteristic));
+			callback(body.hasAttribute(characteristic), this);
 		};
 
 		analyser();
@@ -95,7 +102,6 @@ export class ClientApp {
 	// Configuration
 	//
 	//
-
 	dispatchAppChanged() {
 		autoSelectApplication();
 		return this;
@@ -105,14 +111,12 @@ export class ClientApp {
 	 *  101..1000: application need special attention
 	 *  100: Background application (default)
 	 *  0: nothing
+	 * -1: disabled
 	 *
-	 * @param {number} newPriority - 0 by default mean not priority
+	 * @param {number} newPriority to be set (will be compared for change)
 	 * @returns {ClientApp} this
 	 */
 	setPriority(newPriority = 0) {
-		if (typeof (newPriority) != 'number') {
-			newPriority = parseInt(newPriority);
-		}
 		if (this.priority != newPriority) {
 			this.priority = newPriority;
 			this.dispatchAppChanged();

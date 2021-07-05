@@ -5,6 +5,7 @@ import app from '../../packages/camera/camera-client.js';
 
 import { fn } from './helper-main.js';
 import { TriStates } from '../../packages/camera/constants.js';
+import { priorities } from '../../client/config.js';
 
 describe(fn(import.meta.url), () => {
 	beforeEach(async () => {
@@ -17,7 +18,7 @@ describe(fn(import.meta.url), () => {
 		await app._setServerState({
 			code: TriStates.DOWN
 		});
-		expect(app.priority).toBe(0);
+		expect(app.priority).toBe(priorities.camera.normal);
 
 		/** @type {module:package/camera/KioskCamera} */
 		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
@@ -34,7 +35,7 @@ describe(fn(import.meta.url), () => {
 			code: TriStates.READY,
 			url: 'test'
 		});
-		expect(app.priority).toBe(1000);
+		expect(app.priority).toBe(priorities.camera.elevated);
 
 		/** @type {module:package/camera/KioskCamera} */
 		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
@@ -55,7 +56,7 @@ describe(fn(import.meta.url), () => {
 			nbCheck: 1,
 			url: ''
 		});
-		expect(app.priority).toBe(0);
+		expect(app.priority).toBe(priorities.camera.normal);
 
 		/** @type {module:package/camera/KioskCamera} */
 		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
