@@ -10,12 +10,6 @@ import { registerApp, autoSelectApplication, selectApplication } from './client-
 
 const body = document.querySelector('body');
 
-export class ClientAppElement extends HTMLElement {
-	setServerState(state) {
-		this.status = state;
-	}
-}
-
 export class ClientApp {
 	id = -1;
 	name; // private
@@ -103,7 +97,6 @@ export class ClientApp {
 	//
 
 	dispatchAppChanged() {
-		// TODO: use a proxy in menu-client???
 		autoSelectApplication();
 		return this;
 	}

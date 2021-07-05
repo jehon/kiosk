@@ -1,5 +1,6 @@
 
-import { ClientApp, ClientAppElement, forceGC } from '../../client/client-app.js';
+import ClientAppElement from '../../client/client-app-element.js';
+import { ClientApp, forceGC } from '../../client/client-app.js';
 
 const app = new ClientApp('photo-frame');
 
@@ -197,7 +198,7 @@ class KioskPhotoFrame extends ClientAppElement {
 	}
 
 	updatePicture() {
-		if(!this._carouselImg) {
+		if (!this._carouselImg) {
 			return;
 		}
 
@@ -259,7 +260,6 @@ app
 
 		app.debug('New listing has ', picturesList.length);
 		(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updateList();
-
 
 		autoMoveToNextImage();
 	});

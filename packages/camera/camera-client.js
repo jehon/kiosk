@@ -1,7 +1,8 @@
 
 /* global toastr */
 
-import { ClientApp, ClientAppElement } from '../../client/client-app.js';
+import ClientAppElement from '../../client/client-app-element.js';
+import { ClientApp } from '../../client/client-app.js';
 
 import { TriStates } from './constants.js';
 

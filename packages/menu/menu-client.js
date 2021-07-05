@@ -1,6 +1,7 @@
 
 import { selectApplication, getApplicationList, autoSelectApplication } from '../../client/client-lib-chooser.js';
-import { ClientApp, ClientAppElement } from '../../client/client-app.js';
+import { ClientApp } from '../../client/client-app.js';
+import ClientAppElement from '../../client/client-app-element.js';
 
 const app = new ClientApp('menu');
 

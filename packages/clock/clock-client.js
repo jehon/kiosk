@@ -1,5 +1,6 @@
 
-import { ClientApp, ClientAppElement } from '../../client/client-app.js';
+import ClientAppElement from '../../client/client-app-element.js';
+import { ClientApp } from '../../client/client-app.js';
 
 const app = new ClientApp('clock');
 export default app;
