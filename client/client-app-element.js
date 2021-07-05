@@ -1,10 +1,14 @@
+import { ClientApp } from './client-app.js';
 
 export default class ClientAppElement extends HTMLElement {
     unregister = [];
 
-    constructor(app) {
-        super();
+    /** @type {ClientApp} */
+    app
+
+    setApp(app) {
         this.app = app;
+        return this;
     }
 
     connectedCallback() {
