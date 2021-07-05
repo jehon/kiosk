@@ -154,23 +154,6 @@ export class ClientApp {
 		return this.menuElement;
 	}
 
-	mainBasedOnIFrame(url) {
-		const iframe = document.createElement('iframe');
-		iframe.setAttribute('src', url);
-
-		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy
-		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy/microphone
-		// iframe.setAttribute('allow', 'microphone; camera');
-		// iframe.setAttribute('allow', 'microphone *');
-		iframe.setAttribute('allow', 'microphone *; camera *');
-
-		// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
-		// sandbox restrict to nothing, but extra attributes re-allow stuff
-		iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals');
-		this.setMainElement(iframe);
-		return this;
-	}
-
 	menuBasedOnIcon(url, text = '') {
 		if (!text) {
 			text = this.getName();
@@ -184,6 +167,27 @@ export class ClientApp {
 		this.setMenuElement(element);
 		return this;
 	}
+}
+
+/**
+ * @param {string} url of the iFrame
+ * @returns {HTMLElement} of the iFrame
+ */
+export function iFrameBuilder(url) {
+		const iframe = document.createElement('iframe');
+		iframe.setAttribute('src', url);
+
+		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy
+		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy/microphone
+		// iframe.setAttribute('allow', 'microphone; camera');
+		// iframe.setAttribute('allow', 'microphone *');
+		iframe.setAttribute('allow', 'microphone *; camera *');
+
+		// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+		// sandbox restrict to nothing, but extra attributes re-allow stuff
+		iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals');
+	return iframe;
+
 }
 
 const { webFrame } = require('electron');

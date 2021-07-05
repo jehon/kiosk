@@ -1,6 +1,6 @@
 
 import { selectApplication, getApplicationList, autoSelectApplication } from '../../client/client-lib-chooser.js';
-import { ClientApp } from '../../client/client-app.js';
+import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
 import ClientAppElement from '../../client/client-app-element.js';
 
 const app = new ClientApp('menu');
@@ -48,7 +48,7 @@ app
 			a.name = i;
 			app.debug(`Registering app by menu: ${a.name}`, a);
 			const ap = new ClientApp(a.name)
-				.mainBasedOnIFrame(a.url)
+				.setMainElement(iFrameBuilder(a.url))
 				.menuBasedOnIcon(a.icon, a.label);
 			if ('priority' in a) {
 				ap.setPriority(a.priority);
