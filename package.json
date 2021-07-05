@@ -65,7 +65,8 @@
     "prepare": "[ \"$NODE_ENV\" = \"production\" ] && exit 0; husky install",
     "start": "electron .",
     "eslint": "eslint .",
-    "stylelint": "stylelint **/*.css"
+    "stylelint": "stylelint **/*.css",
+    "test-client-continuoulsy": "karma start tests/client/karma.conf.cjs"
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint",
