@@ -100,7 +100,7 @@ function renderApplication(newApplication) {
 	newApplication.debug(`I have been selected ${newApplication.toJSON()}`);
 
 	// Reject not "main" application
-	if (!('mainElement' in newApplication)) {
+	if (!('mainElementBuilder' in newApplication)) {
 		newApplication.error(`... but I don't have a main (${newApplication.toJSON()})`);
 		mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.getName()}: ${JSON.stringify(newApplication)}</div>`;
 		return currentApplication;
@@ -108,13 +108,7 @@ function renderApplication(newApplication) {
 
 	// Ok, let's go !
 	mainAppElement.innerHTML = '';
-
-	const me = newApplication.buildMainElement();
-	if (typeof (me) == 'function') {
-		me(mainAppElement);
-	} else {
-		mainAppElement.appendChild(me);
-	}
+	mainAppElement.appendChild(newApplication.buildMainElement());
 
 	currentApplication = newApplication;
 }
