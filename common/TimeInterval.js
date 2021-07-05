@@ -3,7 +3,7 @@ export default class TimeInterval {
 
     iSecs
 
-    iInterval
+    iTimer
 
     logger
 
@@ -12,14 +12,22 @@ export default class TimeInterval {
     /**
      * To run periodically
      *
-     * @param {number} iSecs between calls
      * @param {function(TimeInterval): any} cb to be called
+     * @param {number} iSecs between calls
      * @param {*} logger to log errors
      */
     constructor(cb, iSecs = 60, logger = console) {
         this.iSecs = iSecs;
         this.cb = cb;
         this.logger = logger;
+    }
+
+    _set(cb, time) {
+        return setInterval(cb, time);
+    }
+
+    _clear(timer) {
+        return clearInterval(timer);
     }
 
     setISecs(iSecs) {
@@ -39,20 +47,25 @@ export default class TimeInterval {
         }
     }
 
+    /**
+     * (Re-)Start the chrono
+     *
+     * @returns {TimeInterval} for chaining
+     */
     start() {
         this.stop();
-        this.iInterval = setInterval(() => this.run(), this.iSecs * 1000);
+        this.iTimer = this._set(() => this.run(), this.iSecs * 1000);
         return this;
     }
 
     stop() {
         if (this.isRunning()) {
-            clearInterval(this.iInterval);
+            this._clear(this.iTimer);
         }
-        this.iInterval = null;
+        this.iTimer = null;
     }
 
     isRunning() {
-        return !!this.iInterval;
+        return !!this.iTimer;
     }
 }
