@@ -1,6 +1,5 @@
 
 import './helper-electron.js';
-// import './helper-toastr.js';
 
 import app from '../../packages/camera/camera-client.js';
 
@@ -8,6 +7,12 @@ import { fn } from './helper-main.js';
 import { TriStates } from '../../packages/camera/constants.js';
 
 describe(fn(import.meta.url), () => {
+	beforeEach(async () => {
+		await app._setServerState({
+			code: TriStates.DOWN
+		});
+	});
+
 	it('should go down', async function () {
 		await app._setServerState({
 			code: TriStates.DOWN
