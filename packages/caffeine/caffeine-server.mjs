@@ -31,7 +31,7 @@ export async function wakeUp() {
 		app.debug('Running wakeup', cp.spawnfile, cp.spawnargs);
 
 		cp.on('error', err => {
-			app.error('Caffeine launch error returned: ', err);
+			app.error('Launch error returned: ', err);
 			app.setState({
 				lastRun: new Date(),
 				errorType: 'launch error',
@@ -50,7 +50,7 @@ export async function wakeUp() {
 			}
 			cp.stderr?.setEncoding('UTF8');
 			cp.stdout?.setEncoding('UTF8');
-			app.error(`Caffeine return code non-zero: ${code}# stderr: `, cp.stderr?.read() ?? '');
+			app.error(`Return code non-zero: ${code}# stderr: `, cp.stderr?.read() ?? '');
 			app.setState({
 				lastRun: new Date(),
 				errorType: 'return code',
@@ -82,7 +82,7 @@ export function init() {
 		...app.getConfig()
 	};
 
-	app.debug('Programming caffeine every minutes: ', config.simulateActivityMinutes);
+	app.debug('Programming every minutes: ', config.simulateActivityMinutes);
 	app.wakeUpTimeInterval.start();
 	app.wakeUpTimeInterval.run();
 	app.wakeUpTimeInterval.setISecs(config.simulateActivityMinutes * 60);
