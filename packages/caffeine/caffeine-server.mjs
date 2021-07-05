@@ -15,6 +15,8 @@ export default app;
  * @returns {Promise<void>} the promise that will resolve on run execution success
  */
 export async function wakeUp() {
+	app.debug('Starting wakeup');
+
 	// Handle return code and errors
 	return new Promise((resolve, reject) => {
 		const cp = spawn('/usr/bin/xdotool',
@@ -59,6 +61,8 @@ export async function wakeUp() {
 	});
 }
 
+app.wakeUpTimeInterval = app.addTimeInterval(wakeUp);
+
 /**
  * Initialize the package
  *
@@ -73,12 +77,16 @@ export function init() {
 	});
 
 	const config = {
-		cron: '* 6-22 * * *',
+		inactivitySeconds: 120,
+		simulateActivityMinutes: 5,
 		...app.getConfig()
 	};
 
-	app.debug('Programming caffeine cron\'s ');
-	app.cron(wakeUp, config.cron);
+	app.debug('Programming caffeine every minutes: ', config.simulateActivityMinutes);
+	app.wakeUpTimeInterval.start();
+	app.wakeUpTimeInterval.run();
+	app.wakeUpTimeInterval.setISecs(config.simulateActivityMinutes * 60);
+
 	return app;
 }
 
