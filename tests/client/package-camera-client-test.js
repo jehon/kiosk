@@ -20,10 +20,13 @@ describe(fn(import.meta.url), () => {
 		expect(app.priority).toBe(0);
 
 		/** @type {module:package/camera/KioskCamera} */
-		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.getMainElement()));
+		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
+		mainElement.connectedCallback();
 
 		expect(mainElement.actualUrl).toBe('');
 		expect(mainElement.querySelector('video')).toBeNull();
+
+		mainElement.disconnectedCallback();
 	});
 
 	it('should go up', async function () {
@@ -34,11 +37,15 @@ describe(fn(import.meta.url), () => {
 		expect(app.priority).toBe(1000);
 
 		/** @type {module:package/camera/KioskCamera} */
-		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.getMainElement()));
+		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
+		mainElement.connectedCallback();
+
 
 		expect(mainElement.actualUrl).not.toBe('');
 		expect(mainElement.querySelector('video')).not.toBeNull();
 		expect(mainElement.querySelector('video > source').getAttribute('src')).toBe('test');
+
+		mainElement.disconnectedCallback();
 	});
 
 	it('should warm up', async function () {
@@ -51,10 +58,13 @@ describe(fn(import.meta.url), () => {
 		expect(app.priority).toBe(0);
 
 		/** @type {module:package/camera/KioskCamera} */
-		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.getMainElement()));
+		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
+		mainElement.connectedCallback();
 
 		expect(mainElement.actualUrl).toBe('');
 		expect(mainElement.querySelector('video')).toBeNull();
+
+		mainElement.disconnectedCallback();
 	});
 
 	it('should go up, down, up', async function () {
@@ -73,10 +83,13 @@ describe(fn(import.meta.url), () => {
 		});
 
 		/** @type {module:package/camera/KioskCamera} */
-		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.getMainElement()));
+		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
+		mainElement.connectedCallback();
 
 		expect(mainElement.actualUrl).not.toBe('');
 		expect(mainElement.querySelector('video')).not.toBeNull();
 		expect(mainElement.querySelector('video > source').getAttribute('src')).toBe('test');
+
+		mainElement.disconnectedCallback();
 	});
 });

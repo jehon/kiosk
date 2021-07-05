@@ -104,7 +104,7 @@ export class KioskFire extends ClientAppElement {
 customElements.define('kiosk-fire', KioskFire);
 
 app
-	.setMainElement(new KioskFire())
+	.setMainElementBuilder(() => new KioskFire())
 	.menuBasedOnIcon('../packages/fire/fire.jpg')
 	.onServerStateChanged(status => {
 		if (status.currentTicker) {
@@ -112,5 +112,4 @@ app
 		} else {
 			app.setPriority();
 		}
-		(/** @type {ClientAppElement} */ (app.getMainElement())).setServerState(status);
 	});

@@ -257,7 +257,7 @@ function autoMoveToNextImage() {
 }
 
 app
-	.setMainElement(new KioskPhotoFrame())
+	.setMainElementBuilder(() => new KioskPhotoFrame())
 	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 	.onServerStateChanged((status) => {
 		app.debug('Refreshing listing');
@@ -271,7 +271,6 @@ app
 		pictureIndex = 0;
 
 		app.debug('New listing has ', picturesList.length);
-		(/** @type {KioskPhotoFrame} */ (app.getMainElement())).updateList();
 
 		autoMoveToNextImage();
 	});

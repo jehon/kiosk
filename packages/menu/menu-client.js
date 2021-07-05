@@ -24,7 +24,7 @@ class KioskMenu extends ClientAppElement {
 		this.classList.add('grid');
 		this.classList.add('fit');
 
-		for (const a of list.filter((/** @type {ClientApp} */ a) => a.menuElement && a.mainElement)) {
+		for (const a of list.filter((/** @type {ClientApp} */ a) => a.menuElement && a.mainElementBuilder)) {
 			a.menuElement.setAttribute('data-app', a.name);
 			this.appendChild(a.menuElement);
 		}
@@ -41,14 +41,14 @@ app.onClientStateChanged('inactive', (inactive) => {
 });
 
 app
-	.setMainElement(new KioskMenu())
+	.setMainElementBuilder(() => new KioskMenu())
 	.onServerStateChanged((status) => {
 		for (const i in status) {
 			const a = status[i];
 			a.name = i;
 			app.debug(`Registering app by menu: ${a.name}`, a);
 			const ap = new ClientApp(a.name)
-				.setMainElement(iFrameBuilder(a.url))
+				.setMainElementBuilder(() => iFrameBuilder(a.url))
 				.menuBasedOnIcon(a.icon, a.label);
 			if ('priority' in a) {
 				ap.setPriority(a.priority);

@@ -62,7 +62,7 @@ export function getApplicationList() {
  */
 export function autoSelectApplication() {
 	const selectedApplication = getApplicationList()
-		.filter(a => a.mainElement && a.priority)[0];
+		.filter(a => a.mainElementBuilder && a.priority)[0];
 	return renderApplication(selectedApplication);
 }
 
@@ -109,7 +109,7 @@ function renderApplication(newApplication) {
 	// Ok, let's go !
 	mainAppElement.innerHTML = '';
 
-	const me = newApplication.mainElement;
+	const me = newApplication.buildMainElement();
 	if (typeof (me) == 'function') {
 		me(mainAppElement);
 	} else {
