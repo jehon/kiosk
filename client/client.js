@@ -1,10 +1,6 @@
 
 import { ClientApp } from './client-app.js';
 
-/* global toastr */
-/* configure the toastr */
-toastr.options.timeOut = 10 * 1000;
-
 const app = new ClientApp('core', { devMode: false });
 
 /*

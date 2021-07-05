@@ -8,27 +8,7 @@
 	<title>Kiosk</title>
 	<link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-	<link rel="stylesheet" type="text/css" href="../node_modules/toastr/build/toastr.min.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
-	<script>
-		//
-		// To avoid the "module" defined by electron
-		// and that let 'toastr', 'jquery', ... think they need to go on that one
-		// instead of registering on the window object (global)
-		//
-		window.moduleBis = window.module;
-		delete (window.module);
-	</script>
-
-	<script src="../node_modules/jquery/dist/jquery.min.js"></script>
-	<script src="../node_modules/toastr/build/toastr.min.js"></script>
-	<script>
-		//
-		// Restore electron system
-		//
-		window.module = window.moduleBis;
-		delete (window.moduleBis);
-	</script>
 	<style>
 		body:not([nodebug]) {
 			background-color: rgb(116, 116, 116);

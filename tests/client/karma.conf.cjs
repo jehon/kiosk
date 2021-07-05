@@ -1,12 +1,8 @@
-// Karma configuration
 
 const path = require('path');
 
-// ???
-// process.env.CHROME_BIN = require('puppeteer').executablePath();
-
 /**
- * @param config
+ * @param {object} config as the basis
  */
 module.exports = function (config) {
 	config.set({
@@ -20,15 +16,10 @@ module.exports = function (config) {
 		],
 
 		files: [
-			// imported from index.hml
-			'node_modules/jquery/dist/jquery.min.js',
-			'node_modules/toastr/build/toastr.min.js',
-
 			{ pattern: 'tests/client/*-test.js', type: 'module' },
 			{ pattern: 'tests/client/*.js', watched: true, included: false },
 			{ pattern: 'client/*.js', watched: true, included: false },
 			{ pattern: 'packages/**/*.js', watched: true, included: false },
-			// { pattern: 'client/*.mjs', watched: true, included: false },
 			{ pattern: '**/*', watched: false, included: false },
 		],
 

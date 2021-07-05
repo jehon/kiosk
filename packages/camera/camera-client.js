@@ -1,6 +1,4 @@
 
-/* global toastr */
-
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
@@ -80,8 +78,6 @@ export class KioskCamera extends ClientAppElement {
 customElements.define('kiosk-camera', KioskCamera);
 
 let lastStatus = TriStates.DOWN;
-let toastrElement = null;
-
 const app = new ClientApp('camera', {
 	code: TriStates.DOWN
 })
@@ -89,10 +85,6 @@ const app = new ClientApp('camera', {
 	.menuBasedOnIcon('../packages/camera/camera.png');
 
 app.onServerStateChanged((status, app) => {
-	if (toastrElement) {
-		toastrElement.remove();
-		toastrElement = null;
-	}
 	app.debug('Status received', status, 'while being in', lastStatus);
 	if (!status) {
 		return;
@@ -102,20 +94,20 @@ app.onServerStateChanged((status, app) => {
 		app.setPriority(priorities.camera.elevated);
 		if (lastStatus != TriStates.READY) {
 			app.debug('ServerStateChanged: up and say it');
-			toastrElement = toastr.success(status.message, 'Camera', { timeOut: 15000 });
+			// toastrElement = toastr.success(status.message, 'Camera', { timeOut: 15000 });
 		}
 	} else {
 		app.debug('ServerStateChanged: not up, low priority');
 		app.setPriority(priorities.camera.normal);
 		if (status.code == TriStates.UP_NOT_READY) {
 			app.debug('ServerStateChanged: warming up');
-			toastrElement = toastr.info(status.message, 'Camera', { timeOut: 15000 });
+			// toastrElement = toastr.info(status.message, 'Camera', { timeOut: 15000 });
 		}
 		if (status.code == TriStates.DOWN && lastStatus != TriStates.DOWN) {
 			app.debug('ServerStateChanged: down and say it');
 			if (status.message) {
 				// At initialization, there are no message
-				toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
+				// toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
 			}
 		}
 	}
