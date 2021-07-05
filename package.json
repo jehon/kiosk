@@ -13,7 +13,7 @@
     "cron-parser": "3.3.0",
     "cronstrue": "1.114.0",
     "css-inherit": "github:jehon/css-inherit",
-    "debug": "4.3.1",
+    "debug": "4.3.2",
     "deepmerge": "4.2.2",
     "electron": "13.1.5",
     "express": "4.17.1",
