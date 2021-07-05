@@ -95,7 +95,7 @@ start-dev-with-prod-config: build
 .PHONY: start-dev-with-test-config
 start-dev-with-test-config: build
 	clear
-	DEBUG="kiosk:loggers" electron . -f tests/kiosk.yml --dev-mode
+	DEBUG="kiosk:loggers,$$DEBUG" electron . -f tests/kiosk.yml --dev-mode
 
 .PHONY: start-dev-with-test-config-brk
 start-dev-with-test-config-brk: build
