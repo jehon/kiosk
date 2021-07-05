@@ -1,11 +1,8 @@
 
 import ClientAppElement from '../../client/client-app-element.js';
-import { ClientApp, forceGC } from '../../client/client-app.js';
+import { ClientApp } from '../../client/client-app.js';
+import { priorities } from '../../client/config.js';
 import Callback from '../../common/callback.js';
-
-const app = new ClientApp('photo-frame');
-
-const elevatedPriority = 100;
 
 // The index of the current pictuer
 let pictureIndex = 0;
@@ -14,39 +11,51 @@ let picturesList = [];
 
 // For manual selection
 let updatePictureTimeout = null;
-
 let updatePictureCallback = new Callback(0);
+
+// Select the next picture
+/**
+ *
+ */
+function autoMoveToNextImage() {
+	app.debug('autoMoveToNextImage', pictureIndex);
+	if (updatePictureTimeout) {
+		clearTimeout(updatePictureTimeout);
+	}
+	if (picturesList.length == 0) {
+		// Wait for a new list
+		return;
+	} else {
+		next();
+	}
+
+	updatePictureTimeout = setTimeout(autoMoveToNextImage, 15 * 1000);
+}
 
 /**
  * @returns {number} the next index
  */
 function next() {
-	let res = pictureIndex + 1;
-	if (res >= picturesList.length) {
-		res = 0;
+	pictureIndex++;
+	if (pictureIndex >= picturesList.length) {
+		pictureIndex = 0;
 	}
 
-	pictureIndex = res;
-
 	updatePictureCallback.emit(pictureIndex);
-
-	return res;
+	return pictureIndex;
 }
 
 /**
  * @returns {number} the previous index
  */
 function prev() {
-	let res = pictureIndex - 1;
-	if (res < 0) {
-		res = picturesList.length - 1;
+	pictureIndex--;
+	if (pictureIndex < 0) {
+		pictureIndex = picturesList.length - 1;
 	}
 
-	pictureIndex = res;
-
 	updatePictureCallback.emit(pictureIndex);
-
-	return res;
+	return pictureIndex;
 }
 
 class KioskPhotoFrame extends ClientAppElement {
@@ -230,52 +239,31 @@ class KioskPhotoFrame extends ClientAppElement {
 		this._carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
 
 		this._carouselImg.src = photo.url;
-
 	}
 }
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
 
-
-// Select the next picture
-/**
- *
- */
-function autoMoveToNextImage() {
-	app.debug('Selecting next picture', pictureIndex);
-	if (updatePictureTimeout) {
-		clearTimeout(updatePictureTimeout);
-	}
-	if (picturesList.length == 0) {
-		// Wait for a new list
-		return;
-	} else {
-		next();
-	}
-
-	updatePictureTimeout = setTimeout(autoMoveToNextImage, 15 * 1000);
-}
-
-app
+const app = new ClientApp('photo-frame')
 	.setMainElementBuilder(() => new KioskPhotoFrame())
 	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
-	.onServerStateChanged((status) => {
-		app.debug('Refreshing listing');
-		if (!status.hasList) {
-			return;
-		}
+	.setPriority(priorities.photoFrame.normal);
 
-		app.setPriority(elevatedPriority);
+app.onServerStateChanged((status, app) => {
+	app.debug('Refreshing listing');
+	if (!status.hasList) {
+		return;
+	}
 
-		picturesList = status.listing;
-		pictureIndex = 0;
+	app.setPriority(priorities.photoFrame.elevated);
 
-		app.debug('New listing has ', picturesList.length);
+	picturesList = status.listing;
+	pictureIndex = 0;
 
-		autoMoveToNextImage();
-	});
+	app.debug('New listing has ', picturesList.length);
 
+	autoMoveToNextImage();
+});
+export default app;
 
-setInterval(() => {
-	forceGC();
-}, 60 * 1000);
+// setInterval(() => forceGC(), 60 * 1000);

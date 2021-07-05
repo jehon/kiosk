@@ -62,7 +62,7 @@ export function getApplicationList() {
  */
 export function autoSelectApplication() {
 	const selectedApplication = getApplicationList()
-		.filter(a => a.mainElementBuilder && a.priority)[0];
+		.filter(a => a.mainElementBuilder && a.priority && a.priority >= 0)[0];
 	return renderApplication(selectedApplication);
 }
 
