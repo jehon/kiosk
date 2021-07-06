@@ -31,10 +31,10 @@ CFG_MIN_APT=("${CFG_MIN_APT[@]}" wget apt-transport-https) # Required by nodejs 
 CFG_MIN_APT=("${CFG_MIN_APT[@]}" gcc g++ make)             # Build of native extensions
 
 # Kiosk specific
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq crudini xdotool unclutter) # System kiosk
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev)                   # Extension image fast ?
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils)                           # Package 'shares'
-CFG_MIN_APT=("${CFG_MIN_APT[@]}" ffmpeg)                               # Package 'camera'
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" lightdm jq unclutter) # System kiosk
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" exiv2 libexiv2-dev)   # Extension image fast ?
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" cifs-utils)           # Package 'shares'
+CFG_MIN_APT=("${CFG_MIN_APT[@]}" ffmpeg)               # Package 'camera'
 
 case "$(lsb_release -i -s)" in
 "Debian")

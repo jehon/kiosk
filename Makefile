@@ -61,14 +61,13 @@ define git-files
 endef
 
 setup-computer:
-	sudo apt -y install xdotool exiv2
+	sudo apt -y install exiv2
 	mkdir -p etc/
 	if [ -r $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml ]; then
 		ln -f -s $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml etc/
 	fi
 
 setup-computer-test:
-	type xdotool
 	type exiv2
 # chromium must be not a snap because jenkins run out of home folder
 	type chromium || type chromium-browser
