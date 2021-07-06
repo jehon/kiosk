@@ -77,41 +77,58 @@ export class KioskCamera extends ClientAppElement {
 }
 customElements.define('kiosk-camera', KioskCamera);
 
-let lastStatus = TriStates.DOWN;
+export class KioskCameraStatus extends HTMLElement {
+	constructor() {
+		super();
+		this.innerHTML = '<img src="../packages/camera/camera.png" />';
+		this.adapt({ code: TriStates.DOWN });
+	}
+
+	adapt(status) {
+		switch (status.code) {
+			case TriStates.READY:
+				this.toggleAttribute('disabled', true);
+				// this.style.backgroundColor = 'green';
+				break;
+			case TriStates.UP_NOT_READY:
+				this.toggleAttribute('disabled', false);
+				this.style.backgroundColor = 'orange';
+				break;
+			case TriStates.DOWN:
+				this.toggleAttribute('disabled', true);
+				// this.style.backgroundColor = 'red';
+				break;
+		}
+	}
+}
+customElements.define('kiosk-camera-status', KioskCameraStatus);
+
 const app = new ClientApp('camera', {
 	code: TriStates.DOWN
 })
 	.setMainElementBuilder(() => new KioskCamera())
-	.menuBasedOnIcon('../packages/camera/camera.png');
+	.menuBasedOnIcon('../packages/camera/camera.png')
+	.setStatusElement(new KioskCameraStatus());
 
 app.onServerStateChanged((status, app) => {
-	app.debug('Status received', status, 'while being in', lastStatus);
+	app.debug('Status received', status);
 	if (!status) {
 		return;
 	}
-	if (status.code == TriStates.READY) {
-		app.debug('ServerStateChanged: up, high priority');
-		app.setPriority(priorities.camera.elevated);
-		if (lastStatus != TriStates.READY) {
-			app.debug('ServerStateChanged: up and say it');
-			// toastrElement = toastr.success(status.message, 'Camera', { timeOut: 15000 });
-		}
-	} else {
-		app.debug('ServerStateChanged: not up, low priority');
-		app.setPriority(priorities.camera.normal);
-		if (status.code == TriStates.UP_NOT_READY) {
-			app.debug('ServerStateChanged: warming up');
-			// toastrElement = toastr.info(status.message, 'Camera', { timeOut: 15000 });
-		}
-		if (status.code == TriStates.DOWN && lastStatus != TriStates.DOWN) {
-			app.debug('ServerStateChanged: down and say it');
-			if (status.message) {
-				// At initialization, there are no message
-				// toastrElement = toastr.error(status.message, 'Camera', { timeOut: 15000 });
-			}
-		}
+	switch (status.code) {
+		case TriStates.READY:
+			app.debug('ServerStateChanged: up, high priority', status.message);
+			app.setPriority(priorities.camera.elevated);
+			break;
+		case TriStates.UP_NOT_READY:
+			app.debug('ServerStateChanged: warming up', status.message);
+			app.setPriority(priorities.camera.normal);
+			break;
+		case TriStates.DOWN:
+			app.debug('ServerStateChanged: down', status.message);
+			app.setPriority(priorities.camera.normal);
+			break;
 	}
-	lastStatus = status.code;
 });
 export default app;
 

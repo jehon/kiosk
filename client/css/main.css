@@ -10,6 +10,40 @@ html {
 	overflow-y: auto;
 }
 
+#status_bar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	max-height: 100%;
+	max-width: 40px;
+
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	gap: 2px;
+
+	align-items: stretch;
+
+	--truncate: 2px;
+
+	background-color: transparent;
+}
+
+#status_bar > * {
+	display: block;
+}
+
+#status_bar > [disabled] {
+	display: none;
+}
+
+#status_bar img {
+	object-fit: contain;
+	max-width: 100%;
+	max-height: 100%;
+}
+
 kiosk-links .button {
 	height: 100px;
 	width: 200px;
