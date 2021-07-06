@@ -77,14 +77,15 @@ export class KioskCamera extends ClientAppElement {
 }
 customElements.define('kiosk-camera', KioskCamera);
 
-export class KioskCameraStatus extends HTMLElement {
+export class KioskCameraStatus extends ClientAppElement {
 	constructor() {
 		super();
 		this.innerHTML = '<img src="../packages/camera/camera.png" />';
-		this.adapt({ code: TriStates.DOWN });
+		this.setServerState({ code: TriStates.DOWN });
 	}
 
-	adapt(status) {
+	setServerState(status) {
+		super.setServerState(status);
 		switch (status.code) {
 			case TriStates.READY:
 				this.toggleAttribute('disabled', true);
