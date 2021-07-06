@@ -178,6 +178,10 @@ export class ClientApp {
 		this.setMenuElement(element);
 		return this;
 	}
+
+	setStatusElement(_el) {
+		return this;
+	}
 }
 
 /**
