@@ -6,7 +6,6 @@ const path = require('path');
 
 const spectron = require('spectron');
 const electron = require('electron');
-// const jasmine = require('jasmine-core');
 
 var assert = require('assert').strict;
 
@@ -27,11 +26,6 @@ var appLauncher = new spectron.Application({
 
 	chromeDriverLogPath: path.join(__dirname, 'tmp/app/spectron.log'),
 	webdriverLogPath: path.join(__dirname, 'tmp/app/'),
-
-	// connectionRetryTimeout: 30 * 1000,
-	// startTimeout: 30 * 1000,
-	// connectionRetryCount: 3,
-
 });
 
 const startTS = Date.now();
@@ -43,14 +37,6 @@ console.info('***', new Date(), 'Starting');
 function log(...args) {
 	console.info('*** ', (Date.now() - startTS) / 1000, ...args);
 }
-
-// setTimeout(() => {
-// 	//
-// 	// We timebox the testing to not consume too much time
-// 	//
-// 	log('Killing');
-// 	process.exit(1);
-// }, 90 * 1000);
 
 appLauncher.start()
 	.then(async (app) => {

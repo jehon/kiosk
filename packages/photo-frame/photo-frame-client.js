@@ -267,5 +267,3 @@ app.onServerStateChanged((status, app) => {
 	autoMoveToNextImage();
 });
 export default app;
-
-// setInterval(() => forceGC(), 60 * 1000);
