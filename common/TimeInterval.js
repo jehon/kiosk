@@ -35,6 +35,7 @@ export default class TimeInterval {
         if (this.isRunning()) {
             this.start();
         }
+        return this;
     }
 
     run() {
@@ -48,13 +49,15 @@ export default class TimeInterval {
     }
 
     /**
-     * (Re-)Start the chrono
+     * (Re-)Start the chrono (if iSecs > 0)
      *
      * @returns {TimeInterval} for chaining
      */
     start() {
         this.stop();
-        this.iTimer = this._set(() => this.run(), this.iSecs * 1000);
+        if (this.iSecs > 0) {
+            this.iTimer = this._set(() => this.run(), this.iSecs * 1000);
+        }
         return this;
     }
 
