@@ -1,14 +1,13 @@
 
 import serverAppFactory from '../../server/server-app.js';
 import { TriStates } from './constants.js';
+import cameraGeneric from './types/foscam-r2m.js';
 
 /**
  * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('camera');
 export default app;
-
-import cameraGeneric from './types/foscam-r2m.js';
 
 /**
  * @typedef Status
@@ -31,6 +30,7 @@ let camera;
  * @returns {Promise<Status>} resolve when check is done and result dispatched to the browser
  */
 export async function _check() {
+	app.debug('Starting _check from ', app.getState());
 	if (checkRunning != null) {
 		return checkRunning;
 	}
@@ -110,7 +110,7 @@ export async function _check() {
 	return checkRunning;
 }
 
-let cronStop = null;
+const timer = app.addTimeInterval(() => _check(), 0, app);
 
 /**
  * Initialize the package
@@ -118,10 +118,6 @@ let cronStop = null;
  * @returns {module:server/ServerApp} the app
  */
 export async function init() {
-	if (cronStop) {
-		clearInterval(cronStop);
-		cronStop = null;
-	}
 
 	camera = new cameraGeneric(app, app.getConfig('.hardware'));
 	app.setState({
@@ -132,12 +128,9 @@ export async function init() {
 		url: ''
 	});
 
-	// Make 2 checks to be sure that we are in the correct state since startup
-
-	const intervalSeconds = app.getConfig('.intervalSeconds', 15);
-	if (intervalSeconds > 0) {
-		cronStop = setInterval(_check, intervalSeconds * 1000);
-	}
+	timer
+		.setISecs(app.getConfig('.intervalSeconds', 15, app))
+		.start();
 	if (checkRunning) {
 		await checkRunning;
 	}
