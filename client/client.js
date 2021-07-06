@@ -15,15 +15,6 @@ window.addEventListener('error', (event) => {
 		, event.error);
 });
 
-// app.onServerStateChanged((state) => {
-// 	if (state.devMode) {
-// 		// https://electronjs.org/devtron
-// 		// require('devtron').install();
-// 	} else {
-// 		// require('devtron').uninstall();
-// 	}
-// });
-
 //
 // Load other packages
 //

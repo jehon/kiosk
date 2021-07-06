@@ -326,10 +326,11 @@ export function init() {
 		}
 	}, checkHasListSchedule);
 
-	// Refresh the list sometimes
-	const refreshSchedule = app.getConfig('.refresh-cron', '0 0 5 * * *');
-	app.debug('Programming resfresh at', refreshSchedule);
-	app.cron((data) => generateListing(data), refreshSchedule);
+	// // Refresh the list sometimes
+	// // On reboot :-)
+	// const refreshSchedule = app.getConfig('.refresh-cron', '0 0 5 * * *');
+	// app.debug('Programming resfresh at', refreshSchedule);
+	// app.cron((data) => generateListing(data), refreshSchedule);
 
 	generateListing();
 	return app;
