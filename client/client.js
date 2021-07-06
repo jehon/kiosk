@@ -15,14 +15,14 @@ window.addEventListener('error', (event) => {
 		, event.error);
 });
 
-app.onServerStateChanged((state) => {
-	if (state.devMode) {
-		// https://electronjs.org/devtron
-		// require('devtron').install();
-	} else {
-		// require('devtron').uninstall();
-	}
-});
+// app.onServerStateChanged((state) => {
+// 	if (state.devMode) {
+// 		// https://electronjs.org/devtron
+// 		// require('devtron').install();
+// 	} else {
+// 		// require('devtron').uninstall();
+// 	}
+// });
 
 //
 // Load other packages
@@ -44,6 +44,6 @@ Promise.all([
 
 	loadPackage('camera'),
 	loadPackage('clock'),
-	loadPackage('fire'),
+	// loadPackage('fire'),
 	loadPackage('photo-frame')
 ]);
