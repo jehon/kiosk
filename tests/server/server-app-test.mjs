@@ -6,21 +6,25 @@ describe(fn(import.meta.url), () => {
 	it('should build', function () {
 		const app = serverAppFactory('test');
 		expect(app.name).toBe('test');
-		expect(app.streams.log.namespace).toBe('kiosk:test:server*');
-		expect(app.streams.debug.namespace).toBe('kiosk:test:server');
+
+		app.info('info');
+		app.error('error');
+		app.debug('debug');
 	});
 
 	it('should extend', function () {
 		const appMain = serverAppFactory('test');
-		const app = appMain.extend('child');
-		expect(app.name).toBe('test');
-		expect(app.streams.log.namespace).toBe('kiosk:test:server:child*');
-		expect(app.streams.debug.namespace).toBe('kiosk:test:server:child');
+		const logger = appMain.childLogger('child');
+		expect(logger.name).toBe('kiosk:test:server:child');
+		logger.info('info');
+		logger.error('error');
+		logger.debug('debug');
 
-		const app2 = app.extend('grandchild');
-		expect(app2.name).toBe('test');
-		expect(app2.streams.log.namespace).toBe('kiosk:test:server:child:grandchild*');
-		expect(app2.streams.debug.namespace).toBe('kiosk:test:server:child:grandchild');
+		const logger2 = logger.childLogger('grandchild');
+		expect(logger2.name).toBe('kiosk:test:server:child:grandchild');
+		logger2.info('info');
+		logger2.error('error');
+		logger2.debug('debug');
 	});
 
 	it('should handle cron with 6 elements', function () {
