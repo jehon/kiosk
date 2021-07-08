@@ -41,39 +41,39 @@ describe(fn(import.meta.url), () => {
 		expect(i).toBe(201);
 	});
 
-	it('should launch and catch message', async function (done) {
+	it('should launch and catch message', async function () {
 		const worker = createWorker(workerFile, logger, {
 			throw: 'test'
 		});
 		try {
 			await masterWaitWorkerToFinish(worker);
-			done.fail('Should throw');
+			expect(false).toBeTrue();
 		} catch (e) {
-			done();
+			// Expected
 		}
 	});
 
-	it('should launch and catch Error', async function (done) {
+	it('should launch and catch Error', async function () {
 		const worker = createWorker(workerFile, logger, {
 			throwError: 'test'
 		});
 		try {
 			await masterWaitWorkerToFinish(worker);
-			done.fail('Should throw');
+			expect(false).toBeTrue();
 		} catch (e) {
-			done();
+			// Expected
 		}
 	});
 
-	it('should launch and get exit code', async function (done) {
+	it('should launch and get exit code', async function () {
 		const worker = createWorker(workerFile, logger, {
 			exit: 12
 		});
 		try {
 			await masterWaitWorkerToFinish(worker);
-			done.fail('Should throw');
+			expect(false).toBeTrue();
 		} catch (e) {
-			done();
+			// Expected
 		}
 	});
 

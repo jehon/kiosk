@@ -35,7 +35,7 @@ function onTicker(data) {
 	});
 }
 
-let cron = null;
+let disableCron = null;
 
 /**
  * Initialize the package
@@ -44,11 +44,11 @@ let cron = null;
  */
 export function init() {
 	app.debug('Programming fire cron\'s');
-	if (cron) {
-		cron();
+	if (disableCron) {
+		disableCron();
 	}
 	// TODO: cron could be an array
-	cron = app.cron(onTicker, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
+	disableCron = app.cron(onTicker, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
 
 	app.setState(status);
 
