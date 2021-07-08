@@ -3,6 +3,9 @@ import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 import Callback from '../../common/callback.js';
+import TimeInterval from '../../common/TimeInterval.js';
+
+const app = new ClientApp('photo-frame');
 
 // The index of the current pictuer
 let pictureIndex = 0;
@@ -10,7 +13,6 @@ let pictureIndex = 0;
 let picturesList = [];
 
 // For manual selection
-let updatePictureTimeout = null;
 let updatePictureCallback = new Callback(0);
 
 // Select the next picture
@@ -19,18 +21,16 @@ let updatePictureCallback = new Callback(0);
  */
 function autoMoveToNextImage() {
 	app.debug('autoMoveToNextImage', pictureIndex);
-	if (updatePictureTimeout) {
-		clearTimeout(updatePictureTimeout);
-	}
 	if (picturesList.length == 0) {
 		// Wait for a new list
 		return;
 	} else {
 		next();
 	}
-
-	updatePictureTimeout = setTimeout(autoMoveToNextImage, 15 * 1000);
 }
+
+const timer = new TimeInterval(() => autoMoveToNextImage(), 15, app);
+timer.start();
 
 /**
  * @returns {number} the next index
@@ -246,7 +246,7 @@ class KioskPhotoFrame extends ClientAppElement {
 
 customElements.define('kiosk-photo-frame', KioskPhotoFrame);
 
-const app = new ClientApp('photo-frame')
+app
 	.setMainElementBuilder(() => new KioskPhotoFrame())
 	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 	.setPriority(priorities.photoFrame.normal);
