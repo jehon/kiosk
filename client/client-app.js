@@ -7,6 +7,7 @@ import Callback from '../common/callback.js';
 import contextualize from '../common/contextualize.js';
 import loggerFactory from './client-lib-logger.js';
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
+import ClientAppElement from './client-app-element.js';
 
 const body = document.querySelector('body');
 
@@ -64,6 +65,19 @@ export class ClientApp {
 
 	getServerState() {
 		return this.serverStateCallback.getState();
+	}
+
+	/**
+	 * To link elements to this application
+	 *
+	 * @param {HTMLElement} el to be linked
+	 * @returns {HTMLElement} for linking
+	 */
+	_linkElement(el) {
+		if (el instanceof ClientAppElement) {
+			el.setApp(this);
+		}
+		return el;
 	}
 
 	/**
@@ -141,11 +155,7 @@ export class ClientApp {
 	 * @returns {HTMLElement} built
 	 */
 	buildMainElement() {
-		const el = this.mainElementBuilder();
-		if ('setApp' in el) {
-			el.setApp(this);
-		}
-		return el;
+		return this._linkElement(this.mainElementBuilder());
 	}
 
 	/**
@@ -153,7 +163,7 @@ export class ClientApp {
 	 * @returns {ClientApp} this
 	 */
 	setMenuElement(element) {
-		this.menuElement = element;
+		this.menuElement = this._linkElement(element);
 		this.dispatchAppChanged();
 		return this;
 	}
@@ -179,7 +189,8 @@ export class ClientApp {
 		return this;
 	}
 
-	setStatusElement(_el) {
+	setStatusElement(el) {
+		document.querySelector('#status_bar')?.append(this._linkElement(el));
 		return this;
 	}
 }
