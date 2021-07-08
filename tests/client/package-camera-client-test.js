@@ -9,13 +9,13 @@ import { priorities } from '../../client/config.js';
 
 describe(fn(import.meta.url), () => {
 	beforeEach(async () => {
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.DOWN
 		});
 	});
 
 	it('should go down', async function () {
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.DOWN
 		});
 		expect(app.priority).toBe(priorities.camera.normal);
@@ -31,7 +31,7 @@ describe(fn(import.meta.url), () => {
 	});
 
 	it('should go up', async function () {
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.READY,
 			url: 'test'
 		});
@@ -50,7 +50,7 @@ describe(fn(import.meta.url), () => {
 	});
 
 	it('should warm up', async function () {
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.UP_NOT_READY,
 			successes: 1,
 			nbCheck: 1,
@@ -69,16 +69,16 @@ describe(fn(import.meta.url), () => {
 	});
 
 	it('should go up, down, up', async function () {
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.READY,
 			url: 'test'
 		});
 
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.DOWN
 		});
 
-		await app._setServerState({
+		await app.setServerState({
 			code: TriStates.READY,
 			url: 'test'
 		});

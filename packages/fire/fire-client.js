@@ -3,6 +3,8 @@ import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 
+const app = new ClientApp('fire');
+
 export class KioskFire extends ClientAppElement {
 	/**
 	 * @type {number}
@@ -25,7 +27,7 @@ export class KioskFire extends ClientAppElement {
 	#inactiveListener
 
 	constructor() {
-		super();
+		super(app);
 		this.innerHTML = `
 			<video autoplay muted loop controls
 					poster='../packages/fire/fire.jpg'
@@ -99,16 +101,17 @@ export class KioskFire extends ClientAppElement {
 
 customElements.define('kiosk-fire', KioskFire);
 
-const app = new ClientApp('fire')
+app
 	.setMainElementBuilder(() => new KioskFire())
 	.menuBasedOnIcon('../packages/fire/fire.jpg');
 
-app.onServerStateChanged((status, app) => {
-	if (status.currentTicker) {
-		app.setPriority(priorities.fire.elevated);
-	} else {
-		app.setPriority(priorities.fire.normal);
-	}
-});
+app
+	.onServerStateChanged((status, app) => {
+		if (status.currentTicker) {
+			app.setPriority(priorities.fire.elevated);
+		} else {
+			app.setPriority(priorities.fire.normal);
+		}
+	});
 
 export default app;

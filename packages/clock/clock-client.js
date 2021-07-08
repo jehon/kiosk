@@ -4,6 +4,8 @@ import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 import TimeInterval from '../../common/TimeInterval.js';
 
+const app = new ClientApp('clock');
+
 const circleRadius = 97;
 const handLengths = {
 	h: 55,
@@ -96,7 +98,8 @@ export class KioskClock extends ClientAppElement {
 	timer
 
 	constructor() {
-		super();
+		super(app);
+
 		this.innerHTML = `
 			<svg viewbox="-100 -100 200 210" class="full" preserveAspectRatio="xMidYMid meet" style='height: 95%'>
 				<path id="arcTotal"  fill="#500000" />
@@ -148,15 +151,8 @@ export class KioskClock extends ClientAppElement {
 		this.dateEl = /** @type {HTMLElement} */ (this.querySelector('#date'));
 		this.dowEl = /** @type {HTMLElement} */ (this.querySelector('#dow'));
 
-		this.timer = new TimeInterval(() => this.adapt(), 1, app);
-	}
-
-	connectedCallback() {
-		this.timer.start();
-	}
-
-	disconnectedCallback() {
-		this.timer.stop();
+		this.timer = this.addTimeInterval(() => this.adapt(), 1);
+		this.adapt();
 	}
 
 	setServerState(status) {
@@ -208,10 +204,12 @@ export class KioskClock extends ClientAppElement {
 		}
 
 		if (this.status && this.status.currentTicker && this.status.currentTicker.stat.end > new Date()) {
+			const start = this.status.currentTicker.stat.start;
+			const end = this.status.currentTicker.stat.end;
 			this.arcEl.total.style.display = 'initial';
 			this.arcEl.remain.style.display = 'initial';
-			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(this.status.currentTicker.stat.start.getMinutes()), angleFromMinutes(this.status.currentTicker.stat.end.getMinutes())));
-			this.arcEl.remain.setAttribute('d', describeArc(circleRadius, angleFromMinutesSeconds(minute, second), angleFromMinutes(this.status.currentTicker.stat.end.getMinutes())));
+			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(start.getMinutes()), angleFromMinutes(end.getMinutes())));
+			this.arcEl.remain.setAttribute('d', describeArc(circleRadius, angleFromMinutesSeconds(minute, second), angleFromMinutes(end.getMinutes())));
 		} else {
 			this.arcEl.total.style.display = 'none';
 			this.arcEl.remain.style.display = 'none';
@@ -221,16 +219,17 @@ export class KioskClock extends ClientAppElement {
 
 customElements.define('kiosk-clock', KioskClock);
 
-const app = new ClientApp('clock')
+app
 	.setMainElementBuilder(() => new KioskClock())
 	.menuBasedOnIcon('../packages/clock/clock.png');
 
-app.onServerStateChanged((status, app) => {
-	if (status?.currentTicker) {
-		app.setPriority(priorities.clock.elevated);
-	} else {
-		app.setPriority(priorities.clock.normal);
-	}
-});
+app
+	.onServerStateChanged((status, app) => {
+		if (status?.currentTicker) {
+			app.setPriority(priorities.clock.elevated);
+		} else {
+			app.setPriority(priorities.clock.normal);
+		}
+	});
 
 export default app;

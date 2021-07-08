@@ -5,7 +5,7 @@ export default class TimeInterval {
 
     iTimer
 
-    logger
+    debug
 
     cb
 

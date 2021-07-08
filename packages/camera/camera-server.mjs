@@ -118,7 +118,6 @@ const timer = app.addTimeInterval(() => _check(), 0, app);
  * @returns {module:server/ServerApp} the app
  */
 export async function init() {
-
 	camera = new cameraGeneric(app, app.getConfig('.hardware'));
 	app.setState({
 		code: TriStates.DOWN,

@@ -1,11 +1,11 @@
 
 // Must use require for electron (why???)
 import { createRequire } from 'module';
+import { LOG_CHANNEL_NAME } from '../common/config.js';
 const require = createRequire(import.meta.url);
 const { BrowserWindow, app: electronApp, ipcMain } = require('electron');
 
-import { LoggerSender } from '../common/logger-sender.js';
-import { loggerAsMessageListener } from './server-lib-logger.js';
+import { loggerAsMessageListener } from './server-client.js';
 
 // const credentialsMap = new Map();
 
@@ -29,15 +29,15 @@ export function whenReady() {
  * @param {module:server/ServerApp} serverApp for logging purpose
  */
 export async function start(serverApp) {
-	const app = serverApp.extend('gui');
-	const devMode = app.getConfig('server.devMode');
+	const logger = serverApp.childLogger('gui');
+	const devMode = serverApp.getConfig('server.devMode');
 
 	if (devMode) {
 		// https://electronjs.org/docs/api/chrome-command-line-switches
 		electronApp.commandLine.appendSwitch('remote-debugging-port', '9223');
 		electronApp.commandLine.appendSwitch('inspect', '9222');
-		app.info('** Inspect available on port 9222: http://localhost:9222/');
-		app.info('** Remote debugging available on port http://localhost:9223/');
+		logger.info('** Inspect available on port 9222: http://localhost:9222/');
+		logger.info('** Remote debugging available on port http://localhost:9223/');
 	}
 
 	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
@@ -87,9 +87,9 @@ export async function start(serverApp) {
 	// const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
 	// Enable logging
-	ipcMain.on(LoggerSender.CHANNEL_NAME, (_event, message) => loggerAsMessageListener(message));
+	ipcMain.on(LOG_CHANNEL_NAME, (_event, message) => loggerAsMessageListener(message));
 
-	app.debug(`Loading: ${url}`);
+	logger.debug(`Loading: ${url}`);
 	// win.loadURL(url);
 	win.loadFile(url);
 
@@ -99,7 +99,7 @@ export async function start(serverApp) {
 
 	ipcMain.on('history', (event, context) => {
 		if (!historySent.has(context)) {
-			app.debug(`Requested history for ${context}, but that is not found`);
+			logger.debug(`Requested history for ${context}, but that is not found`);
 		}
 		win.webContents.send(context, historySent.get(context));
 	});
@@ -146,11 +146,3 @@ export function dispatchToBrowser(eventName, data) {
 		BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName, data));
 	}
 }
-
-// /**
-//  * @param eventName
-//  * @param cb
-//  */
-// export function registerFunction(eventName, cb) {
-// 	electron.ipcMain.handle(eventName, cb);
-// }
