@@ -64,9 +64,7 @@ export class ServerApp extends ServerLogger {
 	}
 
 	addTimeInterval(cb, iSecs) {
-		return new TimeInterval(() => {
-			cb;
-		}, iSecs, this.extend('time-interval'));
+		return new TimeInterval(cb, iSecs, this.extend('time-interval'));
 	}
 
 	/**
