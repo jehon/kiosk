@@ -318,13 +318,11 @@ export function init() {
 	});
 
 	// We check that we have a list
-	const checkHasListSchedule = app.getConfig('.check-cron', '0 0/5 * * * *');
-	app.debug('Programming checking for presence of listing at', checkHasListSchedule);
-	app.cron(async () => {
+	app.addTimeInterval(async () => {
 		if (!app.getState().hasList) {
 			await generateListing();
 		}
-	}, checkHasListSchedule);
+	}, app.getConfig('.checkListEverySeconds', 5 * 60));
 
 	// // Refresh the list sometimes
 	// // On reboot :-)
