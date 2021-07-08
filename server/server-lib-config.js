@@ -81,7 +81,7 @@ export function getEnabledDebug() {
  * @returns {Promise<object>} the parsed options
  */
 export async function loadConfigFromCommandLine(serverApp) {
-	const app = serverApp.extend('config');
+	const logger = serverApp.childLogger('config');
 	let myargs = yargs(process.argv.slice(2))
 		.options({
 			'file': {
@@ -112,11 +112,11 @@ export async function loadConfigFromCommandLine(serverApp) {
 	}
 
 	if (cmdLineOptions.file) {
-		app.debug('Adding configuration file at the end:', cmdLineOptions.file);
+		logger.debug('Adding configuration file at the end:', cmdLineOptions.file);
 		config.files.unshift(cmdLineOptions.file);
 	}
 
-	app.debug('Command line parsed options: ', cmdLineOptions);
+	logger.debug('Command line parsed options: ', cmdLineOptions);
 
 	setConfig('commandLine', cmdLineOptions);
 
@@ -129,8 +129,8 @@ export async function loadConfigFromCommandLine(serverApp) {
  * @returns {Promise<object>} the current config
  */
 export async function loadConfigFromFile(serverApp, configFiles = config.files) {
-	const app = serverApp.extend('config');
-	app.debug('Received list of config files ' + configFiles.join(', '));
+	const logger = serverApp.childLogger('config');
+	logger.debug('Received list of config files ' + configFiles.join(', '));
 
 	if (typeof (jasmine) != 'undefined') {
 		serverApp.info('Test mode: loading only tests/kiosk.yml');
@@ -149,24 +149,24 @@ export async function loadConfigFromFile(serverApp, configFiles = config.files) 
 			continue;
 		}
 		try {
-			app.debug('Loading config file: ', f);
+			logger.debug('Loading config file: ', f);
 			let txt = fs.readFileSync(f, 'utf8');
 			if (txt) {
 				const doc = yaml.load(txt);
 				config = deepMerge(config, doc);
-				app.debug('Loaded config file ' + f);
+				logger.debug('Loaded config file ' + f);
 				break;
 			}
-			app.error('Skipping empty config file ' + f);
+			logger.error('Skipping empty config file ' + f);
 		} catch (e) {
 			if (e && e.code == 'ENOENT') {
-				app.debug('Config file not found ' + f);
+				logger.debug('Config file not found ' + f);
 				continue;
 			}
-			app.error('Could not load ' + f, e);
+			logger.error('Could not load ' + f, e);
 		}
 	}
-	app.debug('Config object after loading files', config);
+	logger.debug('Config object after loading files', config);
 
 	return config;
 }

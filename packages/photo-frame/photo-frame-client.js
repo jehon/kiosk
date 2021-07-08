@@ -62,7 +62,7 @@ class KioskPhotoFrame extends ClientAppElement {
 	carousel = null
 
 	constructor() {
-		super();
+		super(app);
 
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.innerHTML = `
@@ -251,19 +251,20 @@ app
 	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 	.setPriority(priorities.photoFrame.normal);
 
-app.onServerStateChanged((status, app) => {
-	app.debug('Refreshing listing');
-	if (!status.hasList) {
-		return;
-	}
+app
+	.onServerStateChanged((status, app) => {
+		app.debug('Refreshing listing');
+		if (!status.hasList) {
+			return;
+		}
 
-	app.setPriority(priorities.photoFrame.elevated);
+		app.setPriority(priorities.photoFrame.elevated);
 
-	picturesList = status.listing;
-	pictureIndex = 0;
+		picturesList = status.listing;
+		pictureIndex = 0;
 
-	app.debug('New listing has ', picturesList.length);
+		app.debug('New listing has ', picturesList.length);
 
-	autoMoveToNextImage();
-});
+		autoMoveToNextImage();
+	});
 export default app;

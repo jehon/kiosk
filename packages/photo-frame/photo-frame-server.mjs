@@ -53,7 +53,7 @@ export default app;
 // See https://nodejs.org/dist/latest-v12.x/docs/api/modules.html#modules_module_createrequire_filename
 import pLimitFactory from 'p-limit';
 
-const buildingLogger = app.extend('building');
+const buildingLogger = app.childLogger('building');
 
 /**
  * Test if a file match the pattern

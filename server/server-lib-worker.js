@@ -1,13 +1,12 @@
 
 import { Worker, parentPort, workerData } from 'worker_threads';
 
-import { loggerAsMessageListener } from './server-lib-logger.js';
-import { LoggerSender } from '../common/logger-sender.js';
-
+import { loggerAsMessageListener } from './server-client.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { LOG_CHANNEL_NAME } from '../common/config.js';
+import { Logger } from '../common/logger.js';
 export const __dirname = (url) => dirname(fileURLToPath(url));
-
 
 /**
  * @param {string} file - the file containing the worker
@@ -16,7 +15,7 @@ export const __dirname = (url) => dirname(fileURLToPath(url));
  * @returns {Worker} - the worker
  */
 export function createWorker(file, app, data) {
-	const wNs = app.loggerNamespace + ':worker';
+	const wNs = app.logger.name + ':worker';
 	app.debug(`Creating worker ${file} on ${wNs} with`, data);
 	const worker = new Worker(file, {
 		workerData: {
@@ -25,7 +24,7 @@ export function createWorker(file, app, data) {
 		}
 	});
 
-	masterOnMessage(worker, LoggerSender.MESSAGE_TYPE, (payload) => loggerAsMessageListener(payload));
+	masterOnMessage(worker, LOG_CHANNEL_NAME, (payload) => loggerAsMessageListener(payload));
 
 	worker.on('error', err => app.error(`Worker: ${file} emitted an error: ${err}`));
 
@@ -87,12 +86,21 @@ export function masterSendMessage(worker, type, payload) {
 /**
  * Get a message logger for the worker
  *
- * @returns {LoggerSender} the logger
+ * @returns {Logger} built
  */
 export function workerGetLogger() {
-	return new LoggerSender(
-		(data) => workerSendMessage(LoggerSender.MESSAGE_TYPE, data),
-		workerData?.loggerNamespace ?? 'worker'
+	const namespace = workerData?.loggerNamespace ?? 'worker';
+	return new Logger(namespace,
+		(namespace, level) =>
+			(...data) => {
+				/* eslint-disable no-console */
+				console[level](namespace, `[${level.toUpperCase()}]`, ...data);
+				workerSendMessage(LOG_CHANNEL_NAME, {
+					namespace,
+					level,
+					content: data.map(e => (e instanceof Object ? JSON.stringify(e) : e))
+				});
+			}
 	);
 }
 

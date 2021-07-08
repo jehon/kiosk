@@ -1,7 +1,7 @@
 ---
 core:
   loggers:
-    - kiosk:human:*
+    # - kiosk:human:*
     # - kiosk:loggers (configured in launch)
 
 human:
@@ -16,13 +16,14 @@ photo-frame:
 camera:
   intervalSeconds: 5
   hardware:
-    videoPort: 4848
+    port: 4848
     configure: false
     username: any
     password: any
 
 clock:
-  # cron is: "sec min hour . . dow"
+  # cron is: "sec min hour . . dow[0/7=sunday]"
+  # @yearly @annually @monthly @weekly @daily @midnight @hourly ???
   tickers:
     depart-ecole: # At 7:50am, every weekday
       cron: "50 7 * * 1-5"

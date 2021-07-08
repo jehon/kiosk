@@ -102,7 +102,7 @@ function renderApplication(newApplication) {
 	// Reject not "main" application
 	if (!('mainElementBuilder' in newApplication)) {
 		newApplication.error(`... but I don't have a main (${newApplication.toJSON()})`);
-		mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.getName()}: ${JSON.stringify(newApplication)}</div>`;
+		mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.name}: ${JSON.stringify(newApplication)}</div>`;
 		return currentApplication;
 	}
 

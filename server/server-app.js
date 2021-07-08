@@ -1,36 +1,20 @@
 
-import { ServerLogger } from './server-lib-logger.js';
+import App from '../common/app.js';
 
 import CronJob from 'cron'; // https://www.npmjs.com/package/cron
 import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
 import cronParser from 'cron-parser';
 
-import contextualize from '../common/contextualize.js';
 import getConfig from './server-lib-config.js';
 import { dispatchToBrowser } from './server-lib-gui.js';
 import _ from 'lodash';
-import TimeInterval from '../common/TimeInterval.js';
+import { serverLoggerFactory } from './server-customs.js';
 
-export class ServerApp extends ServerLogger {
-	name;
-	ctxfn;
-
-	constructor(name, loggerNamespace = '.server') {
-		const ctxfn = contextualize(name);
-		super(ctxfn(loggerNamespace));
-
-		this.name = name;
-		this.ctxfn = ctxfn;
-	}
-
-	/**
-	 * Create a copy of the app to a restricted scope: logger is subclassed
-	 *
-	 * @param {string} subLoggerName of the sub logger
-	 * @returns {ServerApp} the subclassed app
-	 */
-	extend(subLoggerName) {
-		return new ServerApp(this.name, this.loggerNamespace + '.' + subLoggerName);
+export class ServerApp extends App {
+	constructor(name) {
+		super(name,
+			(namespace) => serverLoggerFactory(namespace + ':server')
+		);
 	}
 
 	/**
@@ -41,7 +25,7 @@ export class ServerApp extends ServerLogger {
 	 */
 	setState(data) {
 		this.state = data;
-		dispatchToBrowser(this.ctxfn('.status'), data);
+		dispatchToBrowser(this.ctxize('.status'), data);
 		return this;
 	}
 
@@ -60,16 +44,12 @@ export class ServerApp extends ServerLogger {
 	 * @returns {object|any} the key or def(null) if it does not exists
 	 */
 	getConfig(opath = '.', def = null) {
-		return getConfig(this.ctxfn(opath), def);
-	}
-
-	addTimeInterval(cb, iSecs) {
-		return new TimeInterval(cb, iSecs, this.extend('time-interval'));
+		return getConfig(this.ctxize(opath), def);
 	}
 
 	/**
 	 * @param {Function} cb callback
-	 * @param {string} cron 5/6 stars ([secs] min hours dom month dow) (if empty, make nothing [usefull for testing])
+	 * @param {string} cron 5/6 stars ([secs] min hours dom month[0-11] dow[0sun-6]) (if empty, make nothing [usefull for testing])
 	 * @param {number} duration in minutes
 	 * @param {*} data to pass to the signal (will be completed)
 	 * @returns {Function} stop to halt the cron
@@ -149,9 +129,8 @@ export class ServerApp extends ServerLogger {
 
 /**
  * @param {string} name of the context of the application
- * @param {string|undefined} loggerNamespace - if specified, a sub logger is created
  * @returns {ServerApp} the application
  */
-export default function serverAppFactory(name, loggerNamespace = undefined) {
-	return new ServerApp(name, loggerNamespace);
+export default function serverAppFactory(name) {
+	return new ServerApp(name);
 }

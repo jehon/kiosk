@@ -5,6 +5,10 @@ import { priorities } from '../../client/config.js';
 
 import { TriStates } from './constants.js';
 
+const app = new ClientApp('camera', {
+	code: TriStates.DOWN
+});
+
 // TODO: manage http errors
 
 // TODO: handle when the app is selected, but the camera is not available
@@ -14,8 +18,7 @@ export class KioskCamera extends ClientAppElement {
 	actualUrl = ''
 
 	constructor() {
-		super();
-
+		super(app);
 		// this.innerHTML = '<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src=""></source></video>';
 
 		// First load an IFrame to trigger authentication
@@ -79,7 +82,7 @@ customElements.define('kiosk-camera', KioskCamera);
 
 export class KioskCameraStatus extends ClientAppElement {
 	constructor() {
-		super();
+		super(app);
 		this.innerHTML = '<img src="../packages/camera/camera.png" />';
 		this.setServerState({ code: TriStates.DOWN });
 	}
@@ -104,32 +107,30 @@ export class KioskCameraStatus extends ClientAppElement {
 }
 customElements.define('kiosk-camera-status', KioskCameraStatus);
 
-const app = new ClientApp('camera', {
-	code: TriStates.DOWN
-})
+app
 	.setMainElementBuilder(() => new KioskCamera())
 	.menuBasedOnIcon('../packages/camera/camera.png')
 	.setStatusElement(new KioskCameraStatus());
-
-app.onServerStateChanged((status, app) => {
-	app.debug('Status received', status);
-	if (!status) {
-		return;
-	}
-	switch (status.code) {
-		case TriStates.READY:
-			app.debug('ServerStateChanged: up, high priority', status.message);
-			app.setPriority(priorities.camera.elevated);
-			break;
-		case TriStates.UP_NOT_READY:
-			app.debug('ServerStateChanged: warming up', status.message);
-			app.setPriority(priorities.camera.normal);
-			break;
-		case TriStates.DOWN:
-			app.debug('ServerStateChanged: down', status.message);
-			app.setPriority(priorities.camera.normal);
-			break;
-	}
-});
+app
+	.onServerStateChanged((status, app) => {
+		app.debug('Status received', status);
+		if (!status) {
+			return;
+		}
+		switch (status.code) {
+			case TriStates.READY:
+				app.debug('ServerStateChanged: up, high priority', status.message);
+				app.setPriority(priorities.camera.elevated);
+				break;
+			case TriStates.UP_NOT_READY:
+				app.debug('ServerStateChanged: warming up', status.message);
+				app.setPriority(priorities.camera.normal);
+				break;
+			case TriStates.DOWN:
+				app.debug('ServerStateChanged: down', status.message);
+				app.setPriority(priorities.camera.normal);
+				break;
+		}
+	});
 export default app;
 

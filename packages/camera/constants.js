@@ -31,6 +31,8 @@ export class CameraAPI {
 			...this.defaultConfig(),
 			...config
 		};
+
+		this.logger = app.childLogger('camera');
 	}
 
 	defaultConfig() { return {}; }

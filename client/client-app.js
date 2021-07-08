@@ -1,57 +1,35 @@
 
 // Common elements
-import './elements/img-loading.js';
 import './elements/css-inherit.js';
 
 import Callback from '../common/callback.js';
-import contextualize from '../common/contextualize.js';
-import loggerFactory from './client-lib-logger.js';
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
 import ClientAppElement from './client-app-element.js';
+import App from '../common/app.js';
+import { clientLoggerFactory } from './client-customs.js';
+import { sendToServer } from './client-server.js';
 
 const body = document.querySelector('body');
 
-export class ClientApp {
-	id = -1;
-	name; // private
-	c; // contextualizer - private
-	logger;
+export class ClientApp extends App {
 	priority = 0;
 	unsubscribeElectronStatus = null;
 
 	constructor(name, initialState = {}) {
+		super(name,
+			(namespace) => clientLoggerFactory(namespace + ':client')
+		);
 		this.serverStateCallback = new Callback(initialState);
-		this.name = name;
-		this.logger = loggerFactory(this.name);
-		this.c = contextualize(this.name);
-		this.info('Registering app', this.getName(), this);
 
-		this.unsubscribeElectronStatus = require('electron').ipcRenderer.on(this.c('.status'), (event, status) => {
-			this._setServerState(status);
+		this.info('Registering app', this.name, this);
+
+		this.unsubscribeElectronStatus = require('electron').ipcRenderer.on(this.ctxize('.status'), (event, status) => {
+			this.debug('Server status updated to ', status);
+			this.setServerState(status);
 		});
 
-		require('electron').ipcRenderer.send('history', this.c('.status'));
+		sendToServer('history', this.ctxize('.status'));
 		registerApp(this);
-	}
-
-	toJSON() {
-		return this.name + '#' + this.id;
-	}
-
-	getName() {
-		return this.name;
-	}
-
-	error(...data) {
-		this.logger.error(...data);
-	}
-
-	info(...data) {
-		this.logger.info(...data);
-	}
-
-	debug(...data) {
-		this.logger.debug(...data);
 	}
 
 	//
@@ -59,7 +37,7 @@ export class ClientApp {
 	// Server state
 	//
 	//
-	async _setServerState(status) {
+	async setServerState(status) {
 		return this.serverStateCallback.emit(status);
 	}
 
@@ -177,7 +155,7 @@ export class ClientApp {
 
 	menuBasedOnIcon(url, text = '') {
 		if (!text) {
-			text = this.getName();
+			text = this.name;
 		}
 		let element = document.createElement('div');
 		element.classList.add('button');
@@ -216,12 +194,13 @@ export function iFrameBuilder(url) {
 	return iframe;
 }
 
-const { webFrame } = require('electron');
 /**
  * Reset cache
  * See http://seenaburns.com/debugging-electron-memory-usage/
  */
 export function forceGC() {
+	const { webFrame } = require('electron');
 	webFrame.clearCache();
 }
 
+// new TimeInterval(() => forceGC(), 2 * 60 * 1000).start();
