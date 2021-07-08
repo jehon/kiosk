@@ -2,6 +2,7 @@
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
+import TimeInterval from '../../common/TimeInterval.js';
 
 const circleRadius = 97;
 const handLengths = {
@@ -91,10 +92,9 @@ function describeArc(radius, startAngle, endAngle) {
 }
 
 export class KioskClock extends ClientAppElement {
-	/**
-	 * @type {number}
-	 */
-	cron = 0
+	/** @type {TimeInterval} */
+	timer
+
 	constructor() {
 		super();
 		this.innerHTML = `
@@ -147,19 +147,16 @@ export class KioskClock extends ClientAppElement {
 		};
 		this.dateEl = /** @type {HTMLElement} */ (this.querySelector('#date'));
 		this.dowEl = /** @type {HTMLElement} */ (this.querySelector('#dow'));
+
+		this.timer = new TimeInterval(() => this.adapt(), 1, app);
 	}
 
 	connectedCallback() {
-		if (!this.cron) {
-			this.cron = window.setInterval(() => this.adapt(), 1000);
-		}
+		this.timer.start();
 	}
 
 	disconnectedCallback() {
-		if (this.cron) {
-			window.clearInterval(this.cron);
-			this.cron = 0;
-		}
+		this.timer.stop();
 	}
 
 	setServerState(status) {
@@ -210,7 +207,7 @@ export class KioskClock extends ClientAppElement {
 			this.dowEl.setAttribute('x', '' + ((dow * 200 / 7) - 100));
 		}
 
-		if (this.status.currentTicker && this.status.currentTicker.stat.end > new Date()) {
+		if (this.status && this.status.currentTicker && this.status.currentTicker.stat.end > new Date()) {
 			this.arcEl.total.style.display = 'initial';
 			this.arcEl.remain.style.display = 'initial';
 			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(this.status.currentTicker.stat.start.getMinutes()), angleFromMinutes(this.status.currentTicker.stat.end.getMinutes())));
@@ -229,7 +226,7 @@ const app = new ClientApp('clock')
 	.menuBasedOnIcon('../packages/clock/clock.png');
 
 app.onServerStateChanged((status, app) => {
-	if (status.currentTicker) {
+	if (status?.currentTicker) {
 		app.setPriority(priorities.clock.elevated);
 	} else {
 		app.setPriority(priorities.clock.normal);
