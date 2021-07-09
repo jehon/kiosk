@@ -10,7 +10,7 @@
  * @callback LoggerStreamFunctionBuilder
  * @param {string} namespace
  * @param {string} level
- * @returns {Logger} built
+ * @returns {LoggerStreamFunction} built
  */
 
 /**
