@@ -193,14 +193,3 @@ export function iFrameBuilder(url) {
 
 	return iframe;
 }
-
-/**
- * Reset cache
- * See http://seenaburns.com/debugging-electron-memory-usage/
- */
-export function forceGC() {
-	const { webFrame } = require('electron');
-	webFrame.clearCache();
-}
-
-// new TimeInterval(() => forceGC(), 2 * 60 * 1000).start();
