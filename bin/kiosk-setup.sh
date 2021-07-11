@@ -19,7 +19,7 @@
 
 set -e
 
-KIOSK_APP="$(dirname "$(dirname "$BASH_SOURCE")")"
+KIOSK_APP="$(dirname "$(dirname "${BASH_SOURCE[0]}")")"
 
 # shellcheck source=../bin/scripts/lib.sh
 . "$KIOSK_APP"/bin/scripts/lib.sh
