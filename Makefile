@@ -12,6 +12,10 @@ auto:
 # Generic configuration
 #
 #
+SSH_HOST ?= kiosk
+SSH_USER ?= kiosk
+SSH_TARGET ?= kiosk
+CONFIG ?= $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml
 
 # https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_7.html
 # https://stackoverflow.com/a/26936855/1954789
@@ -26,14 +30,13 @@ PATH := $(shell npm bin):$(PATH)
 #
 #
 ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-HOST   ?= kiosk
-TARGET ?= /opt/kiosk
 
 dump:
-	$(info ROOT:   $(ROOT))
-	$(info HOST:   $(HOST))
-	$(info TARGET: $(TARGET))
-	$(info PATH:   $(PATH))
+	$(info ROOT:       $(ROOT))
+	$(info PATH:       $(PATH))
+	$(info SSH_HOST:   $(SSH_HOST))
+	$(info SSH_USER:   $(SSH_USER))
+	$(info SSH_TARGET: $(SSH_TARGET))
 
 #
 #
@@ -63,8 +66,8 @@ endef
 setup-computer:
 	sudo apt -y install exiv2
 	mkdir -p etc/
-	if [ -r $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml ]; then
-		ln -f -s $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml etc/
+	if [ -r $(CONFIG) ]; then
+		ln -f -s $(CONFIG) etc/
 	fi
 
 setup-computer-test:
@@ -166,20 +169,14 @@ full-upgrade: dump \
 # Check
 #
 #
-remote-ssh:
-	ssh $(HOST) -X -t "cd $(TARGET) && exec bash --login"
-
-remote-ssh-pi:
-	ssh kiosk@$(HOST) -X -t "cd $(TARGET) && exec bash --login"
-
 remote-htop:
-	ssh $(HOST) -t htop
+	ssh $(SSH_HOST) -t htop
 
 remote-logs-lightdm:
-	ssh $(HOST) journalctl -f -u lightdm
+	ssh $(SSH_HOST) journalctl -f -u lightdm
 
 remote-logs:
-	ssh $(HOST) tail -n 1000 -f $(TARGET)/tmp/kiosk-xsession.log
+	ssh $(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
 
 remote-logs-cycle:
 	while true; do \
@@ -187,19 +184,16 @@ remote-logs-cycle:
 		sleep 1s; \
 	done
 
-remote-exec:
-	ssh kiosk@$(HOST) -X -t "cd $(TARGET) && exec npm run start-dp"
-
 #
 #
 # Control
 #
 #
 remote-reboot:
-	ssh $(HOST) reboot
+	ssh $(SSH_HOST) reboot
 
 remote-restart-dm:
-	ssh $(HOST) systemctl restart display-manager
+	ssh $(SSH_HOST) systemctl restart display-manager
 
 #
 #
@@ -210,14 +204,13 @@ deploy: dump build
 # Wait for the remote to be ready (ping && ssh ok - see github.com/jehon/packages/usr/bin/jh-ssh-ping)
 	type jh-ssh-ping >/dev/null 2>&1 && jh-ssh-ping -w "kiosk" || true
 
-	rsync --itemize-changes --recursive --perms --times --links --delete "$(ROOT)/" "kiosk@kiosk:$(TARGET)/" \
+	rsync --itemize-changes --recursive --perms --times --links --delete "$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/" \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
 		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
 		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
 		--exclude ".nfs*"
 
-	scp $$JH_SECRETS_FOLDER/crypted/kiosk/kiosk.yml kiosk@kiosk:$(TARGET)/etc/kiosk.yml
+	scp $(CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
-	ssh $(HOST) "$(TARGET)"/bin/kiosk-restart.sh
-
+	ssh $(SSH_HOST) "$(SSH_TARGET)"/bin/kiosk-restart.sh
