@@ -2,7 +2,6 @@
 
 set -e
 
-# Default values
 KIOSK_APP="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
 export KIOSK_APP
 
