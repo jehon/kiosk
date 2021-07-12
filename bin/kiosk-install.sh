@@ -2,6 +2,11 @@
 
 set -e
 
+KIOSK_APP="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
+export KIOSK_APP
+
+pushd "$KIOSK_APP" >/dev/null || exit 255
+
 # shellcheck source=./kiosk-lib.sh
 . bin/kiosk-lib.sh
 

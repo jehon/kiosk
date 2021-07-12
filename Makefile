@@ -213,4 +213,4 @@ deploy: dump build
 
 	scp $(CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
-	ssh $(SSH_HOST) "$(SSH_TARGET)"/bin/kiosk-restart.sh
+	ssh root@$(SSH_HOST) systemctl restart display-manager
