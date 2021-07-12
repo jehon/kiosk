@@ -2,77 +2,84 @@
 
 ## Setup
 
-run kickstart.sh
+### Burn an SD Card
 
-### Explained
+Use the raspberry-pi OS image (desktop)
 
-use the ubuntu server image for raspberry-pi
-change the password of the ubuntu setup by ssh on it
+### Install required packages (production)
 
-run setup-kiosk (package folder)
-  go on the server and clone repository
+sudo bin/kiosk-install-sudo.sh
 
-run bin/kiosk-initialize.sh
+### Git checkout
+git checkout the project to the home of the user that will run the kiosk
 
-copy config to /opt/kiosk/etc/
+ex:
 
+```
+cd $HOME
+git clone https://github.com/jehon/kiosk.git
+cd kiosk
+```
 
-## Server
+### Install
 
-### Strange ?
+To allow kiosk to run at login (of the user), please run:
 
-npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
+```
+bin/kiosk-install.sh
+```
 
-TODO: mounter without fstab
-TODO: https://snapcraft.io/docs/node-apps
-TODO: configure the log rotation (! impact on makefile)
+### Start
 
-### https://nodejs.org/dist/latest-v13.x/docs/api/esm.html
+```
+kiosk-start.sh
+```
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+### Configure
 
-https://nodejs.org/dist/latest-v13.x/docs/api/modules.html#modules_module_createrequire_filename
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
+Create a kiosk.yml in the etc subfolder
 
-Named exports of builtin modules are updated only by calling module.syncBuiltinESMExports().
+## Logs
 
-## Current problems
+checks: 
+sudo tail -n 100 -f /var/log/lightdm/lightdm.log
+sudo tail -n 100 -f /var/log/lightdm/x-0.log
+tail -n 100 -f .xsession-errors
+tail -n 100 -f kiosk/tmp/kiosk.log
 
-### TODO: electron install on rasbian
+# Developping
+
+You are more than welcome to contribute to this project.
+
+According to your setup, you will have to change in the Makefile (see on the top the variables).
+
+## Apt
+
+You will also need to install additionnal packages, but the list is not maintained (sorry).
+
+It includes:
+- chromium
+- make
+- xvfb
+
+# Current problems (TODO)
+
+## Electron install on rasbian (not present anymore?)
 
 -> See https://github.com/electron/electron/issues/20723
 
-In /root/.npmrc
+In $HOME/.npmrc
 
 ```lang=ini
 arch=armv7l
 ```
 
-### TODO: common.es6 build
+## TODO: common.es6 build
 
 We need to have the dev dependencies to build up the common.es6 versions of common's
 
-## ESLint: TODO
-remove
-    "template-curly-spacing": "off",
 
-add:
-    "indent": [
-      "error",
-      "tab",
-      {
-        "SwitchCase": 1
-
-	  }
-    ],
-
-
-# mir-kiosk
-
-
-
+## Use mir-kiosk ?
 
 https://forum.snapcraft.io/t/introducing-wpe-webkit-mir-kiosk-snap/12044/8
 
@@ -102,17 +109,12 @@ sudo snap set chromium-mir-kiosk url="https://yoururl.com"
 https://ubuntu.com/tutorials/electron-kiosk#5-deploying-on-a-device
 
 
-
-####
-
-
-The solution
+## Ubuntu image and autologin ?
 
 Edit /etc/pam.d/lightdm and remove nopasswdlogin from this line:
-
 auth    sufficient      pam_succeed_if.so user ingroup nopasswdlogin
 
-# Memory consumption
+## Memory consumption
 
 http://seenaburns.com/debugging-electron-memory-usage/
 
