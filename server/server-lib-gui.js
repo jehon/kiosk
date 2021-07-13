@@ -69,8 +69,8 @@ export async function start(serverApp) {
 		},
 		frame: false,
 		width: 1980,
-		height: 1080
-		//fullscreen: true,
+		height: 1080,
+		fullscreen: true,
 		//kiosk: true
 	};
 
@@ -78,8 +78,7 @@ export async function start(serverApp) {
 		opts.frame = true;
 		opts.width = 1500;
 		opts.height = 900;
-	} else {
-		true;
+		delete opts.fullscreen;
 	}
 
 	const win = new BrowserWindow(opts);
