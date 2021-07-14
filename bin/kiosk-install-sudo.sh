@@ -3,7 +3,7 @@
 apt install \
     ffmpeg exiv2 gettext-base \
     unclutter \
-    gcc g++ make
+    build-essential
 
 # remove the toastr warning about battery
 # (we still have the lightnight bolt to warn about power)
