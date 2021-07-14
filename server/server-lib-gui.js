@@ -71,7 +71,7 @@ export async function start(serverApp) {
 		width: 1980,
 		height: 1080,
 		fullscreen: true,
-		//kiosk: true
+		kiosk: true
 	};
 
 	if (devMode) {
@@ -79,6 +79,7 @@ export async function start(serverApp) {
 		opts.width = 1500;
 		opts.height = 900;
 		delete opts.fullscreen;
+		delete opts.kiosk;
 	}
 
 	const win = new BrowserWindow(opts);
