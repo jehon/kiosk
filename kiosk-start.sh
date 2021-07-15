@@ -9,9 +9,12 @@ xset -dpms
 xset s noblank
 xset s off
 
-KIOSK_APP="$(dirname "${BASH_SOURCE[0]}")"
+# https://maggick.fr/2016/12/building-a-kiosk-computer-with-chrome.html
+openbox-session &
 
-pushd "$KIOSK_APP" || exit 255
+KIOSK_ROOT="$(dirname "${BASH_SOURCE[0]}")"
+
+pushd "$KIOSK_ROOT" || exit 255
 
 (
 	# shellcheck source=bin/kiosk-lib.sh
