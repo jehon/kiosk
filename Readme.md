@@ -62,9 +62,9 @@ It includes:
 - make
 - xvfb
 
-# Current problems (TODO)
+# Current problems
 
-## Electron install on rasbian (not present anymore?)
+## Electron install on rasbian (not used anymore)
 
 -> See https://github.com/electron/electron/issues/20723
 
@@ -74,7 +74,17 @@ In $HOME/.npmrc
 arch=armv7l
 ```
 
-## TODO: common.es6 build
+## Audio
+
+https://www.raspberrypi.org/forums/viewtopic.php?t=127042
+
+```lang=shell
+echo "Redirect sound output to jack first card"
+cp /usr/share/jehon/rasperry/asound.conf /etc/
+chmod 640 /etc/asound.conf
+```
+
+## Common.es6 build
 
 We need to have the dev dependencies to build up the common.es6 versions of common's
 
@@ -104,7 +114,6 @@ sudo snap set mir-kiosk daemon=true
 
 To customize the startup url for chromium use:
 sudo snap set chromium-mir-kiosk url="https://yoururl.com"
-
 
 https://ubuntu.com/tutorials/electron-kiosk#5-deploying-on-a-device
 
