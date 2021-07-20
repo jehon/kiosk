@@ -16,3 +16,10 @@ apt install \
 
 snap install core
 snap install node --classic
+
+# remove the toastr warning about battery
+# (we still have the lightnight bolt to warn about power)
+apt remove lxplug-ptbatt
+
+# Install the auto-login
+jh-patch /etc/jehon/lightdm-autostart.conf

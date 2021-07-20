@@ -176,7 +176,7 @@ remote-logs-lightdm:
 	ssh $(SSH_HOST) journalctl -f -u lightdm
 
 remote-logs:
-	ssh $(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
+	ssh kiosk@$(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
 
 remote-logs-cycle:
 	while true; do \
