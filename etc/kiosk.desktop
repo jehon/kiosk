@@ -1,4 +1,4 @@
 [Desktop Entry]
 Name=Kiosk
-Exec=${KIOSK_APP}/kiosk-start.sh
+Exec=${KIOSK_ROOT}/kiosk-start.sh
 Type=Application

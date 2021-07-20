@@ -2,8 +2,8 @@
 
 set -e
 
-KIOSK_APP="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
-export KIOSK_APP
+KIOSK_ROOT="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
+export KIOSK_ROOT
 
 NODE_ENV="${NODE_ENV:-production}"
 export NODE_ENV

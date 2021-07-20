@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+set -e
+
+KIOSK_ROOT="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
+export KIOSK_ROOT
+
 apt install \
     ffmpeg exiv2 gettext-base \
     unclutter \
