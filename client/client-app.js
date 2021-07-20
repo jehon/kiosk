@@ -1,6 +1,6 @@
 
 // Common elements
-import './elements/css-inherit.js';
+import '../node_modules/css-inherit/css-inherit.js';
 
 import Callback from '../common/callback.js';
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
