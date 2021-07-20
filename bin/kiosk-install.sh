@@ -14,3 +14,6 @@ header "Install the autostart feature on login"
 DESKTOP_NAME="$HOME/.config/autostart/kiosk.desktop"
 mkdir -p "$(dirname "$DESKTOP_NAME")"
 envsubst <"$KIOSK_ROOT"/etc/kiosk.desktop >"$DESKTOP_NAME"
+
+
+echo "ok"
