@@ -15,5 +15,12 @@ DESKTOP_NAME="$HOME/.config/autostart/kiosk.desktop"
 mkdir -p "$(dirname "$DESKTOP_NAME")"
 envsubst <"$KIOSK_ROOT"/etc/kiosk.desktop >"$DESKTOP_NAME"
 
+#
+# Allow git to run automatically (ssh checkout)
+#   due to openssh 7.9
+#
+mkdir -p ~/.ssh
+ssh-keyscan github.com >~/.ssh/known_hosts
+ssh -T git@github.com
 
 echo "ok"
