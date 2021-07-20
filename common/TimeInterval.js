@@ -9,6 +9,8 @@ export default class TimeInterval {
 
     cb
 
+    name
+
     /**
      * To run periodically
      *
@@ -20,6 +22,7 @@ export default class TimeInterval {
         this.iSecs = iSecs;
         this.cb = cb;
         this.logger = logger;
+        this.name = this.constructor.name;
     }
 
     _set(cb, time) {
@@ -40,9 +43,9 @@ export default class TimeInterval {
 
     run() {
         try {
-            this.logger.debug('Running TimeInterval...');
+            this.logger.debug(`Running ${this.name}...`);
             this.cb(this);
-            this.logger.debug('Running TimeInterval done');
+            this.logger.debug(`Running ${this.name} done`);
         } catch (e) {
             this.logger.error('In every seconds: ', e, this.cb);
         }
