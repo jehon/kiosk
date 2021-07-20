@@ -3,6 +3,7 @@ import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 import Callback from '../../common/callback.js';
+import Delayed from '../../common/Delayed.js';
 import TimeInterval from '../../common/TimeInterval.js';
 
 const app = new ClientApp('photo-frame');
@@ -59,13 +60,25 @@ function prev() {
 }
 
 class KioskPhotoFrame extends ClientAppElement {
-	carousel = null
+
+	/** @type {HTMLElement} */
+	_carouselImg
+
+	/** @type {HTMLElement} */
+	_carouselInfos
+
+	/** @type {HTMLElement} */
+	_carouselThumbs
+
+	/** @type {HTMLElement} */
+	_debug
 
 	constructor() {
 		super(app);
 
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.innerHTML = `
+		<css-inherit></css-inherit>
 		<style>
 			:host-context(body[inactive]) .hideOnInactive {
 				display: none;
@@ -146,10 +159,10 @@ class KioskPhotoFrame extends ClientAppElement {
 				width: 100%;
 				object-fit: contain;
 			}
-
 		</style>
 		<div id="myCarousel">
-			<img id="img" />
+		<pre class='debug'>debug infos</pre>
+		<img id="img" />
 			<div id="overlay">
 				<div style="grid-area: left"   id="prev"   class="hideOnInactive">&lt;</div>
 				<div style="grid-area: right"  id="next"   class="hideOnInactive">&gt;</div>
@@ -161,6 +174,7 @@ class KioskPhotoFrame extends ClientAppElement {
 		this._carouselImg = /** @type {HTMLImageElement} */ (this.shadowRoot.querySelector('#img'));
 		this._carouselInfos = this.shadowRoot.querySelector('#infos');
 		this._carouselThumbs = this.shadowRoot.querySelector('#thumbs');
+		this._debug = this.shadowRoot.querySelector('.debug');
 
 		this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
 		this.shadowRoot.querySelector('#next').addEventListener('click', () => next());
@@ -178,10 +192,9 @@ class KioskPhotoFrame extends ClientAppElement {
 
 	connectedCallback() {
 		super.connectedCallback();
+		let delayingUpdate = new Delayed(() => this.updatePicture(), 0.25, this.log);
 		this.addUnregister(
-			updatePictureCallback.onChange(
-				() => this.updatePicture()
-			)
+			updatePictureCallback.onChange(() => delayingUpdate.start())
 		);
 	}
 
@@ -189,32 +202,6 @@ class KioskPhotoFrame extends ClientAppElement {
 		this._carouselThumbs.innerHTML = '';
 		if (picturesList.length >= 1) {
 			// TODO: manage thumbnails ! => need to generate them !
-
-			// this.carousel.content.innerHTML = '';
-			// this.carousel.thumbs.innerHTML = '';
-
-			// for (let i = 0; i < picturesList.length; i++) {
-			// 	const v = picturesList[i];
-			// 	// TODO: date legend: should be clean up for not significant numbers!
-			// 	this.carousel.content.insertAdjacentHTML('beforeend',
-			// 		`<div class="carousel-item " data-slide-number="${i}">
-			// 			<pre class="debug data" >${JSON.stringify(v, null, 4)}</pre>
-			// 			<img src="${v.url}">
-			// 			<div class="hideOnInactive carousel-caption d-none d-md-block">
-			// 				<h5>${v.data.comment}</h5>
-			// 				<p>${v.data.date}</p>
-			// 			</div>
-			// 		</div>`);
-
-			// 	this.carousel.thumbs.insertAdjacentHTML('beforeend',
-			// 		`<div class="thumb" data-target="#myCarousel" data-slide-to="${i}">
-			// 			<img src="${v.url}?thumb=1&height=50">
-			// 		</div>`);
-			// }
-			// this.carousel.content.querySelector('[data-slide-number="0"]').classList.add('active');
-			// this.carousel.thumbs.querySelector('[data-slide-to="0"]').classList.add('active');
-			// this.carousel.thumbs.querySelectorAll('[data-slide-to]').forEach(el =>
-			// 	el.addEventListener('click', () => this.carousel.mainFn(parseInt(el.dataset.slideTo))));
 		}
 
 		this.updatePicture();
@@ -241,6 +228,8 @@ class KioskPhotoFrame extends ClientAppElement {
 				this._carouselImg.setAttribute('src', photo.url);
 			}
 		}
+
+		this._debug.innerHTML = JSON.stringify(photo, null, 2);
 	}
 }
 
