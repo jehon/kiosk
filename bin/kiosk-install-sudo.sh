@@ -13,11 +13,14 @@ apt install -y \
     build-essential \
     snapd
 
-# curl -sL https://deb.nodesource.com/setup_current.x | bash -
-# apt --yes install nodejs
-
 snap install core
-snap install node --classic
+# snap install node --classic
+
+#
+# We still need the native package (why? npm install did fail otherwise)
+#
+curl -sL https://deb.nodesource.com/setup_current.x | bash -
+apt --yes install nodejs
 
 # remove the toastr warning about battery
 # (we still have the lightnight bolt to warn about power)
