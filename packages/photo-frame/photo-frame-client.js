@@ -224,7 +224,7 @@ class KioskPhotoFrame extends ClientAppElement {
 			if (this._carouselImg.getAttribute('src') != photo.url) {
 				app.debug('updatePicture', pictureIndex);
 				photo = picturesList[pictureIndex];
-				this._carouselInfos.innerHTML = `${photo.subPath}<br>${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
+				this._carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
 				this._carouselImg.setAttribute('src', photo.url);
 			}
 		}
