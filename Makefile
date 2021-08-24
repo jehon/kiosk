@@ -122,6 +122,7 @@ node_modules/.dependencies: package.json package-lock.json
 
 .PHONY: test
 test: test-server test-client test-app
+	echo "ok"
 
 .PHONY: test-server
 test-server: build
