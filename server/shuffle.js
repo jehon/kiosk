@@ -46,3 +46,14 @@ export default function shuffle(weightedList) {
 
     return res;
 }
+
+
+/**
+ * @param {Array} arr to be shuffled
+ * @returns {Array} not wiehgted
+ */
+export function shuffleArray(arr) {
+    return shuffle(
+        arr.reduce((acc, v) => { acc[v] = 1; return acc; }, {})
+    );
+}
