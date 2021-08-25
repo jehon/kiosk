@@ -3,10 +3,10 @@ import serverAppFactory from '../../server/server-app.js';
 
 import fs from 'fs';
 import mime from 'mime-types';
-import shuffleArray from 'shuffle-array';
 import path from 'path';
 import minimatch from 'minimatch';
 import exifParser from './exif-parser.mjs';
+import shuffle, { shuffleArray } from '../../server/shuffle.js';
 
 /**
  * @typedef FolderConfig
@@ -128,10 +128,38 @@ export async function _getFoldersFromFolder(folder, excludes) {
 export async function _generateListingForPath(folderConfig, n = folderConfig.quantity, subpath = '', previouslySelected = []) {
 	buildingLogger.debug(folderConfig.name, '3.0 - getFilesFromFolderPath: ', subpath, folderConfig);
 
-	const folders = shuffleArray(
-		['.']
-			.concat(await _getFoldersFromFolder(path.join(folderConfig.folder, subpath), folderConfig.excludes))
-	);
+	//
+	// Shuffle will send back an array of strings
+	//   each string is the name of a folder (relative to folderConfig.folder)
+	//
+	const folders = shuffle({
+		//
+		// We need an object here
+		// so that we can influence proportions of each times
+		//   key: folder name (relative to folderConfig.folder)
+		//   value: # of times this folder is taken into account in lottery
+		//            (once taken, it is removed)
+		//          default = 1
+		//
+		'.': 1,
+		... (await _getFoldersFromFolder(path.join(folderConfig.folder, subpath), folderConfig.excludes))
+			.reduce((acc, v) => {
+				acc[v] = 1;
+
+				try {
+					const dfile = path.join(folderConfig.folder, v, 'kiosk.json');
+					if (fs.statSync(dfile)) {
+						const content = JSON.parse(fs.readFileSync(dfile));
+						if (content && content.priority) {
+							acc[v] = content.priority;
+						}
+					}
+				} catch (_e) {
+					// expected
+				}
+				return acc;
+			}, {})
+	});
 	const listing = [];
 
 	while (folders.length > 0 && listing.length < n) {
