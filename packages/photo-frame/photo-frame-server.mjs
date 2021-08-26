@@ -132,6 +132,27 @@ export async function _generateListingForPath(folderConfig, n = folderConfig.qua
 	// Shuffle will send back an array of strings
 	//   each string is the name of a folder (relative to folderConfig.folder)
 	//
+	const priorityFolders = (await _getFoldersFromFolder(path.join(folderConfig.folder, subpath), folderConfig.excludes))
+		.reduce((acc, v) => {
+			acc[v] = 1;
+
+			try {
+				const dfile = path.join(folderConfig.folder, v, 'kiosk.json');
+				if (fs.statSync(dfile)) {
+					const content = JSON.parse(fs.readFileSync(dfile));
+					if (content && content.priority) {
+						buildingLogger.debug('Override by file: ', JSON.stringify(content));
+						acc[v] = content.priority;
+					}
+				}
+			} catch (_e) {
+				// expected
+			}
+			return acc;
+		}, {});
+
+	buildingLogger.debug('3.0.1 Resolved folders', priorityFolders);
+
 	const folders = shuffle({
 		//
 		// We need an object here
@@ -142,23 +163,7 @@ export async function _generateListingForPath(folderConfig, n = folderConfig.qua
 		//          default = 1
 		//
 		'.': 1,
-		... (await _getFoldersFromFolder(path.join(folderConfig.folder, subpath), folderConfig.excludes))
-			.reduce((acc, v) => {
-				acc[v] = 1;
-
-				try {
-					const dfile = path.join(folderConfig.folder, v, 'kiosk.json');
-					if (fs.statSync(dfile)) {
-						const content = JSON.parse(fs.readFileSync(dfile));
-						if (content && content.priority) {
-							acc[v] = content.priority;
-						}
-					}
-				} catch (_e) {
-					// expected
-				}
-				return acc;
-			}, {})
+		...priorityFolders
 	});
 	const listing = [];
 
