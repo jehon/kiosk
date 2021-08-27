@@ -169,7 +169,8 @@ export async function _generateListingForPath(folderConfig, n = folderConfig.qua
 	const listing = [];
 
 	while (folders.length > 0 && listing.length < n) {
-		const f = folders.pop();
+		// Take the first one (top priority)
+		const f = folders.shift();
 
 		// Special case: we take the pictures
 		if (f == '.') {
