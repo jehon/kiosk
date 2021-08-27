@@ -31,7 +31,7 @@ function takeOne(weightedList) {
 
 /**
  * @param {object} weightedList with weight
- * @returns {Array} weighted
+ * @returns {Array} weighted (top priority first => .shift())
  */
 export default function shuffle(weightedList) {
     const keys = Object.keys(weightedList);
