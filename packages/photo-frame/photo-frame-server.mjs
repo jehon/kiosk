@@ -132,39 +132,40 @@ export async function _generateListingForPath(folderConfig, n = folderConfig.qua
 	// Shuffle will send back an array of strings
 	//   each string is the name of a folder (relative to folderConfig.folder)
 	//
-	const priorityFolders = (await _getFoldersFromFolder(path.join(folderConfig.folder, subpath), folderConfig.excludes))
-		.reduce((acc, v) => {
-			acc[v] = 1;
+	const priorityFolders = {
+		'.': 1,
+		...(await _getFoldersFromFolder(path.join(folderConfig.folder, subpath), folderConfig.excludes))
+			.reduce((acc, v) => {
+				acc[v] = 1;
 
-			try {
-				const dfile = path.join(folderConfig.folder, v, 'kiosk.json');
-				if (fs.statSync(dfile)) {
-					const content = JSON.parse(fs.readFileSync(dfile));
-					if (content && content.priority) {
-						buildingLogger.debug('Override by file: ', JSON.stringify(content));
-						acc[v] = content.priority;
+				try {
+					const dfile = path.join(folderConfig.folder, v, 'kiosk.json');
+					if (fs.statSync(dfile)) {
+						const content = JSON.parse(fs.readFileSync(dfile));
+						if (content && content.priority) {
+							buildingLogger.debug('Override by file for', dfile, ': ', JSON.stringify(content));
+							acc[v] = content.priority;
+						}
 					}
+				} catch (_e) {
+					// expected
 				}
-			} catch (_e) {
-				// expected
-			}
-			return acc;
-		}, {});
-
+				return acc;
+			}, {})
+	};
 	buildingLogger.debug('3.0.1 Resolved folders', priorityFolders);
 
-	const folders = shuffle({
-		//
-		// We need an object here
-		// so that we can influence proportions of each times
-		//   key: folder name (relative to folderConfig.folder)
-		//   value: # of times this folder is taken into account in lottery
-		//            (once taken, it is removed)
-		//          default = 1
-		//
-		'.': 1,
-		...priorityFolders
-	});
+	//
+	// We need an object here
+	// so that we can influence proportions of each times
+	//   key: folder name (relative to folderConfig.folder)
+	//   value: # of times this folder is taken into account in lottery
+	//            (once taken, it is removed)
+	//          default = 1
+	//
+	const folders = shuffle(priorityFolders);
+	buildingLogger.debug('3.0.2 Shuffled folders', folders);
+
 	const listing = [];
 
 	while (folders.length > 0 && listing.length < n) {
