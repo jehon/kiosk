@@ -22,7 +22,7 @@
     "js-yaml": "4.1.0",
     "lodash": "4.17.21",
     "lodash-es": "4.17.21",
-    "mime-types": "2.1.32",
+    "mime-types": "2.1.33",
     "minimatch": "3.0.4",
     "node-fetch": "3.0.0",
     "object-path": "0.11.8",
