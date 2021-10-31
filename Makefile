@@ -7,6 +7,8 @@
 #
 auto:
 
+pull-request: clean test
+
 #
 #
 # Generic configuration
