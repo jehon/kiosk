@@ -1,0 +1,29 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 14    
+    - uses: actions/checkout@v2
+    
+    - name: dump
+      run: make dump
+      
+    - name: build
+      run: make build
+
+    - name: test
+      run: make test
+      
+    - name: lint
+      run: make lint
