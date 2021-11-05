@@ -16,7 +16,7 @@ jobs:
         node-version: 14    
     - uses: actions/checkout@v2
     
-    - name: setup
+    - name: configure
       run: make configure
 
     - name: dump
