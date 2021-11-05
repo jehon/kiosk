@@ -78,7 +78,7 @@ class KioskPhotoFrame extends ClientAppElement {
 
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.innerHTML = `
-		<css-inherit></css-inherit>
+		<jehon-css-inherit></jehon-css-inherit>
 		<style>
 			:host-context(body[inactive]) .hideOnInactive {
 				display: none;
