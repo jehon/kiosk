@@ -65,14 +65,14 @@ define git-files
 	$(shell git ls-files --cached --modified --others --full-name "$(ROOT)/$(1)" )
 endef
 
-setup-computer:
+configure:
 	sudo apt -y install exiv2
 	mkdir -p etc/
 	if [ -r $(CONFIG) ]; then
 		ln -f -s $(CONFIG) etc/
 	fi
 
-setup-computer-test:
+configure-test:
 	type exiv2
 # chromium must be not a snap because jenkins run out of home folder
 	type chromium || type chromium-browser
