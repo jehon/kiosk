@@ -68,8 +68,8 @@ endef
 configure:
 	sudo apt -y install exiv2
 	mkdir -p etc/
-	if [ -r $(CONFIG) ]; then
-		ln -f -s $(CONFIG) etc/
+	if [ -r "$(CONFIG)" ]; then \
+		ln -f -s $(CONFIG) etc/; \
 	fi
 
 configure-test:
