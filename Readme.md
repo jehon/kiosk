@@ -127,3 +127,15 @@ auth    sufficient      pam_succeed_if.so user ingroup nopasswdlogin
 
 http://seenaburns.com/debugging-electron-memory-usage/
 
+
+
+
+
+Error: Failed to create session.
+session not created: This version of ChromeDriver only supports Chrome version 95
+Current browser version is 91.0.4472.164 with binary path /home/jehon/src/kiosk/node_modules/electron/dist/electron
+    at startWebDriverSession (/home/jehon/src/kiosk/node_modules/webdriver/build/utils.js:71:15)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async Function.newSession (/home/jehon/src/kiosk/node_modules/webdriver/build/index.js:58:45)
+    at async Object.remote (/home/jehon/src/kiosk/node_modules/webdriverio/build/index.js:67:22)
+    at async /home/jehon/src/kiosk/spectron.cjs:22:17
