@@ -73,7 +73,8 @@
     "eslint": "eslint .",
     "stylelint": "stylelint **/*.css",
     "test-client-continuoulsy": "karma start tests/client/karma.conf.cjs",
-    "start-fake-server": "./tests/start-fake-camera.cjs"
+    "start-fake-server": "./tests/start-fake-camera.cjs",
+    "wdio": "wdio run wdio.conf.cjs"
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint",
