@@ -1,9 +1,23 @@
+
+// Thanks to https://github.com/praveendvd/WebdriverIO_electronAppAutomation_boilerplate/blob/main/wdio.conf.js
+
+const kill = require("kill-port")
+
+const cdPort = 9515
+const cdPath = '/wd/hub'
+
 exports.config = {
     //
     // ====================
     // Runner Configuration
     // ====================
     //
+    // WebdriverIO allows it to run your tests in arbitrary locations (e.g. locally or
+    // on a remote machine).
+    runner: 'local',
+    port: cdPort,
+    path: cdPath,
+
     //
     // ==================
     // Specify Test Files
@@ -21,7 +35,7 @@ exports.config = {
     // will be called from there.
     //
     specs: [
-        'tests/app/**/*.js'
+        'tests/app/specs/**/*.*js'
     ],
     // Patterns to exclude.
     exclude: [
@@ -50,19 +64,27 @@ exports.config = {
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-    
+
         // maxInstances can get overwritten per capability. So if you have an in-house Selenium
         // grid with only 5 firefox instances available you can make sure that not more than
         // 5 instances get started at a time.
         maxInstances: 5,
         //
         browserName: 'chrome',
-        acceptInsecureCerts: true
+        acceptInsecureCerts: true,
         // If outputDir is provided WebdriverIO can capture driver session logs
         // it is possible to configure which logTypes to include/exclude.
         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
         // excludeDriverLogs: ['bugreport', 'server'],
+        "goog:chromeOptions": { binary: './node_modules/electron/dist/electron', args: ["app=./"] }
+        // "goog:chromeOptions": { binary: 'C:/Users/s2cn/AppData/Local/Postman/Postman.exe' }
+
     }],
+
+    onComplete: async function (exitCode, config, capabilities, results) {
+        await kill(4723, 'tcp')
+    },
+
     //
     // ===================
     // Test Configurations
@@ -104,14 +126,18 @@ exports.config = {
     connectionRetryTimeout: 120000,
     //
     // Default request retries count
-    connectionRetryCount: 3,
+    connectionRetryCount: 0,
     //
     // Test runner services
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ['chromedriver'],
-    
+    services: [['chromedriver', {
+        port: cdPort,
+        path: cdPath,
+        chromedriverCustomPath: "./node_modules/electron-chromedriver/chromedriver.js"
+    }]],
+
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
     // see also: https://webdriver.io/docs/frameworks
@@ -133,9 +159,8 @@ exports.config = {
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
     reporters: ['spec'],
+    // reporters: ['spec', 'dot'],
 
-
-    
     //
     // Options to be passed to Jasmine.
     jasmineOpts: {
@@ -145,11 +170,11 @@ exports.config = {
         // The Jasmine framework allows interception of each assertion in order to log the state of the application
         // or website depending on the result. For example, it is pretty handy to take a screenshot every time
         // an assertion fails.
-        expectationResultHandler: function(passed, assertion) {
+        expectationResultHandler: function (passed, assertion) {
             // do something
         }
     },
-    
+
     //
     // =====
     // Hooks
