@@ -4,8 +4,9 @@
 
 describe('The application', () => {
     it('should open', async () => {
-        const menuElement = $('#app-menu');
-        expect(menuElement).toBeExisting();
+        // const menuElement = $('#app-menu');
+        // expect(menuElement).toBeExisting();
+        await $('#app-menu').toBeExisting();
 
         // await LoginPage.open();
 
