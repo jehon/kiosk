@@ -76,9 +76,7 @@ exports.config = {
         // it is possible to configure which logTypes to include/exclude.
         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
         // excludeDriverLogs: ['bugreport', 'server'],
-        "goog:chromeOptions": { binary: './node_modules/electron/dist/electron', args: ["app=./"] }
-        // "goog:chromeOptions": { binary: 'C:/Users/s2cn/AppData/Local/Postman/Postman.exe' }
-
+        "goog:chromeOptions": { binary: './node_modules/electron/dist/electron', args: ['app=.'] }
     }],
 
     onComplete: async function (exitCode, config, capabilities, results) {
