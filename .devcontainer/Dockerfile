@@ -1,0 +1,2 @@
+
+FROM jehon/devcontainer:latest
