@@ -45,7 +45,7 @@
     "@wdio/spec-reporter": "7.16.4",
     "babel-eslint": "10.1.0",
     "babel-plugin-transform-commonjs": "1.1.6",
-    "chromedriver": "91.0.0",
+    "chromedriver": "91.0.1",
     "depcheck": "1.4.2",
     "electron-chromedriver": "15.0.0",
     "eslint": "7.32.0",
