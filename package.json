@@ -31,10 +31,10 @@
     "yargs": "17.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "7.15.7",
-    "@babel/core": "7.15.5",
-    "@babel/plugin-proposal-class-properties": "7.14.5",
-    "@babel/plugin-proposal-optional-chaining": "7.14.5",
+    "@babel/cli": "7.16.0",
+    "@babel/core": "7.16.0",
+    "@babel/plugin-proposal-class-properties": "7.16.0",
+    "@babel/plugin-proposal-optional-chaining": "7.16.0",
     "@babel/plugin-syntax-import-meta": "7.10.4",
     "@commitlint/cli": "13.2.1",
     "@commitlint/config-conventional": "13.2.0",
