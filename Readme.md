@@ -1,4 +1,5 @@
 # Kiosk
+[![Makefile CI](https://github.com/jehon/kiosk/actions/workflows/test.yml/badge.svg)](https://github.com/jehon/kiosk/actions/workflows/test.yml)
 
 ## Setup
 
