@@ -126,4 +126,3 @@ auth    sufficient      pam_succeed_if.so user ingroup nopasswdlogin
 ## Memory consumption
 
 http://seenaburns.com/debugging-electron-memory-usage/
-

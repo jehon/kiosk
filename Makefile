@@ -113,7 +113,6 @@ build: dependencies
 dependencies: node_modules/.dependencies
 node_modules/.dependencies: package.json package-lock.json
 	npm ci
-	cd node_modules && patch -p1 < ../patch-spectron.patch
 	touch package-lock.json
 	touch node_modules/.dependencies
 
@@ -140,7 +139,7 @@ test-client-continuously: build
 test-app: build
 	rm -fr tmp/app
 	mkdir -p tmp/app
-	xvfb-run --server-args="-screen 0 1024x768x24" ./spectron.cjs
+	xvfb-run --server-args="-screen 0 1024x768x24" npm run wdio
 
 .PHONY: lint
 lint:
