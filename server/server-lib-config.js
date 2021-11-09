@@ -98,10 +98,14 @@ export async function loadConfigFromCommandLine(serverApp) {
 		.help()
 		.recommendCommands();
 
-	// TODO: disable strict in case of --spectron-testing (see spectron.cjs)
-	if (!('SPECTRON' in process.env)) {
-		myargs = myargs.strict();
-	}
+	//
+	// Caution: we can not enable "strict()" mode
+	//          as webdriverIO add lots of command line parameters
+	//          and those command-line parameters would otherwise be rejected
+	//          by a strict() mode.
+	//
+	// myargs = myargs.strict();
+	//
 
 	const cmdLineOptions = myargs.argv;
 
