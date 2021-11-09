@@ -1,4 +1,4 @@
-name: Makefile CI
+name: Makefile
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  ga-test:
     runs-on: ubuntu-latest
 
     steps:
