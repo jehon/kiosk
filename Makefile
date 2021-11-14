@@ -11,13 +11,20 @@ pull-request: clean test
 
 #
 #
+# System variables
+#
+#
+ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+
+#
+#
 # Generic configuration
 #
 #
 SSH_HOST ?= kiosk
 SSH_USER ?= kiosk
 SSH_TARGET ?= kiosk
-CONFIG ?= $(JH_SECRETS_FOLDER)/crypted/kiosk/kiosk.yml
+KIOSK_CONFIG ?= $(ROOT)/etc/kiosk.yml
 
 # https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_7.html
 # https://stackoverflow.com/a/26936855/1954789
@@ -26,19 +33,13 @@ SHELL := /bin/bash
 
 PATH := $(shell npm bin):$(PATH)
 
-#
-#
-# System variables
-#
-#
-ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-
 dump:
-	$(info ROOT:       $(ROOT))
-	$(info PATH:       $(PATH))
-	$(info SSH_HOST:   $(SSH_HOST))
-	$(info SSH_USER:   $(SSH_USER))
-	$(info SSH_TARGET: $(SSH_TARGET))
+	$(info ROOT:         $(ROOT))
+	$(info PATH:         $(PATH))
+	$(info SSH_HOST:     $(SSH_HOST))
+	$(info SSH_USER:     $(SSH_USER))
+	$(info SSH_TARGET:   $(SSH_TARGET))
+	$(info KIOSK_CONFIG: $(KIOSK_CONFIG))
 
 #
 #
@@ -68,8 +69,8 @@ endef
 configure:
 	sudo apt -y install exiv2 chromium-browser
 	mkdir -p etc/
-	if [ -r "$(CONFIG)" ]; then \
-		ln -f -s $(CONFIG) etc/; \
+	if [ -r "$(KIOSK_CONFIG)" ]; then \
+		ln -f -s $(KIOSK_CONFIG) etc/; \
 	fi
 	type exiv2
 # chromium must be not a snap because jenkins run out of home folder
@@ -211,6 +212,6 @@ deploy: dump build
 		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
 		--exclude ".nfs*"
 
-	scp $(CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
+	scp $(KIOSK_CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
 	ssh root@$(SSH_HOST) systemctl restart display-manager
