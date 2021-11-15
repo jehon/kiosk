@@ -6,7 +6,7 @@ export default class ClientAppElement extends HTMLElement {
     timeIntervals = [];
 
     /** @type {ClientApp} */
-    app
+    app;
 
     /**
      * @param {ClientApp?} app to link to
