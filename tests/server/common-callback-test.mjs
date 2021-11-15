@@ -61,4 +61,21 @@ describe(fn(import.meta.url), () => {
 
 		expect(i).toBe(10);
 	});
+
+	it('should handle onChangeWeakRef', function () {
+		const cb = new Callback();
+		let i = 0;
+
+		let stop = cb.onChangeWeakRef(value => {
+			expect(value).not.toBeUndefined();
+			i += (value ?? 0);
+		});
+
+		cb.emit(10);
+		stop();
+		cb.emit(100);
+
+		expect(i).toBe(10);
+	});
+
 });

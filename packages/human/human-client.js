@@ -1,8 +1,27 @@
 
 import { ClientApp } from '../../client/client-app.js';
+import Callback from '../../common/callback.js';
 
 const app = new ClientApp('human');
 const body = document.querySelector('body');
+
+//
+//
+// DEBUG
+//
+//
+
+export const debugActiveStatus = new Callback();
+
+debugActiveStatus.onChange((debugActive) => {
+	if (debugActive) {
+		app.debug('Activating debug');
+		body.removeAttribute('nodebug');
+	} else {
+		app.debug('Removing debug');
+		body.setAttribute('nodebug', 'nodebug');
+	}
+});
 
 let debugHook = null;
 window.addEventListener('contextmenu', () => {
@@ -11,13 +30,20 @@ window.addEventListener('contextmenu', () => {
 		clearTimeout(debugHook);
 	}
 	debugHook = setTimeout(() => {
-		app.debug('Removing debug');
-		body.setAttribute('nodebug', 'right-click');
-
+		debugActiveStatus(false);
 	}, 5 * 1000);
-	app.debug('Activating debug');
-	body.removeAttribute('nodebug');
+	debugActiveStatus(true);
 });
+
+// initialize
+debugActiveStatus(false);
+
+
+//
+//
+// ACTIVITY
+//
+//
 
 /**
  * @param {boolean} activity to be set (true if current activity)
