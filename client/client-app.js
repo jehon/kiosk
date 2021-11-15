@@ -168,7 +168,7 @@ export class ClientApp extends App {
 	}
 
 	setStatusElement(el) {
-		document.querySelector('#status_bar')?.append(this._linkElement(el));
+		document.querySelector('#status-bar')?.append(this._linkElement(el));
 		return this;
 	}
 }

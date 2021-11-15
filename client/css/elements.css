@@ -1,8 +1,6 @@
-
 .with-side-bar-menu {
 	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
+	flex-flow: row nowrap;
 	align-items: stretch;
 
 	height: 100%;
@@ -81,7 +79,7 @@
 }
 
 .button > span {
-	background-color: rgba(127, 127, 127, 0.75);
+	background-color: rgb(127 127 127 / 75%);
 	padding: var(--generic-space);
 	border-radius: var(--generic-space);
 }
