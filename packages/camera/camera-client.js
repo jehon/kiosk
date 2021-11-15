@@ -15,7 +15,7 @@ const app = new ClientApp('camera', {
 //  --> it should show an error message
 
 export class KioskCamera extends ClientAppElement {
-	actualUrl = ''
+	actualUrl = '';
 
 	constructor() {
 		super(app);

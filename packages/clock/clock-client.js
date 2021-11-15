@@ -95,7 +95,7 @@ function describeArc(radius, startAngle, endAngle) {
 
 export class KioskClock extends ClientAppElement {
 	/** @type {TimeInterval} */
-	timer
+	timer;
 
 	constructor() {
 		super(app);

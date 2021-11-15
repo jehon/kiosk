@@ -62,16 +62,16 @@ function prev() {
 class KioskPhotoFrame extends ClientAppElement {
 
 	/** @type {HTMLElement} */
-	_carouselImg
+	_carouselImg;
 
 	/** @type {HTMLElement} */
-	_carouselInfos
+	_carouselInfos;
 
 	/** @type {HTMLElement} */
-	_carouselThumbs
+	_carouselThumbs;
 
 	/** @type {HTMLElement} */
-	_debug
+	_debug;
 
 	constructor() {
 		super(app);

@@ -7,19 +7,19 @@ let idGenerator = 1;
 
 export default class App {
     /** @type {number} */
-    id
+    id;
 
     /** @type {string}  */
-    name
+    name;
 
     /** @type {Logger} */
-    logger
+    logger;
 
     /**  */
-    #loggerFactory
+    #loggerFactory;
 
     /** @type {function(string): string} */
-    ctxize
+    ctxize;
 
     /**
      *

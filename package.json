@@ -33,6 +33,7 @@
   "devDependencies": {
     "@babel/cli": "7.16.0",
     "@babel/core": "7.16.0",
+    "@babel/eslint-parser": "7.16.3",
     "@babel/plugin-proposal-class-properties": "7.16.0",
     "@babel/plugin-proposal-optional-chaining": "7.16.0",
     "@babel/plugin-syntax-import-meta": "7.10.4",
@@ -48,7 +49,7 @@
     "chromedriver": "95.0.0",
     "depcheck": "1.4.2",
     "electron-chromedriver": "15.0.0",
-    "eslint": "7.32.0",
+    "eslint": "8.2.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "37.0.3",
     "husky": "7.0.4",

@@ -1,15 +1,15 @@
 
 export default class TimeInterval {
 
-    iSecs
+    iSecs;
 
-    iTimer
+    iTimer;
 
-    debug
+    debug;
 
-    cb
+    cb;
 
-    name
+    name;
 
     /**
      * To run periodically
