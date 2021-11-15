@@ -143,12 +143,12 @@ test-app: build
 	xvfb-run --server-args="-screen 0 1024x768x24" npm run wdio
 
 .PHONY: lint
-lint:
+lint: dependencies
 	eslint .
 	stylelint **/*.css
 
 .PHONY: lint-fix
-lint-fix:
+lint-fix: dependencies
 	eslint . --fix
 
 .PHONY: depcheck
