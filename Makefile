@@ -5,7 +5,7 @@
 # Default target
 #
 #
-auto:
+dev: dependencies dump test lint
 
 pull-request: clean test
 
