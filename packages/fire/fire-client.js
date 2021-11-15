@@ -9,22 +9,22 @@ export class KioskFire extends ClientAppElement {
 	/**
 	 * @type {number}
 	 */
-	#cron = 0
+	#cron = 0;
 
 	/**
 	 * @type {HTMLVideoElement}
 	 */
-	#video
+	#video;
 
 	/**
 	 * @type {HTMLSourceElement}
 	 */
-	#videoSource
+	#videoSource;
 
 	/**
 	 * @type {function(void):void}
 	 */
-	#inactiveListener
+	#inactiveListener;
 
 	constructor() {
 		super(app);

@@ -26,16 +26,16 @@ export function loggerCanonizeNamespace(n) {
 
 export class Logger {
     /** @type {string} */
-    name
+    name;
 
     #streams = {
         error: (..._args) => { },
         debug: (..._args) => { },
         info: (..._args) => { }
-    }
+    };
 
     /** @type {LoggerStreamFunctionBuilder} */
-    #loggerStreamFunctionBuilder
+    #loggerStreamFunctionBuilder;
 
     /**
      * @type {function(string, string): LoggerStreamFunction} streamFactory to send the log
