@@ -9,10 +9,19 @@
     "browser": true,
     "es6": true
   },
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 2020,
-    "sourceType": "module"
+    "sourceType": "module",
+    "requireConfigFile": false
+  },
+  "plugins": [
+    "jsdoc"
+  ],
+  "settings": {
+    "jsdoc": {
+      "mode": "typescript"
+    }
   },
   "rules": {
     "template-curly-spacing": "off",
