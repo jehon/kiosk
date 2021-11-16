@@ -30,13 +30,13 @@ window.addEventListener('contextmenu', () => {
 		clearTimeout(debugHook);
 	}
 	debugHook = setTimeout(() => {
-		debugActiveStatus(false);
+		debugActiveStatus.emit(false);
 	}, 5 * 1000);
-	debugActiveStatus(true);
+	debugActiveStatus.emit(true);
 });
 
 // initialize
-debugActiveStatus(false);
+debugActiveStatus.emit(false);
 
 
 //
