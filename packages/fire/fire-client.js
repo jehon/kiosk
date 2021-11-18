@@ -7,11 +7,6 @@ const app = new ClientApp('fire');
 
 export class KioskFire extends ClientAppElement {
 	/**
-	 * @type {number}
-	 */
-	#cron = 0;
-
-	/**
 	 * @type {HTMLVideoElement}
 	 */
 	#video;
