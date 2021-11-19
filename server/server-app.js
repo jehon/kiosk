@@ -1,7 +1,6 @@
 
 import App from '../common/app.js';
 
-import CronJob from 'cron'; // https://www.npmjs.com/package/cron
 import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
 import cronParser from 'cron-parser';
 
@@ -49,7 +48,7 @@ export class ServerApp extends App {
 
 	/**
 	 * @param {Function} cb callback
-	 * @param {string} cron 5/6 stars ([secs] min hours dom month[0-11] dow[0sun-6]) (if empty, make nothing [usefull for testing])
+	 * @param {string} cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
 	 * @param {number} duration in minutes
 	 * @param {*} data to pass to the signal (will be completed)
 	 * @returns {Function} stop to halt the cron
@@ -59,13 +58,6 @@ export class ServerApp extends App {
 
 		if (cron == '') {
 			return () => { };
-		}
-
-		// TODO: add a weakref (but not supported as of 2020-10-23)
-
-		if (cron.split(' ').length == 5) {
-			// Add second's
-			cron = '0 ' + cron;
 		}
 
 		/**
@@ -89,8 +81,10 @@ export class ServerApp extends App {
 			}
 		};
 
+		const cronParsed = cronParser.parseExpression(cron);
+
 		if (duration > 0) {
-			const prevCron = cronParser.parseExpression(cron).prev().toDate();
+			const prevCron = cronParsed.prev().toDate();
 			const prevCronEnd = new Date(prevCron);
 			prevCronEnd.setMinutes(prevCron.getMinutes() + duration);
 			const isRunning = prevCronEnd > new Date();
@@ -101,9 +95,17 @@ export class ServerApp extends App {
 			}
 		}
 
-		const job = new CronJob.CronJob(cron, onCron);
-		job.start();
-		return () => job.stop();
+		let tsId = 0;
+		const program = () => {
+			const next = new Date(cronParsed.next().toDate());
+			const ds = next - new Date();
+			tsId = setTimeout(() => {
+				program();
+				onCron();
+			}, ds);
+		};
+		program();
+		return () => clearTimeout(tsId);
 	}
 
 	/**

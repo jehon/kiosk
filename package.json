@@ -10,7 +10,6 @@
     "btoa": "1.2.1",
     "chalk": "4.1.2",
     "colors": "1.4.0",
-    "cron": "1.8.2",
     "cron-parser": "4.1.0",
     "cronstrue": "1.122.0",
     "debug": "4.3.2",

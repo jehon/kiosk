@@ -27,28 +27,6 @@ describe(fn(import.meta.url), () => {
 		logger2.debug('debug');
 	});
 
-	it('should handle cron with 6 elements', function () {
-		let i = 0;
-		const app = serverAppFactory('test');
-
-		jasmine.clock().withMock(function () {
-			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
-
-			// Every seconds
-			let cancelCron = app.cron(() => i++, '* * * * * *', 0, 2);
-
-			jasmine.clock().tick(2000 + 1);
-			expect(i).toBe(2);
-			cancelCron();
-
-			i = 0;
-			jasmine.clock().tick(2000 + 1);
-			expect(i).toBe(0);
-
-		});
-
-	});
-
 	it('should handle cron with 5 elements', function () {
 		let i = 0;
 		const app = serverAppFactory('test');
@@ -60,6 +38,7 @@ describe(fn(import.meta.url), () => {
 			let cancelCron = app.cron(() => i++, '* * * * *', 0, 2);
 
 			jasmine.clock().tick(2 * 60 * 1000 + 1);
+
 			expect(i).toBe(2);
 			cancelCron();
 

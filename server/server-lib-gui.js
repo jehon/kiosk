@@ -36,8 +36,8 @@ export async function start(serverApp) {
 		// https://electronjs.org/docs/api/chrome-command-line-switches
 		electronApp.commandLine.appendSwitch('remote-debugging-port', '9223');
 		electronApp.commandLine.appendSwitch('inspect', '9222');
-		logger.info('** Inspect available on port 9222: http://localhost:9222/');
-		logger.info('** Remote debugging available on port http://localhost:9223/');
+		logger.info('** Inspect available on port 9222');
+		logger.info('** Remote debugging available on 9223');
 	}
 
 	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
