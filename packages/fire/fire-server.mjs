@@ -47,7 +47,7 @@ export function init() {
 	if (disableCron) {
 		disableCron();
 	}
-	// TODO: cron could be an array
+
 	disableCron = app.cron(onTicker, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
 
 	app.setState(status);
