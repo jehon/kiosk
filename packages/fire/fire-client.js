@@ -46,21 +46,15 @@ export class KioskFire extends ClientAppElement {
 		this.#videoSource = this.querySelector('#source');
 		this.adapt();
 
-		// this.#video.addEventListener('click', () => {
-		// 	// https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API/Guide
-		// 	// https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
-		// 	console.log('Full screen ?');
+		// TODO: To detect errors, we should check for error
+		// on the last "source" tag:
+		// https://stackoverflow.com/questions/5573461/html5-video-error-handling/33471125#33471125
 
-		// 	if (!document.fullscreenElement) {
-		// 		console.log('Full screen go');
-		// 		this.#video.requestFullscreen();
-		// 	} else {
-		// 		console.log('Full screen leaving');
-		// 		document.exitFullscreen();
-		// 	}
-		// });
 	}
 
+	/**
+	 * @override
+	 */
 	setServerState(status) {
 		super.setServerState(status);
 		this.adapt();
@@ -84,6 +78,8 @@ export class KioskFire extends ClientAppElement {
 	}
 
 	connectedCallback() {
+		super.connectedCallback();
+
 		// TODO: show "controls" when active
 		this.#inactiveListener = app.onClientStateChanged('inactive', (inactive) => {
 			if (inactive) {
@@ -98,6 +94,8 @@ export class KioskFire extends ClientAppElement {
 	}
 
 	disconnectedCallback() {
+		super.disconnectedCallback();
+
 		if (this.#inactiveListener) {
 			this.#inactiveListener();
 		}
