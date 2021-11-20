@@ -31,14 +31,15 @@ export function whenReady() {
 export async function start(serverApp) {
 	const logger = serverApp.childLogger('gui');
 	const devMode = serverApp.getConfig('server.devMode');
+	// const debugPorts = serverApp.getConfig('server.debugPorts');
 
-	if (devMode) {
-		// https://electronjs.org/docs/api/chrome-command-line-switches
-		electronApp.commandLine.appendSwitch('remote-debugging-port', '9223');
-		electronApp.commandLine.appendSwitch('inspect', '9222');
-		logger.info('** Inspect available on port 9222');
-		logger.info('** Remote debugging available on 9223');
-	}
+	// if (devMode || debugPorts) {
+	// 	// https://electronjs.org/docs/api/chrome-command-line-switches
+	// 	electronApp.commandLine.appendSwitch('remote-debugging-port', '9222');
+	// 	electronApp.commandLine.appendSwitch('inspect', '9222');
+	// 	logger.info('** Remote debugging available on 9222');
+	// 	logger.info('** Inspect available on port 9223');
+	// }
 
 	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
 
