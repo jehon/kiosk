@@ -9,7 +9,8 @@ const app = serverAppFactory('music');
 export default app;
 
 const status = {
-	config: app.getConfig()
+	config: app.getConfig(),
+	credentials: app.getConfig('credentials.synology')
 };
 
 /**

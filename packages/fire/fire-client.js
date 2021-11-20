@@ -5,6 +5,15 @@ import { priorities } from '../../client/config.js';
 
 const app = new ClientApp('fire');
 
+// status: {
+//     currentTicker: null,
+//     config: {
+//       cron: '0 0 18 * 1-2,11-12 *',
+//       duration: 90,
+//       url: '/media/exploits/fire.720.mp4'
+//     }
+//   }
+
 export class KioskFire extends ClientAppElement {
 	/**
 	 * @type {HTMLVideoElement}
@@ -58,6 +67,9 @@ export class KioskFire extends ClientAppElement {
 	}
 
 	adapt() {
+		if (!this.status) {
+			return;
+		}
 		let url = this.status?.config?.url;
 		if (!url) {
 			return;
