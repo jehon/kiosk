@@ -73,6 +73,7 @@ export class KioskFire extends ClientAppElement {
 		}
 		if (this.#videoSource.getAttribute('src') != url) {
 			this.#videoSource.setAttribute('src', url);
+			this.#videoSource.setAttribute('type', this.status.config.type);
 			this.#video.oncanplay = () => this.#video.play();
 		}
 	}
