@@ -49,6 +49,10 @@ pushd "$KIOSK_ROOT" || exit 255
 	cp -f "$PKG" "$PKG_INST"
 
 	echo "********** Starting session kiosk ************************"
-	npm start
+	npm start -- \
+		--remote-debugging-port=9222 \
+		--inspect=9223
+
+	# Could be: --inspect-break=9223
 
 ) 2>&1 | tee tmp/kiosk.log

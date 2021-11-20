@@ -177,7 +177,11 @@ remote-logs-lightdm:
 	ssh $(SSH_HOST) journalctl -f -u lightdm
 
 remote-logs:
-	ssh kiosk@$(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
+	@echo "Remote debugging is enabled on ports 9222 (browser) and 9223 (inspect)"
+	ssh \
+		-L 9222:localhost:9222 \
+		-L 9223:localhost:9223 \
+		kiosk@$(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
 
 remote-logs-cycle:
 	while true; do \
