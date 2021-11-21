@@ -48,7 +48,7 @@
     "chromedriver": "96.0.0",
     "depcheck": "1.4.2",
     "electron-chromedriver": "15.0.0",
-    "eslint": "8.2.0",
+    "eslint": "8.3.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "37.0.3",
     "husky": "7.0.4",
