@@ -3,6 +3,8 @@ import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 
+// import { humanActiveStatus } from '../human/human-client.js';
+
 const app = new ClientApp('fire');
 
 // status: {
@@ -32,18 +34,38 @@ export class KioskFire extends ClientAppElement {
 
 	constructor() {
 		super(app);
-		this.innerHTML = `
+		this.attachShadow({ mode: 'open' });
+		this.shadowRoot.innerHTML = `
+			<style>
+				video {
+					width: 95%; 
+					height: 95%
+				}
+
+				video[x-fullscreen] {
+					position: fixed; 
+					right: 0; 
+					bottom: 0;
+					
+					min-width: 100%; 
+					min-height: 100%;
+					
+					width: auto; 
+					height: auto; 
+					z-index: -100;
+				}
+			</style>
 			<video autoplay muted loop controls
 					poster='../packages/fire/fire.jpg'
 					crossorigin='anonymous'
-					style='width: 95%; height: 95%'
+					x-fullscreen
 				>
 				<source id='source' src=''></source>
 				No source selected
 			</video>
 		`;
-		this.#video = this.querySelector('video');
-		this.#videoSource = this.querySelector('#source');
+		this.#video = this.shadowRoot.querySelector('video');
+		this.#videoSource = this.shadowRoot.querySelector('#source');
 		this.adapt();
 
 		// TODO: To detect errors, we should check for error
@@ -84,11 +106,13 @@ export class KioskFire extends ClientAppElement {
 		// TODO: show "controls" when active
 		this.#inactiveListener = app.onClientStateChanged('inactive', (inactive) => {
 			if (inactive) {
+				this.#video.setAttribute('x-fullscreen', 'x-fullscreen');
 				this.#video.removeAttribute('controls');
 				// https://www.electronjs.org/docs/api/web-contents#contentsexecutejavascriptcode-usergesture
 				// https://www.electronjs.org/docs/api/remote
 				//   -> remote.getCurrentWebContents()
 			} else {
+				this.#video.removeAttribute('x-fullscreen');
 				this.#video.setAttribute('controls', 'controls');
 			}
 		});
