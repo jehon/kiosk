@@ -45,10 +45,13 @@ debugActiveStatus.emit(false);
 //
 //
 
+export const humanActiveStatus = new Callback();
+
 /**
  * @param {boolean} activity to be set (true if current activity)
  */
 function setActivity(activity = true) {
+	humanActiveStatus.emit(activity);
 	if (activity) {
 		if (body.hasAttribute('inactive')) {
 			app.debug('Activity up');
