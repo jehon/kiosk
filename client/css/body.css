@@ -1,8 +1,7 @@
+
 html {
 	height: 100%;
 	width: 100%;
-
-	--main-border: 10px;
 }
 
 body {
@@ -10,8 +9,8 @@ body {
 	width: 100%;
 
 	margin: 0;
+	border: none;
 	padding: 0;
-	box-sizing: border-box;
 
 	background-color: black;
 	color: white;
@@ -22,23 +21,21 @@ body {
  */
 
 body > #main-application {
-	box-sizing: border-box;
+	display: block;
+
 	height: 100%;
 	width: 100%;
 
-	/* full */
-	border-width: 0;
-	object-fit: contain;
-}
-
-body > #main-application > * {
-	width: 100%;
+	margin: 0;
+	border: none;
+	padding: 0;
 }
 
 iframe {
+	display: block;
+
 	height: 100%;
 	width: 100%;
-	display: block;
 
 	background-image:        url("loading.gif");
 	background-position:     top left;
