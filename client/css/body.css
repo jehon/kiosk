@@ -10,7 +10,7 @@ body {
 	width: 100%;
 
 	margin: 0;
-	padding: var(--generic-space);
+	padding: 0;
 	box-sizing: border-box;
 
 	background-color: black;
