@@ -27,10 +27,10 @@ export class KioskFire extends ClientAppElement {
 	 */
 	#videoSource;
 
-	/**
-	 * @type {function(void):void}
-	 */
-	#inactiveListener;
+	// /**
+	//  * @type {function(void):void}
+	//  */
+	// #inactiveListener;
 
 	constructor() {
 		super(app);
@@ -38,21 +38,11 @@ export class KioskFire extends ClientAppElement {
 		this.shadowRoot.innerHTML = `
 			<style>
 				video {
-					width: 95%; 
-					height: 95%
-				}
+					width: 100%;
+					max-height: 100%;
+					max-width: 100%;
 
-				video[x-fullscreen] {
-					position: fixed; 
-					right: 0; 
-					bottom: 0;
-					
-					min-width: 100%; 
-					min-height: 100%;
-					
-					width: auto; 
-					height: auto; 
-					z-index: -100;
+					overflow: hidden;
 				}
 			</style>
 			<video autoplay muted loop controls
@@ -67,6 +57,13 @@ export class KioskFire extends ClientAppElement {
 		this.#video = this.shadowRoot.querySelector('video');
 		this.#videoSource = this.shadowRoot.querySelector('#source');
 		this.adapt();
+
+		// if (inactive) {
+		// 	this.#video.removeAttribute('controls');
+		// } else {
+		// 	this.#video.setAttribute('controls', 'controls');
+		// }
+
 
 		// TODO: To detect errors, we should check for error
 		// on the last "source" tag:
@@ -99,34 +96,6 @@ export class KioskFire extends ClientAppElement {
 			this.#video.oncanplay = () => this.#video.play();
 		}
 	}
-
-	connectedCallback() {
-		super.connectedCallback();
-
-		// TODO: show "controls" when active
-		this.#inactiveListener = app.onClientStateChanged('inactive', (inactive) => {
-			if (inactive) {
-				this.#video.setAttribute('x-fullscreen', 'x-fullscreen');
-				this.#video.removeAttribute('controls');
-				// https://www.electronjs.org/docs/api/web-contents#contentsexecutejavascriptcode-usergesture
-				// https://www.electronjs.org/docs/api/remote
-				//   -> remote.getCurrentWebContents()
-			} else {
-				this.#video.removeAttribute('x-fullscreen');
-				this.#video.setAttribute('controls', 'controls');
-			}
-		});
-	}
-
-	disconnectedCallback() {
-		super.disconnectedCallback();
-
-		if (this.#inactiveListener) {
-			this.#inactiveListener();
-		}
-		this.#inactiveListener = null;
-	}
-
 }
 
 customElements.define('kiosk-fire', KioskFire);
