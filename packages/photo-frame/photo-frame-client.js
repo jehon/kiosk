@@ -8,6 +8,8 @@ import TimeInterval from '../../common/TimeInterval.js';
 
 const app = new ClientApp('photo-frame');
 
+// import { humanActiveStatus } from '../human/human-client.js';
+
 // The index of the current pictuer
 let pictureIndex = 0;
 // The list of pictures

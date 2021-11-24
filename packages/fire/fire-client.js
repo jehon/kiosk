@@ -27,11 +27,6 @@ export class KioskFire extends ClientAppElement {
 	 */
 	#videoSource;
 
-	// /**
-	//  * @type {function(void):void}
-	//  */
-	// #inactiveListener;
-
 	constructor() {
 		super(app);
 		this.attachShadow({ mode: 'open' });
