@@ -13,16 +13,6 @@ const body = document.querySelector('body');
 
 export const debugActiveStatus = new Callback();
 
-debugActiveStatus.onChange((debugActive) => {
-	if (debugActive) {
-		app.debug('Activating debug');
-		body.removeAttribute('nodebug');
-	} else {
-		app.debug('Removing debug');
-		body.setAttribute('nodebug', 'nodebug');
-	}
-});
-
 let debugHook = null;
 window.addEventListener('contextmenu', () => {
 	// TODO: debug hook

@@ -72,9 +72,6 @@ class KioskPhotoFrame extends ClientAppElement {
 	/** @type {HTMLElement} */
 	_carouselThumbs;
 
-	/** @type {HTMLElement} */
-	_debug;
-
 	constructor() {
 		super(app);
 
@@ -83,10 +80,6 @@ class KioskPhotoFrame extends ClientAppElement {
 		<jehon-css-inherit></jehon-css-inherit>
 		<style>
 			:host-context(body[inactive]) .hideOnInactive {
-				display: none;
-			}
-
-			:host-context(body[nodebug]) .debug {
 				display: none;
 			}
 
@@ -163,7 +156,6 @@ class KioskPhotoFrame extends ClientAppElement {
 			}
 		</style>
 		<div id="myCarousel">
-		<pre class='debug'>debug infos</pre>
 		<img id="img" />
 			<div id="overlay">
 				<div style="grid-area: left"   id="prev"   class="hideOnInactive">&lt;</div>
@@ -176,7 +168,6 @@ class KioskPhotoFrame extends ClientAppElement {
 		this._carouselImg = /** @type {HTMLImageElement} */ (this.shadowRoot.querySelector('#img'));
 		this._carouselInfos = this.shadowRoot.querySelector('#infos');
 		this._carouselThumbs = this.shadowRoot.querySelector('#thumbs');
-		this._debug = this.shadowRoot.querySelector('.debug');
 
 		this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
 		this.shadowRoot.querySelector('#next').addEventListener('click', () => next());
@@ -224,14 +215,12 @@ class KioskPhotoFrame extends ClientAppElement {
 
 		if (picturesList.length > 0) {
 			if (this._carouselImg.getAttribute('src') != photo.url) {
-				app.debug('updatePicture', pictureIndex);
 				photo = picturesList[pictureIndex];
+				app.debug('updatePicture', pictureIndex, photo);
 				this._carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
 				this._carouselImg.setAttribute('src', photo.url);
 			}
 		}
-
-		this._debug.innerHTML = JSON.stringify(photo, null, 2);
 	}
 }
 
