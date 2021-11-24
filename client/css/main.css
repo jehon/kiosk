@@ -1,13 +1,38 @@
-@import "elements.css";
-@import "corners.css";
-@import "body.css";
 
-html {
+@import "elements.css";
+
+html,
+body,
+body > #main-application,
+iframe {
+	display: block;
+
+	height: 100%;
+	width: 100%;
+
+	margin: 0;
+	border: none;
+	padding: 0;
+
+	background-color: black;
+	color: white;
+
 	--generic-space: 10px;
 }
 
-#main-application {
-	overflow-y: auto;
+iframe {
+	display: block;
+
+	height: 100%;
+	width: 100%;
+
+	margin: 20px;
+
+	background-color:      white;
+	background-image:        url("loading.gif");
+	background-position:     center;
+	background-repeat:       no-repeat;
+	background-size: 		 200px;
 }
 
 #status-bar {
