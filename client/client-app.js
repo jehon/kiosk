@@ -35,6 +35,34 @@ export class ClientApp extends App {
 		registerApp(this);
 	}
 
+	/**
+	 * @override
+	 */
+	error(...args) {
+		super.error(...args);
+		if (debugEl) {
+			new KioskTimedDiv()
+				.withLevel('error')
+				.withJSON(args)
+				.in(debugEl);
+		}
+	}
+	/**
+	 * @override
+	 */
+	info(...args) {
+		super.info(...args);
+		if (debugEl) {
+			new KioskTimedDiv()
+				.withLevel('info')
+				.withJSON(args)
+				.in(debugEl);
+		}
+	}
+
+	/**
+	 * @override
+	 */
 	debug(...args) {
 		super.debug(...args);
 		if (debugEl) {
