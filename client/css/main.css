@@ -32,6 +32,21 @@ body > #main-application > * {
 	background-size: 		 200px;
 }
 
+#debug {
+	display: none;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	color: white;
+	background-color: gray;
+}
+
+#debug[on] {
+	display: block;
+}
+
 #status-bar {
 	position: absolute;
 	top: 0;

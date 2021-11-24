@@ -38,6 +38,16 @@ window.addEventListener('contextmenu', () => {
 // initialize
 debugActiveStatus.emit(false);
 
+const debugEl = document.querySelector('#debug');
+debugActiveStatus.onChange((dbg) => {
+	if (dbg) {
+		debugEl.setAttribute('on', 'on');
+	} else {
+		debugEl.removeAttribute('on');
+	}
+});
+
+
 
 //
 //
