@@ -5,7 +5,7 @@
 # Default target
 #
 #
-dev: dependencies dump test lint
+dev: dependencies dump test lint deploy remote-logs
 
 pull-request: clean test
 
@@ -182,6 +182,9 @@ remote-logs:
 		-L 9222:localhost:9222 \
 		-L 9223:localhost:9223 \
 		kiosk@$(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
+
+remote-chrome:
+	chrome http://localhost:9223
 
 remote-logs-cycle:
 	while true; do \
