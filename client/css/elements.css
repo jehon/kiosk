@@ -1,25 +1,3 @@
-.with-side-bar-menu {
-	display: flex;
-	flex-flow: row nowrap;
-	align-items: stretch;
-
-	height: 100%;
-	width: 100%;
-}
-
-.with-side-bar-menu > div {
-	height: 100%;
-}
-
-.with-side-bar-menu > div:nth-child(1) {
-	flex-basis: 85%;
-	flex-grow: 1;
-}
-
-.with-side-bar-menu > div:nth-child(2) {
-	flex-basis: 15%;
-	flex-grow: 0;
-}
 
 .fit {
 	object-fit: contain;
