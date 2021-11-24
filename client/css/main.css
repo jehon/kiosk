@@ -38,9 +38,14 @@ body > #main-application > * {
 	position: absolute;
 	top: 0;
 	left: 0;
+	z-index: 200;
 
 	color: white;
 	background-color: gray;
+
+	max-height: 100%;
+	max-width: 50%;
+	overflow: auto;
 }
 
 #debug[on] {

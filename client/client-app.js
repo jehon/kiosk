@@ -8,8 +8,11 @@ import ClientAppElement from './client-app-element.js';
 import App from '../common/app.js';
 import { clientLoggerFactory } from './client-customs.js';
 import { sendToServer } from './client-server.js';
+import KioskTimedDiv from './elements/timed-div.js';
 
 const body = document.querySelector('body');
+
+const debugEl = document.querySelector('#debug');
 
 export class ClientApp extends App {
 	priority = 0;
@@ -30,6 +33,16 @@ export class ClientApp extends App {
 
 		sendToServer('history', this.ctxize('.status'));
 		registerApp(this);
+	}
+
+	debug(...args) {
+		super.debug(...args);
+		if (debugEl) {
+			new KioskTimedDiv()
+				.withLevel('debug')
+				.withJSON(args)
+				.in(debugEl);
+		}
 	}
 
 	//
