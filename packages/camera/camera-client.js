@@ -133,4 +133,3 @@ app
 		}
 	});
 export default app;
-
