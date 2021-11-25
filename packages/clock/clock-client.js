@@ -99,9 +99,18 @@ export class KioskClock extends ClientAppElement {
 
 	constructor() {
 		super(app);
+		this.attachShadow({ mode: 'open' });
 
-		this.innerHTML = `
-			<svg viewbox="-100 -100 200 210" class="full" preserveAspectRatio="xMidYMid meet" style='height: 95%'>
+		this.shadowRoot.innerHTML = `
+			<style>
+				svg {
+					height: 100%;
+					width: 100%;
+					
+					background-color: black;
+				}
+			</style>
+			<svg viewbox="-100 -100 200 210" preserveAspectRatio="xMidYMid meet">
 				<path id="arcTotal"  fill="#500000" />
 				<path id="arcRemain" fill="#003000" />
 				<circle cx="0" cy="0" r="${circleRadius}" fill="none" stroke="gray" stroke-width="1"></circle>
@@ -115,7 +124,7 @@ export class KioskClock extends ClientAppElement {
 			</svg>
 		`;
 
-		const numbersEl = this.querySelector('#numbers');
+		const numbersEl = this.shadowRoot.querySelector('#numbers');
 		for (let i = 1; i <= 12; i++) {
 			numbersEl.insertAdjacentHTML('beforeend', `<text text-anchor="middle" alignment-baseline="central" fill="orange" font-size="10"
 				x="${polar2cartesianX(87, angleFromHours(i))}"
@@ -140,16 +149,16 @@ export class KioskClock extends ClientAppElement {
 		}
 
 		this.hands = {
-			h: this.querySelector('#handH'),
-			m: this.querySelector('#handM'),
-			s: this.querySelector('#handS'),
+			h: this.shadowRoot.querySelector('#handH'),
+			m: this.shadowRoot.querySelector('#handM'),
+			s: this.shadowRoot.querySelector('#handS'),
 		};
 		this.arcEl = {
-			total: /** @type {HTMLElement} */ (this.querySelector('#arcTotal')),
-			remain: /** @type {HTMLElement} */ (this.querySelector('#arcRemain')),
+			total: /** @type {HTMLElement} */ (this.shadowRoot.querySelector('#arcTotal')),
+			remain: /** @type {HTMLElement} */ (this.shadowRoot.querySelector('#arcRemain')),
 		};
-		this.dateEl = /** @type {HTMLElement} */ (this.querySelector('#date'));
-		this.dowEl = /** @type {HTMLElement} */ (this.querySelector('#dow'));
+		this.dateEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('#date'));
+		this.dowEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('#dow'));
 
 		this.timer = this.addTimeInterval(() => this.adapt(), 1);
 		this.adapt();
