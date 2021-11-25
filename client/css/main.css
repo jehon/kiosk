@@ -1,6 +1,4 @@
 
-@import "elements.css";
-
 html,
 body,
 body > #main-application,
@@ -32,6 +30,12 @@ body > #main-application > * {
 	background-size: 		 200px;
 }
 
+/*******************************
+*
+* Debug
+*
+*/
+
 #debug {
 	display: none;
 
@@ -51,6 +55,12 @@ body > #main-application > * {
 #debug[on] {
 	display: block;
 }
+
+/*******************************
+*
+* Status Bar
+*
+*/
 
 #status-bar {
 	position: absolute;
@@ -85,10 +95,113 @@ body > #main-application > * {
 	max-height: 100%;
 }
 
+/*******************************
+*
+* Elements
+*
+*/
+
 kiosk-links .button {
 	height: 100px;
 	width: 200px;
 	background-color: gray;
 	color: white;
 	margin: var(--generic-space);
+}
+
+.fit {
+	object-fit: contain;
+	box-sizing: border-box;
+}
+
+.full {
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border-width: 0;
+	object-fit: contain;
+	box-sizing: border-box;
+}
+
+.full-background-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border-width: 0;
+	box-sizing: border-box;
+
+	background-color:        black;
+	background-image:        url("/img/error.svg");
+	background-position:     center;
+	background-repeat:       no-repeat;
+	background-size:         contain;
+	color:                   white;
+}
+
+.centered {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.button {
+	margin-bottom: 10px;
+	background-color: #2d2d2d6b;
+
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.button > img {
+	height: 100%;
+	object-fit: contain;
+	margin-right: 5px;
+}
+
+.button > span {
+	background-color: rgb(127 127 127 / 75%);
+	padding: var(--generic-space);
+	border-radius: var(--generic-space);
+}
+
+.grid {
+	--menu-space: var(--generic-space);
+	--menu-row-height: 150px;
+
+	width: 100%;
+	height: 100%;
+
+	display: grid;
+
+	/* justify-content: center;
+	align-content: center; */
+
+	align-items: stretch;
+	justify-items: stretch;
+
+	grid-template-columns: repeat(5, calc(20% - var(--menu-space)));
+	grid-auto-rows: var(--menu-row-height);
+
+	grid-gap: var(--menu-space);
+}
+
+.thumb {
+	padding: 10px;
+}
+
+img[loading] {
+	background-image:        url("loading.gif");
+	background-position:     center;
+	background-repeat:       no-repeat;
+	background-size:         contain;
+	min-height: 			 20px;
+	min-width: 			     20px;
 }
