@@ -26,6 +26,12 @@ export function init() {
 
 	const expressApp = express();
 
+	expressApp.get('/kiosk-inject.js', (req, res) => {
+		// The data injector to auto login etc...
+
+		res.send('console.log("kiosk is there!");');
+	});
+
 	expressApp.use('/', proxy('https://192.168.1.9:4001', {
 		// https://www.npmjs.com/package/express-http-proxy
 		proxyReqOptDecorator: function (proxyReqOpts, _originalReq) {
@@ -37,6 +43,17 @@ export function init() {
 			delete headers['X-FRAME-OPTIONS'];
 			headers['CONTENT-SECURITY-POLICY'] = '';
 			return headers;
+		},
+		userResDecorator: function (proxyRes, proxyResData, _userReq, _userRes) {
+			// console.log({ r: proxyRes.req.path });
+			//
+			// We inject our script into a page
+			//
+			if (proxyRes.req.path.substr(0, 2) == '/?') {
+				proxyResData += '<script type="text/javascript" src="/kiosk-inject.js" />';
+				// console.log('hooking: ' + proxyRes.req.path);
+			}
+			return proxyResData;
 		}
 	}));
 

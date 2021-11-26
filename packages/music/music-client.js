@@ -50,7 +50,7 @@ export class KioskMusicClient extends ClientAppElement {
 
 	adapt() {
 		const status = app.getServerState();
-		if (status.port != this.port) {
+		if (status?.port != this.port) {
 			this.port = status.port;
 
 			this.#top.insertAdjacentElement('afterbegin', new iFrameBuilder(
