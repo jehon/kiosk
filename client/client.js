@@ -1,5 +1,6 @@
 
 import { ClientApp } from './client-app.js';
+import { autoSelectApplication } from './client-lib-chooser.js';
 
 const app = new ClientApp('core', { devMode: false });
 
@@ -38,4 +39,7 @@ Promise.all([
 	loadPackage('fire'),
 	loadPackage('music'),
 	loadPackage('photo-frame')
-]);
+])
+	.then(() => {
+		autoSelectApplication();
+	});
