@@ -83,13 +83,17 @@ export async function start(serverApp) {
 		win.webContents.send(context, historySent.get(context));
 	});
 
-	// win.webContents.on('did-finish-load', function () {
-	// 	app.debug('Sending history of event');
-	// 	historySent.forEach((data, eventName) => {
-	// 		app.debug('Sending history of event: ', eventName, data);
-	// 		win.webContents.send(eventName, data);
-	// 	});
-	// });
+	// in your main process, having Electron's `app` imported
+	electronApp.on('certificate-error', (event, webContents, url, error, cert, callback) => {
+		// // Do some verification based on the URL to not allow potentially malicious certs:
+		// if (url.startsWith('https://yourdomain.tld')) {
+		// 	// Hint: For more security, you may actually perform some checks against
+		// 	// the passed certificate (parameter "cert") right here
+
+		event.preventDefault(); // Stop Chromium from rejecting the certificate
+		callback(true);         // Trust this certificate
+		// } else callback(false);     // Let Chromium do its thing
+	});
 
 	// Quit when all windows are closed.
 	electronApp.on('window-all-closed', () => electronApp.quit());
