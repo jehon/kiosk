@@ -24,6 +24,9 @@ export class KioskMusicClient extends ClientAppElement {
 			<style>
 			 	#top {
 					height: 100%;
+
+					box-sizing: border-box;
+					padding: 20px;
 				 }
 
 				iframe {
@@ -65,7 +68,7 @@ customElements.define('kiosk-music', KioskMusicClient);
 app
 	.setMainElementBuilder(() => new KioskMusicClient())
 	.menuBasedOnIcon('../packages/music/icon.svg')
-	// .setPriority(10000) // Temp
+	.setPriority(10000) // Temp debug
 	;
 
 export default app;
