@@ -35,6 +35,13 @@ export class ClientApp extends App {
 		registerApp(this);
 	}
 
+
+	//
+	//
+	// Client side
+	//
+	//
+
 	/**
 	 * @override
 	 */
@@ -47,6 +54,7 @@ export class ClientApp extends App {
 				.in(debugEl);
 		}
 	}
+
 	/**
 	 * @override
 	 */
