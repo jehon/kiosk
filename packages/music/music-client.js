@@ -13,14 +13,50 @@ import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
 const app = new ClientApp('music');
 
 export class KioskMusicClient extends ClientAppElement {
+	#top;
+	#port;
+
 	constructor() {
 		super(app);
 
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.innerHTML = `
-			music
+			<style>
+			 	#top {
+					height: 100%;
+				 }
+
+				iframe {
+					width: 100%;
+					height: 100%;
+					border: none;
+					margin: 0px;
+
+					background-color: gray;
+				}
+			</style>	
+			<div id='top'></div>
 		`;
-		this.shadowRoot.insertAdjacentElement('afterbegin', new iFrameBuilder('http://192.168.1.9:4001'));
+		this.#top = this.shadowRoot.querySelector('#top');
+	}
+
+	/**
+	 * @override
+	 */
+	setServerState(status) {
+		super.setServerState(status);
+		this.adapt();
+	}
+
+	adapt() {
+		const status = app.getServerState();
+		if (status.port != this.port) {
+			this.port = status.port;
+
+			this.#top.insertAdjacentElement('afterbegin', new iFrameBuilder(
+				`http://localhost:${status.port}/?launchApp=SYNO.SDS.AudioStation.Application&SynoToken=`
+			));
+		}
 	}
 }
 

@@ -85,24 +85,6 @@ export async function configure() {
 			sec: now.getSeconds()
 		})));
 
-	// fetch(getUrl('init', logger, config, { cmd: 'getPTZPresetPointList' }))
-	// 	.then(responseXMLParser)
-	// 	.then(data => {
-	// 		const vals = [];
-	// 		for (const k of Object.keys(data.CGI_Result)) {
-	// 			if (k.startsWith('point')) {
-	// 				const v = data.CGI_Result[k][0];
-	// 				if (v) {
-	// 					vals.push(v);
-	// 				}
-	// 			}
-	// 		}
-	// 		logger.info('Available positions: ', vals);
-	// 	}, err => logger.error('In getting position\'s names: ', err));
-	//
-	// fetch(getUrl('goto', logger, config, { cmd: 'ptzGotoPresetPoint', name: config.position }))
-	// 	.then(responseXMLParser)
-
 	if (config.position) {
 		p = p
 			.then(() => fetch(getUrl('reset position', logger, config, {
