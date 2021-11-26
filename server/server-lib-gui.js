@@ -7,17 +7,6 @@ const { BrowserWindow, app: electronApp, ipcMain } = require('electron');
 
 import { loggerAsMessageListener } from './server-client.js';
 
-// const credentialsMap = new Map();
-
-// /**
-//  * @param {string} url - start of the url to register credentials
-//  * @param {string} username of the credentials
-//  * @param {string} password of the credentials
-//  */
-// export function registerCredentials(url, username, password) {
-// 	credentialsMap.set(url, {username, password});
-// }
-
 /**
  * @returns {Promise<*>} resolved when app is ready
  */
@@ -31,21 +20,10 @@ export function whenReady() {
 export async function start(serverApp) {
 	const logger = serverApp.childLogger('gui');
 	const devMode = serverApp.getConfig('server.devMode');
-	// const debugPorts = serverApp.getConfig('server.debugPorts');
-
-	// if (devMode || debugPorts) {
-	// 	// https://electronjs.org/docs/api/chrome-command-line-switches
-	// 	electronApp.commandLine.appendSwitch('remote-debugging-port', '9222');
-	// 	electronApp.commandLine.appendSwitch('inspect', '9222');
-	// 	logger.info('** Remote debugging available on 9222');
-	// 	logger.info('** Inspect available on port 9223');
-	// }
 
 	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
-
 	// 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
 	// 		// https://stackoverflow.com/questions/38281113/how-do-i-use-the-login-event-in-electron-framework
-
 	// 		app.debug(`login request for ${details.url}`);
 	// 		for (const url of credentialsMap.keys()) {
 	// 			const v = credentialsMap.get(url);
