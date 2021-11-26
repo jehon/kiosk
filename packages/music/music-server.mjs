@@ -1,6 +1,9 @@
 
 import express from 'express';
 import proxy from 'express-http-proxy';
+import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import serverAppFactory from '../../server/server-app.js';
 
@@ -26,10 +29,10 @@ export function init() {
 
 	const expressApp = express();
 
-	expressApp.get('/kiosk-inject.js', (req, res) => {
-		// The data injector to auto login etc...
-
-		res.send('console.log("kiosk is there!");');
+	expressApp.get('/kiosk-inject.js', (_req, res) => {
+		res.sendFile(
+			path.join(dirname(fileURLToPath(import.meta.url)), 'music-inject.js')
+		);
 	});
 
 	expressApp.use('/', proxy('https://192.168.1.9:4001', {
