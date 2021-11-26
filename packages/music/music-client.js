@@ -1,4 +1,6 @@
 
+// https://www.electronjs.org/docs/latest/api/browser-view
+
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
 
