@@ -61,7 +61,7 @@ export async function start(serverApp) {
 		delete opts.kiosk;
 	}
 
-	const win = new BrowserWindow(opts);
+	const mainWindow = new BrowserWindow(opts);
 	const url = 'client/index.html';
 	// const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
@@ -70,17 +70,17 @@ export async function start(serverApp) {
 
 	logger.debug(`Loading: ${url}`);
 	// win.loadURL(url);
-	win.loadFile(url);
+	mainWindow.loadFile(url);
 
 	if (devMode) {
-		win.webContents.openDevTools();
+		mainWindow.webContents.openDevTools();
 	}
 
 	ipcMain.on('history', (event, context) => {
 		if (!historySent.has(context)) {
 			logger.debug(`Requested history for ${context}, but that is not found`);
 		}
-		win.webContents.send(context, historySent.get(context));
+		mainWindow.webContents.send(context, historySent.get(context));
 	});
 
 	// in your main process, having Electron's `app` imported
@@ -128,4 +128,12 @@ export function dispatchToBrowser(eventName, data) {
 	if (electronApp) {
 		BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName, data));
 	}
+}
+
+/**
+ * @param {string} channel to listen to
+ * @param {function(any):void} cb with message
+ */
+export function onClient(channel, cb) {
+	ipcMain.on(channel, (_event, message) => cb(message));
 }
