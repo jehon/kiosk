@@ -3,7 +3,7 @@
 import { createRequire } from 'module';
 import { LOG_CHANNEL_NAME } from '../common/config.js';
 const require = createRequire(import.meta.url);
-const { BrowserWindow, app: electronApp, ipcMain } = require('electron');
+const { BrowserWindow, BrowserView, app: electronApp, ipcMain } = require('electron');
 
 import { loggerAsMessageListener } from './server-client.js';
 
@@ -13,6 +13,8 @@ import { loggerAsMessageListener } from './server-client.js';
 export function whenReady() {
 	return electronApp.whenReady();
 }
+
+export let mainWindow;
 
 /**
  * @param {module:server/ServerApp} serverApp for logging purpose
@@ -61,7 +63,7 @@ export async function start(serverApp) {
 		delete opts.kiosk;
 	}
 
-	const mainWindow = new BrowserWindow(opts);
+	mainWindow = new BrowserWindow(opts);
 	const url = 'client/index.html';
 	// const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
@@ -104,8 +106,8 @@ export async function start(serverApp) {
 		// https://electronjs.org/docs/tutorial/security#12-disable-or-limit-navigation
 		contents.on('will-navigate', (event, _navigationUrl) => event.preventDefault());
 
-		// https://electronjs.org/docs/tutorial/security#13-disable-or-limit-creation-of-new-windows
-		contents.on('new-window', async (event, _navigationUrl) => event.preventDefault());
+		// // https://electronjs.org/docs/tutorial/security#13-disable-or-limit-creation-of-new-windows
+		// contents.on('new-window', async (event, _navigationUrl) => event.preventDefault());
 
 		// https://electronjs.org/docs/tutorial/security#16-filter-the-remote-module
 		electronApp.on('remote-get-global', (event, _webContents, _moduleName) => event.preventDefault());
@@ -136,4 +138,25 @@ export function dispatchToBrowser(eventName, data) {
  */
 export function onClient(channel, cb) {
 	ipcMain.on(channel, (_event, message) => cb(message));
+}
+
+/**
+ * @param {string} url to be loaded
+ * @returns {Promise<import('electron').WebContents>} loaded
+ * @see https://www.electronjs.org/docs/latest/api/browser-view
+ */
+export function createClientView(url) {
+	return new Promise((resolve) => {
+		const view = new BrowserView({
+			kiosk: true,
+			parent: mainWindow,
+			webPreferences: { nodeIntegration: true }
+		});
+		mainWindow.setBrowserView(view);
+		view.setBounds({ x: 50, y: 50, width: 1400, height: 800 });
+		view.webContents.loadURL(url);
+		view.webContents.on('did-finish-load', () => {
+			resolve(view.webContents);
+		});
+	});
 }
