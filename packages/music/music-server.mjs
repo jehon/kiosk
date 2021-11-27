@@ -52,9 +52,9 @@ export function init() {
 			//
 			// We inject our script into a page
 			//
-			if (proxyRes.req.path.substr(0, 2) == '/?') {
-				proxyResData += '<script type="text/javascript" src="/kiosk-inject.js" />';
-				// console.log('hooking: ' + proxyRes.req.path);
+			if ((proxyRes.req.path.substr(0, 2) == '/?') || (proxyRes.req.path == '/')) {
+				app.debug('Injecting script');
+				proxyResData = proxyResData + '<script type="text/javascript" src="/kiosk-inject.js" ></script>';
 			}
 			return proxyResData;
 		}
