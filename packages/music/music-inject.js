@@ -34,4 +34,3 @@ function doLogin(username, password) {
     });
 }
 doLogin();
-

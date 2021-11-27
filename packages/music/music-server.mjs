@@ -1,11 +1,17 @@
 
-import express from 'express';
-import proxy from 'express-http-proxy';
+// https://www.npmjs.com/package/syno
+// https://global.download.synology.com/download/Document/Software/DeveloperGuide/Os/DSM/All/enu/DSM_Login_Web_API_Guide_enu.pdf
+// https://www.nas-forum.com/forum/topic/46256-script-web-api-synology/
+// https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/AudioStation/All/enu/AS_Guide.pdf
+
+// https://myds.com:port/webapi/entry.cgi?api=SYNO.API.Auth&version=6&method=login&account=<USERNAME>&passwd=<PASSWORD></PASSWORD>
+
 import path from 'path';
-import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import { readFileSync } from 'original-fs';
 import serverAppFactory from '../../server/server-app.js';
+import { createClientView, onClient } from '../../server/server-lib-gui.js';
 
 /**
  * @type {module:server/ServerApp}
@@ -16,8 +22,11 @@ export default app;
 
 const status = {
 	config: app.getConfig(),
-	credentials: app.getConfig('credentials.synology')
 };
+
+const server = app.getConfig('credentials.synology.url');
+const username = app.getConfig('credentials.synology.username');
+const password = app.getConfig('credentials.synology.password');
 
 /**
  * Initialize the package
@@ -27,45 +36,31 @@ const status = {
 export function init() {
 	app.debug('Programming music backend');
 
-	const expressApp = express();
+	let webContent;
 
-	expressApp.get('/kiosk-inject.js', (_req, res) => {
-		res.sendFile(
-			path.join(dirname(fileURLToPath(import.meta.url)), 'music-inject.js')
-		);
-	});
+	onClient('music', (status => {
+		if (status.active) {
+			app.debug('Launching webView');
+			createClientView(`${server}/?launchApp=SYNO.SDS.AudioStation.Application`)
+				.then(wc => {
+					webContent = wc;
+					const script = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'music-inject.js'));
 
-	expressApp.use('/', proxy('https://192.168.1.9:4001', {
-		// https://www.npmjs.com/package/express-http-proxy
-		proxyReqOptDecorator: function (proxyReqOpts, _originalReq) {
-			proxyReqOpts.rejectUnauthorized = false;
-			return proxyReqOpts;
-		},
-		userResHeaderDecorator(headers, _userReq, _userRes, _proxyReq, _proxyRes) {
-			// recieves an Object of headers, returns an Object of headers.
-			delete headers['X-FRAME-OPTIONS'];
-			headers['CONTENT-SECURITY-POLICY'] = '';
-			return headers;
-		},
-		userResDecorator: function (proxyRes, proxyResData, _userReq, _userRes) {
-			// console.log({ r: proxyRes.req.path });
-			//
-			// We inject our script into a page
-			//
-			if ((proxyRes.req.path.substr(0, 2) == '/?') || (proxyRes.req.path == '/')) {
-				app.debug('Injecting script');
-				proxyResData = proxyResData + '<script type="text/javascript" src="/kiosk-inject.js" ></script>';
+					wc.executeJavaScript(`
+					${script};
+
+					doLogin("${username}", "${password}")
+				`);
+				});
+
+		} else {
+			app.debug('Stoping webview');
+			if (webContent) {
+				webContent.destroy();
+				webContent = null;
 			}
-			return proxyResData;
 		}
 	}));
-
-	app.debug('Starting reverse-proxy for music');
-	const serverListener = expressApp.listen(9999, () => {
-		status.port = serverListener.address().port;
-		app.debug(`Starting reverse-proxy for music done, listening at ${status.port}`);
-		app.setState(status);
-	});
 
 	app.setState(status);
 

@@ -1,65 +1,33 @@
 
-// https://www.electronjs.org/docs/latest/api/browser-view
-// https://www.npmjs.com/package/syno
-// https://global.download.synology.com/download/Document/Software/DeveloperGuide/Os/DSM/All/enu/DSM_Login_Web_API_Guide_enu.pdf
-// https://www.nas-forum.com/forum/topic/46256-script-web-api-synology/
-// https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/AudioStation/All/enu/AS_Guide.pdf
-
-// https://myds.com:port/webapi/entry.cgi?api=SYNO.API.Auth&version=6&method=login&account=<USERNAME>&passwd=<PASSWORD></PASSWORD>
-
 import ClientAppElement from '../../client/client-app-element.js';
-import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
+import { ClientApp } from '../../client/client-app.js';
+import { sendToServer } from '../../client/client-server.js';
 
 const app = new ClientApp('music');
 
 export class KioskMusicClient extends ClientAppElement {
 	#top;
-	#port;
 
 	constructor() {
 		super(app);
 
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.innerHTML = `
-			<style>
-			 	#top {
-					height: 100%;
-
-					box-sizing: border-box;
-					padding: 20px;
-				 }
-
-				iframe {
-					width: 100%;
-					height: 100%;
-					border: none;
-					margin: 0px;
-
-					background-color: gray;
-				}
-			</style>	
 			<div id='top'></div>
 		`;
 		this.#top = this.shadowRoot.querySelector('#top');
 	}
 
-	/**
-	 * @override
-	 */
-	setServerState(status) {
-		super.setServerState(status);
-		this.adapt();
+	connectedCallback() {
+		super.connectedCallback();
+		sendToServer('music', { active: true });
+		this.#top.innerHTML = 'Loading';
 	}
 
-	adapt() {
-		const status = app.getServerState();
-		if (status?.port != this.port) {
-			this.port = status.port;
-
-			this.#top.insertAdjacentElement('afterbegin', new iFrameBuilder(
-				`http://localhost:${status.port}/?launchApp=SYNO.SDS.AudioStation.Application&SynoToken=`
-			));
-		}
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		sendToServer('music', { active: false });
+		this.#top.innerHTML = 'Disconnected';
 	}
 }
 
