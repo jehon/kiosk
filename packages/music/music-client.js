@@ -68,7 +68,6 @@ customElements.define('kiosk-music', KioskMusicClient);
 app
 	.setMainElementBuilder(() => new KioskMusicClient())
 	.menuBasedOnIcon('../packages/music/icon.svg')
-	.setPriority(10000) // Temp debug
 	;
 
 export default app;
