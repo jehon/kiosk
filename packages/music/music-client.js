@@ -2,6 +2,7 @@
 import ClientAppElement from '../../client/client-app-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { sendToServer } from '../../client/client-server.js';
+import { priorities } from '../../client/config.js';
 
 const app = new ClientApp('music');
 
@@ -36,6 +37,7 @@ customElements.define('kiosk-music', KioskMusicClient);
 app
 	.setMainElementBuilder(() => new KioskMusicClient())
 	.menuBasedOnIcon('../packages/music/icon.svg')
+	.setPriority(priorities.music.normal)
 	;
 
 export default app;
