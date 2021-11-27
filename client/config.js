@@ -4,6 +4,10 @@ export const priorities = {
         elevated: 1000,
         normal: -1
     },
+    music: {
+        elevated: 900,
+        normal: -1
+    },
     clock: {
         elevated: 300,
         normal: 10
