@@ -105,10 +105,11 @@ function renderApplication(newApplication) {
 		mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.name}: ${JSON.stringify(newApplication)}</div>`;
 		return currentApplication;
 	}
+	// Set it first, since buildMainElement could change priority
+	currentApplication = newApplication;
 
 	// Ok, let's go !
 	mainAppElement.innerHTML = '';
 	mainAppElement.appendChild(newApplication.buildMainElement());
 
-	currentApplication = newApplication;
 }
