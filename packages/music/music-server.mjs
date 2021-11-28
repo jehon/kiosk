@@ -45,21 +45,23 @@ export function init() {
 		}
 		lastActive = status.active;
 		if (status.active) {
-			app.debug('Launching webView');
-			createClientView(`${server}/?launchApp=SYNO.SDS.AudioStation.Application`)
-				.then(wc => {
-					webContent = wc;
-					const script = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'music-inject.js'));
+			app.debug('Launching webView', status);
+			if (!webContent) {
+				createClientView(`${server}/?launchApp=SYNO.SDS.AudioStation.Application`)
+					.then(wc => {
+						webContent = wc;
+						const script = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'music-inject.js'));
 
-					wc.executeJavaScript(`
-					${script};
+						wc.executeJavaScript(`
+						${script};
 
-					doLogin("${username}", "${password}")
-				`);
-				});
+						doLogin("${username}", "${password}")
+					`);
+					});
+			}
 
 		} else {
-			app.debug('Stoping webview');
+			app.debug('Stopping webview', status);
 			if (webContent) {
 				webContent.destroy();
 				webContent = null;
