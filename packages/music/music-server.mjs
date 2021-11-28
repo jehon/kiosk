@@ -37,8 +37,13 @@ export function init() {
 	app.debug('Programming music backend');
 
 	let webContent;
+	let lastActive = null;
 
 	onClient('music', (status => {
+		if (status.active === lastActive) {
+			return;
+		}
+		lastActive = status.active;
 		if (status.active) {
 			app.debug('Launching webView');
 			createClientView(`${server}/?launchApp=SYNO.SDS.AudioStation.Application`)
