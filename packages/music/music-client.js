@@ -23,12 +23,16 @@ export class KioskMusicClient extends ClientAppElement {
 		super.connectedCallback();
 		sendToServer('music', { active: true });
 		this.#top.innerHTML = 'Loading';
+
+		// When active, it remain active for all the time needed...
+		app.setPriority(priorities.music.elevated);
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		sendToServer('music', { active: false });
 		this.#top.innerHTML = 'Disconnected';
+		app.setPriority(priorities.music.normal);
 	}
 }
 
