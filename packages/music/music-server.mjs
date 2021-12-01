@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 import { readFileSync } from 'original-fs';
 import serverAppFactory from '../../server/server-app.js';
 import { createClientView, onClient } from '../../server/server-lib-gui.js';
+import { WEBVIEW_SUB_CHANNEL } from '../../common/config.js';
 
 /**
  * @type {module:server/ServerApp}
@@ -39,7 +40,7 @@ export function init() {
 	let webContent;
 	let lastActive = null;
 
-	onClient('music', (status => {
+	onClient('music' + WEBVIEW_SUB_CHANNEL, (status => {
 		if (status.active === lastActive) {
 			return;
 		}
