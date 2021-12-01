@@ -146,14 +146,15 @@ export function onClient(channel, cb) {
  * @see https://www.electronjs.org/docs/latest/api/browser-view
  */
 export function createClientView(url) {
+	const [ww, wh] = mainWindow.getContentSize();
+
 	return new Promise((resolve) => {
 		const view = new BrowserView({
 			kiosk: true,
 			parent: mainWindow,
-			webPreferences: { nodeIntegration: true }
 		});
 		mainWindow.setBrowserView(view);
-		view.setBounds({ x: 50, y: 50, width: 1400, height: 800 });
+		view.setBounds({ x: 50, y: 50, width: ww - 60, height: wh - 60 });
 		view.webContents.loadURL(url);
 		view.webContents.on('did-finish-load', () => {
 			resolve(view.webContents);
