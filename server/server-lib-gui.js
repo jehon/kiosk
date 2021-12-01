@@ -45,7 +45,6 @@ export async function start(serverApp) {
 
 			nodeIntegration: true,
 			// TODO: affine this
-			enableRemoteModule: true,
 			contextIsolation: false
 		},
 		frame: false,
