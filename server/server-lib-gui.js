@@ -75,7 +75,7 @@ export async function start(serverApp) {
 	mainWindow.loadFile(url);
 
 	if (devMode) {
-		mainWindow.webContents.openDevTools();
+		mainWindow.webContents.openDevTools({ mode: 'detach' });
 	}
 
 	ipcMain.on('history', (event, context) => {
