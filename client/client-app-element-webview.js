@@ -1,4 +1,5 @@
 
+import { WEBVIEW_SUB_CHANNEL } from '../common/config.js';
 import ClientAppElement from './client-app-element.js';
 import { sendToServer } from './client-server.js';
 
@@ -9,7 +10,7 @@ export class KioskClientElementWebView extends ClientAppElement {
 
     constructor(app) {
         super(app);
-        this.#channel = app.name;
+        this.#channel = app.name + WEBVIEW_SUB_CHANNEL;
     }
 
     connectedCallback() {
