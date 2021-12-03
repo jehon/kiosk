@@ -11,7 +11,6 @@ export const loggersCreationStream = debugFactory('kiosk:loggers');
  * @returns {string} the error in a string presentation
  */
 function loggerRenderError(e) {
-    //const stack = (_.isArray(e.stack) ? e.stack.join('\n at ') : e.stack);
     const stack = e.stack;
     return `${e.message}\n  at ${stack}`;
 }
