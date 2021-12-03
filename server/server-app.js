@@ -6,7 +6,6 @@ import cronParser from 'cron-parser';
 
 import getConfig from './server-lib-config.js';
 import { dispatchToBrowser } from './server-lib-gui.js';
-import _ from 'lodash';
 import { serverLoggerFactory } from './server-customs.js';
 
 export class ServerApp extends App {
@@ -14,25 +13,10 @@ export class ServerApp extends App {
 		super(name,
 			(namespace) => serverLoggerFactory(namespace + ':server')
 		);
-	}
 
-	/**
-	 * Dispatch a status to the browser
-	 *
-	 * @param {object} data as the new status
-	 * @returns {ServerApp} this
-	 */
-	setState(data) {
-		this.state = data;
-		dispatchToBrowser(this.ctxize('.status'), data);
-		return this;
-	}
-
-	/**
-	 * @returns {object} the state of the application
-	 */
-	getState() {
-		return _.cloneDeep(this.state);
+		this.onStateChange(
+			(state) => dispatchToBrowser(this.ctxize('.status'), state)
+		);
 	}
 
 	/**
