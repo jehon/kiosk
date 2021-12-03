@@ -1,16 +1,31 @@
 
 import serverAppFactory from '../../server/server-app.js';
 
+/*
+Status:
+
+{
+	currentTicker: {
+		stat: {
+			start
+			end
+			duration
+		}
+		name
+		cron
+		duration
+		...aTickerConfig (all from config in yml)
+	}
+}
+
+*/
+
 /**
  * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('clock');
 
 export default app;
-
-const status = {
-	currentTicker: null
-};
 
 /**
  * Called when a ticker start
@@ -20,16 +35,21 @@ const status = {
  */
 function onTicker(data) {
 	app.debug('Ticker started:', data);
+	const status = app.getState();
 	status.currentTicker = data;
 	app.setState(status);
 
 	app.onDate(status.currentTicker.stat.end).then(() => {
-		app.debug('ticker ended:', data);
+		const status = app.getState();
+
 		// Is it the current ticker?
 		if (status.currentTicker && status.currentTicker.triggerDate == data.triggerDate) {
 			// We have this event, so let's stop it and become a normal application again...
 			status.currentTicker = null;
+			app.debug('ticker ended:', data);
 			app.setState(status);
+		} else {
+			app.debug('ticker overriden:', data);
 		}
 	});
 }
@@ -42,7 +62,9 @@ const registered = [];
  * @returns {module:server/ServerApp} the app
  */
 export function init() {
-	app.setState(status);
+	app.setState({
+		currentTicker: null
+	});
 
 	while (registered.length > 0) {
 		const stop = registered.pop();

@@ -2,45 +2,36 @@
 // Common elements
 import '../node_modules/@jehon/css-inherit/jehon-css-inherit.js';
 
-import Callback from '../common/callback.js';
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
-import ClientAppElement from './client-app-element.js';
+import ClientElement from './client-element.js';
 import App from '../common/app.js';
 import { clientLoggerFactory } from './client-customs.js';
 import { sendToServer } from './client-server.js';
 import KioskTimedDiv from './elements/timed-div.js';
 
-const body = document.querySelector('body');
-
 const debugEl = document.querySelector('#debug');
 
 export class ClientApp extends App {
 	priority = 0;
-	unsubscribeElectronStatus = null;
 
 	constructor(name, initialState = {}) {
 		super(name,
-			(namespace) => clientLoggerFactory(namespace + ':client')
+			(namespace) => clientLoggerFactory(namespace + ':client'),
+			initialState
 		);
-		this.serverStateCallback = new Callback(initialState);
 
 		this.info('Registering app', this.name, this);
 
-		this.unsubscribeElectronStatus = require('electron').ipcRenderer.on(this.ctxize('.status'), (event, status) => {
-			this.debug('Server status updated to ', status);
-			this.setServerState(status);
+		require('electron').ipcRenderer.on(this.ctxize('.status'), (_event, serverStatus) => {
+			this.debug('Server status updated to ', serverStatus);
+			const status = this.getState();
+			status.server = serverStatus;
+			this.setState(status);
 		});
 
 		sendToServer('history', this.ctxize('.status'));
 		registerApp(this);
 	}
-
-
-	//
-	//
-	// Client side
-	//
-	//
 
 	/**
 	 * @override
@@ -83,66 +74,10 @@ export class ClientApp extends App {
 
 	//
 	//
-	// Server state
-	//
-	//
-	async setServerState(status) {
-		return this.serverStateCallback.emit(status);
-	}
-
-	getServerState() {
-		return this.serverStateCallback.getState();
-	}
-
-	/**
-	 * To link elements to this application
-	 *
-	 * @param {HTMLElement} el to be linked
-	 * @returns {HTMLElement} for linking
-	 */
-	_linkElement(el) {
-		if (el instanceof ClientAppElement) {
-			el.setApp(this);
-		}
-		return el;
-	}
-
-	/**
-	 * Triggered when server state change
-	 *
-	 * @param {function(any,ClientApp):any} callback to be called
-	 * @returns {function(void):void} to stop the callback
-	 */
-	onServerStateChanged(callback) {
-		return this.serverStateCallback.onChange((status) => callback(status, this));
-	}
-
-	/**
-	 * Client state
-	 *
-	 * @param {string} characteristic to be checked (attribute on body)
-	 * @param {function(any,ClientApp):any} callback to be called
-	 * @returns {function(void):void} to stop the callback
-	 */
-	onClientStateChanged(characteristic, callback) {
-		const analyser = () => {
-			callback(body.hasAttribute(characteristic), this);
-		};
-
-		analyser();
-
-		const observer = new MutationObserver(analyser);
-
-		observer.observe(body, { attributes: true });
-
-		return () => observer.disconnect();
-	}
-
-	//
-	//
 	// Configuration
 	//
 	//
+
 	dispatchAppChanged() {
 		autoSelectApplication();
 		return this;
@@ -163,6 +98,25 @@ export class ClientApp extends App {
 			this.dispatchAppChanged();
 		}
 		return this;
+	}
+
+	//
+	//
+	// Elements
+	//
+	//
+
+	/**
+	 * To link elements to this application
+	 *
+	 * @param {HTMLElement} el to be linked
+	 * @returns {HTMLElement} for linking
+	 */
+	_linkElement(el) {
+		if (el instanceof ClientElement) {
+			el.init(this);
+		}
+		return el;
 	}
 
 	/**

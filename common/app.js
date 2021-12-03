@@ -25,7 +25,7 @@ export default class App {
      *
      * @type {Callback}
      */
-    #stateCallback = new Callback();
+    #stateCallback = new Callback({});
 
     /**
      *

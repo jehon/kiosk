@@ -1,8 +1,7 @@
 
-import ClientAppElement from '../../client/client-app-element.js';
+import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
-import TimeInterval from '../../common/TimeInterval.js';
 
 const app = new ClientApp('clock');
 
@@ -93,14 +92,9 @@ function describeArc(radius, startAngle, endAngle) {
 	return str;
 }
 
-export class KioskClock extends ClientAppElement {
-	/** @type {TimeInterval} */
-	timer;
-
-	constructor() {
-		super(app);
-		this.attachShadow({ mode: 'open' });
-
+export class KioskClockMainElement extends ClientElement {
+	/** @override */
+	ready() {
 		this.shadowRoot.innerHTML = `
 			<style>
 				svg {
@@ -159,20 +153,18 @@ export class KioskClock extends ClientAppElement {
 		};
 		this.dateEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('#date'));
 		this.dowEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('#dow'));
-
-		this.timer = this.addTimeInterval(() => this.adapt(), 1);
-		this.adapt();
 	}
 
-	setServerState(status) {
-		super.setServerState(status);
-		this.adapt();
-	}
-
-	adapt() {
+	/** @override */
+	stateChanged(status) {
 		// https://www.w3schools.com/graphics/tryit.asp?filename=trycanvas_clock_start
 
-		let now = new Date();
+		const currentTicker = status?.server?.currentTicker ?? null;
+
+		let now = status.now;
+		if (!now) {
+			return;
+		}
 		let hour = now.getHours();
 		let minute = now.getMinutes();
 		let second = now.getSeconds();
@@ -212,9 +204,9 @@ export class KioskClock extends ClientAppElement {
 			this.dowEl.setAttribute('x', '' + ((dow * 200 / 7) - 100));
 		}
 
-		if (this.status && this.status.currentTicker && this.status.currentTicker.stat.end > new Date()) {
-			const start = this.status.currentTicker.stat.start;
-			const end = this.status.currentTicker.stat.end;
+		if (currentTicker && currentTicker.stat.end > new Date()) {
+			const start = currentTicker.stat.start;
+			const end = currentTicker.stat.end;
 			this.arcEl.total.style.display = 'initial';
 			this.arcEl.remain.style.display = 'initial';
 			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(start.getMinutes()), angleFromMinutes(end.getMinutes())));
@@ -226,19 +218,25 @@ export class KioskClock extends ClientAppElement {
 	}
 }
 
-customElements.define('kiosk-clock', KioskClock);
+customElements.define('kiosk-clock-main-element', KioskClockMainElement);
 
 app
-	.setMainElementBuilder(() => new KioskClock())
+	.setMainElementBuilder(() => new KioskClockMainElement())
 	.menuBasedOnIcon('../packages/clock/clock.png');
 
 app
-	.onServerStateChanged((status, app) => {
-		if (status?.currentTicker) {
+	.onStateChange((status, app) => {
+		if (status?.server?.currentTicker) {
 			app.setPriority(priorities.clock.elevated);
 		} else {
 			app.setPriority(priorities.clock.normal);
 		}
 	});
+
+setInterval(() => {
+	const status = app.getState();
+	status.now = new Date();
+	app.setState(status);
+}, 1000);
 
 export default app;
