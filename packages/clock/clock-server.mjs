@@ -24,7 +24,6 @@ Status:
  * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('clock');
-
 export default app;
 
 /**

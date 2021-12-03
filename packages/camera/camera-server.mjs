@@ -4,13 +4,7 @@ import { TriStates } from './constants.js';
 import cameraGeneric from './types/foscam-r2m.js';
 
 /**
- * @type {module:server/ServerApp}
- */
-const app = serverAppFactory('camera');
-export default app;
-
-/**
- * @typedef Status
+ * @typedef CameraStatus
  * @property {TriStates} code - see above
  * @property {string} message - user friendly message
  * @property {number} successes - number of TriStates.READY received
@@ -19,7 +13,13 @@ export default app;
  */
 
 /**
- * @type {Promise<Status>}
+ * @type {module:server/ServerApp}
+ */
+const app = serverAppFactory('camera');
+export default app;
+
+/**
+ * @type {Promise<CameraStatus>}
  */
 let checkRunning = null;
 let camera;
@@ -27,15 +27,19 @@ let camera;
 /**
  * Check if the camera is up and running
  *
- * @returns {Promise<Status>} resolve when check is done and result dispatched to the browser
+ * @returns {Promise<CameraStatus>} resolve when check is done and result dispatched to the browser
  */
 export async function _check() {
+	if (!camera) {
+		return;
+	}
+
 	app.debug('Starting _check from ', app.getState());
 	if (checkRunning != null) {
 		return checkRunning;
 	}
 
-	/** @type {Status} */
+	/** @type {CameraStatus} */
 	const newStatus = app.getState();
 	newStatus.nbCheck = camera.config.nbCheck;
 
@@ -110,7 +114,7 @@ export async function _check() {
 	return checkRunning;
 }
 
-const timer = app.addTimeInterval(() => _check(), 0, app);
+setInterval(() => _check(), app.getConfig('.intervalSeconds', 15) * 1000);
 
 /**
  * Initialize the package
@@ -127,13 +131,9 @@ export async function init() {
 		url: ''
 	});
 
-	timer
-		.setISecs(app.getConfig('.intervalSeconds', 15, app))
-		.start();
 	if (checkRunning) {
 		await checkRunning;
 	}
-
 	return app;
 }
 

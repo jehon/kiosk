@@ -30,7 +30,13 @@ export default class ClientElement extends HTMLElement {
         }
 
         this.#appStateChangeListenerStopper();
-        this.#appStateChangeListenerStopper = this.#app.onStateChange((state) => this.stateChanged(state));
+        this.#appStateChangeListenerStopper = this.#app.onStateChange((state) => {
+            // We need a state
+            if (!state) {
+                return;
+            }
+            this.stateChanged(state);
+        });
     }
 
     disconnectedCallback() {
