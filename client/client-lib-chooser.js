@@ -109,7 +109,7 @@ function renderApplication(newApplication) {
 	currentApplication = newApplication;
 
 	// Ok, let's go !
+	const el = newApplication.buildMainElement();
 	mainAppElement.innerHTML = '';
-	mainAppElement.appendChild(newApplication.buildMainElement());
-
+	mainAppElement.appendChild(el);
 }
