@@ -11,8 +11,7 @@ import { fileURLToPath } from 'url';
 
 import { readFileSync } from 'original-fs';
 import serverAppFactory from '../../server/server-app.js';
-import { createClientView, onClient } from '../../server/server-lib-gui.js';
-import { WEBVIEW_SUB_CHANNEL } from '../../common/config.js';
+import hookWebview from '../../server/server-app-webview.js';
 
 /**
  * @type {module:server/ServerApp}
@@ -35,40 +34,12 @@ const password = app.getConfig('credentials.synology.password');
  * @returns {module:server/ServerApp} the app
  */
 export function init() {
-	app.debug('Programming music backend');
-
-	let webContent;
-	let lastActive = null;
-
-	onClient('music' + WEBVIEW_SUB_CHANNEL, (status => {
-		if (status.active === lastActive) {
-			return;
-		}
-		lastActive = status.active;
-		if (status.active) {
-			app.debug('Launching webView', status);
-			if (!webContent) {
-				createClientView(`${server}/?launchApp=SYNO.SDS.AudioStation.Application`)
-					.then(wc => {
-						webContent = wc;
-						const script = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'music-inject.js'));
-
-						wc.executeJavaScript(`
-						${script};
-
-						doLogin("${username}", "${password}")
-					`);
-					});
-			}
-
-		} else {
-			app.debug('Stopping webview', status);
-			if (webContent) {
-				webContent.destroy();
-				webContent = null;
-			}
-		}
-	}));
+	const script = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'music-inject.js'));
+	hookWebview(
+		app,
+		`${server}/?launchApp=SYNO.SDS.AudioStation.Application`,
+		`${script}; doLogin("${username}", "${password}");`
+	);
 
 	app.setState(status);
 
