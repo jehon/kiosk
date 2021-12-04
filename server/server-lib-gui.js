@@ -141,22 +141,28 @@ export function onClient(channel, cb) {
 
 /**
  * @param {string} url to be loaded
- * @returns {Promise<import('electron').WebContents>} loaded
+ * @param {string} script to be executed
+ * @returns {import('electron').BrowserView} loaded
  * @see https://www.electronjs.org/docs/latest/api/browser-view
  */
-export function createClientView(url) {
+export function createClientView(url, script) {
 	const [ww, wh] = mainWindow.getContentSize();
 
-	return new Promise((resolve) => {
-		const view = new BrowserView({
-			kiosk: true,
-			parent: mainWindow,
-		});
-		mainWindow.setBrowserView(view);
-		view.setBounds({ x: 50, y: 50, width: ww - 60, height: wh - 60 });
-		view.webContents.loadURL(url);
-		view.webContents.on('did-finish-load', () => {
-			resolve(view.webContents);
-		});
+	// return new Promise((resolve) => {
+	const view = new BrowserView({
+		kiosk: true,
+		parent: mainWindow,
 	});
+	mainWindow.setBrowserView(view);
+	view.setBounds({ x: 50, y: 50, width: ww - 60, height: wh - 60 });
+	view.webContents.loadURL(url);
+	view.webContents.on('did-finish-load', () => {
+		if (script) {
+			view.webContents.executeJavaScript(script);
+		}
+	});
+
+	// resolve(view.webContents);
+	return view;
+	// });
 }
