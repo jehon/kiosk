@@ -1,22 +1,12 @@
 
-import ClientAppElement from '../../client/client-app-element.js';
+import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
-
-// import { humanActiveStatus } from '../human/human-client.js';
+import { humanActiveStatus } from '../human/human-client.js';
 
 const app = new ClientApp('fire');
 
-// status: {
-//     currentTicker: null,
-//     config: {
-//       cron: '0 0 18 * 1-2,11-12 *',
-//       duration: 90,
-//       url: '/media/exploits/fire.720.mp4'
-//     }
-//   }
-
-export class KioskFire extends ClientAppElement {
+export class KioskFireMainElement extends ClientElement {
 	/**
 	 * @type {HTMLVideoElement}
 	 */
@@ -27,9 +17,7 @@ export class KioskFire extends ClientAppElement {
 	 */
 	#videoSource;
 
-	constructor() {
-		super(app);
-		this.attachShadow({ mode: 'open' });
+	ready() {
 		this.shadowRoot.innerHTML = `
 			<style>
 				video {
@@ -50,14 +38,6 @@ export class KioskFire extends ClientAppElement {
 		`;
 		this.#video = this.shadowRoot.querySelector('video');
 		this.#videoSource = this.shadowRoot.querySelector('#source');
-		this.adapt();
-
-		// if (inactive) {
-		// 	this.#video.removeAttribute('controls');
-		// } else {
-		// 	this.#video.setAttribute('controls', 'controls');
-		// }
-
 
 		// TODO: To detect errors, we should check for error
 		// on the last "source" tag:
@@ -65,19 +45,11 @@ export class KioskFire extends ClientAppElement {
 
 	}
 
-	/**
-	 * @override
-	 */
-	setServerState(status) {
-		super.setServerState(status);
-		this.adapt();
-	}
-
-	adapt() {
-		if (!this.status) {
+	stateChanged(status) {
+		if (!status || !status.server || !status.server.config) {
 			return;
 		}
-		let url = this.status?.config?.url;
+		let url = status.server.config.url;
 		if (!url) {
 			return;
 		}
@@ -86,25 +58,40 @@ export class KioskFire extends ClientAppElement {
 		}
 		if (this.#videoSource.getAttribute('src') != url) {
 			this.#videoSource.setAttribute('src', url);
-			this.#videoSource.setAttribute('type', this.status.config.type);
+			this.#videoSource.setAttribute('type', status.server.config.type);
 			this.#video.oncanplay = () => this.#video.play();
+		}
+
+		if (status.active) {
+			this.#video.setAttribute('controls', 'controls');
+		} else {
+			this.#video.removeAttribute('controls');
 		}
 	}
 }
 
-customElements.define('kiosk-fire', KioskFire);
+customElements.define('kiosk-fire-main-element', KioskFireMainElement);
 
 app
-	.setMainElementBuilder(() => new KioskFire())
+	.setMainElementBuilder(() => new KioskFireMainElement())
 	.menuBasedOnIcon('../packages/fire/fire.jpg');
 
 app
-	.onServerStateChanged((status, app) => {
-		if (status.currentTicker) {
+	.onStateChange((status, app) => {
+		if (!status || !status.server) {
+			return;
+		}
+		if (status.server.currentTicker) {
 			app.setPriority(priorities.fire.elevated);
 		} else {
 			app.setPriority(priorities.fire.normal);
 		}
 	});
+
+humanActiveStatus.onChange((active) => {
+	const status = app.getState();
+	status.active = active;
+	app.setState(status);
+});
 
 export default app;

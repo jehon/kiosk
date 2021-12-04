@@ -1,6 +1,22 @@
 
 import serverAppFactory from '../../server/server-app.js';
 
+/*
+Status:
+{
+	currentTicker: {
+
+	}
+	config: {
+		cron
+		duration
+		type
+		url
+	}
+}
+
+*/
+
 /**
  * @type {module:server/ServerApp}
  */
@@ -19,18 +35,22 @@ const status = {
  *
  * @param {object} data to be passed to the ticker
  */
-function onTicker(data) {
-	app.debug('Ticker started:', data);
+function onCron(data) {
+	const status = app.getState();
+	app.debug('Fire cron started:', data);
 	status.currentTicker = data;
 	app.setState(status);
 
 	app.onDate(status.currentTicker.stat.end).then(() => {
-		app.debug('ticker ended:', data);
+		const status = app.getState();
 		// Is it the current ticker?
 		if (status.currentTicker && status.currentTicker.triggerDate == data.triggerDate) {
+			app.debug('Fire cron ended:', data);
 			// We have this event, so let's stop it and become a normal application again...
 			status.currentTicker = null;
 			app.setState(status);
+		} else {
+			app.debug('Fire cron override:', data);
 		}
 	});
 }
@@ -48,7 +68,7 @@ export function init() {
 		disableCron();
 	}
 
-	disableCron = app.cron(onTicker, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
+	disableCron = app.cron(onCron, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
 
 	app.setState(status);
 

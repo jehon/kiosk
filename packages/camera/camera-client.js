@@ -1,95 +1,96 @@
 
-import ClientAppElement from '../../client/client-app-element.js';
+import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 
 import { TriStates } from './constants.js';
 
-const app = new ClientApp('camera', {
-	code: TriStates.DOWN
-});
+const app = new ClientApp('camera');
 
 // TODO: manage http errors
 
 // TODO: handle when the app is selected, but the camera is not available
 //  --> it should show an error message
 
-export class KioskCamera extends ClientAppElement {
+export class KioskCameraMainElement extends ClientElement {
 	actualUrl = '';
 
-	constructor() {
-		super(app);
-		// this.innerHTML = '<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src=""></source></video>';
+	// connectedCallback() {
+	// 	super.connectedCallback();
+	// 	// this.innerHTML = '<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src=""></source></video>';
 
-		// First load an IFrame to trigger authentication
-		// this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
+	// 	// First load an IFrame to trigger authentication
+	// 	// this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
 
-		// We need the iframe to be loaded for the 'login' event to happen
-		// setTimeout(() => {
-		// this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
-		// this.innerHTML = `<div class='full full-background-image' style='background-image: url("/camera/feed?${Date.now()}")'></div>`;
-		// }, 2000);
-	}
-
-	setServerState(status) {
-		super.setServerState(status);
-		this.adapt();
-	}
+	// 	// We need the iframe to be loaded for the 'login' event to happen
+	// 	// setTimeout(() => {
+	// 	// this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
+	// 	// this.innerHTML = `<div class='full full-background-image' style='background-image: url("/camera/feed?${Date.now()}")'></div>`;
+	// 	// }, 2000);
+	// }
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
 
 		// Avoid background load
-		const v = this.querySelector('video');
+		const v = this.shadowRoot.querySelector('video');
 		if (v) {
 			v.src = '';
 			v.load();
 		}
-		this.innerHTML = '';
+		this.shadowRoot.innerHTML = '';
 	}
 
-	adapt() {
-		// - this.status.code = the new status coming from the server
-		// - this.statusCode = the previous status
-		// - this.statusUrl = the previous url
-		//
-		//
-		if (!this.status) {
-			app.debug('Adapt: no status, skipping');
+	/** @override */
+	stateChanged(status) {
+		if (!status || !status.server) {
 			return;
 		}
-
-		if (this.status.code == TriStates.READY && this.status.url) {
-			app.debug('Adapt: up', this.status, this.actualUrl);
+		//
+		// - status.server.code = the new status coming from the server
+		// - statusCode = the previous status
+		// - statusUrl = the previous url
+		//
+		if (status.server.code == TriStates.READY && status.server.url) {
+			app.debug('Adapt: up', status.server, this.actualUrl);
 			// Live event
-			if (this.status.url != this.actualUrl) {
+			if (status.server.url != this.actualUrl) {
 				app.debug('Adapt: go live');
-				this.actualUrl = this.status.url;
-				this.innerHTML = `<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="${this.actualUrl}"></source></video>`;
+				this.actualUrl = status.server.url;
+				this.shadowRoot.innerHTML = `<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="${this.actualUrl}"></source></video>`;
 			}
 		} else {
 			app.debug('Adapt: down');
 			if (this.actualUrl != '') {
 				app.debug('Adapt: saying it once');
-				this.innerHTML = 'Camera is down: ' + JSON.stringify(this.status);
+				this.shadowRoot.innerHTML = 'Camera is down: ' + JSON.stringify(status.server);
 				this.actualUrl = '';
 			}
 			this.actualUrl = '';
 		}
 	}
 }
-customElements.define('kiosk-camera', KioskCamera);
+customElements.define('kiosk-camera-main-element', KioskCameraMainElement);
 
-export class KioskCameraStatus extends ClientAppElement {
-	constructor() {
-		super(app);
-		this.innerHTML = '<img src="../packages/camera/camera.png" />';
-		this.setServerState({ code: TriStates.DOWN });
+export class KioskCameraStatusElement extends ClientElement {
+	ready() {
+		this.shadowRoot.innerHTML = `
+			<style>
+				img {
+					max-width: 100%;
+					max-height: 100%;
+					object-fit: contain;
+				}
+			</style>
+			<img src="../packages/camera/camera.png" />
+		`;
 	}
 
-	setServerState(status) {
-		super.setServerState(status);
-		switch (status.code) {
+	stateChanged(status) {
+		if (!status || !status.server) {
+			return;
+		}
+		switch (status.server.code) {
 			case TriStates.READY:
 				this.toggleAttribute('disabled', true);
 				// this.style.backgroundColor = 'green';
@@ -105,29 +106,31 @@ export class KioskCameraStatus extends ClientAppElement {
 		}
 	}
 }
-customElements.define('kiosk-camera-status', KioskCameraStatus);
+customElements.define('kiosk-camera-status-element', KioskCameraStatusElement);
 
 app
-	.setMainElementBuilder(() => new KioskCamera())
+	.setState({ code: TriStates.DOWN })
+	.setMainElementBuilder(() => new KioskCameraMainElement())
 	.menuBasedOnIcon('../packages/camera/camera.png')
-	.setStatusElement(new KioskCameraStatus());
+	.setStatusElement(new KioskCameraStatusElement());
+
 app
-	.onServerStateChanged((status, app) => {
+	.onStateChange((status, app) => {
 		app.debug('Status received', status);
-		if (!status) {
+		if (!status || !status.server) {
 			return;
 		}
-		switch (status.code) {
+		switch (status.server.code) {
 			case TriStates.READY:
-				app.debug('ServerStateChanged: up, high priority', status.message);
+				app.debug('ServerStateChanged: up, high priority', status.server.message);
 				app.setPriority(priorities.camera.elevated);
 				break;
 			case TriStates.UP_NOT_READY:
-				app.debug('ServerStateChanged: warming up', status.message);
+				app.debug('ServerStateChanged: warming up', status.server.message);
 				app.setPriority(priorities.camera.normal);
 				break;
 			case TriStates.DOWN:
-				app.debug('ServerStateChanged: down', status.message);
+				app.debug('ServerStateChanged: down', status.server.message);
 				app.setPriority(priorities.camera.normal);
 				break;
 		}

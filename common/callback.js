@@ -15,7 +15,7 @@ function clone(value) {
  * @returns {boolean} if equal
  */
 function equals(v1, v2) {
-	return v1 == v2;
+	return v1 === v2;
 }
 
 export default class Callback {
@@ -27,7 +27,7 @@ export default class Callback {
 	}
 
 	getState() {
-		return this.#state;
+		return clone(this.#state);
 	}
 
 	onChangeWeakRef(callback) {
@@ -52,11 +52,13 @@ export default class Callback {
 		if (equals(prevValue, newValue)) {
 			return false;
 		}
+		// Unref from given value
 		this.#state = clone(newValue);
 
 		// Remove null weakref
 		this.#subscribers = this.#subscribers.filter(v => (!(v instanceof WeakRef)) || !!v.deref());
 
+		// Give away a copy of the value
 		return Promise.all(this.#subscribers.map(cb => cb(clone(newValue), clone(prevValue))));
 	}
 }

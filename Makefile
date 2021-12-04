@@ -107,7 +107,7 @@ start-dev-with-test-config-brk: build
 
 
 .PHONY: build
-build: dependencies
+build: dependencies browserslist
 	mkdir -p tmp
 
 .PHONY: dependencies
@@ -119,6 +119,10 @@ node_modules/.dependencies: package.json package-lock.json
 
 # dependencies-generate-patch:
 # 	(diff -x package.json -x package-lock.json -rubB node_modules/ node_modules.bak/ || true) > modules.patch
+
+.PHONY: browserslist
+browserslist:
+	$(shell npm bin)/browserslist --update-db
 
 .PHONY: test
 test: test-server test-client test-app

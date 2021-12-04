@@ -1,30 +1,30 @@
 
-import ClientAppElement from '../../client/client-app-element.js';
+import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
-import Callback from '../../common/callback.js';
-import Delayed from '../../common/Delayed.js';
-import TimeInterval from '../../common/TimeInterval.js';
+import { humanActiveStatus } from '../human/human-client.js';
+
+/*
+
+Status (client)
+
+{
+	pictureIndex: int
+	active: boolean
+}
+
+*/
 
 const app = new ClientApp('photo-frame');
-
-// import { humanActiveStatus } from '../human/human-client.js';
-
-// The index of the current pictuer
-let pictureIndex = 0;
-// The list of pictures
-let picturesList = [];
-
-// For manual selection
-let updatePictureCallback = new Callback(0);
 
 // Select the next picture
 /**
  *
  */
 function autoMoveToNextImage() {
-	app.debug('autoMoveToNextImage', pictureIndex);
-	if (picturesList.length == 0) {
+	const status = app.getState();
+	app.debug('autoMoveToNextImage', status.pictureIndex);
+	if (status.server.listing.length == 0) {
 		// Wait for a new list
 		return;
 	} else {
@@ -32,54 +32,50 @@ function autoMoveToNextImage() {
 	}
 }
 
-const timer = new TimeInterval(() => autoMoveToNextImage(), 15, app);
-timer.start();
+// TODO: parameter
+setInterval(() => autoMoveToNextImage(), 15 * 1000);
 
 /**
  * @returns {number} the next index
  */
 function next() {
-	pictureIndex++;
-	if (pictureIndex >= picturesList.length) {
-		pictureIndex = 0;
+	const status = app.getState();
+	status.pictureIndex++;
+	if (status.pictureIndex >= status.server.listing.length) {
+		status.pictureIndex = 0;
 	}
 
-	updatePictureCallback.emit(pictureIndex);
-	return pictureIndex;
+	app.setState(status);
+	return status.pictureIndex;
 }
 
 /**
  * @returns {number} the previous index
  */
 function prev() {
-	pictureIndex--;
-	if (pictureIndex < 0) {
-		pictureIndex = picturesList.length - 1;
+	const status = app.getState();
+	status.pictureIndex--;
+	if (status.pictureIndex < 0) {
+		status.pictureIndex = status.server.listing.length - 1;
 	}
 
-	updatePictureCallback.emit(pictureIndex);
-	return pictureIndex;
+	app.setState(status);
+	return status.pictureIndex;
 }
 
-class KioskPhotoFrame extends ClientAppElement {
+class KioskPhotoFrameMainElement extends ClientElement {
 
 	/** @type {HTMLElement} */
-	_carouselImg;
+	#carouselImg;
 
 	/** @type {HTMLElement} */
-	_carouselInfos;
+	#carouselInfos;
 
-	/** @type {HTMLElement} */
-	_carouselThumbs;
-
-	constructor() {
-		super(app);
-
-		this.attachShadow({ mode: 'open' });
+	ready() {
 		this.shadowRoot.innerHTML = `
 		<jehon-css-inherit></jehon-css-inherit>
 		<style>
-			:host-context(body[inactive]) .hideOnInactive {
+			.hide-on-inactive[inactive] {
 				display: none;
 			}
 
@@ -158,16 +154,15 @@ class KioskPhotoFrame extends ClientAppElement {
 		<div id="myCarousel">
 		<img id="img" />
 			<div id="overlay">
-				<div style="grid-area: left"   id="prev"   class="hideOnInactive">&lt;</div>
-				<div style="grid-area: right"  id="next"   class="hideOnInactive">&gt;</div>
+				<div style="grid-area: left"   id="prev"   class="hide-on-inactive">&lt;</div>
+				<div style="grid-area: right"  id="next"   class="hide-on-inactive">&gt;</div>
 				<div style="grid-area: bottom" id="infos"  ></div>
-				<div style="grid-area: center" id="thumbs" class="hideOnInactive">thumbs</div>
+				<div style="grid-area: center" id="thumbs" class="hide-on-inactive">thumbs</div>
 			</div>
 		</div>`;
 
-		this._carouselImg = /** @type {HTMLImageElement} */ (this.shadowRoot.querySelector('#img'));
-		this._carouselInfos = this.shadowRoot.querySelector('#infos');
-		this._carouselThumbs = this.shadowRoot.querySelector('#thumbs');
+		this.#carouselImg = /** @type {HTMLImageElement} */ (this.shadowRoot.querySelector('#img'));
+		this.#carouselInfos = this.shadowRoot.querySelector('#infos');
 
 		this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
 		this.shadowRoot.querySelector('#next').addEventListener('click', () => next());
@@ -183,25 +178,8 @@ class KioskPhotoFrame extends ClientAppElement {
 		});
 	}
 
-	connectedCallback() {
-		super.connectedCallback();
-		let delayingUpdate = new Delayed(() => this.updatePicture(), 0.25, this.log);
-		this.addUnregister(
-			updatePictureCallback.onChange(() => delayingUpdate.start())
-		);
-	}
-
-	onServerStateChanged() {
-		this._carouselThumbs.innerHTML = '';
-		if (picturesList.length >= 1) {
-			// TODO: manage thumbnails ! => need to generate them !
-		}
-
-		this.updatePicture();
-	}
-
-	updatePicture() {
-		if (!this._carouselImg) {
+	stateChanged(status) {
+		if (!this.#carouselImg) {
 			return;
 		}
 
@@ -213,38 +191,55 @@ class KioskPhotoFrame extends ClientAppElement {
 			}
 		};
 
-		if (picturesList.length > 0) {
-			if (this._carouselImg.getAttribute('src') != photo.url) {
-				photo = picturesList[pictureIndex];
-				app.debug('updatePicture', pictureIndex, photo);
-				this._carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
-				this._carouselImg.setAttribute('src', photo.url);
+		if (status.server.listing.length > 0) {
+			if (this.#carouselImg.getAttribute('src') != photo.url) {
+				photo = status.server.listing[status.pictureIndex];
+				app.debug('updatePicture', status.pictureIndex, photo);
+				this.#carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
+				this.#carouselImg.setAttribute('src', photo.url);
 			}
 		}
+
+		this.shadowRoot.querySelectorAll('.hide-on-inactive').forEach(el => {
+			if (status.active) {
+				el.removeAttribute('inactive');
+			} else {
+				el.setAttribute('inactive', 'inactive');
+			}
+		});
 	}
 }
 
-customElements.define('kiosk-photo-frame', KioskPhotoFrame);
+customElements.define('kiosk-photo-frame-main-element', KioskPhotoFrameMainElement);
 
 app
-	.setMainElementBuilder(() => new KioskPhotoFrame())
+	.setState({
+		pictureIndex: 0,
+		picturesList: [],
+		active: false
+	})
+	.setMainElementBuilder(() => new KioskPhotoFrameMainElement())
 	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
 	.setPriority(priorities.photoFrame.normal);
 
 app
-	.onServerStateChanged((status, app) => {
+	.onStateChange((status, app) => {
 		app.debug('Refreshing listing');
-		if (!status.hasList) {
+		if (!status || !status.server) {
 			return;
 		}
-
-		app.setPriority(priorities.photoFrame.elevated);
-
-		picturesList = status.listing;
-		pictureIndex = 0;
-
-		app.debug('New listing has ', picturesList.length);
-
-		autoMoveToNextImage();
+		if (status.server.hasList) {
+			app.setPriority(priorities.photoFrame.elevated);
+			// app.debug('New listing has ', status.server.listing.length);
+		} else {
+			app.setPriority(priorities.photoFrame.normal);
+		}
 	});
+
+humanActiveStatus.onChange(active => {
+	const status = app.getState();
+	status.active = active;
+	app.setState(status);
+});
+
 export default app;

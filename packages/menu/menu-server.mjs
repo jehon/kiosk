@@ -1,6 +1,20 @@
 
 import serverAppFactory from '../../server/server-app.js';
 
+/*
+ * State:
+{
+	applicationsList: {
+		name: {
+			url
+			icon
+			label
+		}
+	}
+}
+
+*/
+
 /**
  * @type {module:server/ServerApp}
  */
@@ -17,7 +31,9 @@ export function init() {
 	const appConfigs = app.getConfig('.', []);
 	app.debug('Applications: ', appConfigs);
 
-	app.setState(appConfigs);
+	app.setState({
+		applicationsList: appConfigs
+	});
 	return app;
 }
 
