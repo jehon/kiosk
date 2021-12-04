@@ -1,7 +1,9 @@
 
+import Callback from './callback.js';
 import contextualize from './contextualize.js';
 import { Logger } from './logger.js';
 import TimeInterval from './TimeInterval.js';
+import _ from '../node_modules/lodash-es/lodash.js';
 
 let idGenerator = 1;
 
@@ -15,11 +17,15 @@ export default class App {
     /** @type {Logger} */
     logger;
 
-    /**  */
-    #loggerFactory;
-
     /** @type {function(string): string} */
     ctxize;
+
+    /**
+     * Register when internal state change
+     *
+     * @type {Callback}
+     */
+    #stateCallback = new Callback({});
 
     /**
      *
@@ -30,7 +36,6 @@ export default class App {
         this.id = idGenerator++;
         this.name = name;
         this.logger = loggerFactory(this.name);
-        this.#loggerFactory = loggerFactory;
         this.ctxize = contextualize(name);
     }
 
@@ -87,7 +92,41 @@ export default class App {
     //
     //
 
+    // TODO: obsolete
     addTimeInterval(cb, iSecs) {
         return new TimeInterval(cb, iSecs, this.childLogger('time-interval'));
     }
+
+    //
+    //
+    // Status
+    //
+    //
+
+    /**
+     * Dispatch a status to the browser
+     *
+     * @param {object} data as the new status
+     * @returns {this} this
+     */
+    setState(data) {
+        this.#stateCallback.emit(data);
+        return this;
+    }
+
+    /**
+     * @returns {object} the state of the application
+     */
+    getState() {
+        return _.cloneDeep(this.#stateCallback.getState());
+    }
+
+    /**
+     * @param {function(object, App):void} cb to listen for change
+     * @returns {function(void):void} to stop the listener
+     */
+    onStateChange(cb) {
+        return this.#stateCallback.onChange((state) => cb(state, this));
+    }
+
 }

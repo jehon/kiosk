@@ -1,16 +1,17 @@
 
 import { selectApplication, getApplicationList, autoSelectApplication } from '../../client/client-lib-chooser.js';
 import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
-import ClientAppElement from '../../client/client-app-element.js';
+import ClientElement from '../../client/client-element.js';
+import { humanActiveStatus } from '../human/human-client.js';
 
 const app = new ClientApp('menu');
 
-class KioskMenu extends ClientAppElement {
+class KioskMenuMainElement extends ClientElement {
 	#top;
 
-	constructor() {
-		super();
-		this.attachShadow({ mode: 'open' });
+	/** @override */
+	ready() {
+		super.ready();
 
 		this.shadowRoot.innerHTML = `
 			<jehon-css-inherit></jehon-css-inherit>
@@ -41,18 +42,11 @@ class KioskMenu extends ClientAppElement {
 		`;
 
 		this.#top = this.shadowRoot.querySelector('#top');
+		this.stateChanged();
 	}
 
-	setServerState(status) {
-		super.setServerState(status);
-		this.adaptToList();
-	}
-
-	connectedCallback() {
-		this.adaptToList();
-	}
-
-	adaptToList() {
+	/** @override */
+	stateChanged() {
 		/** @type {Array<ClientApp>} */
 		const list = getApplicationList();
 
@@ -64,35 +58,41 @@ class KioskMenu extends ClientAppElement {
 		}
 	}
 }
-customElements.define('kiosk-menu', KioskMenu);
+customElements.define('kiosk-menu-main-element', KioskMenuMainElement);
 
 app
-	.setMainElementBuilder(() => new KioskMenu());
-
-app
-	.onServerStateChanged((status, app) => {
-		for (const i in status) {
-			const a = status[i];
-			a.name = i;
-			app.debug(`Registering app by menu: ${a.name}`, a);
-			const ap = new ClientApp(a.name)
-				.setMainElementBuilder(() => iFrameBuilder(a.url))
-				.menuBasedOnIcon(a.icon, a.label);
-			if ('priority' in a) {
-				ap.setPriority(a.priority);
+	.setMainElementBuilder(() => new KioskMenuMainElement())
+	.onStateChange((status, app) => {
+		const appList = status?.server?.applicationsList;
+		if (appList) {
+			for (const i in appList) {
+				const a = appList[i];
+				a.name = i;
+				app.debug(`Registering app by menu: ${a.name}`, a);
+				const ap = new ClientApp(a.name)
+					.setMainElementBuilder(() => iFrameBuilder(a.url))
+					.menuBasedOnIcon(a.icon, a.label);
+				if ('priority' in a) {
+					ap.setPriority(a.priority);
+				}
 			}
-
 		}
 	});
 
-app
-	.onClientStateChanged('inactive', (inactive, app) => {
-		if (inactive) {
-			// Trigger a new calculation of the top app
-			app.debug('Back to auto select application');
-			autoSelectApplication();
+humanActiveStatus.onChange(active => {
+	document.querySelectorAll('#app-menu').forEach(el => {
+		if (active) {
+			el.removeAttribute('inactive');
+		} else {
+			el.setAttribute('inactive', 'inactive');
 		}
 	});
+	if (!active) {
+		// Trigger a new calculation of the top app
+		app.debug('Back to auto select application');
+		autoSelectApplication();
+	}
+});
 
 /**
  * Insert the icon on top of the body
@@ -100,7 +100,7 @@ app
 function init() {
 	document.querySelector('body').insertAdjacentHTML('beforeend', `
 <style>
-	body[inactive] > #app-menu {
+	body > #app-menu[inactive] {
 		display: none;
 	}
 

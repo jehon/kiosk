@@ -15,7 +15,6 @@ export const debugActiveStatus = new Callback();
 
 let debugHook = null;
 window.addEventListener('contextmenu', () => {
-	// TODO: debug hook
 	if (debugHook) {
 		clearTimeout(debugHook);
 	}
@@ -46,23 +45,15 @@ debugActiveStatus.onChange((dbg) => {
 //
 
 export const humanActiveStatus = new Callback();
+humanActiveStatus.onChange((status) => {
+	app.debug('Activity: ', status);
+});
 
 /**
  * @param {boolean} activity to be set (true if current activity)
  */
 function setActivity(activity = true) {
 	humanActiveStatus.emit(activity);
-	if (activity) {
-		if (body.hasAttribute('inactive')) {
-			app.debug('Activity up');
-			body.removeAttribute('inactive');
-		}
-	} else {
-		if (!body.hasAttribute('inactive')) {
-			app.debug('Activity down');
-			body.setAttribute('inactive', 'inactive');
-		}
-	}
 }
 
 // Initialize to false
@@ -101,7 +92,7 @@ body.addEventListener('mousemove', e => {
 
 	// A big movement in a short time, it's an activity
 	if (dist2 > Math.pow(50, 2)) {
-		setActivity();
+		setActivity(true);
 
 		// Reprogram the 'down' activity
 		clearTimeout(eraser);
@@ -109,6 +100,6 @@ body.addEventListener('mousemove', e => {
 			clearTimeout(eraser);
 			eraser = false;
 			setActivity(false);
-		}, ((app.getServerState()?.config ?? [])['inactivitySeconds'] ?? 60) * 1000);
+		}, ((app.getState()?.server?.config ?? {})['inactivitySeconds'] ?? 60) * 1000);
 	}
 });

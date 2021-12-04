@@ -9,14 +9,18 @@ import { priorities } from '../../client/config.js';
 
 describe(fn(import.meta.url), () => {
 	beforeEach(async () => {
-		await app.setServerState({
-			code: TriStates.DOWN
+		await app.setState({
+			server: {
+				code: TriStates.DOWN
+			}
 		});
 	});
 
 	it('should go down', async function () {
-		await app.setServerState({
-			code: TriStates.DOWN
+		await app.setState({
+			server: {
+				code: TriStates.DOWN
+			}
 		});
 		expect(app.priority).toBe(priorities.camera.normal);
 
@@ -25,15 +29,17 @@ describe(fn(import.meta.url), () => {
 		mainElement.connectedCallback();
 
 		expect(mainElement.actualUrl).toBe('');
-		expect(mainElement.querySelector('video')).toBeNull();
+		expect(mainElement.shadowRoot.querySelector('video')).toBeNull();
 
 		mainElement.disconnectedCallback();
 	});
 
 	it('should go up', async function () {
-		await app.setServerState({
-			code: TriStates.READY,
-			url: 'test'
+		await app.setState({
+			server: {
+				code: TriStates.READY,
+				url: 'test'
+			}
 		});
 		expect(app.priority).toBe(priorities.camera.elevated);
 
@@ -41,20 +47,21 @@ describe(fn(import.meta.url), () => {
 		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
 		mainElement.connectedCallback();
 
-
 		expect(mainElement.actualUrl).not.toBe('');
-		expect(mainElement.querySelector('video')).not.toBeNull();
-		expect(mainElement.querySelector('video > source').getAttribute('src')).toBe('test');
+		expect(mainElement.shadowRoot.querySelector('video')).not.toBeNull();
+		expect(mainElement.shadowRoot.querySelector('video > source').getAttribute('src')).toBe('test');
 
 		mainElement.disconnectedCallback();
 	});
 
 	it('should warm up', async function () {
-		await app.setServerState({
-			code: TriStates.UP_NOT_READY,
-			successes: 1,
-			nbCheck: 1,
-			url: ''
+		await app.setState({
+			server: {
+				code: TriStates.UP_NOT_READY,
+				successes: 1,
+				nbCheck: 1,
+				url: ''
+			}
 		});
 		expect(app.priority).toBe(priorities.camera.normal);
 
@@ -63,33 +70,40 @@ describe(fn(import.meta.url), () => {
 		mainElement.connectedCallback();
 
 		expect(mainElement.actualUrl).toBe('');
-		expect(mainElement.querySelector('video')).toBeNull();
+		expect(mainElement.shadowRoot.querySelector('video')).toBeNull();
 
 		mainElement.disconnectedCallback();
 	});
 
 	it('should go up, down, up', async function () {
-		await app.setServerState({
-			code: TriStates.READY,
-			url: 'test'
+		await app.setState({
+			server: {
+				code: TriStates.READY,
+				url: 'test'
+			}
 		});
 
-		await app.setServerState({
-			code: TriStates.DOWN
+		await app.setState({
+			server: {
+				code: TriStates.DOWN
+			}
 		});
 
-		await app.setServerState({
-			code: TriStates.READY,
-			url: 'test'
+		await app.setState({
+			server: {
+				code: TriStates.READY,
+				url: 'test'
+			}
 		});
 
 		/** @type {module:package/camera/KioskCamera} */
-		let mainElement = (/** @type {module:package/camera/KioskCamera} */(app.buildMainElement()));
+		let mainElement = (/** @type {module:package/camera/KioskCameraMainElement} */(app.buildMainElement()));
 		mainElement.connectedCallback();
 
 		expect(mainElement.actualUrl).not.toBe('');
-		expect(mainElement.querySelector('video')).not.toBeNull();
-		expect(mainElement.querySelector('video > source').getAttribute('src')).toBe('test');
+		console.log(mainElement);
+		expect(mainElement.shadowRoot.querySelector('video')).not.toBeNull();
+		expect(mainElement.shadowRoot.querySelector('video > source').getAttribute('src')).toBe('test');
 
 		mainElement.disconnectedCallback();
 	});
