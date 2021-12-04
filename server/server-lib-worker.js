@@ -4,7 +4,7 @@ import { Worker, parentPort, workerData } from 'worker_threads';
 import { loggerAsMessageListener } from './server-client.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { LOG_CHANNEL_NAME } from '../common/config.js';
+import { LOG_CHANNEL_NAME } from '../common/constants.js';
 import { Logger } from '../common/logger.js';
 export const __dirname = (url) => dirname(fileURLToPath(url));
 

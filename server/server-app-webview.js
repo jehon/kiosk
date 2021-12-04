@@ -1,7 +1,7 @@
 
 
 import { createClientView, onClient } from './server-lib-gui.js';
-import { WEBVIEW_SUB_CHANNEL } from '../common/config.js';
+import { WEBVIEW_SUB_CHANNEL } from '../common/constants.js';
 
 /**
  * Hook WebView loading into an application

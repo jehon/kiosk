@@ -1,5 +1,5 @@
 
-import { LOG_CHANNEL_NAME } from '../common/config.js';
+import { LOG_CHANNEL_NAME } from '../common/constants.js';
 
 const { ipcRenderer } = require('electron');
 
