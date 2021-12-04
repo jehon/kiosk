@@ -1,7 +1,7 @@
 
 // Must use require for electron (why???)
 import { createRequire } from 'module';
-import { LOG_CHANNEL_NAME } from '../common/config.js';
+import { LOG_CHANNEL_NAME } from '../common/constants.js';
 const require = createRequire(import.meta.url);
 const { BrowserWindow, BrowserView, app: electronApp, ipcMain } = require('electron');
 

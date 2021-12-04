@@ -1,5 +1,5 @@
 
-import { WEBVIEW_SUB_CHANNEL } from '../common/config.js';
+import { WEBVIEW_SUB_CHANNEL } from '../common/constants.js';
 import ClientElement from './client-element.js';
 import { sendToServer } from './client-server.js';
 
