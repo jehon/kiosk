@@ -46,7 +46,7 @@
     "babel-plugin-transform-commonjs": "1.1.6",
     "chromedriver": "96.0.0",
     "depcheck": "1.4.2",
-    "electron-chromedriver": "15.0.0",
+    "electron-chromedriver": "16.0.0",
     "eslint": "8.4.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "37.1.0",
