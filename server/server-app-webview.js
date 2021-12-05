@@ -16,7 +16,7 @@ export default function hookWebview(app, url, script = '') {
 
     const channel = app.name + WEBVIEW_SUB_CHANNEL;
 
-    let browserView = null;
+    let webContents = null;
     let lastActive = null;
 
     if (url.substring(0, 4) != 'http') {
@@ -30,17 +30,17 @@ export default function hookWebview(app, url, script = '') {
         }
         lastActive = status.active;
         if (status.active) {
-            if (!browserView) {
+            if (!webContents) {
                 app.debug('Launching webView to ', url);
-                browserView = createClientView(url, script);
+                webContents = createClientView(url, script);
             }
 
         } else {
-            if (browserView) {
+            if (webContents) {
                 app.debug('Stopping webview');
-                browserView.iWantToBeDestroyed = true;
-                browserView.destroy();
-                browserView = null;
+                webContents.iWantToBeDestroyed = true;
+                webContents.destroy();
+                webContents = null;
             }
         }
     }));

@@ -142,7 +142,7 @@ export function onClient(channel, cb) {
 /**
  * @param {string} url to be loaded
  * @param {string} script to be executed
- * @returns {import('electron').BrowserView} loaded
+ * @returns {import('electron').WebContents} loaded
  * @see https://www.electronjs.org/docs/latest/api/browser-view
  */
 export function createClientView(url, script) {
@@ -163,6 +163,6 @@ export function createClientView(url, script) {
 	});
 
 	// resolve(view.webContents);
-	return view;
+	return view.webContents;
 	// });
 }
