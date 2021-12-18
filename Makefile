@@ -107,7 +107,7 @@ start-dev-with-test-config-brk: build
 
 
 .PHONY: build
-build: dependencies browserslist
+build: dependencies browserslist tmp/importmap.json
 	mkdir -p tmp
 
 .PHONY: dependencies
@@ -123,6 +123,10 @@ node_modules/.dependencies: package.json package-lock.json
 .PHONY: browserslist
 browserslist:
 	$(shell npm bin)/browserslist --update-db
+
+tmp/importmap.json:
+	mkdir -p "$(dir $@)"
+	$(shell npm bin)/importly < package-lock.json > "$@"
 
 .PHONY: test
 test: test-server test-client test-app

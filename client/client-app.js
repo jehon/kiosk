@@ -1,6 +1,7 @@
 
 // Common elements
 import '../node_modules/@jehon/css-inherit/jehon-css-inherit.js';
+// need import-maps support:: import '@jehon/css-inherit/jehon-css-inherit.js';
 
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
 import ClientElement from './client-element.js';
