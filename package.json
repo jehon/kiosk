@@ -35,7 +35,7 @@
     "@babel/plugin-proposal-class-properties": "7.16.5",
     "@babel/plugin-proposal-optional-chaining": "7.16.5",
     "@babel/plugin-syntax-import-meta": "7.10.4",
-    "@commitlint/cli": "16.0.0",
+    "@commitlint/cli": "16.0.1",
     "@commitlint/config-conventional": "16.0.0",
     "@types/jasmine": "3.10.2",
     "@wdio/cli": "7.16.12",
