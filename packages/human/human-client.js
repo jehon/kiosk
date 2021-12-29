@@ -9,6 +9,7 @@ const body = document.querySelector('body');
 //
 // DEBUG
 //
+//   status is boolean
 //
 
 export const debugActiveStatus = new Callback();
@@ -42,6 +43,7 @@ debugActiveStatus.onChange((dbg) => {
 //
 // ACTIVITY
 //
+//   status is boolean
 //
 
 export const humanActiveStatus = new Callback();
