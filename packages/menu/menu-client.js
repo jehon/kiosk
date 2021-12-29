@@ -115,7 +115,7 @@ function init() {
 			width: 40px;
 		}
 </style>
-<div id="app-menu">
+<div id="app-menu" inactive>
 	<img src='static/menu.svg' />
 </div>
 `);
