@@ -9,7 +9,7 @@
     "@jehon/css-inherit": "0.1.1",
     "btoa": "1.2.1",
     "chalk": "5.0.0",
-    "colors": "1.4.1",
+    "colors": "1.4.2",
     "cron-parser": "4.2.1",
     "cronstrue": "1.122.0",
     "debug": "4.3.3",
