@@ -5,7 +5,9 @@
 # Default target
 #
 #
-dev: dependencies dump test lint deploy remote-logs
+dev: dependencies dump test lint 
+
+local: dev deploy remote-logs
 
 pull-request: clean test
 
