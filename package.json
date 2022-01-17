@@ -11,7 +11,7 @@
     "chalk": "5.0.0",
     "colors": "1.4.0",
     "cron-parser": "4.2.1",
-    "cronstrue": "1.122.0",
+    "cronstrue": "1.123.0",
     "debug": "4.3.3",
     "deepmerge": "4.2.2",
     "electron": "16.0.7",
