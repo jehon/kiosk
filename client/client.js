@@ -38,7 +38,6 @@ Promise.all([
 	loadPackage('clock'),
 	loadPackage('fire'),
 	loadPackage('music'),
-	loadPackage('music.syno'),
 	loadPackage('photo-frame')
 ])
 	.then(() => {
