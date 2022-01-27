@@ -16,7 +16,7 @@ import hookWebview from '../../server/server-app-webview.js';
 /**
  * @type {module:server/ServerApp}
  */
-const app = serverAppFactory('music');
+const app = serverAppFactory('music-syno');
 
 export default app;
 
