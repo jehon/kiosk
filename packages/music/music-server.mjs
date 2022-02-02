@@ -1,49 +1,50 @@
 
-// https://www.npmjs.com/package/syno
-// https://global.download.synology.com/download/Document/Software/DeveloperGuide/Os/DSM/All/enu/DSM_Login_Web_API_Guide_enu.pdf
-// https://www.nas-forum.com/forum/topic/46256-script-web-api-synology/
-// https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/AudioStation/All/enu/AS_Guide.pdf
-
-// https://myds.com:port/webapi/entry.cgi?api=SYNO.API.Auth&version=6&method=login&account=<USERNAME>&passwd=<PASSWORD></PASSWORD>
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-import { readFileSync } from 'original-fs';
 import serverAppFactory from '../../server/server-app.js';
-import hookWebview from '../../server/server-app-webview.js';
 
 /**
  * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('music');
-
 export default app;
 
-const status = {
-	config: app.getConfig(),
-};
+// tags:
+//   full sync to sqlite db: https://www.npmjs.com/package/sync-music-db-bs3
+//   sufficient: https://www.npmjs.com/package/node-id3
+//   complete: https://www.npmjs.com/package/music-metadata
 
-const server = app.getConfig('credentials.synology.url');
-const username = app.getConfig('credentials.synology.username');
-const password = app.getConfig('credentials.synology.password');
+// player:
+//   https://www.npmjs.com/package/stupid-player
 
 /**
  * Initialize the package
  *
  * @returns {module:server/ServerApp} the app
  */
-export function init() {
-	const script = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'music-inject.js'));
-	hookWebview(
-		app,
-		`${server}/?launchApp=SYNO.SDS.AudioStation.Application`,
-		`${script}; doLogin("${username}", "${password}");`
-	);
+export async function init() {
+    app.setState({
+        playing: {
+            file: '/truc.mp3',
+            title: 'my title',
+            artist: 'artist',
+            album: 'album',
+            year: '1991'
+        },
+        currentFolder: '/',
+        folderContent: {
+            'truc.mp3': {
+                'title': 'my title',
+                'url': '/truc.mp3',
+                'isFolder': false
+            },
+            'truc2.mp3': {
+                'title': 'my title 2',
+                'url': '/truc2.mp3',
+                'isFolder': false
+            }
+        }
+    });
 
-	app.setState(status);
-
-	return app;
+    return app;
 }
 
 init();

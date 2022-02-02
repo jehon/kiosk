@@ -65,9 +65,9 @@ resetConfig()
 			loadPackage('menu'),
 			loadPackage('fire'),
 			loadPackage('clock'),
-			loadPackage('music'),
 			loadPackage('photo-frame'),
-			loadPackage('camera')
+			loadPackage('camera'),
+			loadPackage('music')
 		])
 			.then(() => { });
 	})
