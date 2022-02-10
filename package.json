@@ -54,7 +54,7 @@
     "importly": "0.2.0",
     "jasmine": "4.0.2",
     "jasmine-core": "4.0.0",
-    "karma": "6.3.15",
+    "karma": "6.3.16",
     "karma-chrome-launcher": "3.1.0",
     "karma-jasmine": "4.0.1",
     "kill-port": "1.6.1",
