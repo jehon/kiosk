@@ -11,6 +11,14 @@ const app = serverAppFactory('system');
 export default app;
 
 /**
+ * @param {number} x to be stringified
+ * @returns {string} as xxxxx.xx Mb
+ */
+function toMB(x) {
+    return Number(x / 1000 / 1000).toFixed(2) + ' Mb';
+}
+
+/**
  * Get the list of all the ips
  *
  * @returns {Array<string>} as external ip's
@@ -47,10 +55,14 @@ export async function init() {
             app.setState({
                 time: new Date(),
                 ips: getNetworkIP(),
+                memroy: {
+                    free: toMB(os.freemem()),
+                    total: toMB(os.totalmem())
+                },
+                top: os.loadavg()
             });
         }
     });
-
 
     return app;
 }
