@@ -19,5 +19,9 @@ export const priorities = {
     photoFrame: {
         elevated: 100,
         normal: -1
+    },
+    manuallySelected: {
+        elevated: 1000,
+        normal: -1
     }
 };

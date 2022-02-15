@@ -63,11 +63,13 @@ resetConfig()
 
 		return Promise.all([
 			loadPackage('menu'),
-			loadPackage('fire'),
+
+			loadPackage('camera'),
 			loadPackage('clock'),
+			loadPackage('fire'),
 			loadPackage('music'),
 			loadPackage('photo-frame'),
-			loadPackage('camera')
+			loadPackage('system')
 		])
 			.then(() => { });
 	})
