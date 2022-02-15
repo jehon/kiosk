@@ -1,5 +1,4 @@
 
-import { WEBVIEW_SUB_CHANNEL } from '../common/constants.js';
 import ClientElement from './client-element.js';
 import { sendToServer } from './client-server.js';
 
@@ -7,19 +6,15 @@ export default class KioskWebviewElement extends ClientElement {
     #activePriority = 0;
     #inactivePriority = 0;
 
-    get webViewChannel() {
-        return this.app?.name + WEBVIEW_SUB_CHANNEL;
-    }
-
     connectedCallback() {
         super.connectedCallback();
-        sendToServer(this.webViewChannel, { active: true });
+        sendToServer(this.activityChannel, { active: true });
         this.app.setPriority(this.#activePriority);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        sendToServer(this.webViewChannel, { active: false });
+        sendToServer(this.activityChannel, { active: false });
         this.app.setPriority(this.#inactivePriority);
     }
 
