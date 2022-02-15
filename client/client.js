@@ -38,7 +38,8 @@ Promise.all([
 	loadPackage('clock'),
 	loadPackage('fire'),
 	loadPackage('music'),
-	loadPackage('photo-frame')
+	loadPackage('photo-frame'),
+	loadPackage('system'),
 ])
 	.then(() => {
 		autoSelectApplication();
