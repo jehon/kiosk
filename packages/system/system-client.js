@@ -36,7 +36,7 @@ export class KioskSystemMainElement extends ClientElement {
 
     /** @override */
     stateChanged(status) {
-        this.#pre.innerHTML = JSON.stringify(status, null, 2);
+        this.#pre.innerHTML = JSON.stringify(status.server, null, 2);
     }
 }
 
