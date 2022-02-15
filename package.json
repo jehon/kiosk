@@ -14,7 +14,7 @@
     "cronstrue": "1.125.0",
     "debug": "4.3.3",
     "deepmerge": "4.2.2",
-    "electron": "16.0.8",
+    "electron": "16.0.9",
     "express": "4.17.2",
     "fetch-mock": "9.11.0",
     "fs-extra": "10.0.0",
