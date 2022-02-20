@@ -1,6 +1,9 @@
 module.exports = {
   "extends": "stylelint-config-standard",
-  "ignoreFiles": ["node_modules/**/*"],
+  "ignoreFiles": [
+    "node_modules/**/*",
+    "externals/**"
+  ],
   "rules": {
     "indentation": "tab",
     "selector-type-no-unknown": null,

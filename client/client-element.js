@@ -1,6 +1,5 @@
 
 import { ClientApp } from './client-app.js';
-import { ACTIVITY_SUB_CHANNEL } from '../common/constants.js';
 import { sendToServer } from './client-server.js';
 
 export default class ClientElement extends HTMLElement {
@@ -14,10 +13,6 @@ export default class ClientElement extends HTMLElement {
     /** @type {ClientApp} */
     #app;
     get app() { return this.#app; }
-
-    get activityChannel() {
-        return this.app?.name + ACTIVITY_SUB_CHANNEL;
-    }
 
     constructor() {
         super();
@@ -34,7 +29,7 @@ export default class ClientElement extends HTMLElement {
             console.error('Need to call init() first', { app: this.#app, state: this.getState() });
             return;
         }
-        sendToServer(this.activityChannel, { active: true });
+        sendToServer(this.#app?.getChannel(), { active: true });
 
         this.#appStateChangeListenerStopper();
         this.#appStateChangeListenerStopper = this.#app.onStateChange((state) => {
@@ -49,6 +44,8 @@ export default class ClientElement extends HTMLElement {
     disconnectedCallback() {
         this.#appStateChangeListenerStopper();
         this.#appStateChangeListenerStopper = () => { };
+
+        sendToServer(this.#app?.getChannel(), { active: false });
     }
 
     ready() { }

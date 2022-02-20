@@ -1,15 +1,11 @@
 
-import KioskWebviewElement from '../../client/client-element-webview.js';
-import { ClientApp } from '../../client/client-app.js';
+import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 
 const app = new ClientApp('music');
 
 app
-	.setMainElementBuilder(() =>
-		(new KioskWebviewElement())
-			.withActivePriority(priorities.music.elevated)
-	)
+	.setMainElementBuilder(() => iFrameBuilder('http://localhost:8800'))
 	.menuBasedOnIcon('../packages/music/icon.svg')
 	.setPriority(priorities.music.normal)
 	;

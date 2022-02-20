@@ -8,13 +8,13 @@ export default class KioskWebviewElement extends ClientElement {
 
     connectedCallback() {
         super.connectedCallback();
-        sendToServer(this.activityChannel, { active: true });
+        sendToServer(this.app.getChannel(), { active: true });
         this.app.setPriority(this.#activePriority);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        sendToServer(this.activityChannel, { active: false });
+        sendToServer(this.app.getChannel(), { active: false });
         this.app.setPriority(this.#inactivePriority);
     }
 
