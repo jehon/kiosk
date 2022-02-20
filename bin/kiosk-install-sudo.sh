@@ -12,9 +12,9 @@ apt install -y \
     unclutter \
     build-essential \
     snapd \
-    mpd
+    python-is-python3 mpd
 
-snap install core
+# snap install core
 # snap install node --classic
 
 #
