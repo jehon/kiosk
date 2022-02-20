@@ -1,7 +1,7 @@
 
 import serverAppFactory from '../../server/server-app.js';
 import child_process from 'child_process';
-import { onClient } from '../../server/server-lib-gui.js';
+// import { onClient } from '../../server/server-lib-gui.js';
 
 /**
  * @type {module:server/ServerApp}
@@ -22,7 +22,7 @@ let socketify = null;
 /**
  *
  */
-function startProxy() {
+function startMPD() {
 	if (!socketify) {
 		app.debug('Lauching mpd');
 
@@ -40,15 +40,15 @@ function startProxy() {
 	}
 }
 
-/**
- *
- */
-function stopProxy() {
-	if (socketify) {
-		app.debug('Stopping mpd');
-		socketify.kill();
-	}
-}
+// /**
+//  *
+//  */
+// function stopMPD() {
+// 	if (socketify) {
+// 		app.debug('Stopping mpd');
+// 		socketify.kill();
+// 	}
+// }
 
 /**
  * Initialize the package
@@ -57,15 +57,17 @@ function stopProxy() {
  */
 export function init() {
 	// New behavior
-	stopProxy();
+	// stopMPD();
 
-	onClient(app.getChannel(), (status => {
-		if (status.active) {
-			startProxy();
-		} else {
-			stopProxy();
-		}
-	}));
+	// onClient(app.getChannel(), (status => {
+	// if (status.active) {
+	// 	startMPD();
+	// } else {
+	// 	stopMPD();
+	// }
+	// }));
+
+	startMPD();
 
 	app.setState(status);
 
