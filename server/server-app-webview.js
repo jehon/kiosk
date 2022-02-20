@@ -1,7 +1,6 @@
 
 
 import { createClientView, onClient } from './server-lib-gui.js';
-import { ACTIVITY_SUB_CHANNEL } from '../common/constants.js';
 
 /**
  * Hook WebView loading into an application
@@ -14,8 +13,6 @@ import { ACTIVITY_SUB_CHANNEL } from '../common/constants.js';
 export default function hookWebview(app, url, script = '') {
     app.debug('Programming webview backend');
 
-    const channel = app.name + ACTIVITY_SUB_CHANNEL;
-
     let webContents = null;
     let lastActive = null;
 
@@ -24,7 +21,7 @@ export default function hookWebview(app, url, script = '') {
         return;
     }
 
-    onClient(channel, (status => {
+    onClient(app.getChannel(), (status => {
         if (status.active === lastActive) {
             return;
         }

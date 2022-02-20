@@ -4,6 +4,7 @@ import contextualize from './contextualize.js';
 import { Logger } from './logger.js';
 import TimeInterval from './TimeInterval.js';
 import _ from '../node_modules/lodash-es/lodash.js';
+import { ACTIVITY_SUB_CHANNEL } from './constants.js';
 
 let idGenerator = 1;
 
@@ -129,4 +130,7 @@ export default class App {
         return this.#stateCallback.onChange((state) => cb(state, this));
     }
 
+    getChannel(ch = ACTIVITY_SUB_CHANNEL) {
+        return this.name + ch;
+    }
 }
