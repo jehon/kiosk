@@ -47,3 +47,5 @@ export function init() {
 }
 
 init();
+
+// /home/kiosk/websockify/run 8800 localhost:6600 --web /home/kiosk/Bragi-MPD/
