@@ -1,5 +1,4 @@
 
-import { ACTIVITY_SUB_CHANNEL } from '../../common/constants.js';
 import serverAppFactory from '../../server/server-app.js';
 import { onClient } from '../../server/server-lib-gui.js';
 import os from 'os';
@@ -42,13 +41,11 @@ function getNetworkIP() {
  * @returns {module:server/ServerApp} the app
  */
 export async function init() {
-    const channel = app.name + ACTIVITY_SUB_CHANNEL;
-
     app.setState({
         initial: true
     });
 
-    onClient(channel, (status) => {
+    onClient(app.getChannel(), (status) => {
 
         os;
         if (status.active) {
