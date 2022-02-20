@@ -1,0 +1,6 @@
+[submodule "externals/mpd"]
+	path = externals/mpd
+	url = ../../bobboau/Bragi-MPD.git
+[submodule "externals/websockify"]
+	path = externals/websockify
+	url = ../../novnc/websockify.git
