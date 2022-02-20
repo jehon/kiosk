@@ -11,7 +11,8 @@ apt install -y \
     ffmpeg exiv2 gettext-base \
     unclutter \
     build-essential \
-    snapd
+    snapd \
+    mpd
 
 snap install core
 # snap install node --classic
@@ -28,5 +29,8 @@ apt remove -y lxplug-ptbatt
 
 # Install the auto-login
 jh-patch /etc/jehon/lightdm-autostart.conf
+
+# Configure MPD
+cp -f etc/mpd.conf /etc/mpd.conf
 
 echo "ok"
