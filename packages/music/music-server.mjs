@@ -32,22 +32,24 @@ function startMPD() {
 				app.error(`Launching ${MPDServerCommand} gives ${error}: ${stdout} ${stderr}`);
 			}
 		);
-		socketify.on('exit', () => {
+
+		socketify.once('exit', () => {
 			app.debug('MPD exited');
 			socketify = null;
 		});
 	}
 }
 
-// /**
-//  *
-//  */
-// function stopMPD() {
-// 	if (socketify) {
-// 		app.debug('Stopping mpd');
-// 		socketify.kill();
-// 	}
-// }
+/**
+ *
+ */
+function stopMPD() {
+	if (socketify) {
+		app.debug('Stopping mpd');
+		socketify.kill();
+	}
+	socketify = null;
+}
 
 /**
  * Initialize the package
@@ -56,7 +58,7 @@ function startMPD() {
  */
 export function init() {
 	// New behavior
-	// stopMPD();
+	stopMPD();
 
 	// onClient(app.getChannel(), (status => {
 	// if (status.active) {
@@ -72,5 +74,9 @@ export function init() {
 
 	return app;
 }
+
+process.once('SIGTERM', stopMPD);
+process.once('SIGINT', stopMPD);
+process.once('exit', stopMPD);
 
 init();
