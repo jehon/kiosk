@@ -1,7 +1,6 @@
 
 import serverAppFactory from '../../server/server-app.js';
 import child_process from 'child_process';
-// import { onClient } from '../../server/server-lib-gui.js';
 
 /**
  * @type {module:server/ServerApp}
@@ -14,7 +13,7 @@ const status = {
 	config: app.getConfig(),
 };
 
-const MPDServerCommand = 'externals/websockify/run 8800 localhost:6600 --web externals/mpd/';
+const MPDServerCommand = 'externals/websockify/run 8800 localhost:6600';
 
 /** @type {child_process.ChildProcess} */
 let socketify = null;

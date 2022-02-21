@@ -5,7 +5,7 @@ import { priorities } from '../../client/config.js';
 const app = new ClientApp('music');
 
 app
-	.setMainElementBuilder(() => iFrameBuilder('http://localhost:8800'))
+	.setMainElementBuilder(() => iFrameBuilder('../externals/mpd/index.html'))
 	.menuBasedOnIcon('../packages/music/icon.svg')
 	.setPriority(priorities.music.normal)
 	;
