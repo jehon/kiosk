@@ -1,6 +1,7 @@
 
 import serverAppFactory from '../../server/server-app.js';
 import child_process from 'child_process';
+import nodeCleanup from 'node-cleanup';
 
 /**
  * @type {module:server/ServerApp}
@@ -14,7 +15,11 @@ const status = {
 	config: app.getConfig(),
 };
 
-const MPDServerCommand = 'externals/websockify/run localhost:8800 localhost:6600';
+const MPDServerCommand = [
+	'externals/websockify/run',
+	'localhost:8800',
+	'localhost:6600'
+];
 
 /** @type {child_process.ChildProcess} */
 let socketify = null;
@@ -24,13 +29,16 @@ let socketify = null;
  */
 function startMPD() {
 	if (!socketify) {
-		mpdLogger.debug('Lauching');
+		mpdLogger.debug(`Lauching ${MPDServerCommand.join(' ')}`);
 
-		socketify = child_process.exec(
-			MPDServerCommand,
-			{},
+		socketify = child_process.spawn(
+			MPDServerCommand[0],
+			MPDServerCommand.slice(1),
+			{
+				killSignal: 'SIGKILL'
+			},
 			(error, stdout, stderr) => {
-				app.error(`Launching ${MPDServerCommand} gives ${error}: ${stdout} ${stderr}`);
+				app.error(`Launching ${MPDServerCommand.join(' ')} gives ${error}: ${stdout} ${stderr}`);
 			}
 		);
 
@@ -47,7 +55,7 @@ function startMPD() {
 function stopMPD() {
 	if (socketify) {
 		mpdLogger.debug('Stopping');
-		socketify.kill();
+		mpdLogger.debug('Stopped', socketify.kill('SIGKILL'));
 	}
 	socketify = null;
 }
@@ -76,8 +84,9 @@ export function init() {
 	return app;
 }
 
-process.once('SIGTERM', stopMPD);
-process.once('SIGINT', stopMPD);
-process.once('exit', stopMPD);
+nodeCleanup((_exitCode, _signal) => {
+	stopMPD();
+	// return true;
+});
 
 init();
