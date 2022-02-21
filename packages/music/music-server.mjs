@@ -6,6 +6,7 @@ import child_process from 'child_process';
  * @type {module:server/ServerApp}
  */
 const app = serverAppFactory('music');
+const mpdLogger = app.childLogger('mpd');
 
 export default app;
 
@@ -23,7 +24,7 @@ let socketify = null;
  */
 function startMPD() {
 	if (!socketify) {
-		app.debug('Lauching mpd');
+		mpdLogger.debug('Lauching');
 
 		socketify = child_process.exec(
 			MPDServerCommand,
@@ -34,7 +35,7 @@ function startMPD() {
 		);
 
 		socketify.once('exit', () => {
-			app.debug('MPD exited');
+			mpdLogger.debug('exited');
 			socketify = null;
 		});
 	}
@@ -45,7 +46,7 @@ function startMPD() {
  */
 function stopMPD() {
 	if (socketify) {
-		app.debug('Stopping mpd');
+		mpdLogger.debug('Stopping');
 		socketify.kill();
 	}
 	socketify = null;
