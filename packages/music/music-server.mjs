@@ -42,6 +42,16 @@ function startMPD() {
 			}
 		);
 
+		socketify.stdout.setEncoding('utf8');
+		socketify.stdout.on('data', (msg) => {
+			msg.split('\n').forEach(m => mpdLogger.debug(m));
+		});
+
+		socketify.stderr.setEncoding('utf8');
+		socketify.stderr.on('data', (msg) => {
+			msg.split('\n').forEach(m => mpdLogger.error(m));
+		});
+
 		socketify.once('exit', () => {
 			mpdLogger.debug('exited');
 			socketify = null;
