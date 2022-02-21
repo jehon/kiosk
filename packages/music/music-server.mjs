@@ -14,7 +14,7 @@ const status = {
 	config: app.getConfig(),
 };
 
-const MPDServerCommand = 'externals/websockify/run 8800 localhost:6600';
+const MPDServerCommand = 'externals/websockify/run localhost:8800 localhost:6600';
 
 /** @type {child_process.ChildProcess} */
 let socketify = null;
