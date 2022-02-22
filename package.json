@@ -17,7 +17,7 @@
     "electron": "16.0.8",
     "express": "4.17.3",
     "fetch-mock": "9.11.0",
-    "fs-extra": "10.0.0",
+    "fs-extra": "10.0.1",
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
     "mime-types": "2.1.34",
