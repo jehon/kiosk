@@ -194,7 +194,7 @@ remote-logs:
 		kiosk@$(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
 
 remote-chrome:
-	chrome http://localhost:9223
+	google-chrome http://localhost:9223
 
 remote-logs-cycle:
 	while true; do \
