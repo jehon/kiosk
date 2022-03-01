@@ -94,18 +94,15 @@ start: build
 
 .PHONY: start-dev-with-prod-config
 start-dev-with-prod-config: build
-	clear
-	electron . -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	electron . --trace-warnings -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 .PHONY: start-dev-with-test-config
 start-dev-with-test-config: build
-	clear
-	DEBUG="kiosk:loggers,$$DEBUG" electron . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	DEBUG="kiosk:loggers,$$DEBUG" electron . --trace-warnings -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 .PHONY: start-dev-with-test-config-brk
 start-dev-with-test-config-brk: build
-	clear
-	electron --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	electron --trace-warnings --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 
 .PHONY: build

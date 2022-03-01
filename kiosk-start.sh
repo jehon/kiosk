@@ -50,6 +50,7 @@ pushd "$KIOSK_ROOT" || exit 255
 
 	echo "********** Starting session kiosk ************************"
 	npm start -- \
+		--trace-warnings \
 		--remote-debugging-port=9222 \
 		--inspect=9223
 
