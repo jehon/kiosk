@@ -83,6 +83,15 @@ export class ServerApp extends App {
 		const program = () => {
 			const next = new Date(cronParsed.next().toDate());
 			const ds = next - new Date();
+			//
+			// Can not make it longer than 2^32
+			// And we take some security
+			//
+			// 2^32 = 12 days, 2^30 = 4 days
+			//
+			if (ds > Math.pow(2, 30)) {
+				return;
+			}
 			tsId = setTimeout(() => {
 				program();
 				onCron();
