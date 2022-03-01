@@ -24,7 +24,7 @@ const app = new ClientApp('photo-frame');
 function autoMoveToNextImage() {
 	const status = app.getState();
 	app.debug('autoMoveToNextImage', status.pictureIndex);
-	if (status.server.listing.length == 0) {
+	if (!status.server || !status.server.listing || status.server.listing.length == 0) {
 		// Wait for a new list
 		return;
 	} else {
