@@ -23,7 +23,7 @@
     "mime-types": "2.1.34",
     "minimatch": "5.0.1",
     "node-cleanup": "2.1.2",
-    "node-fetch": "3.2.1",
+    "node-fetch": "3.2.2",
     "object-path": "0.11.8",
     "p-limit": "4.0.0",
     "shuffle-array": "1.0.1",
