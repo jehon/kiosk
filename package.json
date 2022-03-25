@@ -61,7 +61,7 @@
     "kill-port": "1.6.1",
     "lint-staged": "12.3.7",
     "nock": "13.2.2",
-    "stylelint": "14.6.0",
+    "stylelint": "14.6.1",
     "stylelint-config-standard": "24.0.0",
     "wdio-chromedriver-service": "7.3.2"
   },
