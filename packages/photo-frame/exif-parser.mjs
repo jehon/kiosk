@@ -2,7 +2,7 @@
 import { spawnSync } from 'child_process';
 
 const translation = {
-	'Exif.Photo.UserComment': 'comment',
+	'Exif.Photo.Title': 'comment',
 	'Exif.Photo.DateTimeOriginal': 'date',
 	'Exif.Image.Orientation': 'orientation'
 };
