@@ -29,7 +29,7 @@ import shuffle, { shuffleArray } from '../../server/shuffle.js';
  * @param {string} path is subPath concatenated with folderConfig path
  * @param {string} url the url of the file (unused ?)
  * @param {FolderConfig} folderConfig where the file has been defined
- * @param {string} data.comment from exiv
+ * @param {string} data.title from exiv
  * @param {string} data.date from exiv
  * @param {number} data.orientation from exiv
  *
@@ -37,7 +37,7 @@ import shuffle, { shuffleArray } from '../../server/shuffle.js';
  *   subPath: 'f1/i1.png',
  *   path: 'tests/server/data/photo-frame/f1/i1.png',
  *   data: {
- *	   comment: 'Test comment here',
+ *	   title: 'Test title here',
  *	   date: '2019-07-01 02:03:04',
  *	   orientation: 0
  * }
