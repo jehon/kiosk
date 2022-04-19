@@ -1,21 +1,21 @@
 
 import { spawnSync } from 'child_process';
 
-const translation = {
-	'Exif.Photo.Title': 'Title',
-	'Exif.Photo.DateTimeOriginal': 'date',
-	'Exif.Image.Orientation': 'orientation'
-};
+//
+// Faces:
+//  - www.metadataworkinggroup.com/specs/
+//  - https://stackoverflow.com/questions/12115998/face-tagging-information-and-photo-metadata
+//
 
 /**
  * @param {...any} params of the exiv run
  * @returns {string} the output
  */
-function runExiv(...params) {
+function runExiv(params) {
 	//
 	// Error here ? check exiv is installed :-)
 	//
-	let processResult = spawnSync('exiv2', params);
+	let processResult = spawnSync('exiftool', params);
 	switch (processResult.status) {
 		case 0:   // ok, continue
 			break;
@@ -40,40 +40,46 @@ function runExiv(...params) {
  * @returns {object} the parsed informations
  */
 export default async function exivReadAll(filePath) {
-	const data = runExiv('-g', 'Exif.*', filePath);
+	const txtResult = runExiv([
+		'-j', // Output as JSON
+		'-m', // Ignore minor errors and warnings
+		filePath
+	]);
+	const data = JSON.parse(txtResult)[0];
 	const result = {
-		'comment': '',
-		'date': '',
-		'orientation': 0
+		'title': data['Title'] ?? '',
+		// yyyy:mm:dd hh:mm:ss -> yyyy-mm-dd hh:mm:ss
+		'date': (data['DateTimeOriginal'] ?? '').replace(':', '-').replace(':', '-'),
+		'orientation': data['Orientation'] ?? 0
 	};
-	data.split('\n').forEach(line => {
-		let k = line.split(' ')[0].trim();
-		if (k in translation) {
-			k = translation[k];
-		} else {
-			return;
-		}
+	// data.split('\n').forEach(line => {
+	// 	let k = line.split(' ')[0].trim();
+	// 	if (k in translation) {
+	// 		k = translation[k];
+	// 	} else {
+	// 		return;
+	// 	}
 
-		let v = line.substr(60).replace(/\0/g, '').trim();
-		if (v == '(Binary value suppressed)') {
-			v = '';
-		}
+	// 	let v = line.substr(60).replace(/\0/g, '').trim();
+	// 	if (v == '(Binary value suppressed)') {
+	// 		v = '';
+	// 	}
 
-		if (v) {
-			if (v.match(/[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/)) {
-				// Match the date element
-				const nd = v.replace(':', '-').replace(':', '-');
-				v = nd;
-			}
+	// 	if (v) {
+	// 		if (v.match(/[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/)) {
+	// 			// Match the date element
+	// 			const nd = v.replace(':', '-').replace(':', '-');
+	// 			v = nd;
+	// 		}
 
-			// Treat the "charset=abc blablabla"
-			const m = v.match(/charset=\w+ (.*)/);
-			if (m) {
-				v = m[1];
-			}
-			result[k] = v;
-		}
+	// 		// Treat the "charset=abc blablabla"
+	// 		const m = v.match(/charset=\w+ (.*)/);
+	// 		if (m) {
+	// 			v = m[1];
+	// 		}
+	// 		result[k] = v;
+	// 	}
 
-	});
+	// });
 	return result;
 }

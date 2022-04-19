@@ -120,7 +120,7 @@ describe(fn(import.meta.url), () => {
 				path: 'tests/server/data/photo-frame/f1/i1.png',
 				url: '../tests/server/data/photo-frame/f1/i1.png', // UNUSED
 				data: {
-					comment: 'Test comment here',
+					title: 'Test title here',
 					date: '2019-07-01 02:03:04',
 					orientation: 0
 				},

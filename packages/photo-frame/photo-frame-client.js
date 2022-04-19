@@ -186,7 +186,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 		let photo = {
 			url: '../packages/photo-frame/photo-frame.png',
 			data: {
-				comment: 'no picture',
+				title: 'no picture',
 				date: 'today'
 			}
 		};
@@ -195,7 +195,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			if (this.#carouselImg.getAttribute('src') != photo.url) {
 				photo = status.server.listing[status.pictureIndex];
 				app.debug('updatePicture', status.pictureIndex, photo);
-				this.#carouselInfos.innerHTML = `${photo.data.comment ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
+				this.#carouselInfos.innerHTML = `${photo.data.title ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
 				this.#carouselImg.setAttribute('src', photo.url);
 			}
 		}
