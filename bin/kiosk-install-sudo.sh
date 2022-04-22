@@ -8,7 +8,7 @@ export KIOSK_ROOT
 export DEBIAN_FRONTEND=noninteractive
 
 apt install -y \
-    ffmpeg exiv2 gettext-base \
+    ffmpeg exiftool gettext-base \
     unclutter \
     build-essential \
     snapd \

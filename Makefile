@@ -69,12 +69,12 @@ define git-files
 endef
 
 configure:
-	sudo apt -y install exiv2 chromium-browser
+	sudo apt -y install exiftool chromium-browser
 	mkdir -p etc/
 	if [ -r "$(KIOSK_CONFIG)" ]; then \
 		ln -f -s $(KIOSK_CONFIG) etc/; \
 	fi
-	type exiv2
+	type exiftool
 # chromium must be not a snap because jenkins run out of home folder
 	type chromium || type chromium-browser
 
