@@ -22,6 +22,9 @@ export let mainWindow;
 export async function start(serverApp) {
 	const logger = serverApp.childLogger('gui');
 	const devMode = serverApp.getConfig('server.devMode');
+	if (devMode) {
+		logger.debug('Enabling dev mode');
+	}
 
 	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
 	// 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login
@@ -74,6 +77,10 @@ export async function start(serverApp) {
 	mainWindow.loadFile(url);
 
 	if (devMode) {
+		// See https://github.com/electron/electron/issues/20069
+		logger.debug('Opening dev tools');
+		const devtools = new BrowserWindow();
+		mainWindow.webContents.setDevToolsWebContents(devtools.webContents);
 		mainWindow.webContents.openDevTools({ mode: 'detach' });
 	}
 
