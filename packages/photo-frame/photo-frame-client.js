@@ -157,7 +157,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 				<div style="grid-area: left"   id="prev"   class="hide-on-inactive">&lt;</div>
 				<div style="grid-area: right"  id="next"   class="hide-on-inactive">&gt;</div>
 				<div style="grid-area: bottom" id="infos"  ></div>
-				<div style="grid-area: center" id="thumbs" class="hide-on-inactive">thumbs</div>
+				<div style="grid-area: center" id="thumbs" class="hide-on-inactive"></div>
 			</div>
 		</div>`;
 
