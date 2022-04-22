@@ -34,7 +34,6 @@ function runExiv(params) {
 	return '';
 }
 
-// TODO: use exiftool (more easy to use)
 /**
  * @param {string} filePath of the image
  * @returns {object} the parsed informations
