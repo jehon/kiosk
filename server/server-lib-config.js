@@ -107,7 +107,7 @@ export async function loadConfigFromCommandLine(serverApp) {
 	// myargs = myargs.strict();
 	//
 
-	const cmdLineOptions = myargs.argv;
+	const cmdLineOptions = await myargs.argv;
 
 	// Transform into config
 
