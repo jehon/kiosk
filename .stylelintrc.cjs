@@ -10,6 +10,7 @@ module.exports = {
     "no-descending-specificity": null,
     "declaration-empty-line-before": null,
     "declaration-colon-space-after": null,
-    "no-empty-first-line": null
+    "no-empty-first-line": null,
+    "no-missing-end-of-source-newline": null
   }
 }
