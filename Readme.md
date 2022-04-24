@@ -7,10 +7,6 @@
 
 Use the raspberry-pi OS image (desktop)
 
-### Install required packages (production)
-
-sudo bin/kiosk-install-sudo.sh
-
 ### Git checkout
 git checkout the project to the home of the user that will run the kiosk
 
@@ -20,14 +16,6 @@ ex:
 cd $HOME
 git clone https://github.com/jehon/kiosk.git
 cd kiosk
-```
-
-### Install
-
-To allow kiosk to run at login (of the user), please run:
-
-```
-bin/kiosk-install.sh
 ```
 
 ### Start

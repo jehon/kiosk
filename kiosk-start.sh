@@ -16,17 +16,14 @@ KIOSK_ROOT="$(dirname "${BASH_SOURCE[0]}")"
 pushd "$KIOSK_ROOT" || exit 255
 
 (
-	# shellcheck source=bin/kiosk-lib.sh
-	. bin/kiosk-lib.sh
+	NODE_ENV="${NODE_ENV:-production}"
+	export NODE_ENV
 
 	mkdir -p "tmp"
 	mkdir -p "var"
 	mkdir -p "etc"
 
-	# shellcheck source=bin/kiosk-lib.sh
-	. bin/kiosk-lib.sh
-
-	header "********** Checking setup ************************"
+	echo "********** Checking setup ************************"
 	PKG=package.json
 	PKG_INST=var/package.json.installed
 	mkdir -p "$(dirname "$PKG_INST")"
@@ -34,17 +31,17 @@ pushd "$KIOSK_ROOT" || exit 255
 
 	# cat | md5sum ? avoid the filename to be shown in the output...
 	if [ "$(md5sum <"$PKG")" == "$(md5sum <"$PKG_INST")" ]; then
-		header_sub "Already up-to-date"
+		echo "* Already up-to-date"
 	else
-		header_sub "Need an update"
+		echo "* Need an update"
 
-		header_sub "** install **"
+		echo "* ** install **"
 		npm install --unsafe-perm
 
-		header_sub "** prune **"
+		echo "* ** prune **"
 		npm prune --unsafe-perm || true
 	fi
-	header_sub "** done **"
+	echo "* ** done **"
 	touch package-lock.json
 	cp -f "$PKG" "$PKG_INST"
 
