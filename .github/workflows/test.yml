@@ -19,17 +19,8 @@ jobs:
       with:
         submodules: true
     
-    - name: configure
-      run: make configure
-
-    - name: dump
-      run: make dump
-
-    - name: build
-      run: make build
-
-    - name: test
-      run: make test
-      
-    - name: lint
-      run: make lint
+    - run: make computer-setup
+    - run: make dump
+    - run: make build
+    - run: make test
+    - run: make lint

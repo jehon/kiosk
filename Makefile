@@ -68,7 +68,7 @@ define git-files
 	$(shell git ls-files --cached --modified --others --full-name "$(ROOT)/$(1)" )
 endef
 
-configure:
+computer-setup:
 	sudo apt -y install exiftool chromium-browser
 	mkdir -p etc/
 	if [ -r "$(KIOSK_CONFIG)" ]; then \
