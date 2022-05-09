@@ -32,7 +32,7 @@ function autoMoveToNextImage() {
 	}
 }
 
-// TODO: parameter
+// TODO: parameter + handle human interaction
 setInterval(() => autoMoveToNextImage(), 15 * 1000);
 
 /**
