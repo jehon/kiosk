@@ -106,10 +106,20 @@ start-dev-with-test-config-brk: build
 
 
 .PHONY: build
-build: dependencies browserslist tmp/importmap.json externals/mpd/config.js
+build: dependencies browserslist \
+		externals/mpd/README.md \
+		externals/websockify/README.md \
+		tmp/importmap.json \
+		externals/mpd/config.js
 	mkdir -p tmp
 
-externals/mpd/config.js: etc/mpd.js
+externals/%/README.md:
+	git submodule init
+	git submodule update
+
+externals/mpd/config.js: externals/mpd/README.md \
+	etc/mpd.js
+	
 	cp -f etc/mpd.js "$@"
 
 .PHONY: dependencies
