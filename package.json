@@ -51,7 +51,7 @@
     "eslint": "8.15.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "39.2.9",
-    "husky": "7.0.4",
+    "husky": "8.0.0",
     "importly": "0.2.0",
     "jasmine": "4.1.0",
     "jasmine-core": "4.1.0",
