@@ -1,6 +1,7 @@
 ---
 core:
   loggers:
+    - kiosk:photo-frame:*
     # - kiosk:human:*
     # - kiosk:loggers (configured in launch)
 
@@ -8,10 +9,7 @@ human:
   inactivitySeconds: 15
 
 photo-frame:
-  folders:
-    photo:
-      folder: tests/server/data/photo-frame
-      quantity: 3
+  folder: tests/server/data/photos
 
 camera:
   intervalSeconds: 5
