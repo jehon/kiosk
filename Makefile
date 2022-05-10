@@ -230,7 +230,7 @@ remote-restart-dm:
 #
 deploy: dump build
 # Wait for the remote to be ready (ping && ssh ok - see github.com/jehon/packages/usr/bin/jh-ssh-ping)
-	type jh-ssh-ping >/dev/null 2>&1 && jh-ssh-ping -w "kiosk" || true
+	type jh-ssh-ping >/dev/null 2>&1 && jh-ssh-ping -w "$(SSH_HOST)" || true
 
 	rsync --itemize-changes --recursive --perms --times --links --delete "$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/" \
 		--exclude "/node_modules"         --filter "protect /node_modules"      \
