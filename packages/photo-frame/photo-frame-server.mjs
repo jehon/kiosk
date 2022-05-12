@@ -42,17 +42,16 @@ export default app;
  * 
  */
 
-export async function loadList(folder) {
+export async function loadList(indexFile) {
 	let listing = [];
 	try {
-		const indexFile = path.join(folder, 'index.json');
 		const txt = fs.readFileSync(indexFile);
 		listing = JSON.parse(txt).map(v => ({
 			...v,
-			url: path.join('..', folder, v.subPath)
+			url: path.join('..', indexFile, v.subPath)
 		}));
 	} catch (e) {
-		app.error(`Could not load from ${folder}`);
+		app.error(`Could not load from ${indexFile}`);
 		// ok
 	}
 	app.setState({
@@ -74,7 +73,7 @@ export function init() {
 		listing: []
 	});
 
-	loadList(app.getConfig('.folder'));
+	loadList(path.join(app.getConfig('.folder'), 'index.json'));
 
 	return app;
 }
