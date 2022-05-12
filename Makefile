@@ -228,16 +228,14 @@ remote-restart-dm:
 # Deploy
 #
 #
-deploy: dump build
-# Wait for the remote to be ready (ping && ssh ok - see github.com/jehon/packages/usr/bin/jh-ssh-ping)
+deploy: build
 	type jh-ssh-ping >/dev/null 2>&1 && jh-ssh-ping -w "$(SSH_HOST)" || true
 
 	rsync --itemize-changes --recursive --perms --times --links --delete "$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/" \
-		--exclude "/node_modules"         --filter "protect /node_modules"      \
-		--exclude "/var"                  --filter "protect /var/"              \
 		--exclude "tmp"                   --filter "protect tmp"                \
 		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
-		--exclude ".nfs*"
+		--exclude ".nfs*"  \
+		--exclude "unused" \
 
 	scp $(KIOSK_CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
