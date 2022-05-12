@@ -24,8 +24,8 @@ ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 #
 #
 SSH_HOST ?= kiosk
-SSH_USER ?= kiosk
-SSH_TARGET ?= kiosk
+SSH_USER ?= root
+SSH_TARGET ?= /opt/kiosk
 KIOSK_CONFIG ?= $(ROOT)/etc/kiosk.yml
 
 # https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_7.html
