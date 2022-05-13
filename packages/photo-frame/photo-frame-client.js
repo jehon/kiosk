@@ -224,13 +224,12 @@ app
 
 app
 	.onStateChange((status, app) => {
-		app.debug('Refreshing listing');
+		app.debug('Setting priorities according to listing');
 		if (!status || !status.server) {
 			return;
 		}
 		if (status.server.hasList) {
 			app.setPriority(priorities.photoFrame.elevated);
-			// app.debug('New listing has ', status.server.listing.length);
 		} else {
 			app.setPriority(priorities.photoFrame.normal);
 		}
