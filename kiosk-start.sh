@@ -53,4 +53,4 @@ pushd "$KIOSK_ROOT" || exit 255
 
 	# Could be: --inspect-break=9223
 
-) 2>&1 | tee tmp/kiosk.log
+) 2>&1 | tee ~/kiosk.log
