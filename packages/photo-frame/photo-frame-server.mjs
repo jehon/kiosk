@@ -76,7 +76,9 @@ export function init() {
 
 	// In unit test, we don't have a config...
 	if (app.getConfig('.folder')) {
-		loadList(path.join(app.getConfig('.folder'), INDEX_FILENAME));
+		const f = path.join(app.getConfig('.folder'), INDEX_FILENAME);
+		app.debug("Loading ${f}");
+		loadList(f);
 	}
 
 	return app;
