@@ -1,21 +1,21 @@
 #!/bin/bash
 
-# @see man xset
-# 15min to standby mode
-# xset dpms 0 0 900
-# xset +dpms
-
-set -e
-
-xset -dpms
-xset s noblank
-xset s off
-
-KIOSK_ROOT="$(dirname "${BASH_SOURCE[0]}")"
-
-pushd "$KIOSK_ROOT" || exit 255
-
 (
+	set -e
+
+	# @see man xset
+	# 15min to standby mode
+	# xset dpms 0 0 900
+	# xset +dpms
+
+	xset -dpms
+	xset s noblank
+	xset s off
+
+	export KIOSK_ROOT="$(dirname "${BASH_SOURCE[0]}")"
+	echo "Root folder is $KIOSK_ROOT"
+	pushd "$KIOSK_ROOT" || exit 255
+
 	NODE_ENV="${NODE_ENV:-production}"
 	export NODE_ENV
 
