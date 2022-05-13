@@ -231,11 +231,12 @@ remote-restart-dm:
 deploy: build
 	type jh-ssh-ping >/dev/null 2>&1 && jh-ssh-ping -w "$(SSH_HOST)" || true
 
-	rsync --itemize-changes --recursive --perms --times --links --delete "$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/" \
+	rsync --itemize-changes --recursive --perms --times --links --omit-dir-times --delete \
 		--exclude "tmp"                   --filter "protect tmp"                \
 		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
 		--exclude ".nfs*"  \
 		--exclude "unused" \
+		"$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/"
 
 	scp $(KIOSK_CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
