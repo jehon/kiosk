@@ -73,7 +73,10 @@ export function init() {
 		listing: []
 	});
 
-	loadList(path.join(app.getConfig('.folder'), 'index.json'));
+	// In unit test, we don't have a config...
+	if (app.getConfig('.folder')) {
+		loadList(path.join(app.getConfig('.folder'), 'index.json'));
+	}
 
 	return app;
 }
