@@ -1,5 +1,8 @@
 
+import path from 'path';
+
 import {
+	INDEX_FILENAME,
 	init,
 	loadList
 } from '../../packages/photo-frame/photo-frame-server.mjs';
@@ -35,7 +38,7 @@ describe(fn(import.meta.url), () => {
 	});
 
 	it('should get the content', async function () {
-		const data = await loadList('tests/server/data/photos');
+		const data = await loadList(path.join('tests/server/data/photos/', INDEX_FILENAME));
 
 		expect(data.length).toBe(7);
 

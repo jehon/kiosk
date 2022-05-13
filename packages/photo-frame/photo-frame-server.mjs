@@ -29,6 +29,7 @@ import path from 'path';
 const app = serverAppFactory('photo-frame');
 
 export default app;
+export const INDEX_FILENAME = "index.json";
 
 /**
  * 
@@ -75,7 +76,7 @@ export function init() {
 
 	// In unit test, we don't have a config...
 	if (app.getConfig('.folder')) {
-		loadList(path.join(app.getConfig('.folder'), 'index.json'));
+		loadList(path.join(app.getConfig('.folder'), INDEX_FILENAME));
 	}
 
 	return app;
