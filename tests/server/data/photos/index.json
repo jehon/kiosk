@@ -1,1 +1,65 @@
-[{"originalFilePath":"photo-frame/f2/m3.jpg","subPath":"00 m3.jpg","data":{"title":"","date":"","orientation":0}},{"originalFilePath":"photo-frame/f2/m2.jpg","subPath":"01 m2.jpg","data":{"title":"","date":"","orientation":0}},{"originalFilePath":"photo-frame/f2/m1.jpg","subPath":"02 m1.jpg","data":{"title":"","date":"","orientation":0}},{"originalFilePath":"photo-frame/f2/m4.jpg","subPath":"03 m4.jpg","data":{"title":"","date":"","orientation":0}},{"originalFilePath":"photo-frame/f1/i1.png","subPath":"04 i1.png","data":{"title":"Test title here","date":"2019-07-01 02:03:04","orientation":0}},{"originalFilePath":"photo-frame/f1/i2.jpg","subPath":"05 i2.jpg","data":{"title":"","date":"","orientation":0}},{"originalFilePath":"photo-frame/f1/i4.jpg","subPath":"06 i4.jpg","data":{"title":"","date":"","orientation":0}}]
+[
+    {
+        "originalFilePath": "photo-frame/f2/m3.jpg",
+        "subPath": "00 m3.jpg",
+        "data": {
+            "title": "",
+            "date": "",
+            "orientation": 0
+        }
+    },
+    {
+        "originalFilePath": "photo-frame/f2/m2.jpg",
+        "subPath": "01 m2.jpg",
+        "data": {
+            "title": "",
+            "date": "",
+            "orientation": 0
+        }
+    },
+    {
+        "originalFilePath": "photo-frame/f2/m1.jpg",
+        "subPath": "02 m1.jpg",
+        "data": {
+            "title": "",
+            "date": "",
+            "orientation": 0
+        }
+    },
+    {
+        "originalFilePath": "photo-frame/f2/m4.jpg",
+        "subPath": "03 m4.jpg",
+        "data": {
+            "title": "",
+            "date": "",
+            "orientation": 0
+        }
+    },
+    {
+        "originalFilePath": "photo-frame/f1/i1.png",
+        "subPath": "04 i1.png",
+        "data": {
+            "title": "Test title here",
+            "date": "2019-07-01 02:03:04",
+            "orientation": 0
+        }
+    },
+    {
+        "originalFilePath": "photo-frame/f1/i2.jpg",
+        "subPath": "05 i2.jpg",
+        "data": {
+            "title": "",
+            "date": "",
+            "orientation": 0
+        }
+    },
+    {
+        "originalFilePath": "photo-frame/f1/i4.jpg",
+        "subPath": "06 i4.jpg",
+        "data": {
+            "title": "",
+            "date": "",
+            "orientation": 0
+        }
+    }
+]
