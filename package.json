@@ -9,6 +9,7 @@
     "@jehon/css-inherit": "0.1.1",
     "btoa": "1.2.1",
     "chalk": "5.0.1",
+    "chokidar": "3.5.3",
     "colors": "1.4.0",
     "cron-parser": "4.4.0",
     "cronstrue": "2.5.0",

@@ -3,6 +3,7 @@ import serverAppFactory from '../../server/server-app.js';
 
 import fs from 'fs';
 import path from 'path';
+import chokidar from 'chokidar';
 
 /**
  * @typedef ImageData
@@ -51,9 +52,10 @@ export async function loadList(indexFile) {
 	let listing = [];
 	try {
 		const txt = fs.readFileSync(indexFile);
+		const folder = path.dirname(indexFile);
 		listing = JSON.parse(txt).map(v => ({
 			...v,
-			url: path.join('..', indexFile, v.subPath)
+			url: path.join('..', folder, v.subPath)
 		}));
 	} catch (e) {
 		app.error(`Could not load from ${indexFile}`);
@@ -66,6 +68,24 @@ export async function loadList(indexFile) {
 
 	return listing;
 }
+
+let watcher = chokidar.watch(
+	[],
+	{
+		persistent: false
+	}
+)
+	// .on('all', (event, f, stat) => {
+	// 	console.log({ e: 'all', event, f, stat });
+	// })
+	.on('change', (f, _stat) => {
+		app.debug(`refreshing: ${f} modified`);
+		loadList(f);
+	})
+	.on('add', (f, _stat) => {
+		app.debug(`refreshing: ${f} added`);
+		loadList(f);
+	});
 
 /**
  * Initialize the package
@@ -81,8 +101,10 @@ export function init() {
 	// In unit test, we don't have a config...
 	if (app.getConfig('.folder')) {
 		const f = path.join(app.getConfig('.folder'), INDEX_FILENAME);
-		app.debug("Loading ${f}");
+		app.debug(`Loading ${f}`);
 		loadList(f);
+		watcher.unwatch('*');
+		watcher.add(f);
 	}
 
 	return app;
