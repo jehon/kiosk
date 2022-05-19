@@ -201,7 +201,7 @@ remote-logs:
 	ssh \
 		-L 9222:localhost:9222 \
 		-L 9223:localhost:9223 \
-		kiosk@$(SSH_HOST) tail -n 1000 -f $(SSH_TARGET)/tmp/kiosk.log
+		kiosk@$(SSH_HOST) tail -n 1000 -f /home/kiosk/kiosk.log
 
 remote-chrome:
 	google-chrome http://localhost:9223
