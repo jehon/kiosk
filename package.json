@@ -47,7 +47,7 @@
     "electron-chromedriver": "18.0.0",
     "eslint": "8.15.0",
     "eslint-plugin-cypress": "2.12.1",
-    "eslint-plugin-jsdoc": "39.2.9",
+    "eslint-plugin-jsdoc": "39.3.0",
     "husky": "8.0.1",
     "importly": "0.2.0",
     "jasmine": "4.1.0",
