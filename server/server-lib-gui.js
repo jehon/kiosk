@@ -169,7 +169,5 @@ export function createClientView(url, script) {
 		}
 	});
 
-	// resolve(view.webContents);
 	return view.webContents;
-	// });
 }
