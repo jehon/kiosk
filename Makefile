@@ -123,11 +123,11 @@ externals/mpd/config.js: externals/mpd/README.md \
 	cp -f etc/mpd.js "$@"
 
 .PHONY: dependencies
-dependencies: node_modules/.dependencies
-node_modules/.dependencies: package.json package-lock.json
+dependencies: node_modules/.packages-installed.json
+node_modules/.packages-installed.json: package.json package-lock.json
 	npm ci
 	touch package-lock.json
-	touch node_modules/.dependencies
+	touch "$@"
 
 # dependencies-generate-patch:
 # 	(diff -x package.json -x package-lock.json -rubB node_modules/ node_modules.bak/ || true) > modules.patch
