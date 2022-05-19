@@ -234,10 +234,11 @@ deploy: build
 	rsync --itemize-changes --recursive --perms --times --links --omit-dir-times --delete \
 		--exclude "tmp"                   --filter "protect tmp"                \
 		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
+		--exclude "node_modules"          --filter "protect node_modules"       \
 		--exclude ".nfs*"  \
 		--exclude "unused" \
 		"$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/"
 
 	scp $(KIOSK_CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
-	ssh root@$(SSH_HOST) systemctl restart display-manager
+	ssh $(SSH_USER)@$(SSH_HOST) $(SSH_TARGET)/kiosk-setup.sh
