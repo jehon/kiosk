@@ -52,10 +52,9 @@ export async function loadList(indexFile) {
 	let listing = [];
 	try {
 		const txt = fs.readFileSync(indexFile);
-		const folder = path.dirname(indexFile);
 		listing = JSON.parse(txt).map(v => ({
 			...v,
-			url: path.join('..', folder, v.subPath)
+			url: v.subPath
 		}));
 	} catch (e) {
 		app.error(`Could not load from ${indexFile}`);
