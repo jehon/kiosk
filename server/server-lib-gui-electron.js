@@ -1,7 +1,7 @@
 
 // Must use require for electron (why???)
 import { createRequire } from 'module';
-import { LOG_CHANNEL_NAME } from '../common/constants.js';
+import { CHANNEL_LOG } from '../common/constants.js';
 const require = createRequire(import.meta.url);
 const { BrowserWindow, BrowserView, app: electronApp, ipcMain } = require('electron');
 
@@ -70,7 +70,7 @@ export async function start(serverApp) {
 	// const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
 	// Enable logging
-	ipcMain.on(LOG_CHANNEL_NAME, (_event, message) => loggerAsMessageListener(message));
+	ipcMain.on(CHANNEL_LOG, (_event, message) => loggerAsMessageListener(message));
 
 	logger.debug(`Loading: ${url}`);
 	// win.loadURL(url);

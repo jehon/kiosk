@@ -4,7 +4,7 @@ import { Worker, parentPort, workerData } from 'worker_threads';
 import { loggerAsMessageListener } from './server-client.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { LOG_CHANNEL_NAME } from '../common/constants.js';
+import { CHANNEL_LOG } from '../common/constants.js';
 import { Logger } from '../common/logger.js';
 export const __dirname = (url) => dirname(fileURLToPath(url));
 
@@ -24,7 +24,7 @@ export function createWorker(file, app, data) {
 		}
 	});
 
-	masterOnMessage(worker, LOG_CHANNEL_NAME, (payload) => loggerAsMessageListener(payload));
+	masterOnMessage(worker, CHANNEL_LOG, (payload) => loggerAsMessageListener(payload));
 
 	worker.on('error', err => app.error(`Worker: ${file} emitted an error: ${err}`));
 
@@ -95,7 +95,7 @@ export function workerGetLogger() {
 			(...data) => {
 				/* eslint-disable no-console */
 				console[level](namespace, `[${level.toUpperCase()}]`, ...data);
-				workerSendMessage(LOG_CHANNEL_NAME, {
+				workerSendMessage(CHANNEL_LOG, {
 					namespace,
 					level,
 					content: data.map(e => (e instanceof Object ? JSON.stringify(e) : e))

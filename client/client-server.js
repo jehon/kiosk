@@ -1,5 +1,5 @@
 
-import { LOG_CHANNEL_NAME } from '../common/constants.js';
+import { CHANNEL_LOG } from '../common/constants.js';
 
 const { ipcRenderer } = require('electron');
 
@@ -7,7 +7,7 @@ const { ipcRenderer } = require('electron');
  * @param {*} data to be sent
  */
 export function sendLogToServer(data) {
-    sendToServer(LOG_CHANNEL_NAME, data);
+    sendToServer(CHANNEL_LOG, data);
 }
 
 /**
