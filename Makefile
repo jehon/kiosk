@@ -90,20 +90,15 @@ clean:
 
 .PHONY: start
 start: build
-	electron .
-
-.PHONY: start-dev-with-prod-config
-start-dev-with-prod-config: build
-	electron --trace-warnings . -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
-
-.PHONY: start-dev-with-test-config
-start-dev-with-test-config: build
 	DEBUG="kiosk:loggers,$$DEBUG" electron --trace-warnings . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
-.PHONY: start-dev-with-test-config-brk
-start-dev-with-test-config-brk: build
+.PHONY: start-brk
+start-brk: build
 	electron --trace-warnings --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
+.PHONY: start-prod
+start-prod: build
+	electron --trace-warnings . -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 .PHONY: build
 build: dependencies browserslist \
