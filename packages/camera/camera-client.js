@@ -46,17 +46,20 @@ export class KioskCameraMainElement extends ClientElement {
 		if (!status || !status.server) {
 			return;
 		}
+
 		//
 		// - status.server.code = the new status coming from the server
 		// - statusCode = the previous status
 		// - statusUrl = the previous url
 		//
 		if (status.server.code == TriStates.READY && status.server.url) {
-			app.debug('Adapt: up', status.server, this.actualUrl);
+			const newUrl = (status.server.url ?? '').replace('localhost', window.location.hostname);
+			app.debug('Adapt: up', status.server, this.actualUrl, newUrl);
+
 			// Live event
-			if (status.server.url != this.actualUrl) {
+			if (newUrl != this.actualUrl) {
 				app.debug('Adapt: go live');
-				this.actualUrl = status.server.url;
+				this.actualUrl = newUrl;
 				this.shadowRoot.innerHTML = `<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="${this.actualUrl}"></source></video>`;
 			}
 		} else {
