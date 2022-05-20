@@ -41,6 +41,7 @@ export async function guiPrepare(_devMode) {
 
     expressApp.use('/media', express.static('/media'));
     expressApp.use('/mnt', express.static('/mnt'));
+    expressApp.use('/var/jehon/photos', express.static('/var/jehon/photos'));
     expressApp.use(express.static('.'));
 }
 
