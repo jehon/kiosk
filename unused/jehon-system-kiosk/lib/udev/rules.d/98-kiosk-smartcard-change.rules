@@ -1,2 +1,0 @@
-
-SUBSYSTEM=="block", ACTION=="change", ENV{DISK_MEDIA_CHANGE}=="1" RUN+="/usr/bin/kiosk-smartcard-change.sh"

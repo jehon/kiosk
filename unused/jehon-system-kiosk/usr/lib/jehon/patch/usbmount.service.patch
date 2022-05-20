@@ -1,7 +1,0 @@
-#
-# File: /lib/systemd/system/systemd-udevd.service
-#
-#
-
-# Was: slave
-MountFlags=shared

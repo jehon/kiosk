@@ -1,8 +1,0 @@
-#
-# File: /etc/usbmount/usbmount.conf
-# 
-#
-#
-
-FILESYSTEMS="vfat ext2 ext3 ext4 hfsplus ntfs"
-MOUNTOPTIONS="sync,noexec,nodev,noatime,nodiratime,umask=0,nofail"

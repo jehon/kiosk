@@ -1,5 +1,0 @@
-{
-  "api": 1,
-  "server": "synology-audio-server.js",
-  "client": "synology-audio-client.js"
-}
