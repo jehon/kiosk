@@ -18,6 +18,15 @@ export function sendToServer(channel, data) {
     ipcRenderer.send(channel, data);
 }
 
+/**
+ *
+ * @param {string} channel to listen to
+ * @param {function(object):void} cb to react to events
+ */
+export function onServerMessage(channel, cb) {
+    ipcRenderer.on(channel, (_event, message) => cb(message));
+}
+
 // /**
 //  * Reset cache.
 //  * See http://seenaburns.com/debugging-electron-memory-usage/

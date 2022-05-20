@@ -7,7 +7,7 @@ import { registerApp, autoSelectApplication, selectApplication } from './client-
 import ClientElement from './client-element.js';
 import App from '../common/app.js';
 import { clientLoggerFactory } from './client-customs.js';
-import { sendToServer } from './client-server.js';
+import { onServerMessage, sendToServer } from './client-server.js';
 import KioskTimedDiv from './elements/timed-div.js';
 
 const debugEl = document.querySelector('#debug');
@@ -23,7 +23,7 @@ export class ClientApp extends App {
 
 		this.info('Registering app', this.name, this);
 
-		require('electron').ipcRenderer.on(this.ctxize('.status'), (_event, serverStatus) => {
+		onServerMessage(this.ctxize('.status'), (serverStatus) => {
 			this.debug('Server status updated to ', serverStatus);
 			const status = this.getState();
 			status.server = serverStatus;
