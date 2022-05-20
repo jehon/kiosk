@@ -7,13 +7,6 @@ const { BrowserWindow, BrowserView, app: electronApp, ipcMain } = require('elect
 
 import { loggerAsMessageListener } from './server-client.js';
 
-/**
- * @returns {Promise<*>} resolved when app is ready
- */
-export function whenReady() {
-	return electronApp.whenReady();
-}
-
 export let mainWindow;
 
 /**
@@ -25,6 +18,8 @@ export async function start(serverApp) {
 	if (devMode) {
 		logger.debug('Enabling dev mode');
 	}
+
+	await electronApp.whenReady();
 
 	// 	electronApp.on('login', (event, _webContents, details, _authInfo, callback) => {
 	// 		// https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login

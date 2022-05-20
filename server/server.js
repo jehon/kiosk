@@ -1,5 +1,5 @@
 
-import { start, whenReady } from './server-lib-gui.js';
+import { start } from './server-lib-gui.js';
 import serverAppFactory from './server-app.js';
 import { loadConfigFromCommandLine, loadConfigFromFile, enableDebugFor, getEnabledDebug } from './server-lib-config.js';
 import { resetConfig } from './server-lib-config.js';
@@ -46,7 +46,6 @@ resetConfig()
 			enabledDebug: getEnabledDebug()
 		});
 	})
-	.then(() => whenReady())
 	.then(() => {
 		/**
 		 * @param {string} name of the package (xxx without extension)
