@@ -4,6 +4,7 @@ core:
     - kiosk:photo-frame:*
     # - kiosk:human:*
     # - kiosk:loggers (configured in launch)
+  port: 4545
 
 human:
   inactivitySeconds: 15

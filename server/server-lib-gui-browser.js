@@ -1,9 +1,39 @@
+
+import express from 'express';
 import { Logger } from '../common/logger.js';
+import getConfig from './server-lib-config.js';
+import SSE from 'express-sse'; // https://www.npmjs.com/package/express-sse
+import { ROUTE_NOTIFY } from '../common/constants.js';
+
+const expressApp = express();
+const sse = new SSE();
+
+/**
+ * @type {Map<string, Array<Function>>}
+ */
+const listeners = new Map();
 
 /**
  * @param {boolean} _devMode to enable de
  */
 export async function guiPrepare(_devMode) {
+    expressApp.use('/events', sse.init);
+
+    expressApp.use(express.json());       // to support JSON-encoded bodies
+    expressApp.post(`${ROUTE_NOTIFY}/:channel`, (req, res) => {
+        const channel = req.params.channel;
+        const data = req.body;
+        if (listeners.has(channel)) {
+            for (const cb of listeners.get(channel)) {
+                cb(data);
+            }
+        }
+        return res.send('Treated');
+    });
+
+    expressApp.use('/media', express.static('/media'));
+    expressApp.use('/mnt', express.static('/mnt'));
+    expressApp.use(express.static('.'));
 }
 
 /**
@@ -12,18 +42,33 @@ export async function guiPrepare(_devMode) {
  * @param {string} _url to be loaded
  */
 export async function guiLaunch(_logger, _devMode, _url) {
+    expressApp.get('/', (req, res) => res.redirect(_url));
+    const port = getConfig('core.port', 0);
+
+    await new Promise(resolve => {
+        expressApp.listen(port, function () {
+            // Thanks to https://stackoverflow.com/a/29075664/1954789
+            _logger.info(`Listening on port ${this.address().port}!`);
+            resolve(port);
+        });
+    });
 }
 
 /**
- * @param {string} _eventName to be sent
- * @param {object} _data to be sent
+ * @param {string} eventName to be sent
+ * @param {object} data to be sent
  */
-export function guiDispatchToBrowser(_eventName, _data) {
+export function guiDispatchToBrowser(eventName, data) {
+    sse.send({ eventName, data });
 }
 
 /**
- * @param {string} _channel to listen to
- * @param {function(any):void} _cb with message
+ * @param {string} channel to listen to
+ * @param {function(any):void} cb with message
  */
-export function guiOnClient(_channel, _cb) {
+export function guiOnClient(channel, cb) {
+    if (!listeners.has(channel)) {
+        listeners.set(channel, []);
+    }
+    listeners.get(channel).push(cb);
 }

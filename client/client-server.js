@@ -13,8 +13,8 @@ export function sendLogToServer(data) {
  * @param {string} channel to be sent on
  * @param {*} data to be sent
  */
-export function sendToServer(channel, data) {
-    guiSendToServer(channel, data);
+export async function sendToServer(channel, data) {
+    return guiSendToServer(channel, data);
 }
 
 /**
