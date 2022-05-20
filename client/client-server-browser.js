@@ -1,6 +1,6 @@
 
 import { ROUTE_EVENTS, ROUTE_NOTIFY } from '../common/constants.js';
-const sse = new EventSource(ROUTE_EVENTS);
+const eventSource = new EventSource(ROUTE_EVENTS);
 
 /**
  * @param {string} channel to be sent on
@@ -22,7 +22,7 @@ export async function guiSendToServer(channel, data) {
  * @param {function(object):void} cb to react to events
  */
 export function guiOnServerMessage(channel, cb) {
-    sse.addEventListener(channel, function (event) {
+    eventSource.addEventListener(channel, function (event) {
         let data = event.data;
         try {
             data = JSON.parse(data);
