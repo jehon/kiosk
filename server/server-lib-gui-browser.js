@@ -3,7 +3,7 @@ import express from 'express';
 import { Logger } from '../common/logger.js';
 import getConfig from './server-lib-config.js';
 import SSE from 'express-sse'; // https://www.npmjs.com/package/express-sse
-import { ROUTE_NOTIFY } from '../common/constants.js';
+import { ROUTE_EVENTS, ROUTE_NOTIFY } from '../common/constants.js';
 
 const expressApp = express();
 const sse = new SSE();
@@ -17,9 +17,17 @@ const listeners = new Map();
  * @param {boolean} _devMode to enable de
  */
 export async function guiPrepare(_devMode) {
-    expressApp.use('/events', sse.init);
+    // Fix: TypeError: res.flush is not a function
+    //   Thanks to https://github.com/dpskvn/express-sse/issues/28#issuecomment-812827462
+    expressApp.use(ROUTE_EVENTS, (req, res, next) => {
+        res.flush = () => { };
+        next();
+    }, sse.init);
 
-    expressApp.use(express.json());       // to support JSON-encoded bodies
+    // to support JSON-encoded bodies
+    expressApp.use(express.json({
+        strict: false
+    }));
     expressApp.post(`${ROUTE_NOTIFY}/:channel`, (req, res) => {
         const channel = req.params.channel;
         const data = req.body;
@@ -59,7 +67,7 @@ export async function guiLaunch(_logger, _devMode, _url) {
  * @param {object} data to be sent
  */
 export function guiDispatchToBrowser(eventName, data) {
-    sse.send({ eventName, data });
+    sse.send(data, eventName);
 }
 
 /**
