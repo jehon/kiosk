@@ -1,7 +1,7 @@
 
 // import { CHANNEL_HISTORY, CHANNEL_LOG } from '../common/constants.js';
 // import { loggerAsMessageListener } from './server-client.js';
-import * as gui from './server-lib-gui-electron.js';
+import { guiDispatchToBrowser, guiLaunch, guiOnClient, guiPrepare } from './server-lib-gui-electron.js';
 
 const historySent = new Map();
 
@@ -18,9 +18,10 @@ export async function start(serverApp) {
     const url = 'client/index.html';
     // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
-    await gui.prepare(devMode);
+    await guiPrepare(devMode);
 
-    await gui.launch(logger, devMode, url);
+
+    await guiLaunch(logger, devMode, url);
 }
 
 /**
@@ -28,7 +29,7 @@ export async function start(serverApp) {
  * @param {function(any):void} cb with message
  */
 export function onClient(channel, cb) {
-    gui.onClient(channel, cb);
+    guiOnClient(channel, cb);
 }
 
 /**
@@ -37,5 +38,5 @@ export function onClient(channel, cb) {
  */
 export function dispatchToBrowser(eventName, data) {
     historySent.set(eventName, data);
-    gui.dispatchToBrowser(eventName, data);
+    guiDispatchToBrowser(eventName, data);
 }

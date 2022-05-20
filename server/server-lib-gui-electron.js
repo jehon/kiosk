@@ -13,7 +13,7 @@ export let mainWindow;
 /**
  * @param {boolean} devMode to enable de
  */
-export async function prepare(devMode) {
+export async function guiPrepare(devMode) {
 
 	await electronApp.whenReady();
 
@@ -97,7 +97,7 @@ export async function prepare(devMode) {
  * @param {boolean} devMode to enable de
  * @param {string} url to be loaded
  */
-export async function launch(logger, devMode, url) {
+export async function guiLaunch(logger, devMode, url) {
 	// Enable logging
 	ipcMain.on(CHANNEL_LOG, (_event, message) => loggerAsMessageListener(message));
 
@@ -128,7 +128,7 @@ const historySent = new Map();
  * @param {string} eventName to be sent
  * @param {object} data to be sent
  */
-export function dispatchToBrowser(eventName, data) {
+export function guiDispatchToBrowser(eventName, data) {
 	historySent.set(eventName, data);
 	if (electronApp) {
 		BrowserWindow.getAllWindows().forEach(b => b.webContents.send(eventName, data));
@@ -139,7 +139,7 @@ export function dispatchToBrowser(eventName, data) {
  * @param {string} channel to listen to
  * @param {function(any):void} cb with message
  */
-export function onClient(channel, cb) {
+export function guiOnClient(channel, cb) {
 	ipcMain.on(channel, (_event, message) => cb(message));
 }
 
@@ -149,7 +149,7 @@ export function onClient(channel, cb) {
  * @returns {import('electron').WebContents} loaded
  * @see https://www.electronjs.org/docs/latest/api/browser-view
  */
-export function createClientView(url, script) {
+export function guiCreateClientView(url, script) {
 	const [ww, wh] = mainWindow.getContentSize();
 
 	// return new Promise((resolve) => {
