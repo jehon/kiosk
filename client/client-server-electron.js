@@ -1,20 +1,12 @@
 
-import { CHANNEL_LOG } from '../common/constants.js';
-import { guiOnServerMessage, guiSendToServer } from './client-server-electron.js';
-
-/**
- * @param {*} data to be sent
- */
-export function sendLogToServer(data) {
-    sendToServer(CHANNEL_LOG, data);
-}
+const { ipcRenderer } = require('electron');
 
 /**
  * @param {string} channel to be sent on
  * @param {*} data to be sent
  */
-export function sendToServer(channel, data) {
-    guiSendToServer(channel, data);
+export function guiSendToServer(channel, data) {
+    ipcRenderer.send(channel, data);
 }
 
 /**
@@ -22,8 +14,8 @@ export function sendToServer(channel, data) {
  * @param {string} channel to listen to
  * @param {function(object):void} cb to react to events
  */
-export function onServerMessage(channel, cb) {
-    guiOnServerMessage(channel, cb);
+export function guiOnServerMessage(channel, cb) {
+    ipcRenderer.on(channel, (_event, message) => cb(message));
 }
 
 // /**
