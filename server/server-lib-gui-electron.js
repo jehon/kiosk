@@ -1,12 +1,9 @@
 
 // Must use require for electron (why???)
 import { createRequire } from 'module';
-import { CHANNEL_LOG } from '../common/constants.js';
 import { Logger } from '../common/logger.js';
 const require = createRequire(import.meta.url);
 const { BrowserWindow, BrowserView, app: electronApp, ipcMain } = require('electron');
-
-import { loggerAsMessageListener } from './server-client.js';
 
 export let mainWindow;
 
@@ -98,8 +95,6 @@ export async function guiPrepare(devMode) {
  * @param {string} url to be loaded
  */
 export async function guiLaunch(logger, devMode, url) {
-	// Enable logging
-	ipcMain.on(CHANNEL_LOG, (_event, message) => loggerAsMessageListener(message));
 
 	logger.debug(`Loading: ${url}`);
 	// win.loadURL(url);
@@ -112,14 +107,6 @@ export async function guiLaunch(logger, devMode, url) {
 		mainWindow.webContents.setDevToolsWebContents(devtools.webContents);
 		mainWindow.webContents.openDevTools({ mode: 'detach' });
 	}
-
-	ipcMain.on('history', (event, context) => {
-		if (!historySent.has(context)) {
-			logger.debug(`Requested history for ${context}, but that is not found`);
-		}
-		mainWindow.webContents.send(context, historySent.get(context));
-	});
-
 }
 
 const historySent = new Map();

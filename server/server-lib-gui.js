@@ -1,6 +1,6 @@
 
-// import { CHANNEL_HISTORY, CHANNEL_LOG } from '../common/constants.js';
-// import { loggerAsMessageListener } from './server-client.js';
+import { CHANNEL_HISTORY, CHANNEL_LOG } from '../common/constants.js';
+import { loggerAsMessageListener } from './server-client.js';
 import { guiDispatchToBrowser, guiLaunch, guiOnClient, guiPrepare } from './server-lib-gui-electron.js';
 
 const historySent = new Map();
@@ -20,6 +20,18 @@ export async function start(serverApp) {
 
     await guiPrepare(devMode);
 
+    // Enable logging
+    guiOnClient(CHANNEL_LOG, (message) => loggerAsMessageListener(message));
+
+    // // Enable history
+    onClient(CHANNEL_HISTORY, (context) => {
+        if (!historySent.has(context)) {
+            logger.debug(`Requested history for ${context}, but that is not found`);
+            return;
+        }
+        // We use this directly, to avoid setting the history again
+        guiDispatchToBrowser(context, historySent.get(context));
+    });
 
     await guiLaunch(logger, devMode, url);
 }
