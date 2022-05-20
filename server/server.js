@@ -72,8 +72,5 @@ resetConfig()
 		])
 			.then(() => { });
 	})
-	.then(() =>
-		// Start the GUI
-		start(app)
-	)
+	.then(() => start(app))
 	.then(() => app.info('GUI is started'));
