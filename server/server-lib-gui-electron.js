@@ -11,11 +11,9 @@ import { loggerAsMessageListener } from './server-client.js';
 export let mainWindow;
 
 /**
- * @param {Logger} logger to log debug
  * @param {boolean} devMode to enable de
- * @param {string} url to be loaded
  */
-export async function prepare(logger, devMode, url) {
+export async function prepare(devMode) {
 
 	await electronApp.whenReady();
 
@@ -92,17 +90,14 @@ export async function prepare(logger, devMode, url) {
 			electronApp.on('remote-get-builtin', (event, _webContents, _moduleName) => event.preventDefault());
 		}
 	});
+}
 
-	// }
-
-	// /**
-	//  *
-	//  * @param logger
-	//  * @param devMode
-	//  * @param url
-	//  */
-	// export async function launch(logger, devMode, url) {
-
+/**
+ * @param {Logger} logger to log debug
+ * @param {boolean} devMode to enable de
+ * @param {string} url to be loaded
+ */
+export async function launch(logger, devMode, url) {
 	// Enable logging
 	ipcMain.on(CHANNEL_LOG, (_event, message) => loggerAsMessageListener(message));
 

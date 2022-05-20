@@ -18,9 +18,9 @@ export async function start(serverApp) {
     const url = 'client/index.html';
     // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
-    await gui.prepare(logger, devMode, url);
+    await gui.prepare(devMode);
 
-    // await gui.launch(serverApp, logger, devMode, url);
+    await gui.launch(logger, devMode, url);
 }
 
 /**
