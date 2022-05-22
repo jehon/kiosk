@@ -42,7 +42,7 @@
     "karma": "6.3.20",
     "karma-chrome-launcher": "3.1.1",
     "karma-jasmine": "5.0.1",
-    "kill-port": "1.6.1",
+    "kill-port": "2.0.0",
     "lint-staged": "12.4.1",
     "nock": "13.2.2",
     "stylelint": "14.8.2",
