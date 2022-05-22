@@ -90,15 +90,11 @@ clean:
 
 .PHONY: start
 start: build
-	DEBUG="kiosk:loggers,$$DEBUG" electron --trace-warnings . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
-
-.PHONY: start-brk
-start-brk: build
-	electron --trace-warnings --inpect-brk --trace-uncaught . -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	DEBUG="kiosk:loggers,$$DEBUG" node ./server/server.js -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 .PHONY: start-prod
 start-prod: build
-	electron --trace-warnings . -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	node ./server/server.js -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 .PHONY: build
 build: dependencies browserslist \
@@ -136,7 +132,7 @@ tmp/importmap.json:
 	$(shell npm bin)/importly < package-lock.json > "$@"
 
 .PHONY: test
-test: test-server test-client test-app
+test: test-server test-client
 	echo "ok"
 
 .PHONY: test-server
@@ -150,12 +146,6 @@ test-client: build
 .PHONY: test-client-continuously
 test-client-continuously: build
 	karma start tests/client/karma.conf.cjs
-
-.PHONY: test-app
-test-app: build
-	rm -fr tmp/app
-	mkdir -p tmp/app
-	xvfb-run --server-args="-screen 0 1024x768x24" npm run wdio
 
 .PHONY: lint
 lint: dependencies

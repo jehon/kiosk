@@ -21,8 +21,10 @@ cd kiosk
 ### Start
 
 ```
-kiosk-start.sh
+node server/server.js
 ```
+
+You must launch a browser yourself.
 
 ### Configure
 

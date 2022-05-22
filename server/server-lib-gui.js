@@ -1,7 +1,7 @@
 
 import { CHANNEL_HISTORY, CHANNEL_LOG } from '../common/constants.js';
 import { loggerAsMessageListener } from './server-client.js';
-import { guiDispatchToBrowser, guiLaunch, guiOnClient, guiPrepare } from './server-lib-gui-electron.js';
+import { guiDispatchToBrowser, guiLaunch, guiOnClient, guiPrepare } from './server-lib-gui-browser.js';
 
 const historySent = new Map();
 

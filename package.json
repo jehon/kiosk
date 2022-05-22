@@ -15,7 +15,6 @@
     "cronstrue": "2.7.0",
     "debug": "4.3.4",
     "deepmerge": "4.2.2",
-    "electron": "18.2.4",
     "express": "4.18.1",
     "express-sse": "0.5.3",
     "fetch-mock": "9.11.0",
@@ -31,13 +30,8 @@
     "@commitlint/cli": "17.0.0",
     "@commitlint/config-conventional": "17.0.0",
     "@types/jasmine": "4.0.3",
-    "@wdio/cli": "7.19.7",
-    "@wdio/jasmine-framework": "7.19.7",
-    "@wdio/local-runner": "7.19.7",
-    "@wdio/spec-reporter": "7.19.7",
     "chromedriver": "101.0.0",
     "depcheck": "1.4.3",
-    "electron-chromedriver": "18.0.0",
     "eslint": "8.16.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "39.3.0",
@@ -51,9 +45,8 @@
     "kill-port": "1.6.1",
     "lint-staged": "12.4.1",
     "nock": "13.2.2",
-    "stylelint": "14.8.3",
-    "stylelint-config-standard": "24.0.0",
-    "wdio-chromedriver-service": "7.3.2"
+    "stylelint": "14.8.2",
+    "stylelint-config-standard": "24.0.0"
   },
   "engines": {
     "node": ">=12.0.0"
@@ -61,7 +54,7 @@
   "scripts": {
     "postinstall": "cp package.json node_modules/.packages-installed.json",
     "prepare": "[ \"$NODE_ENV\" = \"production\" ] && exit 0; husky install",
-    "start": "electron .",
+    "start": "node server/server.js",
     "eslint": "eslint .",
     "stylelint": "stylelint **/*.css",
     "test-client-continuoulsy": "karma start tests/client/karma.conf.cjs",
