@@ -52,16 +52,16 @@ export default class extends CameraAPI {
 			routelogger.debug(`received connection for ${url}`);
 
 			res.header('content-type', 'video/webm');
-			// const cmd = `ffmpeg -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`.split(' ');
-			// const cmd = `ffmpeg -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -vcodec copy -an -vbsf h264_mp4toannexb -`.split(' ');
+			// const cmd = `ffmpeg -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`;
 
 			// work only in chrome !
-			const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -vcodec copy -an -f matroska -`.split(' ');
-			routelogger.debug('ffmpeg command: ', cmd.join(' '));
+			const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -vcodec copy -an -f matroska -`;
+			routelogger.debug('ffmpeg command: ', cmd);
 
-			const ffmpeg = ChildProcess.spawn(cmd[0], cmd.splice(1), {
-				// stdio: ['ignore', 'pipe', 'ignore']
-				stdio: ['ignore', 'pipe', process.stderr]
+			const cmdArray = cmd.split(' ');
+			const ffmpeg = ChildProcess.spawn(cmdArray[0], cmdArray.splice(1), {
+				stdio: ['ignore', 'pipe', 'ignore']
+				// stdio: ['ignore', 'pipe', process.stderr]
 			});
 
 			ffmpeg.stdio[1].pipe(res);
