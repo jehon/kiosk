@@ -178,9 +178,6 @@ full-upgrade: dump \
 # Check
 #
 #
-remote-htop:
-	ssh $(SSH_HOST) -t htop
-
 remote-logs-lightdm:
 	ssh $(SSH_HOST) journalctl -f -u lightdm
 
@@ -193,12 +190,6 @@ remote-logs:
 
 remote-chrome:
 	google-chrome http://localhost:9223
-
-remote-logs-cycle:
-	while true; do \
-		make remote-logs \
-		sleep 1s; \
-	done
 
 #
 #
@@ -229,4 +220,4 @@ deploy: build
 
 	scp $(KIOSK_CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
 
-	ssh $(SSH_USER)@$(SSH_HOST) $(SSH_TARGET)/kiosk-setup.sh
+	ssh $(SSH_USER)@$(SSH_HOST) systemctl restart kiosk-backend
