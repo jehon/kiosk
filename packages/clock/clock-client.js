@@ -160,6 +160,10 @@ export class KioskClockMainElement extends ClientElement {
 		// https://www.w3schools.com/graphics/tryit.asp?filename=trycanvas_clock_start
 
 		const currentTicker = status?.server?.currentTicker ?? null;
+		if (currentTicker?.stat) {
+			currentTicker.stat.start = new Date(currentTicker.stat.start);
+			currentTicker.stat.end = new Date(currentTicker.stat.end);
+		}
 
 		let now = status.now;
 		if (!now) {
