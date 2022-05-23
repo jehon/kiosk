@@ -5,7 +5,7 @@ import getConfig from './server-lib-config.js';
 import SSE from 'express-sse'; // https://www.npmjs.com/package/express-sse
 import { ROUTE_EVENTS, ROUTE_NOTIFY } from '../common/constants.js';
 
-const expressApp = express();
+export const expressApp = express();
 const sse = new SSE();
 
 /**

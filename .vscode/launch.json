@@ -5,19 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Electron Main",
-            "program": "${workspaceFolder}/main.cjs",
+            "type": "node",
+            "request": "launch",
+            "name": "Launch server (prod)",
+            "program": "${workspaceFolder}/server/server.js",
             "args": [
                 "-f",
-                "etc/kiosk.yml",
-                "--dev-mode"
+                "etc/kiosk.yml"
             ],
-            "request": "launch",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
             "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "pwa-node"
+                "<node_internals>/**",
+                "node_modules/**"
+            ]
         },
         {
             "type": "node",

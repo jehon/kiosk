@@ -53,7 +53,7 @@ export class KioskCameraMainElement extends ClientElement {
 		// - statusUrl = the previous url
 		//
 		if (status.server.code == TriStates.READY && status.server.url) {
-			const newUrl = (status.server.url ?? '').replace('localhost', window.location.hostname);
+			const newUrl = status.server.url;
 			app.debug('Adapt: up', status.server, this.actualUrl, newUrl);
 
 			// Live event
