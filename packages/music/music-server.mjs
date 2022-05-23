@@ -76,17 +76,7 @@ function stopMPD() {
  * @returns {module:server/ServerApp} the app
  */
 export function init() {
-	// New behavior
 	stopMPD();
-
-	// onClient(app.getChannel(), (status => {
-	// if (status.active) {
-	// 	startMPD();
-	// } else {
-	// 	stopMPD();
-	// }
-	// }));
-
 	startMPD();
 
 	app.setState(status);
