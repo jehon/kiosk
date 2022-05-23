@@ -54,7 +54,10 @@ export default class extends CameraAPI {
 			res.header('content-type', 'video/webm');
 			// const cmd = `ffmpeg -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`;
 
+			//
 			// work only in chrome !
+			// For firefox, see https://support.mozilla.org/en-US/kb/html5-audio-and-video-firefox
+			//
 			const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -vcodec copy -an -f matroska -`;
 			routelogger.debug('ffmpeg command: ', cmd);
 
