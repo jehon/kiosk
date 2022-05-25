@@ -6,9 +6,6 @@
 #
 #
 dev: dependencies dump test lint 
-
-local: dev deploy remote-logs
-
 pull-request: clean test
 
 #
@@ -23,9 +20,6 @@ ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 # Generic configuration
 #
 #
-SSH_HOST ?= kiosk
-SSH_USER ?= root
-SSH_TARGET ?= /opt/kiosk
 KIOSK_CONFIG ?= $(ROOT)/etc/kiosk.yml
 
 # https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_7.html
@@ -38,9 +32,6 @@ PATH := $(shell npm bin):$(PATH)
 dump:
 	$(info ROOT:         $(ROOT))
 	$(info PATH:         $(PATH))
-	$(info SSH_HOST:     $(SSH_HOST))
-	$(info SSH_USER:     $(SSH_USER))
-	$(info SSH_TARGET:   $(SSH_TARGET))
 	$(info KIOSK_CONFIG: $(KIOSK_CONFIG))
 
 #
@@ -123,9 +114,6 @@ node_modules/.packages-installed.json: package.json package-lock.json
 	touch package-lock.json
 	touch "$@"
 
-# dependencies-generate-patch:
-# 	(diff -x package.json -x package-lock.json -rubB node_modules/ node_modules.bak/ || true) > modules.patch
-
 .PHONY: browserslist
 browserslist:
 	$(shell npm bin)/browserslist --update-db
@@ -162,62 +150,3 @@ lint-fix: dependencies
 .PHONY: depcheck
 depcheck:
 	depcheck
-
-#
-#
-# Full
-#
-#
-full-upgrade: dump \
-	deploy \
-	remote-restart-dm \
-	remote-logs
-
-#
-#
-# Check
-#
-#
-remote-logs-lightdm:
-	ssh $(SSH_HOST) journalctl -f -u lightdm
-
-remote-logs:
-	@echo "Remote debugging is enabled on ports 9222 (browser) and 9223 (inspect)"
-	ssh \
-		-L 9222:localhost:9222 \
-		-L 9223:localhost:9223 \
-		kiosk@$(SSH_HOST) tail -n 1000 -f /home/kiosk/kiosk.log
-
-remote-chrome:
-	google-chrome http://localhost:9223
-
-#
-#
-# Control
-#
-#
-remote-reboot:
-	ssh $(SSH_HOST) reboot
-
-remote-restart-dm:
-	ssh $(SSH_HOST) systemctl restart display-manager
-
-#
-#
-# Deploy
-#
-#
-deploy: build
-	type jh-ssh-ping >/dev/null 2>&1 && jh-ssh-ping -w "$(SSH_HOST)" || true
-
-	rsync --itemize-changes --recursive --perms --times --links --omit-dir-times --delete \
-		--exclude "tmp"                   --filter "protect tmp"                \
-		--exclude "etc/kiosk.yml"         --filter "protect etc/kiosk.yml"      \
-		--exclude "node_modules"          --filter "protect node_modules"       \
-		--exclude ".nfs*"  \
-		--exclude "unused" \
-		"$(ROOT)/" "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/"
-
-	scp $(KIOSK_CONFIG) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET)/etc/kiosk.yml
-
-	ssh $(SSH_USER)@$(SSH_HOST) systemctl restart kiosk-backend
