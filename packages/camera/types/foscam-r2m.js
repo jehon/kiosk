@@ -50,15 +50,35 @@ export default class extends CameraAPI {
 
 		expressApp.get(url, (_req, res) => {
 			routelogger.debug(`received connection for ${url}`);
+			//
+			// HTML 5: browser support
+			//     https://en.wikipedia.org/wiki/HTML5_video#Browser_support
+			//
 
-			res.header('content-type', 'video/webm');
-			// const cmd = `ffmpeg -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska -`;
+
+			res.header('content-type', 'video/mp4');
+			// const convert = `-c:v copy -an -bsf:v h264_mp4toannexb -maxrate 500k -f matroska`;
+			// -f dash -window_size 4 -extra_window_size 0 -min_seg_duration 2000000 -remove_at_exit 1
+			// const convert = '-an -c:v copy -b:v 2000k -f m4s';
+			// const convert = `-c:v libx264 -f mp4`;
 
 			//
 			// work only in chrome !
 			// For firefox, see https://support.mozilla.org/en-US/kb/html5-audio-and-video-firefox
 			//
-			const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub -vcodec copy -an -f matroska -`;
+			// const convert = '-vcodec copy -an -f matroska';
+
+			// With many helps
+			//    https://github.com/w23/zenki/blob/master/rtsp-to-hls.sh
+			//    https://stackoverflow.com/a/66165298/1954789
+			//
+			// -movflags frag_keyframe+empty_moov: solve framgentation problem
+			//
+			// Works in Firefox and Chrome ?
+			//
+			const convert = '-c:v copy -movflags frag_keyframe+empty_moov -an -f ismv';
+
+			const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub ${convert} -`;
 			routelogger.debug('ffmpeg command: ', cmd);
 
 			const cmdArray = cmd.split(' ');
