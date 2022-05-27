@@ -52,7 +52,7 @@ export async function guiPrepare(_devMode) {
  * @param {string} _url to be loaded
  */
 export async function guiLaunch(_logger, _devMode, _url) {
-    expressApp.get('/client', (req, res) => res.redirect(_url));
+    expressApp.get('/', (req, res) => res.redirect(_url));
     const port = getConfig('core.port', 0);
 
     await new Promise(resolve => {
