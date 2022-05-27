@@ -7,6 +7,7 @@ import { ROUTE_EVENTS, ROUTE_NOTIFY } from '../common/constants.js';
 
 export const expressApp = express();
 const sse = new SSE();
+export let expressAppListener;
 
 /**
  * @type {Map<string, Array<Function>>}
@@ -55,7 +56,7 @@ export async function guiLaunch(_logger, _devMode, _url) {
     const port = getConfig('core.port', 0);
 
     await new Promise(resolve => {
-        expressApp.listen(port, function () {
+        expressAppListener = expressApp.listen(port, function () {
             // Thanks to https://stackoverflow.com/a/29075664/1954789
             _logger.info(`Listening on port ${this.address().port}!`);
             resolve(port);
