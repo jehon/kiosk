@@ -3,6 +3,14 @@ import serverAppFactory from '../../server/server-app.js';
 import child_process from 'child_process';
 import nodeCleanup from 'node-cleanup';
 
+import { expressApp, expressAppListener } from '../../server/server-lib-gui-browser.js';
+import { createProxyMiddleware } from '../../node_modules/http-proxy-middleware/dist/index.js';
+
+// Thanks to https://github.com/chimurai/http-proxy-middleware#websocket
+const wsProxy = createProxyMiddleware({ pathFilter: '/music/ws', target: 'ws://localhost:8800', changeOrigin: true });
+expressApp.use(wsProxy);
+expressAppListener.on('upgrade', wsProxy.upgrade);
+
 /**
  * @type {module:server/ServerApp}
  */

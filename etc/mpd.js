@@ -3,8 +3,7 @@ var CONFIG = {
     clients: [
         {
             name: 'kiosk',
-            port: 8800,
-            // hostname: 'localhost'
+            hostname: location.protocol + '//' + location.host + '/music/ws'
         }
     ]
 };

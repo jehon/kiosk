@@ -19,6 +19,7 @@
     "express-sse": "0.5.3",
     "fetch-mock": "9.11.0",
     "fs-extra": "10.1.0",
+    "http-proxy-middleware": "2.0.6",
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
     "node-cleanup": "2.1.2",
