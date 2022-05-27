@@ -1,7 +1,7 @@
 [
     {
         "originalFilePath": "photo-frame/f2/m3.jpg",
-        "subPath": "00 m3.jpg",
+        "subPath": "/tests/server/data/photos/00 m3.jpg",
         "data": {
             "title": "",
             "date": "",
@@ -10,7 +10,7 @@
     },
     {
         "originalFilePath": "photo-frame/f2/m2.jpg",
-        "subPath": "01 m2.jpg",
+        "subPath": "/tests/server/data/photos/01 m2.jpg",
         "data": {
             "title": "",
             "date": "",
@@ -19,7 +19,7 @@
     },
     {
         "originalFilePath": "photo-frame/f2/m1.jpg",
-        "subPath": "02 m1.jpg",
+        "subPath": "/tests/server/data/photos/02 m1.jpg",
         "data": {
             "title": "",
             "date": "",
@@ -28,7 +28,7 @@
     },
     {
         "originalFilePath": "photo-frame/f2/m4.jpg",
-        "subPath": "03 m4.jpg",
+        "subPath": "/tests/server/data/photos/03 m4.jpg",
         "data": {
             "title": "",
             "date": "",
@@ -37,7 +37,7 @@
     },
     {
         "originalFilePath": "photo-frame/f1/i1.png",
-        "subPath": "04 i1.png",
+        "subPath": "/tests/server/data/photos/04 i1.png",
         "data": {
             "title": "Test title here",
             "date": "2019-07-01 02:03:04",
@@ -46,7 +46,7 @@
     },
     {
         "originalFilePath": "photo-frame/f1/i2.jpg",
-        "subPath": "05 i2.jpg",
+        "subPath": "/tests/server/data/photos/05 i2.jpg",
         "data": {
             "title": "",
             "date": "",
@@ -55,7 +55,7 @@
     },
     {
         "originalFilePath": "photo-frame/f1/i4.jpg",
-        "subPath": "06 i4.jpg",
+        "subPath": "/tests/server/data/photos/06 i4.jpg",
         "data": {
             "title": "",
             "date": "",
