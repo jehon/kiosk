@@ -4,10 +4,7 @@ var CONFIG = {
         {
             name: 'kiosk',
             port: 8800,
-            hostname: 'localhost'
-            /*,
-            stream_port: 58000*/ //for example
+            // hostname: 'localhost'
         }
-    ]/*,
-    theme:['alt_colors.css']*/
+    ]
 };
