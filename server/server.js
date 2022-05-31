@@ -25,7 +25,6 @@ resetConfig()
 		if (app.getConfig('server.devMode', false)) {
 			app.debug('Versions', process.versions);
 			app.info('Node version: ', process.versions['node']);
-			app.info('Chrome version: ', process.versions['chrome']);
 		}
 
 		app.debug('Final config: ', config);
