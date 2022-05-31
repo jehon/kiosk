@@ -9,3 +9,5 @@ ADD https://raw.githubusercontent.com/jehon/packages/main/start /start
 RUN chmod +x /start && ./start
 
 RUN apt install -y jehon-system-kiosk
+
+RUN apt install -y xvfb
