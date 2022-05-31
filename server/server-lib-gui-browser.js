@@ -58,7 +58,7 @@ export async function guiLaunch(_logger, _devMode, _url) {
     await new Promise(resolve => {
         expressAppListener = expressApp.listen(port, function () {
             // Thanks to https://stackoverflow.com/a/29075664/1954789
-            _logger.info(`Listening on port ${this.address().port}!`);
+            _logger.info(`Listening on port ${this.address().port} (link: 'http://localhost:${this.address().port}')!`);
             resolve(port);
         });
     });
