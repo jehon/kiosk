@@ -1,9 +1,15 @@
 {
 	"name": "Debian",
 	"build": {
-		"dockerfile": "Dockerfile",
+		"dockerfile": "Dockerfile"
 	},
-	"extensions": [],
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"EditorConfig.EditorConfig",
+		"ecmel.vscode-html-css",
+		"mkaufman.HTMLHint",
+		"meganrogge.template-string-converter"
+	],
 	"portsAttributes": {
 		"4545": {
 			"label": "browser"
