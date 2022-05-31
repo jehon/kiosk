@@ -1,0 +1,20 @@
+{
+	"name": "Debian",
+	"build": {
+		"dockerfile": "Dockerfile",
+	},
+	"extensions": [],
+	"portsAttributes": {
+		"4545": {
+			"label": "browser"
+		}
+	},
+	"forwardPorts": [
+		4545
+	],
+	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+	// "remoteUser": "vscode",
+	//	"features": {
+	//		"sshd": "latest"
+	//	}
+}
