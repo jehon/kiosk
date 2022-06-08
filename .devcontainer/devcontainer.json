@@ -8,6 +8,8 @@
 		"EditorConfig.EditorConfig",
 		"ecmel.vscode-html-css",
 		"mkaufman.HTMLHint",
+		"nobuhito.printcode",
+		"gruntfuggly.todo-tree",
 		"meganrogge.template-string-converter"
 	],
 	"portsAttributes": {
