@@ -47,7 +47,7 @@
     "lint-staged": "13.0.1",
     "nock": "13.2.6",
     "stylelint": "14.9.0",
-    "stylelint-config-standard": "24.0.0"
+    "stylelint-config-standard": "26.0.0"
   },
   "engines": {
     "node": ">=12.0.0"
