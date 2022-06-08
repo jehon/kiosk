@@ -1,6 +1,6 @@
 
-import ClientElement from './client-element.js';
-import { sendToServer } from './client-server.js';
+import ClientElement from '../client/client-element.js';
+import { sendToServer } from '../client/client-server.js';
 
 export default class KioskWebviewElement extends ClientElement {
     #activePriority = 0;

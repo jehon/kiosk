@@ -32,11 +32,3 @@ export function guiOnServerMessage(channel, cb) {
         cb(data);
     });
 }
-
-// /**
-//  * Reset cache.
-//  * See http://seenaburns.com/debugging-electron-memory-usage/
-//  */
-// import TimeInterval from '../common/TimeInterval.js';
-// const { webFrame } = require('electron');
-// new TimeInterval(() => webFrame.clearCache(), 2 * 60 * 1000).start();

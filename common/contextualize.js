@@ -26,15 +26,3 @@ export default function contextualize(context) {
 		return key;
 	};
 }
-
-// /**
-//  * @param context
-//  */
-// export function ctxForFunction(context) {
-// 	// Return a function to apply on contextualization function
-// 	return (fn) =>
-// 		// The new function will have its first argument contextualized
-// 		(key, ...args) => {
-// 			return fn(contextualize(context)(key), ...args);
-// 		};
-// }
