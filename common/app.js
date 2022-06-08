@@ -3,7 +3,7 @@ import Callback from './callback.js';
 import contextualize from './contextualize.js';
 import { Logger } from './logger.js';
 import TimeInterval from './TimeInterval.js';
-import _ from '../node_modules/lodash-es/lodash.js';
+import { cloneDeep } from '../node_modules/lodash-es/lodash.js';
 import { ACTIVITY_SUB_CHANNEL } from './constants.js';
 
 let idGenerator = 1;
@@ -119,7 +119,7 @@ export default class App {
      * @returns {object} the state of the application
      */
     getState() {
-        return _.cloneDeep(this.#stateCallback.getState());
+        return cloneDeep(this.#stateCallback.getState());
     }
 
     /**
