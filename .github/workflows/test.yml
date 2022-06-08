@@ -29,8 +29,12 @@ jobs:
     - name: make dump
       run: docker run -v $PWD:/workspace -w /workspace local make dump
 
-    - run: make computer-setup
-    - run: make dump
-    - run: make build
-    - run: make test
-    - run: make lint
+#    - run: make computer-setup
+    - name: make build
+      run: docker run -v $PWD:/workspace -w /workspace local make build
+
+    - name: make test
+      run: docker run -v $PWD:/workspace -w /workspace local make test
+
+    - name: make lint
+      run: docker run -v $PWD:/workspace -w /workspace local make lint
