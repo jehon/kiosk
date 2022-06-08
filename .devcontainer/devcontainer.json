@@ -1,7 +1,7 @@
 {
 	"name": "Debian",
 	"build": {
-		"dockerfile": "Dockerfile"
+		"dockerfile": "../Dockerfile"
 	},
 	"extensions": [
 		"dbaeumer.vscode-eslint",

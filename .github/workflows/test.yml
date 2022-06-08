@@ -20,7 +20,7 @@ jobs:
         submodules: true
 
     - name: Build docker images
-      run: docker build -t local -f .devcontainer/Dockerfile .
+      run: docker build -t local .
 
     - name: make dump
       run: docker run -v $PWD:/workspace -w /workspace local make dump
