@@ -53,7 +53,7 @@ export async function guiPrepare(_devMode) {
  */
 export async function guiLaunch(_logger, _devMode, _url) {
     expressApp.get('/', (req, res) => res.redirect(_url));
-    const port = getConfig('core.port', 0);
+    const port = getConfig('core.port', 4545);
 
     await new Promise(resolve => {
         expressAppListener = expressApp.listen(port, function () {
