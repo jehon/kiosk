@@ -15,10 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-
     - uses: actions/checkout@v3
       with:
         submodules: true
@@ -29,7 +25,6 @@ jobs:
     - name: make dump
       run: docker run -v $PWD:/workspace -w /workspace local make dump
 
-#    - run: make computer-setup
     - name: make build
       run: docker run -v $PWD:/workspace -w /workspace local make build
 
