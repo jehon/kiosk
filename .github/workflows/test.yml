@@ -15,16 +15,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-
     - uses: actions/checkout@v3
       with:
         submodules: true
-    
-    - run: make computer-setup
-    - run: make dump
-    - run: make build
-    - run: make test
-    - run: make lint
+
+    - name: Build docker images
+      run: docker build -t local .
+
+    - name: make dump
+      run: docker run -v $PWD:/workspace -w /workspace local make dump
+
+    - name: make build
+      run: docker run -v $PWD:/workspace -w /workspace local make build
+
+    - name: make test
+      run: docker run -v $PWD:/workspace -w /workspace local make test
+
+    - name: make lint
+      run: docker run -v $PWD:/workspace -w /workspace local make lint
