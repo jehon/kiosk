@@ -60,7 +60,16 @@ export class KioskCameraMainElement extends ClientElement {
 			if (newUrl != this.actualUrl) {
 				app.debug('Adapt: go live');
 				this.actualUrl = newUrl;
-				this.shadowRoot.innerHTML = `<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src="${this.actualUrl}"></source></video>`;
+				// Video need to be muted to allow autoplay:
+				//   https://developer.mozilla.org/en-US/docs/Web/Media/Autoplay_guide
+				//   https://stackoverflow.com/a/45869587/1954789
+				this.shadowRoot.innerHTML = `
+					<video style="width: 95%; height: 95%" 
+							autoplay=1 muted preload="none"
+							poster="../packages/camera/camera.png" 
+						>
+						<source src="${this.actualUrl}"></source>
+					</video>`;
 			}
 		} else {
 			app.debug('Adapt: down');
