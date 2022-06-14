@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import { expressApp } from '../../../server/server-lib-gui.js';
 import { CameraAPI } from '../constants.js';
 
-const url = '/camera/video';
+const publicUrl = '/camera/video.mp4';
 
 /**
  * @param {number} ms - milliseconds to wait before resolving the promise
@@ -48,8 +48,8 @@ export default class extends CameraAPI {
 
 		const routelogger = this.app.childLogger('route');
 
-		expressApp.get(url, (_req, res) => {
-			routelogger.debug(`received connection for ${url}`);
+		expressApp.get(publicUrl, (_req, res) => {
+			routelogger.debug(`received connection for ${publicUrl}`);
 			//
 			// HTML 5: browser support
 			//     https://en.wikipedia.org/wiki/HTML5_video#Browser_support
@@ -161,6 +161,6 @@ export default class extends CameraAPI {
 			await move('down', 'ptzMoveDown');
 		}
 
-		return url;
+		return publicUrl;
 	}
 }
