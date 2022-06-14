@@ -15,20 +15,6 @@ const app = new ClientApp('camera');
 export class KioskCameraMainElement extends ClientElement {
 	actualUrl = '';
 
-	// connectedCallback() {
-	// 	super.connectedCallback();
-	// 	// this.innerHTML = '<video style="width: 95%; height: 95%" autoplay=1 preload="none" poster="../packages/camera/camera.png" ><source src=""></source></video>';
-
-	// 	// First load an IFrame to trigger authentication
-	// 	// this.innerHTML = `<iframe style='width: 1px; height: 1px; position: absolute; left: -100px' src='${status.host + status.videoFeed + '?' + Date.now()}'></iframe>`;
-
-	// 	// We need the iframe to be loaded for the 'login' event to happen
-	// 	// setTimeout(() => {
-	// 	// this.innerHTML = `<div class='full full-background-image' style='background-image: url("${status.host + status.videoFeed}?${Date.now()}")'></div>`;
-	// 	// this.innerHTML = `<div class='full full-background-image' style='background-image: url("/camera/feed?${Date.now()}")'></div>`;
-	// 	// }, 2000);
-	// }
-
 	disconnectedCallback() {
 		super.disconnectedCallback();
 
