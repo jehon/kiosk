@@ -134,7 +134,7 @@ test-client-continuously: build
 
 .PHONY: lint
 lint: dependencies
-	lint .
+	eslint .
 	stylelint **/*.css
 
 .PHONY: lint-fix
