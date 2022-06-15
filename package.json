@@ -56,7 +56,7 @@
     "postinstall": "cp package.json node_modules/.packages-installed.json",
     "prepare": "[ \"$NODE_ENV\" = \"production\" ] && exit 0; husky install",
     "start": "node server/server.js",
-    "eslint": "eslint .",
+    "lint": "eslint .",
     "stylelint": "stylelint **/*.css",
     "test-client-continuoulsy": "karma start tests/client/karma.conf.cjs",
     "start-fake-server": "./tests/start-fake-camera.cjs",

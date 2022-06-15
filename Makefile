@@ -134,12 +134,12 @@ test-client-continuously: build
 
 .PHONY: lint
 lint: dependencies
-	eslint .
+	lint .
 	stylelint **/*.css
 
 .PHONY: lint-fix
 lint-fix: dependencies
-	eslint . --fix
+	lint . --fix
 
 .PHONY: depcheck
 depcheck:
