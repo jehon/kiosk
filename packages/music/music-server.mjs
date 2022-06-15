@@ -19,7 +19,7 @@ expressApp.get('/externals/mpd/config.js', (req, res) =>
 		clients: [
 			{
 				name: 'kiosk',
-				hostname: location.protocol + '//' + location.host + "${MusicWebSocket}"
+				hostname: location.protocol + '//' + location.hostname + '${MusicWebSocket}'
 			}
 		]
 	};
