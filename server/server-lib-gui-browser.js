@@ -1,11 +1,11 @@
 
-import express from 'express';
+import Express from 'express';
 import { Logger } from '../common/logger.js';
 import getConfig from './server-lib-config.js';
 import SSE from 'express-sse'; // https://www.npmjs.com/package/express-sse
 import { ROUTE_EVENTS, ROUTE_NOTIFY } from '../common/constants.js';
 
-export const expressApp = express();
+export const expressApp = Express();
 const sse = new SSE();
 export let expressAppListener;
 
@@ -26,7 +26,7 @@ export async function guiPrepare(_devMode) {
     }, sse.init);
 
     // to support JSON-encoded bodies
-    expressApp.use(express.json({
+    expressApp.use(Express.json({
         strict: false
     }));
     expressApp.post(`${ROUTE_NOTIFY}/:channel`, (req, res) => {
@@ -40,10 +40,10 @@ export async function guiPrepare(_devMode) {
         return res.send('Treated');
     });
 
-    expressApp.use('/media', express.static('/media'));
-    expressApp.use('/mnt', express.static('/mnt'));
-    expressApp.use('/var/jehon/photos', express.static('/var/jehon/photos'));
-    expressApp.use(express.static('.'));
+    expressApp.use('/media', Express.static('/media'));
+    expressApp.use('/mnt', Express.static('/mnt'));
+    expressApp.use('/var/jehon/photos', Express.static('/var/jehon/photos'));
+    expressApp.use(Express.static('.'));
 }
 
 /**
