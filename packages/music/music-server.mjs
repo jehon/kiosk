@@ -6,8 +6,9 @@ import nodeCleanup from 'node-cleanup';
 import { expressApp, expressAppListener } from '../../server/server-lib-gui-browser.js';
 import { createProxyMiddleware } from '../../node_modules/http-proxy-middleware/dist/index.js';
 
+const MusicWebSocket = '/music/ws';
 // Thanks to https://github.com/chimurai/http-proxy-middleware#websocket
-const wsProxy = createProxyMiddleware({ pathFilter: '/music/ws', target: 'ws://localhost:8800', changeOrigin: true });
+const wsProxy = createProxyMiddleware({ pathFilter: MusicWebSocket, target: 'ws://localhost:8800', changeOrigin: true });
 expressApp.use('/music/ws', wsProxy);
 expressAppListener.on('upgrade', wsProxy.upgrade);
 
@@ -18,7 +19,7 @@ expressApp.get('/externals/mpd/config.js', (req, res) =>
 		clients: [
 			{
 				name: 'kiosk',
-				hostname: location.protocol + '//' + location.host + '/music/ws'
+				hostname: location.protocol + '//' + location.host + "${MusicWebSocket}"
 			}
 		]
 	};
