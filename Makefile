@@ -94,7 +94,7 @@ stop-previous:
 build: dependencies browserslist \
 		externals/mpd/README.md \
 		externals/websockify/README.md \
-		tmp/importmap.json \
+		tmp/importmap.json
 	mkdir -p tmp
 
 externals/%/README.md:
