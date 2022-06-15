@@ -8,8 +8,22 @@ import { createProxyMiddleware } from '../../node_modules/http-proxy-middleware/
 
 // Thanks to https://github.com/chimurai/http-proxy-middleware#websocket
 const wsProxy = createProxyMiddleware({ pathFilter: '/music/ws', target: 'ws://localhost:8800', changeOrigin: true });
-expressApp.use(wsProxy);
+expressApp.use('/music/ws', wsProxy);
 expressAppListener.on('upgrade', wsProxy.upgrade);
+
+// Serve the config for the mpd folder
+expressApp.get('/externals/mpd/config.js', (req, res) =>
+	res.send(`
+	var CONFIG = {
+		clients: [
+			{
+				name: 'kiosk',
+				hostname: location.protocol + '//' + location.host + '/music/ws'
+			}
+		]
+	};
+	`)
+);
 
 /**
  * @type {module:server/ServerApp}

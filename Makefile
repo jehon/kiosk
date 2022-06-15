@@ -95,17 +95,11 @@ build: dependencies browserslist \
 		externals/mpd/README.md \
 		externals/websockify/README.md \
 		tmp/importmap.json \
-		externals/mpd/config.js
 	mkdir -p tmp
 
 externals/%/README.md:
 	git submodule init
 	git submodule update
-
-externals/mpd/config.js: externals/mpd/README.md \
-	etc/mpd.js
-	
-	cp -f etc/mpd.js "$@"
 
 .PHONY: dependencies
 dependencies: node_modules/.packages-installed.json
