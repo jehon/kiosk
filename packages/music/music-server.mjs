@@ -8,7 +8,11 @@ import { createProxyMiddleware } from '../../node_modules/http-proxy-middleware/
 
 const MusicWebSocket = '/music/ws';
 // Thanks to https://github.com/chimurai/http-proxy-middleware#websocket
-const wsProxy = createProxyMiddleware({ pathFilter: MusicWebSocket, target: 'ws://localhost:8800', changeOrigin: true });
+const wsProxy = createProxyMiddleware({
+	pathFilter: MusicWebSocket,
+	target: 'ws://localhost:8800',
+	changeOrigin: true
+});
 expressApp.use(MusicWebSocket, wsProxy);
 expressAppListener.on('upgrade', wsProxy.upgrade);
 
