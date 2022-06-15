@@ -40,8 +40,8 @@ const status = {
 
 const MPDServerCommand = [
 	'externals/websockify/run',
-	'localhost:8800',
-	'localhost:6600'
+	'8800', // From
+	'localhost:6600' // To
 ];
 
 /** @type {child_process.ChildProcess} */
