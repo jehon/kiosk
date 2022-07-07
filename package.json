@@ -28,8 +28,8 @@
     "yargs": "17.5.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "17.0.2",
-    "@commitlint/config-conventional": "17.0.2",
+    "@commitlint/cli": "17.0.3",
+    "@commitlint/config-conventional": "17.0.3",
     "@types/jasmine": "4.0.3",
     "depcheck": "1.4.3",
     "eslint": "8.19.0",
