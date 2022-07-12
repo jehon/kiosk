@@ -23,7 +23,7 @@
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
     "node-cleanup": "2.1.2",
-    "node-fetch": "3.2.7",
+    "node-fetch": "3.2.8",
     "object-path": "0.11.8",
     "yargs": "17.5.1"
   },
