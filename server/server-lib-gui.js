@@ -20,7 +20,7 @@ export async function start(serverApp) {
     const url = 'client/index.html';
     // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
-    await guiPrepare(devMode);
+    await guiPrepare(logger, devMode);
 
     // Enable logging
     guiOnClient(CHANNEL_LOG, (message) => loggerAsMessageListener(message));

@@ -15,9 +15,10 @@ export let expressAppListener;
 const listeners = new Map();
 
 /**
+ * @param {Logger} logger for messages
  * @param {boolean} _devMode to enable de
  */
-export async function guiPrepare(_devMode) {
+export async function guiPrepare(logger, _devMode) {
     // Fix: TypeError: res.flush is not a function
     //   Thanks to https://github.com/dpskvn/express-sse/issues/28#issuecomment-812827462
     expressApp.use(ROUTE_EVENTS, (req, res, next) => {
@@ -40,9 +41,10 @@ export async function guiPrepare(_devMode) {
         return res.send('Treated');
     });
 
-    expressApp.use('/media', Express.static('/media'));
-    expressApp.use('/mnt', Express.static('/mnt'));
-    expressApp.use('/var/jehon/photos', Express.static('/var/jehon/photos'));
+    getConfig('server.expose', []).forEach(element => {
+        logger.debug(`Exposing ${element}}`);
+        expressApp.use(element, Express.static(element));
+    });
     expressApp.use(Express.static('.'));
 }
 

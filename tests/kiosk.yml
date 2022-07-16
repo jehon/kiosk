@@ -6,6 +6,10 @@ core:
     # - kiosk:loggers (configured in launch)
   port: 4545
 
+server:
+  expose:
+    - /var/cache/jehon/
+
 human:
   inactivitySeconds: 15
 
