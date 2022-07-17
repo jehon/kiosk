@@ -65,7 +65,6 @@ resetConfig()
 			loadPackage('camera'),
 			loadPackage('clock'),
 			loadPackage('fire'),
-			loadPackage('music'),
 			loadPackage('photo-frame'),
 			loadPackage('system')
 		])
