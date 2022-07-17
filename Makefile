@@ -93,7 +93,6 @@ stop-previous:
 .PHONY: build
 build: dependencies browserslist \
 		externals/mpd/README.md \
-		externals/websockify/README.md \
 		tmp/importmap.json
 	mkdir -p tmp
 
