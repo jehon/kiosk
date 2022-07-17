@@ -76,13 +76,15 @@ export function init() {
 	};
 
 	app.debug('Programming config cron\'s', config);
-	for (const l of Object.keys(config.tickers)) {
-		const aTickerConfig = config.tickers[l];
-		app.debug('Programming:', l, aTickerConfig);
-		registered.push(app.cron(onTicker, aTickerConfig.cron, aTickerConfig.duration, {
-			name: l,
-			...aTickerConfig
-		}));
+	if (config.tickers) {
+		for (const l of Object.keys(config.tickers)) {
+			const aTickerConfig = config.tickers[l];
+			app.debug('Programming:', l, aTickerConfig);
+			registered.push(app.cron(onTicker, aTickerConfig.cron, aTickerConfig.duration, {
+				name: l,
+				...aTickerConfig
+			}));
+		}
 	}
 	return app;
 }
