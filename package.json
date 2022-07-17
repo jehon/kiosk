@@ -54,7 +54,8 @@
   "scripts": {
     "postinstall": "cp package.json node_modules/.packages-installed.json",
     "prepare": "[ \"$NODE_ENV\" = \"production\" ] && exit 0; husky install",
-    "start": "node server/server.js --file tests/kiosk.yml",
+    "start": "node server/server.js",
+    "start-test": "node server/server.js --file tests/kiosk.yml",
     "lint": "eslint .",
     "stylelint": "stylelint **/*.css",
     "test-client-continuoulsy": "karma start tests/client/karma.conf.cjs",
