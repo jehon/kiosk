@@ -92,13 +92,8 @@ stop-previous:
 
 .PHONY: build
 build: dependencies browserslist \
-		externals/mpd/README.md \
 		tmp/importmap.json
 	mkdir -p tmp
-
-externals/%/README.md:
-	git submodule init
-	git submodule update
 
 .PHONY: dependencies
 dependencies: node_modules/.packages-installed.json

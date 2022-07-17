@@ -4,5 +4,3 @@ common.es6/
 tmp/
 node_modules/
 unused/
-
-externals/
