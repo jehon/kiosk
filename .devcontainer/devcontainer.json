@@ -13,12 +13,12 @@
 		"meganrogge.template-string-converter"
 	],
 	"portsAttributes": {
-		"4545": {
+		"5454": {
 			"label": "browser"
 		}
 	},
 	"forwardPorts": [
-		4545
+		5454
 	],
 	//	"features": {
 	//		"sshd": "latest"

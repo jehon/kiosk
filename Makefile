@@ -88,7 +88,7 @@ start-prod: build stop-previous
 	node ./server/server.js -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 stop-previous:
-	jh-kill-by-port 4545
+	jh-kill-by-port 5454
 
 .PHONY: build
 build: dependencies browserslist \
