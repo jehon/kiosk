@@ -2,8 +2,6 @@
 import { ClientApp } from './client-app.js';
 import { autoSelectApplication } from './client-lib-chooser.js';
 
-const app = new ClientApp('core', { devMode: false });
-
 /*
  * Catch all errors and send them to the backend
  */
@@ -20,26 +18,16 @@ window.addEventListener('error', (event) => {
 // Load other packages
 //
 
-/**
- * @param {string} name of the package
- */
-async function loadPackage(name) {
-	app.debug(`Loading ${name}`);
-	import(`../packages/${name}/${name}-client.js`)
-		.then(() => app.debug(`Loading ${name} done`),
-			e => app.error(`Loading ${name} error`, e));
-}
-
 Promise.all([
-	loadPackage('menu'),
-	loadPackage('human'),
+	import('../packages/menu/menu-client.js'),
+	import('../packages/human/human-client.js'),
 
-	loadPackage('camera'),
-	loadPackage('clock'),
-	loadPackage('fire'),
-	loadPackage('music'),
-	loadPackage('photo-frame'),
-	loadPackage('system'),
+	import('../packages/camera/camera-client.js'),
+	import('../packages/clock/clock-client.js'),
+	import('../packages/fire/fire-client.js'),
+	import('../packages/music/music-client.js'),
+	import('../packages/photo-frame/photo-frame-client.js'),
+	import('../packages/system/system-client.js'),
 ])
 	.then(() => {
 		autoSelectApplication();

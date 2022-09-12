@@ -46,27 +46,14 @@ resetConfig()
 		});
 	})
 	.then(() => {
-		/**
-		 * @param {string} name of the package (xxx without extension)
-		 */
-		async function loadPackage(name) {
-			try {
-				app.debug(`loading ${name}`);
-				import(`../packages/${name}/${name}-server.mjs`);
-				app.debug(`loading ${name}`);
-			} catch (err) {
-				app.error(`Error loading ${name}: `, err);
-			}
-		}
-
 		return Promise.all([
-			loadPackage('menu'),
+			import('../packages/menu/menu-server.mjs'),
 
-			loadPackage('camera'),
-			loadPackage('clock'),
-			loadPackage('fire'),
-			loadPackage('photo-frame'),
-			loadPackage('system')
+			import('../packages/camera/camera-server.mjs'),
+			import('../packages/clock/clock-server.mjs'),
+			import('../packages/fire/fire-server.mjs'),
+			import('../packages/photo-frame/photo-frame-server.mjs'),
+			import('../packages/system/system-server.mjs')
 		])
 			.then(() => { });
 	})
