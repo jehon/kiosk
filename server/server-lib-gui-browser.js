@@ -45,6 +45,7 @@ export async function guiPrepare(logger, _devMode) {
         logger.debug(`Exposing ${element}}`);
         expressApp.use(element, Express.static(element));
     });
+    expressApp.use('/client/', Express.static('built'));
     expressApp.use(Express.static('.'));
 }
 
