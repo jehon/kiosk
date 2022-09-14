@@ -93,6 +93,7 @@ stop-previous:
 .PHONY: build
 build: dependencies browserslist \
 		tmp/importmap.json
+	npm run build
 	mkdir -p tmp
 
 .PHONY: dependencies

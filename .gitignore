@@ -3,6 +3,7 @@ var/
 etc/kiosk.yml
 parts/
 common.es6/
+built
 
 # GUI
 .idea
