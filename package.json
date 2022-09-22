@@ -41,7 +41,7 @@
     "importly": "0.2.0",
     "jasmine": "4.4.0",
     "jasmine-core": "4.4.0",
-    "karma": "6.4.0",
+    "karma": "6.4.1",
     "karma-firefox-launcher": "2.1.2",
     "karma-jasmine": "5.1.0",
     "kill-port": "2.0.1",
