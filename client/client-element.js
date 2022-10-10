@@ -1,6 +1,7 @@
 
 import { ClientApp } from './client-app.js';
 import { sendToServer } from './client-server.js';
+import './elements/img-loading.js';
 
 export default class ClientElement extends HTMLElement {
     /**

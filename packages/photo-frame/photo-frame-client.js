@@ -152,7 +152,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			}
 		</style>
 		<div id="myCarousel">
-		<img id="img" />
+			<kiosk-img-loading id="img"></kiosk-img-loading>
 			<div id="overlay">
 				<div style="grid-area: left"   id="prev"   class="hide-on-inactive">&lt;</div>
 				<div style="grid-area: right"  id="next"   class="hide-on-inactive">&gt;</div>
