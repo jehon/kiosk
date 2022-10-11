@@ -55,6 +55,7 @@ export class KioskCameraMainElement extends ClientElement {
 							poster="../packages/camera/camera.png" 
 						>
 						<source src="${this.actualUrl}"></source>
+						Your browser does not support the video tag.
 					</video>`;
 			}
 		} else {
