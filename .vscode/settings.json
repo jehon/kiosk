@@ -1,9 +1,6 @@
 {
     "workbench.colorCustomizations": {
-        "titleBar.activeBackground": "#939393",
+        "titleBar.activeBackground": "#8d9400",
     },
-    "shellcheck.customArgs": [
-        "-x"
-    ],
     "css.format.spaceAroundSelectorSeparator": true
 }
