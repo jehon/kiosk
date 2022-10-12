@@ -19,17 +19,39 @@ jobs:
       with:
         submodules: true
 
-    - name: Build docker images
-      run: docker build -t local .
+    - name: dc dump
+      uses: jehon/actions-devcontainer@main
+      with:
+        action: dump
+
+    - id: start
+      name: dc start
+      uses: jehon/actions-devcontainer@main
+      with:
+        action: start
 
     - name: make dump
-      run: docker run -v $PWD:/workspace -w /workspace local make dump
+      uses: jehon/actions-devcontainer@main
+      with:
+        run: make dump
 
     - name: make build
-      run: docker run -v $PWD:/workspace -w /workspace local make build
+      uses: jehon/actions-devcontainer@main
+      with:
+        run: make build
 
     - name: make test
-      run: docker run -v $PWD:/workspace -w /workspace local make test
+      uses: jehon/actions-devcontainer@main
+      with:
+        run: make test
 
     - name: make lint
-      run: docker run -v $PWD:/workspace -w /workspace local make lint
+      uses: jehon/actions-devcontainer@main
+      with:
+        run: make lint
+
+    - name: dc stop
+      uses: jehon/actions-devcontainer@main
+      if: always()
+      with:
+        action: stop
