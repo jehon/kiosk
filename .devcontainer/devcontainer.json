@@ -23,7 +23,5 @@
 	//	"features": {
 	//		"sshd": "latest"
 	//	}
-	"postCreateCommand": [
-		"npm install"
-	]
+	"postCreateCommand": "npm install"
 }
