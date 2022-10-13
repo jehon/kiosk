@@ -8,7 +8,7 @@
   "dependencies": {
     "@jehon/css-inherit": "0.1.1",
     "btoa": "1.2.1",
-    "chalk": "5.1.0",
+    "chalk": "5.1.2",
     "chokidar": "3.5.3",
     "colors": "1.4.0",
     "cron-parser": "4.6.0",
