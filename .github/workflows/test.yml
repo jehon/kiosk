@@ -11,18 +11,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-
+    
 jobs:
   ga-test:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: dc dump
-      uses: jehon/actions-devcontainer@main
-      with:
-        action: dump
 
     - id: start
       name: dc start
