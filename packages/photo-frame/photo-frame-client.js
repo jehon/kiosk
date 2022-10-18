@@ -183,21 +183,13 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			return;
 		}
 
-		let photo = {
-			url: '../packages/photo-frame/photo-frame.png',
-			data: {
-				title: 'no picture',
-				date: 'today'
-			}
-		};
 
 		if (status.server.listing.length > 0) {
-			if (this.#carouselImg.getAttribute('src') != photo.url) {
-				photo = status.server.listing[status.pictureIndex];
-				app.debug('updatePicture', status.pictureIndex, photo);
-				this.#carouselInfos.innerHTML = `${photo.data.title ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
-				this.#carouselImg.setAttribute('src', photo.url);
-			}
+			let photo = status.server.listing[status.pictureIndex];
+
+			app.debug('updatePicture', status.pictureIndex, photo);
+			this.#carouselInfos.innerHTML = `${photo.data.title ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
+			this.#carouselImg.loadAndDisplayImage(photo.url);
 		}
 
 		this.shadowRoot.querySelectorAll('.hide-on-inactive').forEach(el => {
