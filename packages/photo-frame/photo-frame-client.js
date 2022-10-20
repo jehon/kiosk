@@ -5,6 +5,8 @@ import { priorities } from '../../client/config.js';
 import { humanActiveStatus } from '../human/human-client.js';
 import JehonImageLoading from '../../node_modules/@jehon/img-loading/jehon-image-loading.js';
 
+JehonImageLoading.setWaitingWheelUrl('/node_modules/@jehon/img-loading/waiting.png');
+JehonImageLoading.settransitionTimeMs(500);
 /*
 
 Status (client)
