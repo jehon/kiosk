@@ -3,6 +3,7 @@ import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 import { humanActiveStatus } from '../human/human-client.js';
+import JehonImageLoading from '../../node_modules/@jehon/img-loading/jehon-image-loading.js';
 
 /*
 
@@ -65,7 +66,7 @@ function prev() {
 
 class KioskPhotoFrameMainElement extends ClientElement {
 
-	/** @type {HTMLElement} */
+	/** @type {JehonImageLoading} */
 	#carouselImg;
 
 	/** @type {HTMLElement} */
@@ -86,7 +87,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			}
 
 			/* image */
-			#myCarousel > #img {
+			#myCarousel > jehon-image-loading {
 				width: 100%;
 				height: 100%;
 				object-fit: contain;
@@ -152,7 +153,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			}
 		</style>
 		<div id="myCarousel">
-			<jehon-image-loading id="img"></jehon-image-loading>
+			<jehon-image-loading></jehon-image-loading>
 			<div id="overlay">
 				<div style="grid-area: left"   id="prev"   class="hide-on-inactive">&lt;</div>
 				<div style="grid-area: right"  id="next"   class="hide-on-inactive">&gt;</div>
@@ -161,7 +162,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			</div>
 		</div>`;
 
-		this.#carouselImg = /** @type {HTMLImageElement} */ (this.shadowRoot.querySelector('#img'));
+		this.#carouselImg = this.shadowRoot.querySelector('jehon-image-loading');
 		this.#carouselInfos = this.shadowRoot.querySelector('#infos');
 
 		this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
