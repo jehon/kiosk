@@ -100,20 +100,20 @@ humanActiveStatus.onChange(active => {
 function init() {
 	document.querySelector('body').insertAdjacentHTML('beforeend', `
 <style>
+	body > #app-menu {
+		position: absolute;
+		top: var(--generic-space);
+		left: var(--generic-space);
+		z-index: 1000;
+	}
+
+	body > #app-menu > img {
+		width: 40px;
+	}
+
 	body > #app-menu[inactive] {
 		display: none;
 	}
-
-	body > #app-menu {
-			position: absolute;
-			top: var(--generic-space);
-			left: var(--generic-space);
-			z-index: 1000;
-		}
-
-		body > #app-menu > img {
-			width: 40px;
-		}
 </style>
 <div id="app-menu" inactive>
 	<img src='static/menu.svg' />
