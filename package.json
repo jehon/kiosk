@@ -59,9 +59,9 @@
   },
   "scripts": {
     "build": "node_modules/.bin/webpack",
-    "postinstall": "cp package.json node_modules/.packages-installed.json && npm run build",
+    "postinstall": "cp package.json node_modules/.packages-installed.json",
     "prepare": "[ \"$NODE_ENV\" = \"production\" ] && exit 0; husky install",
-    "start": "node server/server.js",
+    "start": "node_modules/.bin/webpack && node server/server.js",
     "start-test": "node server/server.js --file tests/kiosk.yml",
     "lint": "eslint .",
     "stylelint": "stylelint **/*.css",
