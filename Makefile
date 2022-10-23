@@ -33,7 +33,8 @@ dump:
 	$(info ROOT:         $(ROOT))
 	$(info PATH:         $(PATH))
 	$(info KIOSK_CONFIG: $(KIOSK_CONFIG))
-
+	echo $$PATH
+	type firefox || true
 #
 #
 # Generic functions
