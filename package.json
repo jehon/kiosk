@@ -58,7 +58,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "node_modules/.bin/webpack",
     "postinstall": "cp package.json node_modules/.packages-installed.json && npm run build",
     "prepare": "[ \"$NODE_ENV\" = \"production\" ] && exit 0; husky install",
     "start": "node server/server.js",
