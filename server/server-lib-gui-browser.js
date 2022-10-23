@@ -13,12 +13,28 @@ export let expressAppListener;
  * @type {Map<string, Array<Function>>}
  */
 const listeners = new Map();
+let startupTime = Date.now();
 
 /**
  * @param {Logger} logger for messages
- * @param {boolean} _devMode to enable de
+ * @param {boolean} devMode to enable de
  */
-export async function guiPrepare(logger, _devMode) {
+export async function guiPrepare(logger, devMode) {
+    if (devMode) {
+        // simulate delay response
+        // Thanks to https://stackoverflow.com/a/46976128/1954789
+        expressApp.use((req, res, next) => {
+            // We delay only if not initial startup
+            if (Date.now() - startupTime < 10000) {
+                next();
+            } else {
+
+                // Wait 2 second at any request
+                setTimeout(() => next(), 2000);
+            }
+        });
+    }
+
     // Fix: TypeError: res.flush is not a function
     //   Thanks to https://github.com/dpskvn/express-sse/issues/28#issuecomment-812827462
     expressApp.use(ROUTE_EVENTS, (req, res, next) => {
