@@ -49,9 +49,9 @@ debugActiveStatus.onChange((dbg) => {
 export const humanActiveStatus = new Callback();
 humanActiveStatus.onChange((status) => {
 	if (status) {
-		body.style.pointer = '';
+		body.style.cursor = '';
 	} else {
-		body.style.pointer = 'none';
+		body.style.cursor = 'none';
 	}
 	app.debug('Activity: ', status);
 });
