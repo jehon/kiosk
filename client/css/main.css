@@ -24,7 +24,7 @@ body > #main-application > * {
 
 	color: white;
 	background-color: black;
-	background-image: url("loading.gif");
+	background-image: url("waiting.svg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 200px;
@@ -181,7 +181,7 @@ kiosk-links .button {
 }
 
 img[loading] {
-	background-image: url("loading.gif");
+	background-image: url("waiting.svg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
