@@ -53,6 +53,9 @@ humanActiveStatus.onChange((status) => {
 	} else {
 		body.style.cursor = 'none';
 	}
+});
+
+humanActiveStatus.onChange((status) => {
 	app.debug('Activity: ', status);
 });
 
