@@ -34,7 +34,7 @@
     "@types/jasmine": "4.3.0",
     "css-loader": "6.7.1",
     "depcheck": "1.4.3",
-    "eslint": "8.26.0",
+    "eslint": "8.27.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "39.6.2",
     "html-webpack-plugin": "5.5.0",
