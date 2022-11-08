@@ -38,7 +38,7 @@
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jsdoc": "39.6.2",
     "html-webpack-plugin": "5.5.0",
-    "husky": "8.0.1",
+    "husky": "8.0.2",
     "importly": "0.2.0",
     "jasmine": "4.5.0",
     "jasmine-core": "4.5.0",
