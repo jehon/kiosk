@@ -12,7 +12,7 @@
     "chalk": "5.1.2",
     "chokidar": "3.5.3",
     "colors": "1.4.0",
-    "cron-parser": "4.6.0",
+    "cron-parser": "4.7.0",
     "cronstrue": "2.15.0",
     "debug": "4.3.4",
     "deepmerge": "4.2.2",
