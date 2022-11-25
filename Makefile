@@ -27,7 +27,8 @@ KIOSK_CONFIG ?= $(ROOT)/etc/kiosk.yml
 SHELL := /bin/bash
 .SECONDEXPANSION:
 
-PATH := $(shell npm bin):$(PATH)
+NPM_BIN=$(shell npm root)/.bin
+PATH := $(NPM_BIN):$(PATH)
 
 dump:
 	$(info ROOT:         $(ROOT))
@@ -106,11 +107,11 @@ node_modules/.packages-installed.json: package.json package-lock.json
 
 .PHONY: browserslist
 browserslist:
-	$(shell npm bin)/browserslist --update-db
+	$(NPM_BIN)/browserslist --update-db
 
 tmp/importmap.json:
 	mkdir -p "$(dir $@)"
-	$(shell npm bin)/importly < package-lock.json > "$@"
+	$(NPM_BIN)/importly < package-lock.json > "$@"
 
 .PHONY: test
 test: test-server test-client
