@@ -76,7 +76,7 @@ export default class extends CameraAPI {
 			//
 			// Works in Firefox and Chrome ?
 			//
-			const convert = '-c:v copy -movflags frag_keyframe+empty_moov -an -f ismv';
+			const convert = '-c:v copy -movflags frag_keyframe+empty_moov -an -r 1 -f ismv';
 
 			const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub ${convert} -`;
 			routelogger.debug('ffmpeg command: ', cmd);
