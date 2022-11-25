@@ -35,7 +35,7 @@ dump:
 	$(info PATH:         $(PATH))
 	$(info KIOSK_CONFIG: $(KIOSK_CONFIG))
 	echo $$PATH
-	type firefox || true
+	type firefox 2>/dev/null || echo "Firefox not found"
 #
 #
 # Generic functions
