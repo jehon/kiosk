@@ -9,7 +9,7 @@
     "@jehon/css-inherit": "0.1.1",
     "@jehon/img-loading": "0.4.2",
     "btoa": "1.2.1",
-    "chalk": "5.1.2",
+    "chalk": "5.2.0",
     "chokidar": "3.5.3",
     "colors": "1.4.0",
     "cron-parser": "4.7.0",
