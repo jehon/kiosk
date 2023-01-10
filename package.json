@@ -47,7 +47,7 @@
     "karma-jasmine": "5.1.0",
     "kill-port": "2.0.1",
     "lint-staged": "13.1.0",
-    "nock": "13.2.9",
+    "nock": "13.3.0",
     "style-loader": "3.3.1",
     "stylelint": "14.16.1",
     "stylelint-config-standard": "29.0.0",
