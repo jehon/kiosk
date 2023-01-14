@@ -1,7 +1,7 @@
 
 import ctxFactory from '../../common/contextualize.js';
 
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 

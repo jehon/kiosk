@@ -1,6 +1,6 @@
 
 import { Logger } from '../../common/logger.js';
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 export const records = [];
 export const loggerStreamFunctinoBuilderForTest = (namespace, level) =>

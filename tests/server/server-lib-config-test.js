@@ -1,7 +1,7 @@
 
 import serverAppFactory from '../../server/server-app.js';
 import getConfig, { setConfig, loadConfigFromFile, resetConfig } from '../../server/server-lib-config.js';
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 const app = serverAppFactory('server');
 

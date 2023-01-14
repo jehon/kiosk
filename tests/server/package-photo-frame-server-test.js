@@ -8,7 +8,7 @@ import {
 } from '../../packages/photo-frame/photo-frame-server.mjs';
 import getConfig, { setConfig } from '../../server/server-lib-config.js';
 
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 const testFolderConfig = {
 	'folder': 'tests/server/data/photos',

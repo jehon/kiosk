@@ -1,7 +1,7 @@
 
 import Callback from '../../common/callback.js';
 
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 	it('should fire when on change', function () {

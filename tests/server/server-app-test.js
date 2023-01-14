@@ -1,6 +1,6 @@
 
 import serverAppFactory from '../../server/server-app.js';
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 	it('should build', function () {

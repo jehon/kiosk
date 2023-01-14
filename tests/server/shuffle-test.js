@@ -1,6 +1,6 @@
 
 import shuffle from '../../server/shuffle.js';
-import { fn } from './helper-main.mjs';
+import { fn } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 
