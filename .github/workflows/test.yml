@@ -1,4 +1,3 @@
-name: Makefile
 
 on:
   push:
