@@ -20,8 +20,5 @@
 	"forwardPorts": [
 		5454
 	],
-	//	"features": {
-	//		"sshd": "latest"
-	//	}
 	"postCreateCommand": "npm install"
 }

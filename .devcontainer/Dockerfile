@@ -1,5 +1,5 @@
 
-FROM jehon/devcontainer
+FROM debian:testing
 
 ADD . /
 
