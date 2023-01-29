@@ -5,6 +5,8 @@ import { Logger } from './logger.js';
 import TimeInterval from './TimeInterval.js';
 import { cloneDeep } from '../node_modules/lodash-es/lodash.js';
 import { ACTIVITY_SUB_CHANNEL } from './constants.js';
+import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
+import cronParser from 'cron-parser';
 
 let idGenerator = 1;
 
@@ -133,4 +135,95 @@ export default class App {
     getChannel(ch = ACTIVITY_SUB_CHANNEL) {
         return this.name + ch;
     }
+
+	/**
+	 * @param {Function} cb callback
+	 * @param {string} cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
+	 * @param {number} duration in minutes
+	 * @param {*} data to pass to the signal (will be completed)
+	 * @returns {Function} stop to halt the cron
+	 */
+	cron(cb, cron, duration = 0, data = {}) {
+		// TODO: cron could be an array
+
+		if (cron == '') {
+			return () => { };
+		}
+
+		/**
+		 * When cron is triggered
+		 *
+		 * @param {Date} when the start of the ticker (could be now)
+		 */
+		const onCron = async (when = new Date()) => {
+			const now = new Date();
+			now.setMilliseconds(0);
+			try {
+				await cb({
+					stat: {
+						start: when,
+						end: new Date(when.getTime() + duration * 60 * 1000),
+						duration // minutes
+					}, ...data
+				});
+			} catch (e) {
+				this.error(`notifying on ${cron} gave an error: `, e);
+			}
+		};
+
+		const cronParsed = cronParser.parseExpression(cron);
+
+		if (duration > 0) {
+			const prevCron = cronParsed.prev().toDate();
+			const prevCronEnd = new Date(prevCron);
+			prevCronEnd.setMinutes(prevCron.getMinutes() + duration);
+			const isRunning = prevCronEnd > new Date();
+			if (isRunning) {
+				this.debug(`Initiating past cron for ${cron} (${cronstrue.toString(cron)}) about ${prevCronEnd} on ${new Date()} with duration ${duration}`);
+				// TODO: manage currently running tickers
+				onCron(prevCron);
+			}
+		}
+
+		let tsId = 0;
+		const program = () => {
+			const next = new Date(cronParsed.next().toDate());
+			const ds = next - new Date();
+			//
+			// Can not make it longer than 2^32
+			// And we take some security
+			//
+			// 2^32 = 12 days, 2^30 = 4 days
+			//
+			if (ds > Math.pow(2, 30)) {
+				return;
+			}
+			tsId = setTimeout(() => {
+				program();
+				onCron();
+			}, ds);
+		};
+		program();
+		return () => clearTimeout(tsId);
+	}
+
+    /**
+     * Resolve a promise on a certain date
+     *
+     * @param {Date} date the date on which the promise will be resolved
+     * @returns {Promise<void>} a promise resolving on date
+     */
+	async onDate(date) {
+		return new Promise((resolve, _reject) => {
+			if (typeof (date) == 'string') {
+				date = new Date(date);
+			}
+			const now = new Date();
+			if (date < now) {
+				this.debug('onDate: but it was already in the past, triggering immediately');
+				return resolve();
+			}
+			setTimeout(() => resolve(), date.getTime() - now.getTime());
+		});
+	}
 }
