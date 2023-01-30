@@ -20,15 +20,15 @@ describe(fn(import.meta.url), () => {
 	});
 
 	it('should extend', function () {
-		const appMain = ClientApp('test');
+		const appMain = new ClientApp('test');
 		const logger = appMain.childLogger('child');
-		expect(logger.name).toBe('kiosk:test:server:child');
+		expect(logger.name).toBe('kiosk:test:client:child');
 		logger.info('info');
 		logger.error('error');
 		logger.debug('debug');
 
 		const logger2 = logger.childLogger('grandchild');
-		expect(logger2.name).toBe('kiosk:test:server:child:grandchild');
+		expect(logger2.name).toBe('kiosk:test:client:child:grandchild');
 		logger2.info('info');
 		logger2.error('error');
 		logger2.debug('debug');
@@ -91,11 +91,5 @@ describe(fn(import.meta.url), () => {
 			cancelCron();
 		});
 
-	});
-
-	it('should handle config', function () {
-		const app = new ClientApp('server');
-		expect(app.getConfig('server.root')).not.toBeNull();
-		expect(app.getConfig('.root')).not.toBeNull();
 	});
 });

@@ -6,7 +6,7 @@ import TimeInterval from './TimeInterval.js';
 import { cloneDeep } from '../node_modules/lodash-es/lodash.js';
 import { ACTIVITY_SUB_CHANNEL } from './constants.js';
 
-const cronParser = (await import('../node_modules/cron-parser/lib/parser.js')).default;
+import Cron from '../node_modules/croner/dist/croner.min.mjs';
 
 let idGenerator = 1;
 
@@ -171,23 +171,35 @@ export default class App {
 			}
 		};
 
-		const cronParsed = cronParser.parseExpression(cron);
+		const cronParsed = new Cron(cron);
 
 		if (duration > 0) {
-			const prevCron = cronParsed.prev().toDate();
-			const prevCronEnd = new Date(prevCron);
-			prevCronEnd.setMinutes(prevCron.getMinutes() + duration);
-			const isRunning = prevCronEnd > new Date();
+            const now = new Date();
+
+            //
+            // We look in the back, to see if the last event is still running or not
+            // The last event is running if
+            //    - it is started less than "duration" minutes ago
+            //
+            // => look "duration" in the past, and see if a event should have start during
+            //    that time
+            //
+
+            const lookBackUpto = new Date(now);
+            lookBackUpto.setMinutes(lookBackUpto.getMinutes() - duration - 0.1);
+            const nextStartingFromBack = cronParsed.next(lookBackUpto);
+            const isRunning = (nextStartingFromBack < now);
+
 			if (isRunning) {
-				this.debug(`Initiating past cron for ${cron} (${cron}) about ${prevCronEnd} on ${new Date()} with duration ${duration}`);
+				this.debug(`Initiating past cron for ${cron} (${cron}) about ${nextStartingFromBack} on ${new Date()} with duration ${duration}`);
 				// TODO: manage currently running tickers
-				onCron(prevCron);
+				onCron(nextStartingFromBack);
 			}
 		}
 
 		let tsId = 0;
 		const program = () => {
-			const next = new Date(cronParsed.next().toDate());
+			const next = new Date(cronParsed.next());
 			const ds = next - new Date();
 			//
 			// Can not make it longer than 2^32
