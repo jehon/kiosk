@@ -5,7 +5,7 @@ import { Logger } from './logger.js';
 import TimeInterval from './TimeInterval.js';
 import { cloneDeep } from '../node_modules/lodash-es/lodash.js';
 import { ACTIVITY_SUB_CHANNEL } from './constants.js';
-import * as cronstrue from '../node_modules/cronstrue/dist/cronstrue.js'; // https://www.npmjs.com/package/crontrue
+
 const cronParser = (await import('../node_modules/cron-parser/lib/parser.js')).default;
 
 let idGenerator = 1;
@@ -179,7 +179,7 @@ export default class App {
 			prevCronEnd.setMinutes(prevCron.getMinutes() + duration);
 			const isRunning = prevCronEnd > new Date();
 			if (isRunning) {
-				this.debug(`Initiating past cron for ${cron} (${cronstrue.toString(cron)}) about ${prevCronEnd} on ${new Date()} with duration ${duration}`);
+				this.debug(`Initiating past cron for ${cron} (${cron}) about ${prevCronEnd} on ${new Date()} with duration ${duration}`);
 				// TODO: manage currently running tickers
 				onCron(prevCron);
 			}
