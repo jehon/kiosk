@@ -12,6 +12,9 @@ const config = {
         path: path.resolve(__dirname, 'built'),
         filename: 'bundle.js'
     },
+    experiments: {
+        topLevelAwait: true
+    },
     module: {
         rules: [
             {
