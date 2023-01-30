@@ -5,8 +5,8 @@ import { Logger } from './logger.js';
 import TimeInterval from './TimeInterval.js';
 import { cloneDeep } from '../node_modules/lodash-es/lodash.js';
 import { ACTIVITY_SUB_CHANNEL } from './constants.js';
-import cronstrue from 'cronstrue'; // https://www.npmjs.com/package/crontrue
-import cronParser from 'cron-parser';
+import * as cronstrue from '../node_modules/cronstrue/dist/cronstrue.js'; // https://www.npmjs.com/package/crontrue
+const cronParser = (await import('../node_modules/cron-parser/lib/parser.js')).default;
 
 let idGenerator = 1;
 
