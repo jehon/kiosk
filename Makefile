@@ -92,26 +92,19 @@ start-prod: build stop-previous
 stop-previous:
 	jh-kill-by-port 5454
 
-.PHONY: build
-build: dependencies browserslist \
-		tmp/importmap.json
-	npm run build
-	mkdir -p tmp
-
 .PHONY: dependencies
 dependencies: node_modules/.packages-installed.json
-node_modules/.packages-installed.json: package.json package-lock.json
+
+node_modules/.packages-installed.json: package.json
 	npm ci
+	$(NPM_BIN)/browserslist --update-db
+	$(NPM_BIN)/importly < package-lock.json > "built/importmap.json"
 	touch package-lock.json
 	touch "$@"
-
-.PHONY: browserslist
-browserslist:
-	$(NPM_BIN)/browserslist --update-db
-
-tmp/importmap.json:
-	mkdir -p "$(dir $@)"
-	$(NPM_BIN)/importly < package-lock.json > "$@"
+	
+.PHONY: build
+build:
+	npm run build
 
 .PHONY: test
 test: test-server test-client
