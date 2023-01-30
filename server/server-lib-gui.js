@@ -1,6 +1,5 @@
 
-import { CHANNEL_HISTORY, CHANNEL_LOG } from '../common/constants.js';
-import { loggerAsMessageListener } from './server-client.js';
+import { CHANNEL_HISTORY } from '../common/constants.js';
 import { guiDispatchToBrowser, guiLaunch, guiOnClient, guiPrepare } from './server-lib-gui-browser.js';
 
 export { expressApp } from './server-lib-gui-browser.js';
@@ -21,9 +20,6 @@ export async function start(serverApp) {
     // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
     await guiPrepare(logger, devMode);
-
-    // Enable logging
-    guiOnClient(CHANNEL_LOG, (message) => loggerAsMessageListener(message));
 
     // // Enable history
     onClient(CHANNEL_HISTORY, (context) => {

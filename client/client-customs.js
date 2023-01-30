@@ -1,6 +1,5 @@
 
 import loggerFactory, { Logger } from '../common/logger.js';
-import { sendLogToServer } from './client-server.js';
 
 /**
  * @param {string} name of the logger
@@ -12,11 +11,6 @@ export function clientLoggerFactory(name) {
             (...data) => {
                 /* eslint-disable no-console */
                 console[level](namespace, `[${level.toUpperCase()}]`, ...data);
-                sendLogToServer({
-                    namespace,
-                    level,
-                    content: data.map(e => (e instanceof Object ? JSON.stringify(e) : e))
-                });
             }
     );
 }

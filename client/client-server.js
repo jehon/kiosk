@@ -1,13 +1,5 @@
 
-import { CHANNEL_LOG } from '../common/constants.js';
 import { guiOnServerMessage, guiSendToServer } from './client-server-browser.js';
-
-/**
- * @param {*} data to be sent
- */
-export function sendLogToServer(data) {
-    sendToServer(CHANNEL_LOG, data);
-}
 
 /**
  * @param {string} channel to be sent on
