@@ -1,6 +1,10 @@
 
 import serverAppFactory from '../../server/server-app.js';
 
+/**
+ * @typedef {import('../../common/app.js').CronStats} CronStats
+ */
+
 /*
 Status:
 {
@@ -34,21 +38,23 @@ const status = {
  * Need to program the end of the ticker
  *
  * @param {object} data to be passed to the ticker
+ * @param {CronStats} stats of the trigger
  */
-function onCron(data) {
-	const status = app.getState();
+function onCron(data, stats) {
 	app.debug('Fire cron started:', data);
-	status.currentTicker = data;
-	app.setState(status);
+	const status = app.mergeState({
+		currentTicker: data
+	});
 
-	app.onDate(status.currentTicker.stat.end).then(() => {
+	app.onDate(stats.end).then(() => {
 		const status = app.getState();
 		// Is it the current ticker?
-		if (status.currentTicker && status.currentTicker.triggerDate == data.triggerDate) {
+		if (status.currentTicker == data) {
 			app.debug('Fire cron ended:', data);
 			// We have this event, so let's stop it and become a normal application again...
-			status.currentTicker = null;
-			app.setState(status);
+			app.mergeState({
+				currentTicker: null
+			});
 		} else {
 			app.debug('Fire cron override:', data);
 		}
@@ -68,7 +74,10 @@ export function init() {
 		disableCron();
 	}
 
-	disableCron = app.cron(onCron, app.getConfig('.cron', ''), app.getConfig('.duration', 30));
+	disableCron = app.cron(onCron, {
+		cron: app.getConfig('.cron', ''),
+		duration: app.getConfig('.duration', 30)
+	});
 
 	app.setState(status);
 

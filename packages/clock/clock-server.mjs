@@ -80,9 +80,13 @@ export function init() {
 		for (const l of Object.keys(config.tickers)) {
 			const aTickerConfig = config.tickers[l];
 			app.debug('Programming:', l, aTickerConfig);
-			registered.push(app.cron(onTicker, aTickerConfig.cron, aTickerConfig.duration, {
-				name: l,
-				...aTickerConfig
+			registered.push(app.cron(onTicker, {
+				cron: aTickerConfig.cron,
+				duration: aTickerConfig.duration,
+				data: {
+					name: l,
+					...aTickerConfig
+				}
 			}));
 		}
 	}

@@ -35,7 +35,11 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			// Without the first element (seconds), seconds are taken as "0" i.e. every minute
-			let cancelCron = app.cron(() => i++, '* * * * *', 0, 2);
+			let cancelCron = app.cron(() => i++, {
+				cron: '* * * * *',
+				duration: 0,
+				data: 123
+			});
 
 			jasmine.clock().tick(2 * 60 * 1000 + 1);
 
@@ -45,9 +49,7 @@ describe(fn(import.meta.url), () => {
 			i = 0;
 			jasmine.clock().tick(2000 + 1);
 			expect(i).toBe(0);
-
 		});
-
 	});
 
 	it('should handle cron with past duration', function () {
@@ -58,7 +60,11 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			// At 5:00, for 2 hours
-			let cancelCron = app.cron(() => i++, '0 5 * * *', 2 * 60, 2);
+			let cancelCron = app.cron(() => i++, {
+				cron: '0 5 * * *',
+				duration: 2 * 60,
+				data: 2
+			});
 
 			// It should not have fired
 
@@ -76,7 +82,11 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			// At 11:00, for 2 hours
-			let cancelCron = app.cron(() => i++, '0 11 * * *', 2 * 60, 2);
+			let cancelCron = app.cron(() => i++, {
+				cron: '0 11 * * *',
+				duration: 2 * 60,
+				data: 123
+			});
 
 			// It should have fired
 

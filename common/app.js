@@ -10,6 +10,13 @@ import Cron from '../node_modules/croner/dist/croner.min.mjs';
 
 let idGenerator = 1;
 
+/**
+ * @typedef {object} CronStats send for cron
+ * @property {Date} when as date
+ * @property {Date} end as date
+ * @property {number} duration in minutes
+ */
+
 export default class App {
     /** @type {number} */
     id;
@@ -152,16 +159,17 @@ export default class App {
     }
 
 	/**
-	 * @param {Function} cb callback
-	 * @param {string} cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
-	 * @param {number} duration in minutes
-	 * @param {*} data to pass to the signal (will be completed)
+	 * Program a cron scheduler
+	 *
+	 * @param {function(CronStats,*):void} cb callback
+	 * @param {object} options to configure the cron
+	 * @param {string} options.cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
+	 * @param {number} options.duration in minutes
+	 * @param {*} options.data to pass to the signal
 	 * @returns {Function} stop to halt the cron
 	 */
-	cron(cb, cron, duration = 0, data = {}) {
-		// TODO: cron could be an array
-
-		if (cron == '') {
+    cron(cb, options) {
+        if (options.cron == '') {
 			return () => { };
 		}
 
@@ -174,21 +182,19 @@ export default class App {
 			const now = new Date();
 			now.setMilliseconds(0);
 			try {
-				await cb({
-					stat: {
-						start: when,
-						end: new Date(when.getTime() + duration * 60 * 1000),
-						duration // minutes
-					}, ...data
-				});
+                await cb(options.data, {
+                    start: when,
+                    end: new Date(when.getTime() + options.duration * 60 * 1000),
+                    duration: options.duration // minutes
+                });
 			} catch (e) {
-				this.error(`notifying on ${cron} gave an error: `, e);
+                this.error(`notifying on ${options.cron} gave an error: `, e);
 			}
 		};
 
-		const cronParsed = new Cron(cron);
+        const cronParsed = new Cron(options.cron);
 
-		if (duration > 0) {
+        if (options.duration > 0) {
             const now = new Date();
 
             //
@@ -201,14 +207,14 @@ export default class App {
             //
 
             const lookBackUpto = new Date(now);
-            lookBackUpto.setMinutes(lookBackUpto.getMinutes() - duration - 0.1);
+            lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration - 0.1);
             const nextStartingFromBack = cronParsed.next(lookBackUpto);
             const isRunning = (nextStartingFromBack < now);
 
 			if (isRunning) {
-				this.debug(`Initiating past cron for ${cron} (${cron}) about ${nextStartingFromBack} on ${new Date()} with duration ${duration}`);
+                this.debug(`Initiating past cron for ${options.cron} (${options.cron}) about ${nextStartingFromBack} on ${new Date()} with duration ${options.duration}`);
 				// TODO: manage currently running tickers
-				onCron(nextStartingFromBack);
+                onCron(nextStartingFromBack);
 			}
 		}
 
@@ -227,7 +233,7 @@ export default class App {
 			}
 			tsId = setTimeout(() => {
 				program();
-				onCron();
+                onCron(next);
 			}, ds);
 		};
 		program();
