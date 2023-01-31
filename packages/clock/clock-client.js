@@ -5,10 +5,65 @@ import { priorities } from '../../client/config.js';
 import { angleFromHours, angleFromMinutes, angleFromMinutesSeconds, circleRadius, describeArc, handLengths, polar2cartesianX, polar2cartesianY } from './clock-draw.js';
 
 const app = new ClientApp('clock', {
-	currentTicker: null
+	currentTicker: null,
+	now: new Date()
 });
 
+const registeredCron = [];
 
+/**
+ * Initialize the package
+ *
+ * @param {object} config to start the stuff
+ * @returns {module:client/ClientApp} the app
+ */
+export function init(config = app.getConfig('.', {})) {
+	app.setState({
+		currentTicker: null,
+		now: new Date()
+	});
+
+	while (registeredCron.length > 0) {
+		registeredCron.pop()();
+	}
+
+	if (config.tickers) {
+		app.debug('Programming config cron\'s', config);
+		for (const l of Object.keys(config.tickers)) {
+			const oneTickerConfig = config.tickers[l];
+			app.debug('Programming:', l, oneTickerConfig);
+			registeredCron.push(app.cron(
+				(data, stats) => {
+					const status = app.mergeState({
+						currentTicker: {
+							data,
+							stats
+						}
+					});
+
+					app.onDate(stats.end).then(() => {
+						// Is the current ticker still active?
+						if (status.currentTicker.stats.end <= status.now) {
+							app.mergeState({
+								currentTicker: null
+							});
+						}
+					});
+				},
+				{
+					cron: oneTickerConfig.cron,
+					duration: oneTickerConfig.duration,
+					data: {
+						name: l,
+						...oneTickerConfig
+					}
+				}));
+		}
+	}
+	return app;
+}
+
+init();
 
 export class KioskClockMainElement extends ClientElement {
 	/** @override */
@@ -76,20 +131,9 @@ export class KioskClockMainElement extends ClientElement {
 	/** @override */
 	stateChanged(status) {
 		// https://www.w3schools.com/graphics/tryit.asp?filename=trycanvas_clock_start
-
-		const currentTicker = status?.server?.currentTicker ?? null;
-		if (currentTicker?.stat) {
-			currentTicker.stat.start = new Date(currentTicker.stat.start);
-			currentTicker.stat.end = new Date(currentTicker.stat.end);
-		}
-
-		let now = status.now;
-		if (!now) {
-			return;
-		}
-		let hour = now.getHours();
-		let minute = now.getMinutes();
-		let second = now.getSeconds();
+		let hour = status.now.getHours();
+		let minute = status.now.getMinutes();
+		let second = status.now.getSeconds();
 
 		// hand: hour
 		let hourAngle = (hour % 12 * Math.PI / 6) +
@@ -115,20 +159,20 @@ export class KioskClockMainElement extends ClientElement {
 		} else {
 			// text: date
 			this.dateEl.style.display = 'initial';
-			this.dateEl.innerHTML = `${now.getDate()}-${(now.getMonth() + 1)}-${now.getFullYear()}`;
+			this.dateEl.innerHTML = `${status.now.getDate()}-${(status.now.getMonth() + 1)}-${status.now.getFullYear()}`;
 
 			// text: day of the week
 			this.dowEl.style.display = 'initial';
-			let dow = (now.getDay() - 1 + 7) % 7; // Handle negative numbers
+			let dow = (status.now.getDay() - 1 + 7) % 7; // Handle negative numbers
 			// dow = Math.floor(second % 7); // Debug
 			const dows = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 			this.dowEl.innerHTML = dows[dow];
 			this.dowEl.setAttribute('x', '' + ((dow * 200 / 7) - 100));
 		}
 
-		if (currentTicker && currentTicker.stat.end > new Date()) {
-			const start = currentTicker.stat.start;
-			const end = currentTicker.stat.end;
+		if (status.currentTicker?.stats.end > new Date()) {
+			const start = status.currentTicker.stats.start;
+			const end = status.currentTicker.stats.end;
 			this.arcEl.total.style.display = 'initial';
 			this.arcEl.remain.style.display = 'initial';
 			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(start.getMinutes()), angleFromMinutes(end.getMinutes())));
@@ -148,7 +192,7 @@ app
 
 app
 	.onStateChange((status, app) => {
-		if (status?.server?.currentTicker) {
+		if (status.currentTicker) {
 			app.setPriority(priorities.clock.elevated);
 		} else {
 			app.setPriority(priorities.clock.normal);
