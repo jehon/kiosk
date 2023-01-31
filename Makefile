@@ -115,11 +115,11 @@ test-server: build
 	xvfb-run -a jasmine --config=tests/server/jasmine.json
 
 .PHONY: test-client
-test-client: build
+test-client: dependencies
 	karma start tests/client/karma.conf.cjs --single-run
 
 .PHONY: test-client-continuously
-test-client-continuously: build
+test-client-continuously: dependencies
 	karma start tests/client/karma.conf.cjs
 
 .PHONY: lint
