@@ -1,7 +1,7 @@
 
 import './helper-electron.js';
 
-import { ClientApp } from '../../client/client-app.js';
+import { ClientApp, waitForConfig } from '../../client/client-app.js';
 
 import { fn } from './helper-main.js';
 
@@ -91,5 +91,23 @@ describe(fn(import.meta.url), () => {
 			cancelCron();
 		});
 
+	});
+
+	it('should handle config', async function () {
+		await waitForConfig;
+
+		const app = new ClientApp('test');
+
+		expect(app.getConfig('test.value.something'))
+			.withContext('global')
+			.toBe('for testing');
+
+		expect(app.getConfig('.value.something'))
+			.withContext('relative to context')
+			.toBe('for testing');
+
+		expect(app.getConfig('test.myundefined', 'my default value'))
+			.withContext('but undefined')
+			.toBe('my default value');
 	});
 });

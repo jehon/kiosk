@@ -62,6 +62,7 @@ export async function guiPrepare(logger, devMode) {
         expressApp.use(element, Express.static(element));
     });
     expressApp.use('/client/', Express.static('built'));
+    expressApp.get('/etc/kiosk.yml', (req, res) => res.json(getConfig()));
     expressApp.use(Express.static('.'));
 }
 

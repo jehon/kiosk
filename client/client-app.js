@@ -2,6 +2,8 @@
 // Common elements
 import '../node_modules/@jehon/css-inherit/jehon-css-inherit.js';
 // need import-maps support:: import '@jehon/css-inherit/jehon-css-inherit.js';
+import { getByPath } from '../node_modules/dot-path-value/dist/index.esm.js';
+import yaml from '../node_modules/js-yaml/dist/js-yaml.mjs';
 
 import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
 import ClientElement from './client-element.js';
@@ -11,6 +13,13 @@ import { onServerMessage, sendToServer } from './client-server.js';
 import KioskTimedDiv from './elements/timed-div.js';
 
 const debugEl = document.querySelector('#debug');
+
+// Top-Level-Await is not working in Karma/Jasmine:
+let config = null;
+export const waitForConfig = fetch('/etc/kiosk.yml')
+	.then(response => response.text())
+	.then(yml => yaml.load(yml))
+	.then(data => config = data);
 
 export class ClientApp extends App {
 	priority = 0;
@@ -78,6 +87,23 @@ export class ClientApp extends App {
 	// Configuration
 	//
 	//
+
+	/**
+	 * @param {string} path to be found
+	 * @param {*} def - a default value if config is not set
+	 * @returns {*} the required object
+	 */
+	getConfig(path = '', def = undefined) {
+		path = this.ctxize(path);
+		if (path) {
+			try {
+				return getByPath(config, path) ?? def;
+			} catch (_e) {
+				return def;
+			}
+		}
+		return JSON.parse(JSON.stringify(config));
+	}
 
 	dispatchAppChanged() {
 		autoSelectApplication();
