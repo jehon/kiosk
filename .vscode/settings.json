@@ -2,5 +2,13 @@
     "workbench.colorCustomizations": {
         "titleBar.activeBackground": "#8d9400",
     },
-    "css.format.spaceAroundSelectorSeparator": true
+    "css.format.spaceAroundSelectorSeparator": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+        "javascript"
+    ]
 }

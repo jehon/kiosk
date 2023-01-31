@@ -23,6 +23,10 @@ module.exports = function (config) {
 			{ pattern: '**/*', watched: false, included: false },
 		],
 
+		proxy: {
+			'etc/kiosk.yml': 'tests/kiosk.yml'
+		},
+
 		// list of files / patterns to exclude
 		exclude: [],
 
