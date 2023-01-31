@@ -1,5 +1,6 @@
 
 const path = require('path');
+const prjRoot = path.join(__dirname, '../../');
 
 /**
  * @param {object} config as the basis
@@ -9,7 +10,7 @@ module.exports = function (config) {
 		// logLevel: config.LOG_DEBUG,
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: path.join(__dirname, '../../'),
+		basePath: prjRoot,
 
 		frameworks: [
 			'jasmine'
