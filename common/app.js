@@ -142,7 +142,7 @@ export default class App {
     mergeState(data) {
         const newState = {
             ...this.getState(),
-            data
+            ...data
         };
         this.setState(newState);
         return newState;
