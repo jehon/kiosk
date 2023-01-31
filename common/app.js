@@ -35,18 +35,20 @@ export default class App {
      *
      * @type {Callback}
      */
-    #stateCallback = new Callback({});
+    #stateCallback;
 
     /**
      *
      * @param {string} name of the app
      * @param {function(string): Logger} loggerFactory to build up loggers
+     * @param {*} initialState to initialize the state
      */
-    constructor(name, loggerFactory) {
+    constructor(name, loggerFactory, initialState) {
         this.id = idGenerator++;
         this.name = name;
         this.logger = loggerFactory(this.name);
         this.ctxize = contextualize(name);
+        this.#stateCallback = new Callback(initialState);
     }
 
     toJSON() {
