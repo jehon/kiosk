@@ -26,4 +26,6 @@ apt update
 apt_install jehon-hardware-docker
 
 apt update
-apt_install firefox-esr xvfb jehon-service-kiosk
+apt_install xvfb jehon-service-kiosk \
+    firefox-esr \
+    chromium
