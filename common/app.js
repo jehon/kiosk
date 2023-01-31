@@ -125,6 +125,21 @@ export default class App {
     }
 
     /**
+     * Dispatch a status to the browser
+     *
+     * @param {object} data as the alteration
+     * @returns {object} as the new status
+     */
+    mergeState(data) {
+        const newState = {
+            ...this.getState(),
+            data
+        };
+        this.setState(newState);
+        return newState;
+    }
+
+    /**
      * @param {function(object, App):void} cb to listen for change
      * @returns {function(void):void} to stop the listener
      */

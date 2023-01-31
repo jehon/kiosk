@@ -3,7 +3,10 @@ import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 
-const app = new ClientApp('clock');
+const app = new ClientApp('clock', {
+	currentTicker: null
+});
+
 
 const circleRadius = 97;
 const handLengths = {
@@ -238,9 +241,9 @@ app
 	});
 
 setInterval(() => {
-	const status = app.getState();
-	status.now = new Date();
-	app.setState(status);
+	app.mergeState({
+		now: new Date()
+	});
 }, 1000);
 
 export default app;
