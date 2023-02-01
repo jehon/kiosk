@@ -50,7 +50,6 @@ resetConfig()
       import('../packages/menu/menu-server.mjs'),
 
       import('../packages/camera/camera-server.mjs'),
-      import('../packages/fire/fire-server.mjs'),
       import('../packages/photo-frame/photo-frame-server.mjs'),
       import('../packages/system/system-server.mjs')
     ])

@@ -52,10 +52,8 @@ menu:
     label: "Buien Alarm"
 
 fire:
-#   # At 18:30:00
-#   cron: "0 30 18 * * *"
-  # Every minute
-  cron: "0 * * * * *"
-  duration: 1
+  cron: "0 30 18 * * *" # At 18:30:00
+  # cron: "*/30 * * * * *" # Every minute
+  duration: 0.25 # 15 seconds
   url: "/tests/server/data/fire/flower.webm"
   type: "video/webm"

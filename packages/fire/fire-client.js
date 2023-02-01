@@ -4,7 +4,48 @@ import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
 import { humanActiveStatus } from '../human/human-client.js';
 
-const app = new ClientApp('fire');
+const app = new ClientApp('fire', {
+  active: false,
+  currentTicker: null,
+  config: {}
+});
+
+let schedulerStop = null;
+
+/**
+ * Initialize the package
+ *
+ * @param {object} config to start the stuff
+ * @returns {module:client/ClientApp} the app
+ */
+export function init(config = app.getConfig('.', {})) {
+  app.mergeState({
+    config
+  });
+
+  if (schedulerStop) {
+    schedulerStop();
+  }
+
+  schedulerStop = app.cron({
+    cron: config.cron,
+    duration: config.duration ?? 0,
+    onCron: (context, stats) => {
+      app.mergeState({
+        currentTicker: { context, stats }
+      });
+    },
+    onEnd: () => {
+      app.mergeState({
+        currentTicker: null
+      });
+    }
+  });
+
+  return app;
+}
+
+init();
 
 export class KioskFireMainElement extends ClientElement {
   /**
@@ -46,10 +87,10 @@ export class KioskFireMainElement extends ClientElement {
   }
 
   stateChanged(status) {
-    if (!status || !status.server || !status.server.config) {
+    if (!status?.config) {
       return;
     }
-    let url = status.server.config.url;
+    let url = status.config.url;
     if (!url) {
       return;
     }
@@ -58,7 +99,7 @@ export class KioskFireMainElement extends ClientElement {
     }
     if (this.#videoSource.getAttribute('src') != url) {
       this.#videoSource.setAttribute('src', url);
-      this.#videoSource.setAttribute('type', status.server.config.type);
+      this.#videoSource.setAttribute('type', status.config.type);
       this.#video.oncanplay = () => this.#video.play();
     }
 
@@ -78,10 +119,7 @@ app
 
 app
   .onStateChange((status, app) => {
-    if (!status || !status.server) {
-      return;
-    }
-    if (status.server.currentTicker) {
+    if (status.currentTicker) {
       app.setPriority(priorities.fire.elevated);
     } else {
       app.setPriority(priorities.fire.normal);
@@ -89,9 +127,9 @@ app
   });
 
 humanActiveStatus.onChange((active) => {
-  const status = app.getState();
-  status.active = active;
-  app.setState(status);
+  app.mergeState({
+    active: active
+  });
 });
 
 export default app;
