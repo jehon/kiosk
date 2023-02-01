@@ -206,7 +206,7 @@ export default class App {
                 await cb(options.data, stats);
 			} catch (e) {
                 this.error(`notifying on ${options.cron} gave an error: `, e);
-			}
+            }
 		};
 
         const cronParsed = new Cron(options.cron);
@@ -228,8 +228,8 @@ export default class App {
             if (nextStartingFromBack < now) {
                 this.debug(`Initiating past cron for ${options.cron} (${options.cron}) about ${nextStartingFromBack} on ${now} with duration ${options.duration}`);
                 onCron(nextStartingFromBack);
-			}
-		}
+            }
+        }
 
 		let tsId = 0;
 		const program = () => {

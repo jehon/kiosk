@@ -57,7 +57,6 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().tick(2000 + 1);
 			expect(i).toBe(0);
 		});
-
 	});
 
 	it('should handle not trigger if event is too far in the past', function () {
