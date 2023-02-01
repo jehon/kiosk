@@ -56,24 +56,28 @@ describe(fn(import.meta.url), () => {
 			i = 0;
 			jasmine.clock().tick(2000 + 1);
 			expect(i).toBe(0);
-
 		});
 
 	});
 
-	it('should handle cron with past duration', function () {
+	it('should handle not trigger if event is too far in the past', function () {
 		let i = 0;
 		const app = new ClientApp('test');
 
 		jasmine.clock().withMock(function () {
+			// 1-1-2019 at 12:00
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
-			// At 5:00, for 2 hours
-			let cancelCron = app.cron(() => i++, {
-				cron: '0 5 * * *',
-				duration: 2 * 60,
-				data: 123
-			});
+			let cancelCron = app.cron(
+				() => i++,
+				{
+					// At 5:00
+					cron: '0 5 * * *',
+					// For 2 hours
+					duration: 2 * 60,
+					data: 123
+				}
+			);
 
 			// It should not have fired
 
@@ -83,26 +87,33 @@ describe(fn(import.meta.url), () => {
 
 	});
 
-	it('should handle cron with duration', function () {
+	fit('should handle cron with event currently running', function () {
 		let i = 0;
 		const app = new ClientApp('test');
 
 		jasmine.clock().withMock(function () {
+			// 1-1-2019 at 12:00
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
-			// At 11:00, for 2 hours
-			let cancelCron = app.cron(() => i++, {
-				cron: '0 11 * * *',
-				duration: 2 * 60,
-				data: 2
-			});
+			let cancelCron = app.cron(
+				() => i++,
+				{
+					// At 11:00
+					cron: '0 11 * * *',
+					// For 2 hours
+					duration: 2 * 60,
+					data: 2
+				}
+			);
 
-			// It should have fired
+			// It should have fired once
+			expect(i).toBe(1);
 
+			// It should end
+			jasmine.clock().tick(2 * 60 * 60 * 1000);
 			expect(i).toBe(1);
 			cancelCron();
 		});
-
 	});
 
 	it('should handle config', async function () {

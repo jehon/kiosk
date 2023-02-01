@@ -171,24 +171,39 @@ export default class App {
 	 * @returns {Function} stop to halt the cron
 	 */
     cron(cb, options) {
-        if (options.cron == '') {
+        if (!options.cron) {
 			return () => { };
 		}
+
+        // What time is it now?
+        const now = new Date();
+        now.setMilliseconds(0);
+
+        //
+        // We look in the back, to see if the last event is still running or not
+        // The last event is running if
+        //    - it is started less than "duration" minutes ago
+        //
+        // => look "duration" in the past, and see if a event should have start during
+        //    that time
+        //
+        const lookBackUpto = new Date(now);
+        lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration);
 
 		/**
 		 * When cron is triggered
 		 *
-		 * @param {Date} when the start of the ticker (could be now)
+		 * @param {Date} whenShouldTrigger the start of the ticker (could be now)
 		 */
-		const onCron = async (when = new Date()) => {
-			const now = new Date();
-			now.setMilliseconds(0);
-			try {
-                await cb(options.data, {
-                    start: when,
-                    end: new Date(when.getTime() + options.duration * 60 * 1000),
-                    duration: options.duration // minutes
-                });
+        const onCron = async (whenShouldTrigger = new Date()) => {
+            const stats = {
+                start: whenShouldTrigger,
+                end: new Date(whenShouldTrigger.getTime() + options.duration * 60 * 1000),
+                duration: options.duration // minutes
+            };
+
+            try {
+                await cb(options.data, stats);
 			} catch (e) {
                 this.error(`notifying on ${options.cron} gave an error: `, e);
 			}
@@ -197,8 +212,6 @@ export default class App {
         const cronParsed = new Cron(options.cron);
 
         if (options.duration > 0) {
-            const now = new Date();
-
             //
             // We look in the back, to see if the last event is still running or not
             // The last event is running if
@@ -211,11 +224,9 @@ export default class App {
             const lookBackUpto = new Date(now);
             lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration - 0.1);
             const nextStartingFromBack = cronParsed.next(lookBackUpto);
-            const isRunning = (nextStartingFromBack < now);
 
-			if (isRunning) {
-                this.debug(`Initiating past cron for ${options.cron} (${options.cron}) about ${nextStartingFromBack} on ${new Date()} with duration ${options.duration}`);
-				// TODO: manage currently running tickers
+            if (nextStartingFromBack < now) {
+                this.debug(`Initiating past cron for ${options.cron} (${options.cron}) about ${nextStartingFromBack} on ${now} with duration ${options.duration}`);
                 onCron(nextStartingFromBack);
 			}
 		}
