@@ -111,7 +111,7 @@ test: test-server test-client
 	echo "ok"
 
 .PHONY: test-server
-test-server: build
+test-server: dependencies
 	xvfb-run -a jasmine --config=tests/server/jasmine.json
 
 .PHONY: test-client
