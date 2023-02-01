@@ -7,6 +7,7 @@ describe(fn(import.meta.url), () => {
 
 	it('should contextualize relative keys', () => {
 		const ctx = ctxFactory('test');
+
 		expect(ctx('.brol')).toBe('test.brol');
 		expect(ctx('brol')).toBe('brol');
 

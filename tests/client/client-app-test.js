@@ -12,6 +12,7 @@ describe(fn(import.meta.url), () => {
 
 	it('should build', function () {
 		const app = new ClientApp('test');
+
 		expect(app.name).toBe('test');
 
 		app.info('info');
@@ -22,19 +23,21 @@ describe(fn(import.meta.url), () => {
 	it('should extend', function () {
 		const appMain = new ClientApp('test');
 		const logger = appMain.childLogger('child');
+
 		expect(logger.name).toBe('kiosk:test:client:child');
 		logger.info('info');
 		logger.error('error');
 		logger.debug('debug');
 
 		const logger2 = logger.childLogger('grandchild');
+
 		expect(logger2.name).toBe('kiosk:test:client:child:grandchild');
 		logger2.info('info');
 		logger2.error('error');
 		logger2.debug('debug');
 	});
 
-	it('should handle cron with 5 elements', function () {
+	it('should handle simple cron', function () {
 		let i = 0;
 		const app = new ClientApp('test');
 
@@ -56,6 +59,7 @@ describe(fn(import.meta.url), () => {
 
 			i = 0;
 			jasmine.clock().tick(2000 + 1);
+
 			expect(i).toBe(0);
 		});
 	});
@@ -107,6 +111,7 @@ describe(fn(import.meta.url), () => {
 
 			// It should end
 			jasmine.clock().tick(2 * 60 * 60 * 1000);
+
 			expect(i).toBe(1);
 			cancelCron();
 		});

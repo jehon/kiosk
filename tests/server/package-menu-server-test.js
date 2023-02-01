@@ -32,6 +32,7 @@ describe(fn(import.meta.url), () => {
 			}
 		});
 		init();
+
 		expect(app.getState().applicationsList.Meteo).not.toBeFalsy();
 	});
 });

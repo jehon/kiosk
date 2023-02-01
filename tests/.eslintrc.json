@@ -1,4 +1,11 @@
 {
+  "plugins": [
+    "jasmine"
+  ],
+  "env": {
+    "jasmine": true
+  },
+  "extends": "plugin:jasmine/recommended",
   "rules": {
     "no-unused-vars": [
       "warn"

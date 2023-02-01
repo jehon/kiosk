@@ -16,7 +16,6 @@ describe(fn(import.meta.url), () => {
 		cb.emit(10);
 		cb.emit(100);
 
-
 		expect(i).toBe(110);
 	});
 
@@ -43,6 +42,7 @@ describe(fn(import.meta.url), () => {
 		});
 
 		cb.emit(100);
+
 		expect(i).toBe(110);
 	});
 

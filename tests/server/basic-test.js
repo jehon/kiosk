@@ -17,8 +17,8 @@ describe(fn(import.meta.url), () => {
 					i++;
 				}, 1000);
 				jasmine.clock().tick(2000);
-				expect(i).toBeGreaterThan(0);
 
+				expect(i).toBeGreaterThan(0);
 			});
 		});
 	});

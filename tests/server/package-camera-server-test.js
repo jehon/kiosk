@@ -57,6 +57,7 @@ describe(fn(import.meta.url), () => {
 
 			await _check();
 			state = app.getState();
+
 			expect(state.code).toBe(TriStates.UP_NOT_READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(1);
@@ -65,6 +66,7 @@ describe(fn(import.meta.url), () => {
 
 			await _check();
 			state = app.getState();
+
 			expect(state.code).toBe(TriStates.READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(state.nbCheck);
@@ -73,6 +75,7 @@ describe(fn(import.meta.url), () => {
 
 			await _check();
 			state = app.getState();
+
 			expect(state.code).toBe(TriStates.READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(state.nbCheck);
@@ -92,6 +95,7 @@ describe(fn(import.meta.url), () => {
 			await _check();
 
 			state = app.getState();
+
 			expect(state.code).toBe(TriStates.DOWN);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(0);
@@ -108,6 +112,7 @@ describe(fn(import.meta.url), () => {
 
 			await _check();
 			state = app.getState();
+
 			expect(state.code).toBe(TriStates.UP_NOT_READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(1);
@@ -118,6 +123,7 @@ describe(fn(import.meta.url), () => {
 			await _check();
 
 			state = app.getState();
+
 			expect(state.code).toBe(TriStates.READY);
 			expect(state.message).not.toBe('');
 			expect(state.successes).toBe(state.nbCheck);

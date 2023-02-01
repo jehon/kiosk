@@ -22,6 +22,7 @@ describe(fn(import.meta.url), () => {
 				code: TriStates.DOWN
 			}
 		});
+
 		expect(app.priority).toBe(priorities.camera.normal);
 
 		/** @type {module:package/camera/KioskCamera} */
@@ -41,6 +42,7 @@ describe(fn(import.meta.url), () => {
 				url: 'test'
 			}
 		});
+
 		expect(app.priority).toBe(priorities.camera.elevated);
 
 		/** @type {module:package/camera/KioskCamera} */
@@ -63,6 +65,7 @@ describe(fn(import.meta.url), () => {
 				url: ''
 			}
 		});
+
 		expect(app.priority).toBe(priorities.camera.normal);
 
 		/** @type {module:package/camera/KioskCamera} */
@@ -102,6 +105,7 @@ describe(fn(import.meta.url), () => {
 
 		expect(mainElement.actualUrl).not.toBe('');
 		console.log(mainElement);
+
 		expect(mainElement.shadowRoot.querySelector('video')).not.toBeNull();
 		expect(mainElement.shadowRoot.querySelector('video > source').getAttribute('src')).toBe('test');
 

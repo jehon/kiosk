@@ -35,12 +35,14 @@ describe(fn(import.meta.url), () => {
 		expect(getConfig('test.getset')).toBeUndefined();
 		expect(getConfig('test.getset', 456)).toBe(456);
 		setConfig('test.getset', 123);
+
 		expect(getConfig('test.getset')).toBe(123);
 	});
 
 	it('should read from file', async () => {
 		resetConfig();
 		await loadConfigFromFile(app, ['tests/kiosk.yml']);
+
 		expect(getConfig('server.root')).not.toBeNull();
 		expect(getConfig('server.devMode')).toBeFalse();
 	});

@@ -16,6 +16,7 @@ describe(fn(import.meta.url), () => {
 
     it('should instanciate', function () {
         const logger = new Logger('test', loggerStreamFunctinoBuilderForTest);
+
         expect(logger.name).toBe('kiosk:test');
 
         logger.info('info');

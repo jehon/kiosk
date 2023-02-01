@@ -34,6 +34,7 @@ describe(fn(import.meta.url), () => {
 
 	it('should handle when no files are found', async () => {
 		const data = await loadList('tests/does_not_exists');
+
 		expect(data.length).toBe(0);
 	});
 
@@ -43,6 +44,7 @@ describe(fn(import.meta.url), () => {
 		expect(data.length).toBe(7);
 
 		const d0 = data[0];
+
 		expect(d0.originalFilePath).toBe('photo-frame/f2/m3.jpg');
 		expect(d0.data.title).toBe('');
 		expect(d0.data.date).toBe('');
