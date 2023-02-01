@@ -43,8 +43,8 @@ describe(fn(import.meta.url), () => {
 			});
 
 			jasmine.clock().tick(2 * 60 * 1000 + 1);
-
 			expect(i).toBe(2);
+
 			cancelCron();
 
 			i = 0;

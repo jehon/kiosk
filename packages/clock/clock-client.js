@@ -28,34 +28,33 @@ export function init(config = app.getConfig('.', {})) {
 	}
 
 	if (config.tickers) {
-		app.debug('Programming config cron\'s', config);
 		for (const l of Object.keys(config.tickers)) {
 			const oneTickerConfig = config.tickers[l];
 			app.debug('Programming:', l, oneTickerConfig);
 			registeredCron.push(app.cron(
-				(data, stats) => {
-					const status = app.mergeState({
-						currentTicker: {
-							data,
-							stats
-						}
-					});
-
-					app.onDate(stats.end).then(() => {
-						// Is the current ticker still active?
-						if (status.currentTicker.stats.end <= status.now) {
-							app.mergeState({
-								currentTicker: null
-							});
-						}
-					});
-				},
 				{
 					cron: oneTickerConfig.cron,
 					duration: oneTickerConfig.duration,
 					data: {
 						name: l,
 						...oneTickerConfig
+					},
+					onCron: (data, stats) => {
+						const status = app.mergeState({
+							currentTicker: {
+								data,
+								stats
+							}
+						});
+
+						app.onDate(stats.end).then(() => {
+							// Is the current ticker still active?
+							if (status.currentTicker.stats.end <= status.now) {
+								app.mergeState({
+									currentTicker: null
+								});
+							}
+						});
 					}
 				}));
 		}
