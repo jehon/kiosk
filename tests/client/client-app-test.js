@@ -66,31 +66,9 @@ describe(fn(import.meta.url), () => {
     });
   });
 
-  it('should handle simple cron with duration', function () {
-    let runs = 0;
-    const app = new ClientApp('test');
-
-    jasmine.clock().withMock(function () {
-      jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
-
-      // Without the first element (seconds), seconds are taken as "0" i.e. every minute
-      let cancelCron = app.cron({
-        onCron: () => runs++,
-        cron: '* * * * *',
-        duration: 1,
-        context: 123
-      });
-
-      tick({ hours: 2, minutes: 1 });
-
-      expect(runs).toBeGreaterThan(0);
-
-      cancelCron();
-    });
-  });
-
   it('should handle not trigger if event is too far in the past', function () {
     let runs = 0;
+    let ended = '';
     const app = new ClientApp('test');
 
     jasmine.clock().withMock(function () {
@@ -98,23 +76,51 @@ describe(fn(import.meta.url), () => {
       jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
       let cancelCron = app.cron({
-        onCron: () => runs++,
+        onCron: () => { runs++; },
+        onEnd: () => { ended = 'ended'; },
         // At 5:00
         cron: '0 5 * * *',
-        // For 2 hours
-        duration: 2 * 60,
+        // For 2 minutes
+        duration: 2,
         context: 123
       });
 
       // It should not have fired
       expect(runs).toBe(0);
+      expect(ended).toBe('');
       cancelCron();
+    });
+  });
+
+
+  it('should handle simple cron with duration', function () {
+    let runs = 0;
+    let ended = '';
+    const app = new ClientApp('test');
+
+    jasmine.clock().withMock(function () {
+      jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
+
+      let cancelCron = app.cron({
+        onCron: () => { runs++; },
+        onEnd: () => { ended = 'ended'; },
+        cron: '* * * * *',
+        duration: 1,
+        context: 123
+      });
+
+      tick({ minutes: 10 });
+
+      expect(runs).toBeGreaterThan(0);
+      expect(ended).toBe('ended');
+
       cancelCron();
     });
   });
 
   it('should handle cron with event currently running', function () {
     let runs = 0;
+    let ended = '';
     const app = new ClientApp('test');
 
     jasmine.clock().withMock(function () {
@@ -122,7 +128,8 @@ describe(fn(import.meta.url), () => {
       jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
       let cancelCron = app.cron({
-        onCron: () => runs++,
+        onCron: () => { runs++; },
+        onEnd: () => { ended = 'ended'; },
         // At 11:00
         cron: '0 11 * * *',
         // For 2 hours
@@ -137,6 +144,7 @@ describe(fn(import.meta.url), () => {
       tick({ hours: 2, minutes: 1 });
 
       expect(runs).toBeGreaterThan(0);
+      expect(ended).toBe('ended');
       cancelCron();
     });
   });

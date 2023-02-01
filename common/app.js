@@ -201,6 +201,9 @@ export default class App {
         this.error(`notifying on ${options.cron} gave an error: `, e);
       }
 
+      if (options.duration) {
+        this.onDate(stats.end, () => options.onEnd(options.context, stats));
+      }
     };
 
     //

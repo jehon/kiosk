@@ -39,21 +39,20 @@ export function init(config = app.getConfig('.', {})) {
           ...oneTickerConfig
         },
         onCron: (context, stats) => {
-          const status = app.mergeState({
+          app.mergeState({
             currentTicker: {
               data: context,
               stats
             }
           });
-
-          app.onDate(stats.end, () => {
-            // Is the current ticker still active?
-            if (status.currentTicker.stats.end <= status.now) {
-              app.mergeState({
-                currentTicker: null
-              });
-            }
-          });
+        },
+        onEnd: () => {
+          // Is the current ticker still active?
+          if (app.getState().currentTicker?.stats?.end <= new Date()) {
+            app.mergeState({
+              currentTicker: null
+            });
+          }
         }
       }));
     }
