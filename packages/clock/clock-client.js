@@ -41,7 +41,7 @@ export function init(config = app.getConfig('.', {})) {
         onCron: (context, stats) => {
           app.mergeState({
             currentTicker: {
-              data: context,
+              context,
               stats
             }
           });

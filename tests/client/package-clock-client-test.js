@@ -40,7 +40,7 @@ describe(fn(import.meta.url), () => {
 
       expect(app.getState().currentTicker).toBeDefined();
       expect(app.getState().currentTicker).not.toBeNull();
-      expect(app.getState().currentTicker.data.name).toBe('clock-server-test-label');
+      expect(app.getState().currentTicker.context.name).toBe('clock-server-test-label');
     });
   });
 
@@ -61,7 +61,7 @@ describe(fn(import.meta.url), () => {
 
       expect(app.getState().currentTicker).toBeDefined();
       expect(app.getState().currentTicker).not.toBeNull();
-      expect(app.getState().currentTicker.data.name).toBe('clock-server-test-duration');
+      expect(app.getState().currentTicker.context.name).toBe('clock-server-test-duration');
     });
   });
 
