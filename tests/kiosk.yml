@@ -55,6 +55,7 @@ menu:
     label: "Buien Alarm"
 
 fire:
+  // At 18:30:00
   cron: "0 30 18 * * *"
   duration: 60
   url: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
