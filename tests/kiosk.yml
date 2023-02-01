@@ -39,9 +39,6 @@ clock:
     # test: # Every 30 seconds, for 15 seconds
     #   cron: "*/30 * * * * *"
     #   duration: 0.25
-    # test2:
-    #   cron: "30 15 * * *"
-    #   duration: 55
 
 menu:
   - name: "Meteo"
