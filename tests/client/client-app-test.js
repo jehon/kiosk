@@ -66,6 +66,29 @@ describe(fn(import.meta.url), () => {
     });
   });
 
+  it('should handle simple cron with duration', function () {
+    let runs = 0;
+    const app = new ClientApp('test');
+
+    jasmine.clock().withMock(function () {
+      jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
+
+      // Without the first element (seconds), seconds are taken as "0" i.e. every minute
+      let cancelCron = app.cron({
+        onCron: () => runs++,
+        cron: '* * * * *',
+        duration: 1,
+        context: 123
+      });
+
+      tick({ hours: 2, minutes: 1 });
+
+      expect(runs).toBeGreaterThan(0);
+
+      cancelCron();
+    });
+  });
+
   it('should handle not trigger if event is too far in the past', function () {
     let runs = 0;
     const app = new ClientApp('test');
