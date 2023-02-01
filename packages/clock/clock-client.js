@@ -35,14 +35,14 @@ export function init(config = app.getConfig('.', {})) {
 				{
 					cron: oneTickerConfig.cron,
 					duration: oneTickerConfig.duration,
-					data: {
+					context: {
 						name: l,
 						...oneTickerConfig
 					},
-					onCron: (data, stats) => {
+					onCron: (context, stats) => {
 						const status = app.mergeState({
 							currentTicker: {
-								data,
+								data: context,
 								stats
 							}
 						});
