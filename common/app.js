@@ -167,6 +167,7 @@ export default class App {
 	 * @param {string} options.cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
 	 * @param {number?} options.duration in minutes
 	 * @param {function(CronStats,*):void} options.onCron callback
+	 * @param {function(CronStats,*):void} options.onEnd callback
 	 * @param {*?} options.context to pass to the signal
 	 * @returns {Function} stop to halt the cron
 	 */
