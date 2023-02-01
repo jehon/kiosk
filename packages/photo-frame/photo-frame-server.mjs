@@ -49,42 +49,42 @@ export const INDEX_FILENAME = 'index.json';
  * @param {string} indexFile to be loaded
  */
 export async function loadList(indexFile) {
-	let listing = [];
-	try {
-		const txt = fs.readFileSync(indexFile);
-		listing = JSON.parse(txt).map(v => ({
-			...v,
-			url: v.subPath
-		}));
-	} catch (e) {
-		app.error(`Could not load from ${indexFile}`);
-		// ok
-	}
-	app.setState({
-		hasList: listing.length > 0,
-		listing
-	});
+  let listing = [];
+  try {
+    const txt = fs.readFileSync(indexFile);
+    listing = JSON.parse(txt).map(v => ({
+      ...v,
+      url: v.subPath
+    }));
+  } catch (e) {
+    app.error(`Could not load from ${indexFile}`);
+    // ok
+  }
+  app.setState({
+    hasList: listing.length > 0,
+    listing
+  });
 
-	return listing;
+  return listing;
 }
 
 let watcher = chokidar.watch(
-	[],
-	{
-		persistent: false
-	}
+  [],
+  {
+    persistent: false
+  }
 )
-	// .on('all', (event, f, stat) => {
-	// 	console.log({ e: 'all', event, f, stat });
-	// })
-	.on('change', (f, _stat) => {
-		app.debug(`refreshing: ${f} modified`);
-		loadList(f);
-	})
-	.on('add', (f, _stat) => {
-		app.debug(`refreshing: ${f} added`);
-		loadList(f);
-	});
+// .on('all', (event, f, stat) => {
+// 	console.log({ e: 'all', event, f, stat });
+// })
+  .on('change', (f, _stat) => {
+    app.debug(`refreshing: ${f} modified`);
+    loadList(f);
+  })
+  .on('add', (f, _stat) => {
+    app.debug(`refreshing: ${f} added`);
+    loadList(f);
+  });
 
 /**
  * Initialize the package
@@ -92,21 +92,21 @@ let watcher = chokidar.watch(
  * @returns {module:server/ServerApp} the app
  */
 export function init() {
-	app.setState({
-		hasList: false,
-		listing: []
-	});
+  app.setState({
+    hasList: false,
+    listing: []
+  });
 
-	// In unit test, we don't have a config...
-	if (app.getConfig('.folder')) {
-		const f = path.join(app.getConfig('.folder'), INDEX_FILENAME);
-		app.debug(`Loading ${f}`);
-		loadList(f);
-		watcher.unwatch('*');
-		watcher.add(f);
-	}
+  // In unit test, we don't have a config...
+  if (app.getConfig('.folder')) {
+    const f = path.join(app.getConfig('.folder'), INDEX_FILENAME);
+    app.debug(`Loading ${f}`);
+    loadList(f);
+    watcher.unwatch('*');
+    watcher.add(f);
+  }
 
-	return app;
+  return app;
 }
 
 init();
