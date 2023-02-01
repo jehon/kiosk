@@ -64,5 +64,4 @@ describe(fn(import.meta.url), () => {
       expect(app.getState().currentTicker.context.name).toBe('clock-server-test-duration');
     });
   });
-
 });
