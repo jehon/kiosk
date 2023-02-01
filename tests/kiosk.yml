@@ -36,7 +36,7 @@ clock:
     depart-ecole: # At 7:50am, every weekday
       cron: "50 7 * * 1-5"
       duration: 30
-    # test: # Every minutes, for 30 seconds
+    test: # Every 30 seconds, for 15 seconds
     #   cron: "*/30 * * * * *"
     #   duration: 0.25
     # test2:
