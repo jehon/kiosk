@@ -2,7 +2,7 @@
 import ClientElement from '../../client/client-element.js';
 import { ClientApp } from '../../client/client-app.js';
 import { priorities } from '../../client/config.js';
-import { angleFromHours, angleFromMinutes, angleFromMinutesSeconds, circleRadius, describeArc, handLengths, polar2cartesianX, polar2cartesianY } from './clock-draw.js';
+import { angleFromHours, angleFromMinutes, angleMSFromTime, circleRadius, describeArc, handLengths, polar2cartesianX, polar2cartesianY } from './clock-draw.js';
 
 const app = new ClientApp('clock', {
 	currentTicker: null,
@@ -174,8 +174,8 @@ export class KioskClockMainElement extends ClientElement {
 			const end = status.currentTicker.stats.end;
 			this.arcEl.total.style.display = 'initial';
 			this.arcEl.remain.style.display = 'initial';
-			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleFromMinutes(start.getMinutes()), angleFromMinutes(end.getMinutes())));
-			this.arcEl.remain.setAttribute('d', describeArc(circleRadius, angleFromMinutesSeconds(minute, second), angleFromMinutes(end.getMinutes())));
+			this.arcEl.total.setAttribute('d', describeArc(circleRadius, angleMSFromTime(start), angleMSFromTime(end)));
+			this.arcEl.remain.setAttribute('d', describeArc(circleRadius, angleMSFromTime(status.now), angleMSFromTime(end)));
 		} else {
 			this.arcEl.total.style.display = 'none';
 			this.arcEl.remain.style.display = 'none';

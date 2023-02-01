@@ -28,11 +28,10 @@ export const angleFromHours = hours => hours * (Math.PI * 2 / 12) - Math.PI / 2;
 export const angleFromMinutes = minutes => minutes * (Math.PI * 2 / 60) - Math.PI / 2;
 
 /**
- * @param {number} minutes 0..59
- * @param {number} seconds 0..59
+ * @param {Date} time to draw
  * @returns {number} the angle (radian) correspondign to the seconds
  */
-export const angleFromMinutesSeconds = (minutes, seconds) => (angleFromMinutes(minutes) + (seconds * Math.PI * 2 / 60 / 60));
+export const angleMSFromTime = (time) => (angleFromMinutes(time.getMinutes()) + (time.getSeconds() * Math.PI * 2 / 60 / 60));
 
 /**
  * @param {number} r polar radius
