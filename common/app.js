@@ -219,14 +219,14 @@ export default class App {
             // => look "duration" in the past, and see if a event should have start during
             //    that time
             //
-
             const lookBackUpto = new Date(now);
             lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration - 0.1);
-            const nextStartingFromBack = scheduler.next(lookBackUpto);
+            /** @type {Date} */
+            const firstStart = scheduler.next(lookBackUpto);
 
-            if (nextStartingFromBack < now) {
-                this.debug(`Initiating past cron for ${options.cron} (${options.cron}) about ${nextStartingFromBack} on ${now} with duration ${options.duration}`);
-                onCron(nextStartingFromBack);
+            if (firstStart < now) {
+                this.debug(`Initiating past cron for ${options.cron} about ${firstStart.toISOString()} with duration ${options.duration}`);
+                onCron(firstStart);
             }
         }
 
