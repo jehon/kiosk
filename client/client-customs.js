@@ -6,11 +6,11 @@ import loggerFactory, { Logger } from '../common/logger.js';
  * @returns {Logger} built
  */
 export function clientLoggerFactory(name) {
-    return loggerFactory(name,
-        (namespace, level) =>
-            (...data) => {
-                /* eslint-disable no-console */
-                console[level](namespace, `[${level.toUpperCase()}]`, ...data);
-            }
-    );
+  return loggerFactory(name,
+    (namespace, level) =>
+      (...data) => {
+        /* eslint-disable no-console */
+        console[level](namespace, `[${level.toUpperCase()}]`, ...data);
+      }
+  );
 }

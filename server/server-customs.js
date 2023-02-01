@@ -11,8 +11,8 @@ export const loggersCreationStream = debugFactory('kiosk:loggers');
  * @returns {string} the error in a string presentation
  */
 function loggerRenderError(e) {
-    const stack = e.stack;
-    return `${e.message}\n  at ${stack}`;
+  const stack = e.stack;
+  return `${e.message}\n  at ${stack}`;
 }
 
 /**
@@ -21,11 +21,11 @@ function loggerRenderError(e) {
  * @returns {string} the message formatted for display
  */
 function loggerGenerateMessage(level, ...args) {
-    return `[${level}] ` + args.map(v =>
+  return `[${level}] ` + args.map(v =>
     (typeof (v) == 'object'
-        ? (v instanceof Error) ? loggerRenderError(v) : JSON.stringify(v)
-        : v)
-    ).join(' ');
+      ? (v instanceof Error) ? loggerRenderError(v) : JSON.stringify(v)
+      : v)
+  ).join(' ');
 }
 
 /**
@@ -33,25 +33,25 @@ function loggerGenerateMessage(level, ...args) {
  * @returns {Logger} built
  */
 export function serverLoggerFactory(namespace) {
-    return loggerFactory(namespace,
-        (namespace, level) => {
-            switch (level) {
-                case 'error': {
-                    const dbg = debugFactory(namespace + '*');
-                    return (...data) => dbg(chalk.red(loggerGenerateMessage('ERROR', ...data)));
-                }
-                case 'debug': {
-                    loggersCreationStream(`Creating debug logger ${namespace}`);
-                    const dbg = debugFactory(namespace);
-                    return (...data) => dbg(loggerGenerateMessage('DEBUG', ...data));
-                }
-                case 'info': {
-                    const dbg = debugFactory(namespace + '*');
-                    return (...data) => dbg(loggerGenerateMessage('INFO', ...data));
-                }
-                default:
-                    break;
-            }
-        }
-    );
+  return loggerFactory(namespace,
+    (namespace, level) => {
+      switch (level) {
+      case 'error': {
+        const dbg = debugFactory(namespace + '*');
+        return (...data) => dbg(chalk.red(loggerGenerateMessage('ERROR', ...data)));
+      }
+      case 'debug': {
+        loggersCreationStream(`Creating debug logger ${namespace}`);
+        const dbg = debugFactory(namespace);
+        return (...data) => dbg(loggerGenerateMessage('DEBUG', ...data));
+      }
+      case 'info': {
+        const dbg = debugFactory(namespace + '*');
+        return (...data) => dbg(loggerGenerateMessage('INFO', ...data));
+      }
+      default:
+        break;
+      }
+    }
+  );
 }

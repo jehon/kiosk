@@ -1,9 +1,9 @@
 
 export const circleRadius = 97;
 export const handLengths = {
-    h: 55,
-    m: 80,
-    s: 89
+  h: 55,
+  m: 80,
+  s: 89
 };
 
 /*
@@ -65,24 +65,24 @@ export const polar2cartesian = (r, theta) => ({ x: polar2cartesianX(r, theta), y
  * @returns {string} the SVG description of the arc
  */
 export function describeArc(radius, startAngle, endAngle) {
-    const start = polar2cartesian(radius, endAngle);
-    const end = polar2cartesian(radius, startAngle);
+  const start = polar2cartesian(radius, endAngle);
+  const end = polar2cartesian(radius, startAngle);
 
-    // Normalize endAngle
-    while (endAngle < startAngle) {
-        endAngle += Math.PI * 2;
-    }
-    // If more than half a tour, take the large arc
-    var largeArc = (endAngle > startAngle + Math.PI) ? 1 : 0;
+  // Normalize endAngle
+  while (endAngle < startAngle) {
+    endAngle += Math.PI * 2;
+  }
+  // If more than half a tour, take the large arc
+  var largeArc = (endAngle > startAngle + Math.PI) ? 1 : 0;
 
-    // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
-    //  A rx ry x-axis-rotation large-arc-flag sweep-flag x y
-    //   rx, ry          = radius of clock
-    //   x-axis-rotation = 0
-    //   large-arc-flag  = calculated
-    //   sweep-flag      = fix
-    //   x, y            = @ end
-    const str = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} L 0 0 Z`;
-    return str;
+  // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+  //  A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+  //   rx, ry          = radius of clock
+  //   x-axis-rotation = 0
+  //   large-arc-flag  = calculated
+  //   sweep-flag      = fix
+  //   x, y            = @ end
+  const str = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} L 0 0 Z`;
+  return str;
 }
 

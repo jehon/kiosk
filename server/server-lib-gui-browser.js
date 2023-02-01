@@ -20,50 +20,50 @@ let startupTime = Date.now();
  * @param {boolean} devMode to enable de
  */
 export async function guiPrepare(logger, devMode) {
-    if (devMode) {
-        // simulate delay response
-        // Thanks to https://stackoverflow.com/a/46976128/1954789
-        expressApp.use((req, res, next) => {
-            // We delay only if not initial startup
-            if (Date.now() - startupTime < 10000) {
-                next();
-            } else {
-
-                // Wait 2 second at any request
-                setTimeout(() => next(), 2000);
-            }
-        });
-    }
-
-    // Fix: TypeError: res.flush is not a function
-    //   Thanks to https://github.com/dpskvn/express-sse/issues/28#issuecomment-812827462
-    expressApp.use(ROUTE_EVENTS, (req, res, next) => {
-        res.flush = () => { };
+  if (devMode) {
+    // simulate delay response
+    // Thanks to https://stackoverflow.com/a/46976128/1954789
+    expressApp.use((req, res, next) => {
+      // We delay only if not initial startup
+      if (Date.now() - startupTime < 10000) {
         next();
-    }, sse.init);
+      } else {
 
-    // to support JSON-encoded bodies
-    expressApp.use(Express.json({
-        strict: false
-    }));
-    expressApp.post(`${ROUTE_NOTIFY}/:channel`, (req, res) => {
-        const channel = req.params.channel;
-        const data = req.body;
-        if (listeners.has(channel)) {
-            for (const cb of listeners.get(channel)) {
-                cb(data);
-            }
-        }
-        return res.send('Treated');
+        // Wait 2 second at any request
+        setTimeout(() => next(), 2000);
+      }
     });
+  }
 
-    getConfig('server.expose', []).forEach(element => {
-        logger.debug(`Exposing ${element}}`);
-        expressApp.use(element, Express.static(element));
-    });
-    expressApp.use('/client/', Express.static('built'));
-    expressApp.get('/etc/kiosk.yml', (req, res) => res.json(getConfig()));
-    expressApp.use(Express.static('.'));
+  // Fix: TypeError: res.flush is not a function
+  //   Thanks to https://github.com/dpskvn/express-sse/issues/28#issuecomment-812827462
+  expressApp.use(ROUTE_EVENTS, (req, res, next) => {
+    res.flush = () => { };
+    next();
+  }, sse.init);
+
+  // to support JSON-encoded bodies
+  expressApp.use(Express.json({
+    strict: false
+  }));
+  expressApp.post(`${ROUTE_NOTIFY}/:channel`, (req, res) => {
+    const channel = req.params.channel;
+    const data = req.body;
+    if (listeners.has(channel)) {
+      for (const cb of listeners.get(channel)) {
+        cb(data);
+      }
+    }
+    return res.send('Treated');
+  });
+
+  getConfig('server.expose', []).forEach(element => {
+    logger.debug(`Exposing ${element}}`);
+    expressApp.use(element, Express.static(element));
+  });
+  expressApp.use('/client/', Express.static('built'));
+  expressApp.get('/etc/kiosk.yml', (req, res) => res.json(getConfig()));
+  expressApp.use(Express.static('.'));
 }
 
 /**
@@ -72,16 +72,16 @@ export async function guiPrepare(logger, devMode) {
  * @param {string} _url to be loaded
  */
 export async function guiLaunch(_logger, _devMode, _url) {
-    expressApp.get('/', (req, res) => res.redirect(_url));
-    const port = getConfig('core.port', 5454);
+  expressApp.get('/', (req, res) => res.redirect(_url));
+  const port = getConfig('core.port', 5454);
 
-    await new Promise(resolve => {
-        expressAppListener = expressApp.listen(port, function () {
-            // Thanks to https://stackoverflow.com/a/29075664/1954789
-            _logger.info(`Listening on port ${this.address().port} (link: 'http://localhost:${this.address().port}')!`);
-            resolve(port);
-        });
+  await new Promise(resolve => {
+    expressAppListener = expressApp.listen(port, function () {
+      // Thanks to https://stackoverflow.com/a/29075664/1954789
+      _logger.info(`Listening on port ${this.address().port} (link: 'http://localhost:${this.address().port}')!`);
+      resolve(port);
     });
+  });
 }
 
 /**
@@ -89,7 +89,7 @@ export async function guiLaunch(_logger, _devMode, _url) {
  * @param {object} data to be sent
  */
 export function guiDispatchToBrowser(eventName, data) {
-    sse.send(data, eventName);
+  sse.send(data, eventName);
 }
 
 /**
@@ -97,8 +97,8 @@ export function guiDispatchToBrowser(eventName, data) {
  * @param {function(any):void} cb with message
  */
 export function guiOnClient(channel, cb) {
-    if (!listeners.has(channel)) {
-        listeners.set(channel, []);
-    }
-    listeners.get(channel).push(cb);
+  if (!listeners.has(channel)) {
+    listeners.set(channel, []);
+  }
+  listeners.get(channel).push(cb);
 }

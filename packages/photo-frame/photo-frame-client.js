@@ -25,14 +25,14 @@ const app = new ClientApp('photo-frame');
  *
  */
 function autoMoveToNextImage() {
-	const status = app.getState();
-	app.debug('autoMoveToNextImage', status.pictureIndex);
-	if (!status.server || !status.server.listing || status.server.listing.length == 0) {
-		// Wait for a new list
-		return;
-	} else {
-		next();
-	}
+  const status = app.getState();
+  app.debug('autoMoveToNextImage', status.pictureIndex);
+  if (!status.server || !status.server.listing || status.server.listing.length == 0) {
+    // Wait for a new list
+    return;
+  } else {
+    next();
+  }
 }
 
 // TODO: parameter + handle human interaction
@@ -42,40 +42,40 @@ setInterval(() => autoMoveToNextImage(), 15 * 1000);
  * @returns {number} the next index
  */
 function next() {
-	const status = app.getState();
-	status.pictureIndex++;
-	if (status.pictureIndex >= status.server.listing.length) {
-		status.pictureIndex = 0;
-	}
+  const status = app.getState();
+  status.pictureIndex++;
+  if (status.pictureIndex >= status.server.listing.length) {
+    status.pictureIndex = 0;
+  }
 
-	app.setState(status);
-	return status.pictureIndex;
+  app.setState(status);
+  return status.pictureIndex;
 }
 
 /**
  * @returns {number} the previous index
  */
 function prev() {
-	const status = app.getState();
-	status.pictureIndex--;
-	if (status.pictureIndex < 0) {
-		status.pictureIndex = status.server.listing.length - 1;
-	}
+  const status = app.getState();
+  status.pictureIndex--;
+  if (status.pictureIndex < 0) {
+    status.pictureIndex = status.server.listing.length - 1;
+  }
 
-	app.setState(status);
-	return status.pictureIndex;
+  app.setState(status);
+  return status.pictureIndex;
 }
 
 class KioskPhotoFrameMainElement extends ClientElement {
 
-	/** @type {JehonImageLoading} */
-	#carouselImg;
+  /** @type {JehonImageLoading} */
+  #carouselImg;
 
-	/** @type {HTMLElement} */
-	#carouselInfos;
+  /** @type {HTMLElement} */
+  #carouselInfos;
 
-	ready() {
-		this.shadowRoot.innerHTML = `
+  ready() {
+    this.shadowRoot.innerHTML = `
 		<jehon-css-inherit></jehon-css-inherit>
 		<style>
 			.hide-on-inactive[inactive] {
@@ -164,76 +164,76 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			</div>
 		</div>`;
 
-		this.#carouselImg = this.shadowRoot.querySelector('jehon-image-loading');
-		this.#carouselInfos = this.shadowRoot.querySelector('#infos');
+    this.#carouselImg = this.shadowRoot.querySelector('jehon-image-loading');
+    this.#carouselInfos = this.shadowRoot.querySelector('#infos');
 
-		this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
-		this.shadowRoot.querySelector('#next').addEventListener('click', () => next());
+    this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
+    this.shadowRoot.querySelector('#next').addEventListener('click', () => next());
 
-		this.addEventListener('wheel', (event) => {
-			event.preventDefault();
-			const d = event.deltaY;
-			if (d < 0) {
-				prev();
-			} else {
-				next();
-			}
-		});
-	}
+    this.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      const d = event.deltaY;
+      if (d < 0) {
+        prev();
+      } else {
+        next();
+      }
+    });
+  }
 
-	stateChanged(status) {
-		if (!this.#carouselImg) {
-			return;
-		}
+  stateChanged(status) {
+    if (!this.#carouselImg) {
+      return;
+    }
 
 
-		if (status.server.listing.length > 0) {
-			let photo = status.server.listing[status.pictureIndex];
+    if (status.server.listing.length > 0) {
+      let photo = status.server.listing[status.pictureIndex];
 
-			app.debug('updatePicture', status.pictureIndex, photo);
-			this.#carouselInfos.innerHTML = `${photo.data.title ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
-			this.#carouselImg.loadAndDisplayImage(photo.url);
-		}
+      app.debug('updatePicture', status.pictureIndex, photo);
+      this.#carouselInfos.innerHTML = `${photo.data.title ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
+      this.#carouselImg.loadAndDisplayImage(photo.url);
+    }
 
-		this.shadowRoot.querySelectorAll('.hide-on-inactive').forEach(el => {
-			if (status.active) {
-				el.removeAttribute('inactive');
-			} else {
-				el.setAttribute('inactive', 'inactive');
-			}
-		});
-	}
+    this.shadowRoot.querySelectorAll('.hide-on-inactive').forEach(el => {
+      if (status.active) {
+        el.removeAttribute('inactive');
+      } else {
+        el.setAttribute('inactive', 'inactive');
+      }
+    });
+  }
 }
 
 customElements.define('kiosk-photo-frame-main-element', KioskPhotoFrameMainElement);
 
 app
-	.setState({
-		pictureIndex: 0,
-		picturesList: [],
-		active: false
-	})
-	.setMainElementBuilder(() => new KioskPhotoFrameMainElement())
-	.menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
-	.setPriority(priorities.photoFrame.normal);
+  .setState({
+    pictureIndex: 0,
+    picturesList: [],
+    active: false
+  })
+  .setMainElementBuilder(() => new KioskPhotoFrameMainElement())
+  .menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
+  .setPriority(priorities.photoFrame.normal);
 
 app
-	.onStateChange((status, app) => {
-		app.debug('Setting priorities according to listing');
-		if (!status || !status.server) {
-			return;
-		}
-		if (status.server.hasList) {
-			app.setPriority(priorities.photoFrame.elevated);
-		} else {
-			app.setPriority(priorities.photoFrame.normal);
-		}
-	});
+  .onStateChange((status, app) => {
+    app.debug('Setting priorities according to listing');
+    if (!status || !status.server) {
+      return;
+    }
+    if (status.server.hasList) {
+      app.setPriority(priorities.photoFrame.elevated);
+    } else {
+      app.setPriority(priorities.photoFrame.normal);
+    }
+  });
 
 humanActiveStatus.onChange(active => {
-	const status = app.getState();
-	status.active = active;
-	app.setState(status);
+  const status = app.getState();
+  status.active = active;
+  app.setState(status);
 });
 
 export default app;

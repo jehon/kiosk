@@ -6,7 +6,7 @@
  * @returns {any} value
  */
 function clone(value) {
-	return value;
+  return value;
 }
 
 /**
@@ -15,50 +15,50 @@ function clone(value) {
  * @returns {boolean} if equal
  */
 function equals(v1, v2) {
-	return v1 === v2;
+  return v1 === v2;
 }
 
 export default class Callback {
-	#state;
-	#subscribers = [];
+  #state;
+  #subscribers = [];
 
-	constructor(value = undefined) {
-		this.#state = value;
-	}
+  constructor(value = undefined) {
+    this.#state = value;
+  }
 
-	getState() {
-		return clone(this.#state);
-	}
+  getState() {
+    return clone(this.#state);
+  }
 
-	onChangeWeakRef(callback) {
-		const wr = new WeakRef(callback);
-		return this.onChange((...data) => wr.deref()?.(...data));
-	}
+  onChangeWeakRef(callback) {
+    const wr = new WeakRef(callback);
+    return this.onChange((...data) => wr.deref()?.(...data));
+  }
 
-	onChange(callback) {
-		this.#subscribers.push(callback);
-		if (this.#state !== undefined) {
-			callback(this.#state, undefined);
-		}
+  onChange(callback) {
+    this.#subscribers.push(callback);
+    if (this.#state !== undefined) {
+      callback(this.#state, undefined);
+    }
 
-		// This returns the unsubscribe handler
-		return () => {
-			this.#subscribers = this.#subscribers.filter(v => v !== callback);
-		};
-	}
+    // This returns the unsubscribe handler
+    return () => {
+      this.#subscribers = this.#subscribers.filter(v => v !== callback);
+    };
+  }
 
-	async emit(newValue) {
-		const prevValue = this.#state;
-		if (equals(prevValue, newValue)) {
-			return false;
-		}
-		// Unref from given value
-		this.#state = clone(newValue);
+  async emit(newValue) {
+    const prevValue = this.#state;
+    if (equals(prevValue, newValue)) {
+      return false;
+    }
+    // Unref from given value
+    this.#state = clone(newValue);
 
-		// Remove null weakref
-		this.#subscribers = this.#subscribers.filter(v => (!(v instanceof WeakRef)) || !!v.deref());
+    // Remove null weakref
+    this.#subscribers = this.#subscribers.filter(v => (!(v instanceof WeakRef)) || !!v.deref());
 
-		// Give away a copy of the value
-		return Promise.all(this.#subscribers.map(cb => cb(clone(newValue), clone(prevValue))));
-	}
+    // Give away a copy of the value
+    return Promise.all(this.#subscribers.map(cb => cb(clone(newValue), clone(prevValue))));
+  }
 }

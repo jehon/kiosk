@@ -7,13 +7,13 @@ const eventSource = new EventSource(ROUTE_EVENTS);
  * @param {*} data to be sent
  */
 export async function guiSendToServer(channel, data) {
-    return fetch(`${ROUTE_NOTIFY}/${channel}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
+  return fetch(`${ROUTE_NOTIFY}/${channel}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
 }
 
 /**
@@ -22,13 +22,13 @@ export async function guiSendToServer(channel, data) {
  * @param {function(object):void} cb to react to events
  */
 export function guiOnServerMessage(channel, cb) {
-    eventSource.addEventListener(channel, function (event) {
-        let data = event.data;
-        try {
-            data = JSON.parse(data);
-        } catch (e) {
-            // ok
-        }
-        cb(data);
-    });
+  eventSource.addEventListener(channel, function (event) {
+    let data = event.data;
+    try {
+      data = JSON.parse(data);
+    } catch (e) {
+      // ok
+    }
+    cb(data);
+  });
 }

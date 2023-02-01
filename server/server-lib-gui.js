@@ -10,28 +10,28 @@ const historySent = new Map();
  * @param {module:server/ServerApp} serverApp for logging purpose
  */
 export async function start(serverApp) {
-    const logger = serverApp.childLogger('gui');
-    const devMode = serverApp.getConfig('server.devMode');
-    if (devMode) {
-        logger.debug('Enabling dev mode');
+  const logger = serverApp.childLogger('gui');
+  const devMode = serverApp.getConfig('server.devMode');
+  if (devMode) {
+    logger.debug('Enabling dev mode');
+  }
+
+  const url = 'client/index.html';
+  // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
+
+  await guiPrepare(logger, devMode);
+
+  // // Enable history
+  onClient(CHANNEL_HISTORY, (context) => {
+    if (!historySent.has(context)) {
+      logger.debug(`Requested history for ${context}, but that is not found`);
+      return;
     }
+    // We use this directly, to avoid setting the history again
+    guiDispatchToBrowser(context, historySent.get(context));
+  });
 
-    const url = 'client/index.html';
-    // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
-
-    await guiPrepare(logger, devMode);
-
-    // // Enable history
-    onClient(CHANNEL_HISTORY, (context) => {
-        if (!historySent.has(context)) {
-            logger.debug(`Requested history for ${context}, but that is not found`);
-            return;
-        }
-        // We use this directly, to avoid setting the history again
-        guiDispatchToBrowser(context, historySent.get(context));
-    });
-
-    await guiLaunch(logger, devMode, url);
+  await guiLaunch(logger, devMode, url);
 }
 
 /**
@@ -39,7 +39,7 @@ export async function start(serverApp) {
  * @param {function(any):void} cb with message
  */
 export function onClient(channel, cb) {
-    guiOnClient(channel, cb);
+  guiOnClient(channel, cb);
 }
 
 /**
@@ -47,6 +47,6 @@ export function onClient(channel, cb) {
  * @param {object} data to be sent
  */
 export function dispatchToBrowser(eventName, data) {
-    historySent.set(eventName, data);
-    guiDispatchToBrowser(eventName, data);
+  historySent.set(eventName, data);
+  guiDispatchToBrowser(eventName, data);
 }

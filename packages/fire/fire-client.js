@@ -7,18 +7,18 @@ import { humanActiveStatus } from '../human/human-client.js';
 const app = new ClientApp('fire');
 
 export class KioskFireMainElement extends ClientElement {
-	/**
-	 * @type {HTMLVideoElement}
-	 */
-	#video;
+  /**
+   * @type {HTMLVideoElement}
+   */
+  #video;
 
-	/**
-	 * @type {HTMLSourceElement}
-	 */
-	#videoSource;
+  /**
+   * @type {HTMLSourceElement}
+   */
+  #videoSource;
 
-	ready() {
-		this.shadowRoot.innerHTML = `
+  ready() {
+    this.shadowRoot.innerHTML = `
 			<style>
 				video {
 					width: 100%;
@@ -36,62 +36,62 @@ export class KioskFireMainElement extends ClientElement {
 				No source selected
 			</video>
 		`;
-		this.#video = this.shadowRoot.querySelector('video');
-		this.#videoSource = this.shadowRoot.querySelector('#source');
+    this.#video = this.shadowRoot.querySelector('video');
+    this.#videoSource = this.shadowRoot.querySelector('#source');
 
-		// TODO: To detect errors, we should check for error
-		// on the last "source" tag:
-		// https://stackoverflow.com/questions/5573461/html5-video-error-handling/33471125#33471125
+    // TODO: To detect errors, we should check for error
+    // on the last "source" tag:
+    // https://stackoverflow.com/questions/5573461/html5-video-error-handling/33471125#33471125
 
-	}
+  }
 
-	stateChanged(status) {
-		if (!status || !status.server || !status.server.config) {
-			return;
-		}
-		let url = status.server.config.url;
-		if (!url) {
-			return;
-		}
-		if ((url[0] != '/') && (url.substr(0, 4) != 'http')) {
-			url = '../' + url;
-		}
-		if (this.#videoSource.getAttribute('src') != url) {
-			this.#videoSource.setAttribute('src', url);
-			this.#videoSource.setAttribute('type', status.server.config.type);
-			this.#video.oncanplay = () => this.#video.play();
-		}
+  stateChanged(status) {
+    if (!status || !status.server || !status.server.config) {
+      return;
+    }
+    let url = status.server.config.url;
+    if (!url) {
+      return;
+    }
+    if ((url[0] != '/') && (url.substr(0, 4) != 'http')) {
+      url = '../' + url;
+    }
+    if (this.#videoSource.getAttribute('src') != url) {
+      this.#videoSource.setAttribute('src', url);
+      this.#videoSource.setAttribute('type', status.server.config.type);
+      this.#video.oncanplay = () => this.#video.play();
+    }
 
-		if (status.active) {
-			this.#video.setAttribute('controls', 'controls');
-		} else {
-			this.#video.removeAttribute('controls');
-		}
-	}
+    if (status.active) {
+      this.#video.setAttribute('controls', 'controls');
+    } else {
+      this.#video.removeAttribute('controls');
+    }
+  }
 }
 
 customElements.define('kiosk-fire-main-element', KioskFireMainElement);
 
 app
-	.setMainElementBuilder(() => new KioskFireMainElement())
-	.menuBasedOnIcon('../packages/fire/fire.jpg');
+  .setMainElementBuilder(() => new KioskFireMainElement())
+  .menuBasedOnIcon('../packages/fire/fire.jpg');
 
 app
-	.onStateChange((status, app) => {
-		if (!status || !status.server) {
-			return;
-		}
-		if (status.server.currentTicker) {
-			app.setPriority(priorities.fire.elevated);
-		} else {
-			app.setPriority(priorities.fire.normal);
-		}
-	});
+  .onStateChange((status, app) => {
+    if (!status || !status.server) {
+      return;
+    }
+    if (status.server.currentTicker) {
+      app.setPriority(priorities.fire.elevated);
+    } else {
+      app.setPriority(priorities.fire.normal);
+    }
+  });
 
 humanActiveStatus.onChange((active) => {
-	const status = app.getState();
-	status.active = active;
-	app.setState(status);
+  const status = app.getState();
+  status.active = active;
+  app.setState(status);
 });
 
 export default app;

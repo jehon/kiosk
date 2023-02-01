@@ -23,14 +23,14 @@ const sortApplication = (a, b) => (b.priority - a.priority);
  * @returns {number} is the id of the application
  */
 export function registerApp(newApp) {
-	applicationList.set(newApp.name, newApp);
-	const id = appId++;
+  applicationList.set(newApp.name, newApp);
+  const id = appId++;
 
-	newApp.id = id;
+  newApp.id = id;
 
-	autoSelectApplication();
+  autoSelectApplication();
 
-	return id;
+  return id;
 }
 
 /**
@@ -38,10 +38,10 @@ export function registerApp(newApp) {
  * @returns {module:client/ClientApp} corresponding to the name
  */
 export function getApplicationByName(name) {
-	if (!applicationList.has(name)) {
-		throw `Unknown app: ${name}. Available: ${Array.from(applicationList.keys()).join(' ')}`;
-	}
-	return applicationList.get(name);
+  if (!applicationList.has(name)) {
+    throw `Unknown app: ${name}. Available: ${Array.from(applicationList.keys()).join(' ')}`;
+  }
+  return applicationList.get(name);
 }
 
 /**
@@ -50,9 +50,9 @@ export function getApplicationByName(name) {
  * @returns {Array<*>} with all the current applications
  */
 export function getApplicationList() {
-	const l = Array.from(applicationList.values());
-	l.sort(sortApplication);
-	return l;
+  const l = Array.from(applicationList.values());
+  l.sort(sortApplication);
+  return l;
 }
 
 /**
@@ -61,9 +61,9 @@ export function getApplicationList() {
  * @returns {module:client/ClientApp} the selected application
  */
 export function autoSelectApplication() {
-	const selectedApplication = getApplicationList()
-		.filter(a => a.mainElementBuilder && a.priority && a.priority >= 0)[0];
-	return renderApplication(selectedApplication);
+  const selectedApplication = getApplicationList()
+    .filter(a => a.mainElementBuilder && a.priority && a.priority >= 0)[0];
+  return renderApplication(selectedApplication);
 }
 
 /**
@@ -73,7 +73,7 @@ export function autoSelectApplication() {
  * @returns {module:client/ClientApp} the rendered application
  */
 export function selectApplication(app) {
-	return renderApplication(app);
+  return renderApplication(app);
 }
 
 let currentApplication = null;
@@ -84,34 +84,34 @@ let currentApplication = null;
  * @returns {module:client/ClientApp} the rendered application
  */
 function renderApplication(newApplication) {
-	if (!newApplication) {
-		return currentApplication;
-	}
+  if (!newApplication) {
+    return currentApplication;
+  }
 
-	if (currentApplication?.id == newApplication.id) {
-		return newApplication;
-	}
+  if (currentApplication?.id == newApplication.id) {
+    return newApplication;
+  }
 
-	const mainAppElement = document.querySelector('#main-application');
-	if (mainAppElement == null) {
-		throw 'registerMainContainer: #main-application is null';
-	}
+  const mainAppElement = document.querySelector('#main-application');
+  if (mainAppElement == null) {
+    throw 'registerMainContainer: #main-application is null';
+  }
 
-	newApplication.debug(`I have been selected ${newApplication.toJSON()}`);
+  newApplication.debug(`I have been selected ${newApplication.toJSON()}`);
 
-	// Reject not "main" application
-	if (!('mainElementBuilder' in newApplication)) {
-		newApplication.error(`... but I don't have a main (${newApplication.toJSON()})`);
-		mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.name}: ${JSON.stringify(newApplication)}</div>`;
-		return currentApplication;
-	}
-	// Set it first, since buildMainElement could change priority
-	currentApplication = newApplication;
+  // Reject not "main" application
+  if (!('mainElementBuilder' in newApplication)) {
+    newApplication.error(`... but I don't have a main (${newApplication.toJSON()})`);
+    mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.name}: ${JSON.stringify(newApplication)}</div>`;
+    return currentApplication;
+  }
+  // Set it first, since buildMainElement could change priority
+  currentApplication = newApplication;
 
-	// Ok, let's go !
-	const el = newApplication.buildMainElement();
-	mainAppElement.innerHTML = '';
-	mainAppElement.appendChild(el);
+  // Ok, let's go !
+  const el = newApplication.buildMainElement();
+  mainAppElement.innerHTML = '';
+  mainAppElement.appendChild(el);
 
-	return newApplication;
+  return newApplication;
 }

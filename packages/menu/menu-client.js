@@ -7,13 +7,13 @@ import { humanActiveStatus } from '../human/human-client.js';
 const app = new ClientApp('menu');
 
 class KioskMenuMainElement extends ClientElement {
-	#top;
+  #top;
 
-	/** @override */
-	ready() {
-		super.ready();
+  /** @override */
+  ready() {
+    super.ready();
 
-		this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
 			<jehon-css-inherit></jehon-css-inherit>
 			<style>
 				#top {
@@ -41,64 +41,64 @@ class KioskMenuMainElement extends ClientElement {
 			<div id='top'></div>
 		`;
 
-		this.#top = this.shadowRoot.querySelector('#top');
-		this.stateChanged();
-	}
+    this.#top = this.shadowRoot.querySelector('#top');
+    this.stateChanged();
+  }
 
-	/** @override */
-	stateChanged() {
-		/** @type {Array<ClientApp>} */
-		const list = getApplicationList();
+  /** @override */
+  stateChanged() {
+    /** @type {Array<ClientApp>} */
+    const list = getApplicationList();
 
-		this.#top.innerHTML = '';
+    this.#top.innerHTML = '';
 
-		for (const a of list.filter((/** @type {ClientApp} */ a) => a.menuElement && a.mainElementBuilder)) {
-			a.menuElement.setAttribute('data-app', a.name);
-			this.#top.appendChild(a.menuElement);
-		}
-	}
+    for (const a of list.filter((/** @type {ClientApp} */ a) => a.menuElement && a.mainElementBuilder)) {
+      a.menuElement.setAttribute('data-app', a.name);
+      this.#top.appendChild(a.menuElement);
+    }
+  }
 }
 customElements.define('kiosk-menu-main-element', KioskMenuMainElement);
 
 app
-	.setMainElementBuilder(() => new KioskMenuMainElement())
-	.onStateChange((status, app) => {
-		const appList = status?.server?.applicationsList;
-		if (appList) {
-			for (const i in appList) {
-				const a = appList[i];
-				a.name = i;
-				app.debug(`Registering app by menu: ${a.name}`, a);
-				const ap = new ClientApp(a.name)
-					.setMainElementBuilder(() => iFrameBuilder(a.url))
-					.menuBasedOnIcon(a.icon, a.label);
-				if ('priority' in a) {
-					ap.setPriority(a.priority);
-				}
-			}
-		}
-	});
+  .setMainElementBuilder(() => new KioskMenuMainElement())
+  .onStateChange((status, app) => {
+    const appList = status?.server?.applicationsList;
+    if (appList) {
+      for (const i in appList) {
+        const a = appList[i];
+        a.name = i;
+        app.debug(`Registering app by menu: ${a.name}`, a);
+        const ap = new ClientApp(a.name)
+          .setMainElementBuilder(() => iFrameBuilder(a.url))
+          .menuBasedOnIcon(a.icon, a.label);
+        if ('priority' in a) {
+          ap.setPriority(a.priority);
+        }
+      }
+    }
+  });
 
 humanActiveStatus.onChange(active => {
-	document.querySelectorAll('#app-menu').forEach(el => {
-		if (active) {
-			el.removeAttribute('inactive');
-		} else {
-			el.setAttribute('inactive', 'inactive');
-		}
-	});
-	if (!active) {
-		// Trigger a new calculation of the top app
-		app.debug('Back to auto select application');
-		autoSelectApplication();
-	}
+  document.querySelectorAll('#app-menu').forEach(el => {
+    if (active) {
+      el.removeAttribute('inactive');
+    } else {
+      el.setAttribute('inactive', 'inactive');
+    }
+  });
+  if (!active) {
+    // Trigger a new calculation of the top app
+    app.debug('Back to auto select application');
+    autoSelectApplication();
+  }
 });
 
 /**
  * Insert the icon on top of the body
  */
 function init() {
-	document.querySelector('body').insertAdjacentHTML('beforeend', `
+  document.querySelector('body').insertAdjacentHTML('beforeend', `
 <style>
 	body > #app-menu {
 		position: absolute;
@@ -120,15 +120,15 @@ function init() {
 </div>
 `);
 
-	const appMenuElement = document.querySelector('body > div#app-menu');
-	if (appMenuElement == null) {
-		throw 'registerAppMenu: #app-menu is null';
-	}
+  const appMenuElement = document.querySelector('body > div#app-menu');
+  if (appMenuElement == null) {
+    throw 'registerAppMenu: #app-menu is null';
+  }
 
-	appMenuElement.addEventListener('click', () => {
-		// Go to menu list application
-		selectApplication(app);
-	});
+  appMenuElement.addEventListener('click', () => {
+    // Go to menu list application
+    selectApplication(app);
+  });
 }
 
 init();

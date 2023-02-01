@@ -6,7 +6,7 @@ const { ipcRenderer } = require('electron');
  * @param {*} data to be sent
  */
 export function guiSendToServer(channel, data) {
-    ipcRenderer.send(channel, data);
+  ipcRenderer.send(channel, data);
 }
 
 /**
@@ -15,5 +15,5 @@ export function guiSendToServer(channel, data) {
  * @param {function(object):void} cb to react to events
  */
 export function guiOnServerMessage(channel, cb) {
-    ipcRenderer.on(channel, (_event, message) => cb(message));
+  ipcRenderer.on(channel, (_event, message) => cb(message));
 }

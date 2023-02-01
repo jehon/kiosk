@@ -7,31 +7,31 @@ import { autoSelectApplication } from './client-lib-chooser.js';
  */
 const globalCatcher = new ClientApp('catch');
 window.addEventListener('error', (event) => {
-	globalCatcher.error(event.message,
-		event.filename ?
-			event.filename + '#' + event.lineno + ':' + event.colno
-			: ''
-		, event.error);
+  globalCatcher.error(event.message,
+    event.filename ?
+      event.filename + '#' + event.lineno + ':' + event.colno
+      : ''
+    , event.error);
 });
 
 //
 // Load other packages
 //
 Promise.all([
-	waitForConfig
+  waitForConfig
 ]).then(() =>
-	Promise.all([
-		import('../packages/menu/menu-client.js'),
-		import('../packages/human/human-client.js'),
+  Promise.all([
+    import('../packages/menu/menu-client.js'),
+    import('../packages/human/human-client.js'),
 
-		import('../packages/camera/camera-client.js'),
-		import('../packages/clock/clock-client.js'),
-		import('../packages/fire/fire-client.js'),
-		import('../packages/music/music-client.js'),
-		import('../packages/photo-frame/photo-frame-client.js'),
-		import('../packages/system/system-client.js'),
-	])
-	.then(() => {
-		autoSelectApplication();
-	})
+    import('../packages/camera/camera-client.js'),
+    import('../packages/clock/clock-client.js'),
+    import('../packages/fire/fire-client.js'),
+    import('../packages/music/music-client.js'),
+    import('../packages/photo-frame/photo-frame-client.js'),
+    import('../packages/system/system-client.js'),
+  ])
+    .then(() => {
+      autoSelectApplication();
+    })
 );

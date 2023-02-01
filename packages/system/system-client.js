@@ -6,22 +6,22 @@ import { priorities } from '../../client/config.js';
 const app = new ClientApp('system');
 
 export class KioskSystemMainElement extends ClientElement {
-    /** @type {HTMLElement} */
-    #pre;
+  /** @type {HTMLElement} */
+  #pre;
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.app.setPriority(priorities.manuallySelected.elevated);
-    }
+  connectedCallback() {
+    super.connectedCallback();
+    this.app.setPriority(priorities.manuallySelected.elevated);
+  }
 
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        this.app.setPriority(priorities.manuallySelected.normal);
-    }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.app.setPriority(priorities.manuallySelected.normal);
+  }
 
-    /** @override */
-    ready() {
-        this.shadowRoot.innerHTML = `
+  /** @override */
+  ready() {
+    this.shadowRoot.innerHTML = `
             <style>
                 pre {
                     background-color: black;
@@ -31,19 +31,19 @@ export class KioskSystemMainElement extends ClientElement {
             </style>
             <pre></pre>
         `;
-        this.#pre = this.shadowRoot.querySelector('pre');
-    }
+    this.#pre = this.shadowRoot.querySelector('pre');
+  }
 
-    /** @override */
-    stateChanged(status) {
-        this.#pre.innerHTML = JSON.stringify(status.server, null, 2);
-    }
+  /** @override */
+  stateChanged(status) {
+    this.#pre.innerHTML = JSON.stringify(status.server, null, 2);
+  }
 }
 
 customElements.define('kiosk-system-main-element', KioskSystemMainElement);
 
 app
-    .setMainElementBuilder(() => new KioskSystemMainElement())
-    .menuBasedOnIcon('../packages/system/system.svg');
+  .setMainElementBuilder(() => new KioskSystemMainElement())
+  .menuBasedOnIcon('../packages/system/system.svg');
 
 export default app;

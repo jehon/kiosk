@@ -11,8 +11,8 @@ export let fnCnt = 0;
  * @returns {string} the filename as a test title
  */
 export function fn(url) {
-	fnCnt++;
-	return new URL(url).pathname.split('/').pop();
+  fnCnt++;
+  return new URL(url).pathname.split('/').pop();
 }
 
 // afterAll(function () {
@@ -30,7 +30,7 @@ export const __dirname = dirname(fileURLToPath(import.meta.url));
  * @returns {Promise<void>} resolve after ms milliseconds
  */
 export async function waitMillis(ms) {
-	return new Promise(resolve => {
-		setTimeout(() => resolve(), ms);
-	});
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), ms);
+  });
 }
