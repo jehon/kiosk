@@ -105,7 +105,7 @@ node_modules/.packages-installed.json: package.json
 .PHONY: build
 build: built/index.html
 
-built/index.html: $(shell find client packages common -type d) package.json
+built/index.html: $(shell find client packages common) package.json
 	npm run build
 	touch "$@"
 
