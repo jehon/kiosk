@@ -74,7 +74,8 @@ export function init() {
 		disableCron();
 	}
 
-	disableCron = app.cron(onCron, {
+	disableCron = app.cron({
+		onCron,
 		cron: app.getConfig('.cron', ''),
 		duration: app.getConfig('.duration', 30)
 	});

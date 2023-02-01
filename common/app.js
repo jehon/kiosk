@@ -163,14 +163,14 @@ export default class App {
 	/**
 	 * Program a cron scheduler
 	 *
-	 * @param {function(CronStats,*):void} cb callback
 	 * @param {object} options to configure the cron
 	 * @param {string} options.cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
 	 * @param {number} options.duration in minutes
-	 * @param {*} options.data to pass to the signal
+	 * @param {function(CronStats,*):void} options.onCron callback
+	 * @param {*} options.context to pass to the signal
 	 * @returns {Function} stop to halt the cron
 	 */
-    cron(cb, options) {
+    cron(options) {
         if (!options.cron) {
 			return () => { };
 		}
@@ -203,7 +203,7 @@ export default class App {
             };
 
             try {
-                await cb(options.data, stats);
+                await options.onCron(options.context, stats);
 			} catch (e) {
                 this.error(`notifying on ${options.cron} gave an error: `, e);
             }

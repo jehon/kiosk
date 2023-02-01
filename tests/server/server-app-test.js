@@ -35,10 +35,11 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			// Without the first element (seconds), seconds are taken as "0" i.e. every minute
-			let cancelCron = app.cron(() => i++, {
+			let cancelCron = app.cron({
+				onCron: () => i++,
 				cron: '* * * * *',
 				duration: 0,
-				data: 123
+				context: 123
 			});
 
 			jasmine.clock().tick(2 * 60 * 1000 + 1);
@@ -60,10 +61,11 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			// At 5:00, for 2 hours
-			let cancelCron = app.cron(() => i++, {
+			let cancelCron = app.cron({
+				onCron: () => i++,
 				cron: '0 5 * * *',
 				duration: 2 * 60,
-				data: 2
+				context: 2
 			});
 
 			// It should not have fired
@@ -82,10 +84,11 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			// At 11:00, for 2 hours
-			let cancelCron = app.cron(() => i++, {
+			let cancelCron = app.cron({
+				onCron: () => i++,
 				cron: '0 11 * * *',
 				duration: 2 * 60,
-				data: 123
+				context: 123
 			});
 
 			// It should have fired
