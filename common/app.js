@@ -188,7 +188,7 @@ export default class App {
      *
      * @param {Date} whenTriggered the start of the ticker (could be now)
      */
-    const onCron = async (whenTriggered) => {
+    const onCron = (whenTriggered) => {
       const stats = {
         start: whenTriggered,
         end: new Date(whenTriggered.getTime() + options.duration * 60 * 1000),
@@ -196,7 +196,7 @@ export default class App {
       };
 
       try {
-        await options.onCron(options.context, stats);
+        options.onCron(options.context, stats);
       } catch (e) {
         this.error(`notifying on ${options.cron} gave an error: `, e);
       }
@@ -244,11 +244,20 @@ export default class App {
     if (typeof (date) == 'string') {
       date = new Date(date);
     }
+
+    const run = () => {
+      try {
+        cb();
+      } catch (e) {
+        this.error(`On date ${date} gave an error: `, e);
+      }
+    };
+
     const now = new Date();
     if (date < now) {
       this.debug('onDate: but it was already in the past, triggering immediately');
-      return cb();
+      return run();
     }
-    Cron(date, cb);
+    Cron(date, run);
   }
 }
