@@ -182,7 +182,6 @@ export default class App {
             ...options
         };
 
-
 		/**
 		 * When cron is triggered
 		 *
@@ -208,7 +207,7 @@ export default class App {
         const now = new Date();
         now.setMilliseconds(0);
 
-        const scheduler = new Cron(options.cron);
+        const scheduler = Cron(options.cron, () => { onCron(new Date()); });
 
         if (options.duration > 0) {
             //
@@ -230,26 +229,7 @@ export default class App {
             }
         }
 
-		let tsId = 0;
-		const program = () => {
-            const next = new Date(scheduler.next());
-			const ds = next - new Date();
-			//
-			// Can not make it longer than 2^32
-			// And we take some security
-			//
-			// 2^32 = 12 days, 2^30 = 4 days
-			//
-			if (ds > Math.pow(2, 30)) {
-				return;
-			}
-			tsId = setTimeout(() => {
-				program();
-                onCron(next);
-			}, ds);
-		};
-		program();
-		return () => clearTimeout(tsId);
+        return () => scheduler.stop();
 	}
 
     /**
