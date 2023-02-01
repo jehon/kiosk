@@ -1,6 +1,6 @@
 
 import './helper-electron.js';
-import { fn } from './helper-main.js';
+import { fn, tick } from './helper-main.js';
 
 import app, { KioskClockMainElement, init } from '../../packages/clock/clock-client.js';
 
@@ -36,7 +36,7 @@ describe(fn(import.meta.url), () => {
 			expect(app.getState().currentTicker).toBeNull();
 
 			// Jump 1 minute
-			jasmine.clock().tick(60 * 1000);
+			tick({ minutes: 1 });
 
 			expect(app.getState().currentTicker).toBeDefined();
 			expect(app.getState().currentTicker).not.toBeNull();

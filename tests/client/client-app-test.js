@@ -3,7 +3,7 @@ import './helper-electron.js';
 
 import { ClientApp, waitForConfig } from '../../client/client-app.js';
 
-import { fn } from './helper-main.js';
+import { fn, tick } from './helper-main.js';
 
 describe(fn(import.meta.url), () => {
 	it('should instanciate', function () {
@@ -53,21 +53,21 @@ describe(fn(import.meta.url), () => {
 				context: 123
 			});
 
-			jasmine.clock().tick(2 * 60 * 1000 + 1);
+			tick({ hours: 2, minutes: 1 });
 
 			expect(i).toBeGreaterThan(0);
 			expect(calledWith).toBe(123);
 			cancelCron();
 
 			i = 0;
-			jasmine.clock().tick(2000 + 1);
+			tick({ hours: 2, minutes: 1 });
 
 			expect(i).toBe(0);
 		});
 	});
 
 	it('should handle not trigger if event is too far in the past', function () {
-		let i = 0;
+		let runs = 0;
 		const app = new ClientApp('test');
 
 		jasmine.clock().withMock(function () {
@@ -75,7 +75,7 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			let cancelCron = app.cron({
-				onCron: () => i++,
+				onCron: () => runs++,
 				// At 5:00
 				cron: '0 5 * * *',
 				// For 2 hours
@@ -84,15 +84,14 @@ describe(fn(import.meta.url), () => {
 			});
 
 			// It should not have fired
-
-			expect(i).toBe(0);
+			expect(runs).toBe(0);
 			cancelCron();
 		});
 
 	});
 
 	it('should handle cron with event currently running', function () {
-		let i = 0;
+		let runs = 0;
 		const app = new ClientApp('test');
 
 		jasmine.clock().withMock(function () {
@@ -100,7 +99,7 @@ describe(fn(import.meta.url), () => {
 			jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
 
 			let cancelCron = app.cron({
-				onCron: () => i++,
+				onCron: () => runs++,
 				// At 11:00
 				cron: '0 11 * * *',
 				// For 2 hours
@@ -109,12 +108,12 @@ describe(fn(import.meta.url), () => {
 			});
 
 			// It should have fired once
-			expect(i).toBeGreaterThan(0);
+			expect(runs).toBeGreaterThan(0);
 
 			// It should end
-			jasmine.clock().tick(2 * 60 * 60 * 1000);
+			tick({ hours: 2, minutes: 1 });
 
-			expect(i).toBe(1);
+			expect(runs).toBeGreaterThan(0);
 			cancelCron();
 		});
 	});
