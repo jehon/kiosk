@@ -47,8 +47,6 @@ resetConfig()
   })
   .then(() => {
     return Promise.all([
-      import('../packages/menu/menu-server.mjs'),
-
       import('../packages/camera/camera-server.mjs'),
       import('../packages/photo-frame/photo-frame-server.mjs'),
       import('../packages/system/system-server.mjs')

@@ -4,7 +4,60 @@ import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
 import ClientElement from '../../client/client-element.js';
 import { humanActiveStatus } from '../human/human-client.js';
 
-const app = new ClientApp('menu');
+const app = new ClientApp('menu', {
+  applicationsList: []
+});
+
+/**
+ * Insert the icon on top of the body
+ *
+ * @param {object} config to insert
+ */
+function init(config = app.getConfig('.')) {
+  document.querySelector('body').insertAdjacentHTML('beforeend', `
+<style>
+	body > #app-menu {
+		position: absolute;
+		top: var(--generic-space);
+		left: var(--generic-space);
+		z-index: 1000;
+	}
+
+	body > #app-menu > img {
+		width: 40px;
+	}
+
+	body > #app-menu[inactive] {
+		display: none;
+	}
+</style>
+<div id="app-menu" inactive>
+	<img src='static/menu.svg' />
+</div>
+`);
+
+  const appMenuElement = document.querySelector('body > div#app-menu');
+  if (appMenuElement == null) {
+    throw 'registerAppMenu: #app-menu is null';
+  }
+
+  appMenuElement.addEventListener('click', () => {
+    // Go to menu list application
+    selectApplication(app);
+  });
+
+  for (const a of config) {
+    app.debug(`Registering app by menu: ${a.name}`, a);
+    const ap = new ClientApp(a.name)
+      .setMainElementBuilder(() => iFrameBuilder(a.url))
+      .menuBasedOnIcon(a.icon, a.label);
+    if ('priority' in a) {
+      ap.setPriority(a.priority);
+    }
+  }
+}
+
+init();
 
 class KioskMenuMainElement extends ClientElement {
   #top;
@@ -61,23 +114,7 @@ class KioskMenuMainElement extends ClientElement {
 customElements.define('kiosk-menu-main-element', KioskMenuMainElement);
 
 app
-  .setMainElementBuilder(() => new KioskMenuMainElement())
-  .onStateChange((status, app) => {
-    const appList = status?.server?.applicationsList;
-    if (appList) {
-      for (const i in appList) {
-        const a = appList[i];
-        a.name = i;
-        app.debug(`Registering app by menu: ${a.name}`, a);
-        const ap = new ClientApp(a.name)
-          .setMainElementBuilder(() => iFrameBuilder(a.url))
-          .menuBasedOnIcon(a.icon, a.label);
-        if ('priority' in a) {
-          ap.setPriority(a.priority);
-        }
-      }
-    }
-  });
+  .setMainElementBuilder(() => new KioskMenuMainElement());
 
 humanActiveStatus.onChange(active => {
   document.querySelectorAll('#app-menu').forEach(el => {
@@ -93,42 +130,3 @@ humanActiveStatus.onChange(active => {
     autoSelectApplication();
   }
 });
-
-/**
- * Insert the icon on top of the body
- */
-function init() {
-  document.querySelector('body').insertAdjacentHTML('beforeend', `
-<style>
-	body > #app-menu {
-		position: absolute;
-		top: var(--generic-space);
-		left: var(--generic-space);
-		z-index: 1000;
-	}
-
-	body > #app-menu > img {
-		width: 40px;
-	}
-
-	body > #app-menu[inactive] {
-		display: none;
-	}
-</style>
-<div id="app-menu" inactive>
-	<img src='static/menu.svg' />
-</div>
-`);
-
-  const appMenuElement = document.querySelector('body > div#app-menu');
-  if (appMenuElement == null) {
-    throw 'registerAppMenu: #app-menu is null';
-  }
-
-  appMenuElement.addEventListener('click', () => {
-    // Go to menu list application
-    selectApplication(app);
-  });
-}
-
-init();
