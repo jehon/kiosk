@@ -238,19 +238,17 @@ export default class App {
    * Resolve a promise on a certain date
    *
    * @param {Date} date the date on which the promise will be resolved
-   * @returns {Promise<void>} a promise resolving on date
+   * @param {function(): void} cb to be called
    */
-  async onDate(date) {
-    return new Promise((resolve, _reject) => {
-      if (typeof (date) == 'string') {
-        date = new Date(date);
-      }
-      const now = new Date();
-      if (date < now) {
-        this.debug('onDate: but it was already in the past, triggering immediately');
-        return resolve();
-      }
-      setTimeout(() => resolve(), date.getTime() - now.getTime());
-    });
+  async onDate(date, cb) {
+    if (typeof (date) == 'string') {
+      date = new Date(date);
+    }
+    const now = new Date();
+    if (date < now) {
+      this.debug('onDate: but it was already in the past, triggering immediately');
+      return cb();
+    }
+    Cron(date, cb);
   }
 }
