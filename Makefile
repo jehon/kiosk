@@ -103,8 +103,11 @@ node_modules/.packages-installed.json: package.json
 	touch "$@"
 	
 .PHONY: build
-build:
+build: built/index.html
+
+built/index.html: $(shell find client packages common -type d) package.json
 	npm run build
+	touch "$@"
 
 .PHONY: test
 test: test-server test-client
