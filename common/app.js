@@ -165,9 +165,9 @@ export default class App {
 	 *
 	 * @param {object} options to configure the cron
 	 * @param {string} options.cron 5 stars (min hours dom month[1-12] dow[0sun-6]) (if empty, make nothing [usefull for testing])
-	 * @param {number} options.duration in minutes
+	 * @param {number?} options.duration in minutes
 	 * @param {function(CronStats,*):void} options.onCron callback
-	 * @param {*} options.context to pass to the signal
+	 * @param {*?} options.context to pass to the signal
 	 * @returns {Function} stop to halt the cron
 	 */
     cron(options) {
@@ -175,30 +175,23 @@ export default class App {
 			return () => { };
 		}
 
-        // What time is it now?
-        const now = new Date();
-        now.setMilliseconds(0);
+        options = {
+            duration: 0,
+            onEnd: () => { },
+            context: {},
+            ...options
+        };
 
-        //
-        // We look in the back, to see if the last event is still running or not
-        // The last event is running if
-        //    - it is started less than "duration" minutes ago
-        //
-        // => look "duration" in the past, and see if a event should have start during
-        //    that time
-        //
-        const lookBackUpto = new Date(now);
-        lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration);
 
 		/**
 		 * When cron is triggered
 		 *
-		 * @param {Date} whenShouldTrigger the start of the ticker (could be now)
+		 * @param {Date} whenTriggered the start of the ticker (could be now)
 		 */
-        const onCron = async (whenShouldTrigger = new Date()) => {
+        const onCron = async (whenTriggered) => {
             const stats = {
-                start: whenShouldTrigger,
-                end: new Date(whenShouldTrigger.getTime() + options.duration * 60 * 1000),
+                start: whenTriggered,
+                end: new Date(whenTriggered.getTime() + options.duration * 60 * 1000),
                 duration: options.duration // minutes
             };
 
@@ -209,7 +202,13 @@ export default class App {
             }
 		};
 
-        const cronParsed = new Cron(options.cron);
+        //
+        // What time is it now?
+        //
+        const now = new Date();
+        now.setMilliseconds(0);
+
+        const scheduler = new Cron(options.cron);
 
         if (options.duration > 0) {
             //
@@ -223,7 +222,7 @@ export default class App {
 
             const lookBackUpto = new Date(now);
             lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration - 0.1);
-            const nextStartingFromBack = cronParsed.next(lookBackUpto);
+            const nextStartingFromBack = scheduler.next(lookBackUpto);
 
             if (nextStartingFromBack < now) {
                 this.debug(`Initiating past cron for ${options.cron} (${options.cron}) about ${nextStartingFromBack} on ${now} with duration ${options.duration}`);
@@ -233,7 +232,7 @@ export default class App {
 
 		let tsId = 0;
 		const program = () => {
-			const next = new Date(cronParsed.next());
+            const next = new Date(scheduler.next());
 			const ds = next - new Date();
 			//
 			// Can not make it longer than 2^32
