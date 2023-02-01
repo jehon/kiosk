@@ -14,7 +14,7 @@ export default app;
  * @returns {string} as xxxxx.xx Mb
  */
 function toMB(x) {
-    return Number(x / 1000 / 1000).toFixed(2) + ' Mb';
+  return Number(x / 1000 / 1000).toFixed(2) + ' Mb';
 }
 
 /**
@@ -23,16 +23,16 @@ function toMB(x) {
  * @returns {Array<string>} as external ip's
  */
 function getNetworkIP() {
-    const nets = os.networkInterfaces();
-    const ips = [];
-    for (const name of Object.keys(nets)) {
-        for (const net of nets[name]) {
-            if (!net.internal) {
-                ips.push(net.address);
-            }
-        }
+  const nets = os.networkInterfaces();
+  const ips = [];
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (!net.internal) {
+        ips.push(net.address);
+      }
     }
-    return ips;
+  }
+  return ips;
 }
 
 /**
@@ -41,27 +41,27 @@ function getNetworkIP() {
  * @returns {module:server/ServerApp} the app
  */
 export async function init() {
-    app.setState({
-        initial: true
-    });
+  app.setState({
+    initial: true
+  });
 
-    onClient(app.getChannel(), (status) => {
+  onClient(app.getChannel(), (status) => {
 
-        os;
-        if (status.active) {
-            app.setState({
-                time: new Date(),
-                ips: getNetworkIP(),
-                memroy: {
-                    free: toMB(os.freemem()),
-                    total: toMB(os.totalmem())
-                },
-                top: os.loadavg()
-            });
-        }
-    });
+    os;
+    if (status.active) {
+      app.setState({
+        time: new Date(),
+        ips: getNetworkIP(),
+        memroy: {
+          free: toMB(os.freemem()),
+          total: toMB(os.totalmem())
+        },
+        top: os.loadavg()
+      });
+    }
+  });
 
-    return app;
+  return app;
 }
 
 init();
