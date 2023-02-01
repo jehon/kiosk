@@ -85,7 +85,7 @@ describe(fn(import.meta.url), () => {
 
 	});
 
-	fit('should handle cron with event currently running', function () {
+	it('should handle cron with event currently running', function () {
 		let i = 0;
 		const app = new ClientApp('test');
 
