@@ -28,8 +28,7 @@ Promise.all([
     import('../packages/clock/clock-client.js'),
     import('../packages/fire/fire-client.js'),
     import('../packages/music/music-client.js'),
-    import('../packages/photo-frame/photo-frame-client.js'),
-    import('../packages/system/system-client.js'),
+    import('../packages/photo-frame/photo-frame-client.js')
   ])
     .then(() => {
       autoSelectApplication();
