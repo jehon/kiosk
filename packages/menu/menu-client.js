@@ -46,13 +46,15 @@ function init(config = app.getConfig('.')) {
     selectApplication(app);
   });
 
-  for (const a of config) {
-    app.debug(`Registering app by menu: ${a.name}`, a);
-    const ap = new ClientApp(a.name)
-      .setMainElementBuilder(() => iFrameBuilder(a.url))
-      .menuBasedOnIcon(a.icon, a.label);
-    if ('priority' in a) {
-      ap.setPriority(a.priority);
+  if (config) {
+    for (const a of config) {
+      app.debug(`Registering app by menu: ${a.name}`, a);
+      const ap = new ClientApp(a.name)
+        .setMainElementBuilder(() => iFrameBuilder(a.url))
+        .menuBasedOnIcon(a.icon, a.label);
+      if ('priority' in a) {
+        ap.setPriority(a.priority);
+      }
     }
   }
 }
