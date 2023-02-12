@@ -13,7 +13,7 @@
     "chokidar": "3.5.3",
     "colors": "1.4.0",
     "cron-parser": "4.7.1",
-    "croner": "5.5.1",
+    "croner": "5.6.1",
     "debug": "4.3.4",
     "deepmerge": "4.3.0",
     "dot-path-value": "0.0.6",
