@@ -26,6 +26,20 @@ import yargs from 'yargs';
 
 const indexFilename = 'index.json';
 
+/**
+ * @typedef FolderConfig
+ * @param {string} name - name of the config
+ * @param {string} folder relative or absolute
+ * @param {number} quantity of files
+ * @param {string} mimeTypePattern to be matched
+ * @param {Array<string>} excludes to be excluded (using minimatch)
+ *
+ *  folder: /media/photo/
+ *	quantity: 20
+ *	excludes:
+ *	  - "#recycle"
+ *	  - "0 A trier"
+ */
 
 /**
  * Show an information
@@ -45,20 +59,6 @@ export function warning(str) {
   process.stdout.write(`[Warning] ${str}\n`);
 }
 
-/**
- * @typedef FolderConfig
- * @param {string} name - name of the config
- * @param {string} folder relative or absolute
- * @param {number} quantity of files
- * @param {string} mimeTypePattern to be matched
- * @param {Array<string>} excludes to be excluded (using minimatch)
- *
- *  folder: /media/photo/
- *	quantity: 20
- *	excludes:
- *	  - "#recycle"
- *	  - "0 A trier"
- */
 
 /**
  *
@@ -83,7 +83,7 @@ async function generateListingForConfig(configName, config) {
    * @returns {Array<string>} is a list of files relative to folder
    */
   const generateListingForPath = async function (pathname) {
-  // An array of strings:
+    // An array of strings:
     const folders = getWeightedFoldersFromPath(pathname, excludes);
 
     const listing = [];
