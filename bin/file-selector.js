@@ -16,24 +16,16 @@
  * - orientation
  */
 
-import fs, { readFileSync } from 'fs';
+import fs from 'fs';
 import path from 'path';
 import exifParser from './lib/exif-parser.js';
-import serverAppFactory from '../server/server-app.js';
-import * as url from 'url';
-import yaml from '../node_modules/js-yaml/dist/js-yaml.mjs';
-import getConfig, { initFromCommandLine } from '../server/server-lib-config.js';
 import { log, info, warning } from './lib/logs.js';
 import { shuffleArray } from '../server/shuffle.js';
 import fsExtra from 'fs-extra';
 import { getFilesFromFolderByMime, getWeightedFoldersFromFolder } from './lib/files.js';
+import yargs from 'yargs';
 
-const app = serverAppFactory('core');
-
-const __filename = url.fileURLToPath(import.meta.url);
-const prj_root = path.dirname(path.dirname(__filename));
-const destination = path.join(prj_root, 'var', 'photos');
-const index = path.join(destination, 'index.json');
+const indexFilename = 'index.json';
 
 /**
  * @typedef FolderConfig
@@ -216,7 +208,4 @@ await yargs(process.argv.slice(2)).options({
     }
   )
   .recommendCommands()
-  .strict()
-  .help()
-  .alias('help', 'h')
   .argv;
