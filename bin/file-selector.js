@@ -49,6 +49,7 @@ const DefaultStorage = 'var/photos';
  * @typedef CtxIndex
  * @param {string} context as the context name
  * @param {Date} ts when generated
+ * @param {string} date when gerenated (readable)
  * @param {Array<ImageDescription>} list of images
  */
 
@@ -175,32 +176,30 @@ async function generateListingForConfig(context, varRoot, config) {
 
     const list = await generateListingForPath(from);
 
-    if (list.length < 1) {
+    const ctxInfos = {
+      context,
+      ts: Date.now(),
+      date: (new Date()).toISOString(),
+      list: []
+    };
+
+    if (list.length < 1 && !alwaysNew) {
       warning(`No files found in ${from}`);
-      if (alwaysNew) {
-        return {};
-      } else {
+      if (!alwaysNew) {
       // Try to load previous json file if exists
         return JSON.parse(fs.readFileSync(indexPath));
       }
     }
-
     info(`Cleaning ${to}`);
     fsExtra.emptyDirSync(to);
-
-    const infos = [];
     for (const k in list) {
       const f = list[k];
-      infos.push(await addFile(f));
+      ctxInfos.list.push(await addFile(f));
     }
 
-    fs.writeFileSync(indexPath, JSON.stringify(infos, null, 2));
+    fs.writeFileSync(indexPath, JSON.stringify(ctxInfos, null, 2));
 
-    return {
-      context,
-      ts: new Date(),
-      list: infos
-    };
+    return ctxInfos;
   } catch (e) {
     console.error(e);
     return {};
@@ -218,7 +217,8 @@ async function generateListingForConfig(context, varRoot, config) {
 function mergeIndexes(targetIndex, quantity, indexes) {
   const merged = {
     list: [],
-    ts: 0
+    ts: 0,
+    date: (new Date()).toISOString()
   };
   for (const fdata of indexes) {
     if (fdata.list) {
