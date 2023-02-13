@@ -9,12 +9,12 @@ import shuffleWeightedList from './random.js';
  * Test if a file match the pattern
  * (used to exclude files)
  *
- * @param {string} filename to be matched
+ * @param {string} fileName to be matched
  * @param {string} pattern to match
  * @returns {boolean} true if it match
  */
-function matchFile(filename, pattern) {
-  return minimatch(filename, pattern, {
+function matchFile(fileName, pattern) {
+  return minimatch(fileName, pattern, {
     nocase: true,
     nocomment: true,
     nonegate: true
@@ -24,12 +24,12 @@ function matchFile(filename, pattern) {
 /**
  * Get all files of a folder
  *
- * @param {string} folder relative to cwd or absolute
+ * @param {string} pathname relative to cwd or absolute
  * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
  * @returns {Array<string>} of file paths relative to folder
  */
-async function getFilesFromFolder(folder, excludes = []) {
-  return fs.readdirSync(folder)
+async function getFilesFromPath(pathname, excludes = []) {
+  return fs.readdirSync(pathname)
     .filter(file => !(file in ['.', '..']))
     .filter(file => excludes.reduce((acc, val) => acc && !matchFile(file, val), true));
 }
@@ -37,15 +37,15 @@ async function getFilesFromFolder(folder, excludes = []) {
 /**
  * Get files of mimetype in a folder
  *
- * @param {string} folder relative to cwd or absolute
+ * @param {string} pathname relative to cwd or absolute
  * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
  * @param {string} mimeTypePattern to filter in (image/*)
  * @returns {Array<string>} of file paths relative to folder
  */
-export async function getFilesFromFolderByMime(folder, excludes, mimeTypePattern) {
-  return (await getFilesFromFolder(folder, excludes))
+export async function getFilesFromPathByMime(pathname, excludes, mimeTypePattern) {
+  return (await getFilesFromPath(pathname, excludes))
     .filter(f => {
-      let mt = mime.lookup(path.join(folder, f));
+      let mt = mime.lookup(path.join(pathname, f));
       if (typeof (mt) != 'string') {
         return false;
       }
@@ -56,22 +56,22 @@ export async function getFilesFromFolderByMime(folder, excludes, mimeTypePattern
 /**
  * Get subfolders out of a folder
  *
- * @param {string} folder relative to cwd or absolute
+ * @param {string} pathname relative to cwd or absolute
  * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
  * @returns {Array<string>} of folders (absolute)
  */
-export async function getFoldersFromFolder(folder, excludes) {
-  return (await getFilesFromFolder(folder, excludes))
-    .filter(f => fs.statSync(path.join(folder, f)).isDirectory());
+export async function getFoldersFromPath(pathname, excludes) {
+  return (await getFilesFromPath(pathname, excludes))
+    .filter(f => fs.statSync(pathname.join(pathname, f)).isDirectory());
 }
 
 /**
  *
- * @param {string} folder to look in
+ * @param {string} pathname to look in
  * @param {Array<string>} excludes with miniglob
  * @returns {Promise<Object<number>>} a map from "folder names" to "priorities"
  */
-export async function getWeightedFoldersFromFolder(folder, excludes) {
+export async function getWeightedFoldersFromPath(pathname, excludes) {
   //
   // Shuffle will send back an array of strings
   //   each string is the name of a folder (relative to folder)
@@ -88,12 +88,12 @@ export async function getWeightedFoldersFromFolder(folder, excludes) {
   //
   const prioritizedFolders = {
     '.': 1,
-    ...(await getFoldersFromFolder(folder, excludes))
+    ...(await getFoldersFromPath(pathname, excludes))
       .reduce((acc, v) => {
         // Add the priority for the file
         acc[v] = 1;
         try {
-          const dfile = path.join(folder, v, 'kiosk.json');
+          const dfile = pathname.join(pathname, v, 'kiosk.json');
           if (fs.statSync(dfile)) {
             const content = JSON.parse(fs.readFileSync(dfile));
             if (content && content.priority) {
