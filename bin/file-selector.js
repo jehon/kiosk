@@ -63,16 +63,19 @@ export function warning(str) {
 /**
  *
  * @param {string} _context of the config
+ * @param {string} varRoot as abstract destination
  * @param {FolderConfig} config to be used
  */
-async function generateListingForConfig(_context, config) {
+async function generateListingForConfig(_context, varRoot, config) {
   const excludes = config.excludes ?? [];
   const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
   const from = config.from;
-  const to = config.to;
+  const context = path.basename(config.to);
 
   let n = config.quantity ?? 20;
   const previouslySelected = [];
+  const to = path.join(varRoot, context);
+
 
   /**
    * Find "n" files in the folders and build up a list
@@ -127,7 +130,7 @@ async function generateListingForConfig(_context, config) {
 
   try {
     fs.statSync(from);
-    fs.statSync(to);
+    fs.mkdirSync(to, { recursive: true });
 
     const list = await generateListingForPath(from);
 
@@ -189,7 +192,7 @@ await yargs(process.argv.slice(2)).options({
         default: []
       }
     },
-    async (options) => generateListingForConfig(options)
+    async (options) => generateListingForConfig('', 'var/photo-frame', options)
   )
   .command(
     'concat [folders...]',
