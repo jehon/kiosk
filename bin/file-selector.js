@@ -19,9 +19,13 @@ import fsExtra from 'fs-extra';
 import { getFilesFromPathByMime, getWeightedFoldersFromPath } from './lib/files.js';
 import { initFromCommandLine } from '../server/server-lib-config.js';
 import serverAppFactory from '../server/server-app.js';
+import * as url from 'url';
 
 const IndexFilename = 'index.json';
 const DefaultStorage = 'var/photos';
+const __filename = url.fileURLToPath(import.meta.url);
+const prj_root = path.dirname(path.dirname(__filename));
+
 
 /**
  * @typedef FolderConfig
@@ -245,6 +249,8 @@ function mergeIndexes(targetIndex, quantity, indexes) {
 const app = serverAppFactory('photo-frame');
 
 initFromCommandLine(app)
+  // since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
+  .then(() => process.chdir(prj_root))
   .then(async () => {
     const folders = app.getConfig('.sources', {});
     return Promise.all(Object.entries(folders)
