@@ -17,9 +17,10 @@ import exifParser from './lib/exif-parser.js';
 import { shuffleArray } from '../server/shuffle.js';
 import fsExtra from 'fs-extra';
 import { getFilesFromPathByMime, getWeightedFoldersFromPath } from './lib/files.js';
-import yargs from 'yargs';
+import { initFromCommandLine } from '../server/server-lib-config.js';
+import serverAppFactory from '../server/server-app.js';
 
-const indexFilename = 'index.json';
+const IndexFilename = 'index.json';
 
 /**
  * @typedef FolderConfig
@@ -44,6 +45,12 @@ const indexFilename = 'index.json';
  */
 
 /**
+ * @typedef CtxIndex
+ * @param {Array<ImageDescription>} list of images
+ * @param {string} context as the context name
+ */
+
+/**
  * Show an information
  *
  * @param {string} str to be shown
@@ -63,22 +70,21 @@ export function warning(str) {
 
 /**
  *
- * @param {string} _context of the config
+ * @param {string} context of the config
  * @param {string} varRoot as abstract destination
  * @param {FolderConfig} config to be used
  * @returns {Promise<Array<ImageDescription>>} as the image descriptions, relative to context
  */
-async function generateListingForConfig(_context, varRoot, config) {
+async function generateListingForConfig(context, varRoot, config) {
   const excludes = config.excludes ?? [];
   const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
-  const from = config.from;
-  const context = path.basename(config.to);
+  const from = config.path;
 
   const to = path.join(varRoot, context);
   const previouslySelected = [];
   const maxQuantity = config.quantity ?? 20;
 
-  const indexPath = path.join(to, indexFilename);
+  const indexPath = path.join(to, IndexFilename);
 
   let n = maxQuantity;
   let index = 0;
@@ -195,7 +201,7 @@ async function generateListingForConfig(_context, varRoot, config) {
  *
  * @param {string} targetIndex where to store the merged index
  * @param {number} quantity to limit the global count
- * @param {Array<Array<ImageDescription>>} indexes list of indexes
+ * @param {Array<Array<CtxIndex>>} indexes list of indexes (list, context)
  * @returns {Array<ImageDescription>} merged
  */
 function mergeIndexes(targetIndex, quantity, indexes) {
@@ -217,46 +223,18 @@ function mergeIndexes(targetIndex, quantity, indexes) {
   return merged;
 }
 
-await yargs(process.argv.slice(2)).options({
-  'to': {
-    type: 'string',
-    default: '.'
-  },
-  'quantity': {
-    type: 'number'
-  }
-})
-  .command(
-    'select',
-    'Generate a listing',
-    {
-      'from': {
-        type: 'string',
-        required: true
-      },
-      'excludes': {
-        type: 'array',
-        default: []
-      }
-    },
-    async (options) => generateListingForConfig('', 'var/photo-frame', options)
-  )
-  .command(
-    'concat [folders...]',
-    'Concat all separated files',
-    {
-      folders: {
-        type: 'array',
-        default: []
-      }
-    },
-    async (options) => mergeIndexes(
-      path.join(options.to, indexFilename),
-      options.quantity,
-      options.folders.map(f => ({
-        context: path.basename(f),
-        list: JSON.parse(fs.readFileSync(path.join(f, indexFilename)))
-      })))
-  )
-  .recommendCommands()
-  .argv;
+const app = serverAppFactory('photo-frame');
+
+initFromCommandLine(app)
+  .then(async () => {
+    const folders = app.getConfig('.sources', {});
+    return Promise.all(Object.entries(folders)
+      .map(async ([context, fdata]) => ({
+        context: context,
+        list: await generateListingForConfig(context, 'var/photo-frame', fdata)
+      })));
+  })
+  .then(ctxIndexes => mergeIndexes(
+    path.join('var/photo-frame', IndexFilename),
+    1,
+    ctxIndexes));

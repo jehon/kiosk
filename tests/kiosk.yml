@@ -19,7 +19,11 @@ human:
   inactivitySeconds: 15
 
 photo-frame:
-  folder: tests/server/data/photos
+  quantity: 2
+  sources:
+    test: 
+      path: tests/server/data/photos
+      quantity: 5
 
 camera:
   intervalSeconds: 5
