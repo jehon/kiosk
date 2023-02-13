@@ -62,10 +62,10 @@ export function warning(str) {
 
 /**
  *
- * @param {string} context of the config
+ * @param {string} _context of the config
  * @param {FolderConfig} config to be used
  */
-async function generateListingForConfig(context, config) {
+async function generateListingForConfig(_context, config) {
   const excludes = config.excludes ?? [];
   const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
   const from = config.from;
