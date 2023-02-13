@@ -72,9 +72,9 @@ async function generateListingForConfig(_context, varRoot, config) {
   const from = config.from;
   const context = path.basename(config.to);
 
-  let n = config.quantity ?? 20;
-  const previouslySelected = [];
   const to = path.join(varRoot, context);
+  const previouslySelected = [];
+  let n = config.quantity ?? 20;
 
 
   /**
@@ -86,7 +86,7 @@ async function generateListingForConfig(_context, varRoot, config) {
    */
   const generateListingForPath = async function (pathname) {
     // An array of strings:
-    const folders = getWeightedFoldersFromPath(pathname, excludes);
+    const folders = await getWeightedFoldersFromPath(pathname, excludes);
 
     const listing = [];
 
@@ -118,11 +118,12 @@ async function generateListingForConfig(_context, varRoot, config) {
               n - listing.length))
             .map(filename => path.join(pathname, filename))
         );
+
         continue;
       } else {
 
         // Take folders
-        await generateListingForPath(path.join(pathname, f));
+        listing.push(...await generateListingForPath(path.join(pathname, f)));
       }
     }
     return listing;
