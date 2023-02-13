@@ -16,99 +16,24 @@
  * - orientation
  */
 
-import fs from 'fs';
-import fsExtra from 'fs-extra';
-import mime from 'mime-types';
-import minimatch from 'minimatch';
+import fs, { readFileSync } from 'fs';
 import path from 'path';
-import yargs from 'yargs';
 import exifParser from './lib/exif-parser.js';
+import serverAppFactory from '../server/server-app.js';
+import * as url from 'url';
+import yaml from '../node_modules/js-yaml/dist/js-yaml.mjs';
+import getConfig, { initFromCommandLine } from '../server/server-lib-config.js';
+import { log, info, warning } from './lib/logs.js';
+import { shuffleArray } from '../server/shuffle.js';
+import fsExtra from 'fs-extra';
+import { getFilesFromFolderByMime, getWeightedFoldersFromFolder } from './lib/files.js';
 
-const indexFilename = 'index.json';
+const app = serverAppFactory('core');
 
-let verbose = false;
-
-/**
- * Log something only if in verbose mode
- *
- * @param {string} str to write
- */
-function log(str) {
-  if (verbose) {
-    process.stdout.write(`[D] ${str}\n`);
-  }
-}
-
-/**
- * Show an information
- *
- * @param {string} str to be shown
- */
-function info(str) {
-  process.stdout.write(`[I] ${str}\n`);
-}
-
-/**
- * Show a warning
- *
- * @param {string} str to be shown
- */
-function warning(str) {
-  process.stdout.write(`[Warning] ${str}\n`);
-}
-
-/**
- * @param {object} weightedList with weight
- * @returns {any} taken in random
- */
-function takeOne(weightedList) {
-  const sum = Object.values(weightedList).reduce((n, i) => n + i, 0);
-
-  if (sum == 0) {
-    return Object.keys(weightedList).pop();
-  }
-
-  const r = Math.random() * sum;
-  // const r = secureRandom(sum);
-
-  let s = 0;
-  for (const k of Object.keys(weightedList)) {
-    s += weightedList[k];
-    if (r < s) {
-      return k;
-    }
-  }
-
-  return Object.keys(weightedList).pop();
-}
-
-/**
- * @param {object} weightedList with weight
- * @returns {Array} weighted (top priority first => .shift())
- */
-export default function shuffle(weightedList) {
-  const keys = Object.keys(weightedList);
-
-  const res = [];
-  const N = keys.length;
-  for (var i = 0; i < N; i++) {
-    const k = takeOne(weightedList);
-    delete weightedList[k];
-    res.push(k);
-  }
-
-  return res;
-}
-
-/**
- * @param {Array} arr to be shuffled
- * @returns {Array} not wiehgted
- */
-export function shuffleArray(arr) {
-  return shuffle(
-    arr.reduce((acc, v) => { acc[v] = 1; return acc; }, {})
-  );
-}
+const __filename = url.fileURLToPath(import.meta.url);
+const prj_root = path.dirname(path.dirname(__filename));
+const destination = path.join(prj_root, 'var', 'photos');
+const index = path.join(destination, 'index.json');
 
 /**
  * @typedef FolderConfig
@@ -126,66 +51,6 @@ export function shuffleArray(arr) {
  */
 
 /**
- * Test if a file match the pattern
- * (used to exclude files)
- *
- * @param {string} filename to be matched
- * @param {string} pattern to match
- * @returns {boolean} true if it match
- */
-function matchFile(filename, pattern) {
-  return minimatch(filename, pattern, {
-    nocase: true,
-    nocomment: true,
-    nonegate: true
-  });
-}
-
-/**
- * Get all files of a folder
- *
- * @param {string} folder relative to cwd or absolute
- * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
- * @returns {Array<string>} of file paths relative to folder
- */
-async function getFilesFromFolder(folder, excludes = []) {
-  return fs.readdirSync(folder)
-    .filter(file => !(file in ['.', '..']))
-    .filter(file => excludes.reduce((acc, val) => acc && !matchFile(file, val), true));
-}
-
-/**
- * Get files of mimetype in a folder
- *
- * @param {string} folder relative to cwd or absolute
- * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
- * @param {string} mimeTypePattern to filter in (image/*)
- * @returns {Array<string>} of file paths relative to folder
- */
-async function getFilesFromFolderByMime(folder, excludes, mimeTypePattern) {
-  return (await getFilesFromFolder(folder, excludes))
-    .filter(f => {
-      let mt = mime.lookup(path.join(folder, f));
-      if (typeof (mt) != 'string') {
-        return false;
-      }
-      return mt.match(mimeTypePattern);
-    });
-}
-
-/**
- * Get subfolders out of a folder
- *
- * @param {string} folder relative to cwd or absolute
- * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
- * @returns {Array<string>} of folders (absolute)
- */
-async function getFoldersFromFolder(folder, excludes) {
-  return (await getFilesFromFolder(folder, excludes))
-    .filter(f => fs.statSync(path.join(folder, f)).isDirectory());
-}
-
-/**
  * Find "n" files in the folders and build up a list
  * It will recurse to subfolders (up and down) until "n" files are found
  *
@@ -198,40 +63,8 @@ async function getFoldersFromFolder(folder, excludes) {
 async function generateListingForPath(folder, folderConfig, n = folderConfig.quantity, previouslySelected = []) {
   log(`Entering ${folder}`);
 
-  //
-  // Shuffle will send back an array of strings
-  //   each string is the name of a folder (relative to folder)
-  //
-  const priorityFolders = {
-    '.': 1,
-    ...(await getFoldersFromFolder(folder, folderConfig.excludes))
-      .reduce((acc, v) => {
-        // Add the priority for the file
-        acc[v] = 1;
-        try {
-          const dfile = path.join(folder, v, 'kiosk.json');
-          if (fs.statSync(dfile)) {
-            const content = JSON.parse(fs.readFileSync(dfile));
-            if (content && content.priority) {
-              acc[v] = content.priority;
-            }
-          }
-        } catch (_e) {
-          // expected
-        }
-        return acc;
-      }, {})
-  };
-
-  //
-  // We need an object here
-  // so that we can influence proportions of each times
-  //   key: folder name (relative to folder)
-  //   value: # of times this folder is taken into account in lottery
-  //            (once taken, it is removed)
-  //          default = 1
-  //
-  const folders = shuffle(priorityFolders);
+  // An array of strings:
+  const folders = getWeightedFoldersFromFolder(folder, folderConfig.excludes);
 
   const listing = [];
 
@@ -279,26 +112,6 @@ async function generateListingForPath(folder, folderConfig, n = folderConfig.qua
 }
 
 await yargs(process.argv.slice(2)).options({
-  'verbose': {
-    alias: ['v'],
-    type: 'boolean',
-    default: false,
-    coerce: val => {
-      verbose = val;
-      return val;
-    }
-  },
-  'dryRun': {
-    alias: ['dry-run', 'n'],
-    type: 'boolean',
-    default: false,
-    coerce: (val) => {
-      if (val) {
-        console.info('Using dry run mode');
-      }
-      return val;
-    }
-  },
   'to': {
     type: 'string',
     default: '.'
