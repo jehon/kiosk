@@ -62,7 +62,7 @@ export async function getFilesFromPathByMime(pathname, excludes, mimeTypePattern
  */
 export async function getFoldersFromPath(pathname, excludes) {
   return (await getFilesFromPath(pathname, excludes))
-    .filter(f => fs.statSync(pathname.join(pathname, f)).isDirectory());
+    .filter(f => fs.statSync(path.join(pathname, f)).isDirectory());
 }
 
 /**
