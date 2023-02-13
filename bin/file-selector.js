@@ -120,11 +120,7 @@ async function generateListingForConfig(configName, config) {
       } else {
 
         // Take folders
-        listing.push(...(await generateListingForPath(
-          path.join(pathname, f),
-          n - listing.length,
-          previouslySelected
-        )));
+        await generateListingForPath(path.join(pathname, f));
       }
     }
     return listing;
