@@ -181,13 +181,40 @@ async function generateListingForConfig(_context, varRoot, config) {
       infos.push(await addFile(f));
     }
 
-    fs.writeFileSync(indexPath, JSON.stringify(infos));
+    fs.writeFileSync(indexPath, JSON.stringify(infos, null, 2));
 
     return infos;
   } catch (e) {
     console.error(e);
     return [];
   }
+}
+
+/**
+ * Merge various indexes from subfolders
+ *
+ * @param {string} targetIndex where to store the merged index
+ * @param {number} quantity to limit the global count
+ * @param {Array<Array<ImageDescription>>} indexes list of indexes
+ * @returns {Array<ImageDescription>} merged
+ */
+function mergeIndexes(targetIndex, quantity, indexes) {
+  const merged = [];
+  for (const fdata of indexes) {
+    merged.push(
+      ...fdata.list.map(f => ({
+        ...f,
+        subPath: path.join(fdata.context, f.subPath)
+      }))
+    );
+  }
+
+  if (quantity > 0) {
+    merged.splice(quantity);
+  }
+  merged.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
+  fs.writeFileSync(targetIndex, JSON.stringify(merged, null, 2));
+  return merged;
 }
 
 await yargs(process.argv.slice(2)).options({
@@ -223,29 +250,13 @@ await yargs(process.argv.slice(2)).options({
         default: []
       }
     },
-    async (options) => {
-      const agglomerated = [];
-      for (const folder of options.folders) {
-        const ifile = path.join(folder, indexFilename);
-        try {
-          const fdata = JSON.parse(fs.readFileSync(ifile));
-          agglomerated.push(
-            ...fdata.map(f => ({
-              ...f,
-              subPath: path.join(folder, f.subPath)
-            }))
-          );
-        } catch (e) {
-          warning(`No index.json found at ${ifile}: ${e}`);
-        }
-      }
-
-      if (options.quantity) {
-        agglomerated.splice(options.quantity, agglomerated.length);
-      }
-      agglomerated.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
-      fs.writeFileSync(path.join(options.to, indexFilename), JSON.stringify(agglomerated, null, 2));
-    }
+    async (options) => mergeIndexes(
+      path.join(options.to, indexFilename),
+      options.quantity,
+      options.folders.map(f => ({
+        context: path.basename(f),
+        list: JSON.parse(fs.readFileSync(path.join(f, indexFilename)))
+      })))
   )
   .recommendCommands()
   .argv;
