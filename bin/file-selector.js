@@ -64,15 +64,15 @@ export function warning(str) {
  * Find "n" files in the folders and build up a list
  * It will recurse to subfolders (up and down) until "n" files are found
  *
- * @param {string} folder path
+ * @param {string} pathname path
  * @param {FolderConfig} folderConfig where to search for
  * @param {number} n of files to take (will be updated with really taken count)
  * @param {Array<string>} previouslySelected is the list of previously visited folder
  * @returns {Array<string>} is a list of files relative to folder
  */
-async function generateListingForPath(folder, folderConfig, n = folderConfig.quantity, previouslySelected = []) {
+async function generateListingForPath(pathname, folderConfig, n = folderConfig.quantity, previouslySelected = []) {
   // An array of strings:
-  const folders = getWeightedFoldersFromPath(folder, folderConfig.excludes);
+  const folders = getWeightedFoldersFromPath(pathname, folderConfig.excludes);
 
   const listing = [];
 
@@ -82,16 +82,16 @@ async function generateListingForPath(folder, folderConfig, n = folderConfig.qua
 
     if (f == '.') {
       // Special case: we take the pictures in the current folder
-      if (previouslySelected.includes(folder)) {
+      if (previouslySelected.includes(pathname)) {
         // Don't take twice the same folder
         continue;
       }
-      previouslySelected.push(folder);
+      previouslySelected.push(pathname);
 
       /** @type {Array<string>} - list of max(n) filename with correct mimetype */
       const images = shuffleArray(
         await getFilesFromPathByMime(
-          folder,
+          pathname,
           folderConfig.excludes,
           folderConfig.mimeTypePattern
         )
@@ -102,14 +102,14 @@ async function generateListingForPath(folder, folderConfig, n = folderConfig.qua
           .slice(0, Math.min(n,
             images.length,
             n - listing.length))
-          .map(filename => path.join(folder, filename))
+          .map(filename => path.join(pathname, filename))
       );
       continue;
     } else {
 
       // Take folders
       listing.push(...(await generateListingForPath(
-        path.join(folder, f),
+        path.join(pathname, f),
         folderConfig,
         n - listing.length,
         previouslySelected
