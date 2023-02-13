@@ -127,7 +127,6 @@ async function generateListingForConfig(context, varRoot, config) {
    * It will recurse to subfolders (up and down) until "n" files are found
    *
    * @param {string} pathname path
-   * @param {boolean} alwaysNew if it need to be empty sometimes
    * @returns {Array<string>} is a list of files relative to folder
    */
   const generateListingForPath = async function (pathname) {
@@ -175,10 +174,14 @@ async function generateListingForConfig(context, varRoot, config) {
 
     const list = await generateListingForPath(from);
 
-    if (list.length < 1 && !alwaysNew) {
+    if (list.length < 1) {
       warning(`No files found in ${from}`);
+      if (alwaysNew) {
+        return {};
+      } else {
       // Try to load previous json file if exists
-      return JSON.parse(fs.readFileSync(indexPath));
+        return JSON.parse(fs.readFileSync(indexPath));
+      }
     }
 
     info(`Cleaning ${to}`);
