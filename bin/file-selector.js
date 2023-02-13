@@ -61,62 +61,115 @@ export function warning(str) {
  */
 
 /**
- * Find "n" files in the folders and build up a list
- * It will recurse to subfolders (up and down) until "n" files are found
  *
- * @param {string} pathname path
- * @param {FolderConfig} folderConfig where to search for
- * @param {number} n of files to take (will be updated with really taken count)
- * @param {Array<string>} previouslySelected is the list of previously visited folder
- * @returns {Array<string>} is a list of files relative to folder
+ * @param {string} configName of the config
+ * @param {FolderConfig} config to be used
  */
-async function generateListingForPath(pathname, folderConfig, n = folderConfig.quantity, previouslySelected = []) {
+async function generateListingForConfig(configName, config) {
+  const excludes = config.excludes ?? [];
+  const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
+
+  const from = config.from;
+  const to = config.to;
+
+  let n = config.quantity ?? 20;
+  const previouslySelected = [];
+
+  /**
+   * Find "n" files in the folders and build up a list
+   * It will recurse to subfolders (up and down) until "n" files are found
+   *
+   * @param {string} pathname path
+   * @returns {Array<string>} is a list of files relative to folder
+   */
+  const generateListingForPath = async function (pathname) {
   // An array of strings:
-  const folders = getWeightedFoldersFromPath(pathname, folderConfig.excludes);
+    const folders = getWeightedFoldersFromPath(pathname, excludes);
 
-  const listing = [];
+    const listing = [];
 
-  while (folders.length > 0 && listing.length < n) {
+    while (folders.length > 0 && listing.length < n) {
     // Take the first one (top priority)
-    const f = folders.shift();
+      const f = folders.shift();
 
-    if (f == '.') {
+      if (f == '.') {
       // Special case: we take the pictures in the current folder
-      if (previouslySelected.includes(pathname)) {
+        if (previouslySelected.includes(pathname)) {
         // Don't take twice the same folder
+          continue;
+        }
+        previouslySelected.push(pathname);
+
+        /** @type {Array<string>} - list of max(n) filename with correct mimetype */
+        const images = shuffleArray(
+          await getFilesFromPathByMime(
+            pathname,
+            excludes,
+            mimeTypePattern
+          )
+        );
+
+        listing.push(
+          ...images
+            .slice(0, Math.min(n,
+              images.length,
+              n - listing.length))
+            .map(filename => path.join(pathname, filename))
+        );
         continue;
+      } else {
+
+        // Take folders
+        listing.push(...(await generateListingForPath(
+          path.join(pathname, f),
+          n - listing.length,
+          previouslySelected
+        )));
       }
-      previouslySelected.push(pathname);
-
-      /** @type {Array<string>} - list of max(n) filename with correct mimetype */
-      const images = shuffleArray(
-        await getFilesFromPathByMime(
-          pathname,
-          folderConfig.excludes,
-          folderConfig.mimeTypePattern
-        )
-      );
-
-      listing.push(
-        ...images
-          .slice(0, Math.min(n,
-            images.length,
-            n - listing.length))
-          .map(filename => path.join(pathname, filename))
-      );
-      continue;
-    } else {
-
-      // Take folders
-      listing.push(...(await generateListingForPath(
-        path.join(pathname, f),
-        folderConfig,
-        n - listing.length,
-        previouslySelected
-      )));
     }
+    return listing;
+  };
+
+  try {
+    fs.statSync(from);
+    fs.statSync(to);
+
+    const list = await generateListingForPath(from);
+
+    if (list.length < 1) {
+      warning(`No files found in ${from}`);
+      process.exit(1);
+    }
+
+    info(`Cleaning ${to}`);
+    fsExtra.emptyDirSync(to);
+
+    const infos = [];
+    for (const k in list) {
+      const k0 = String(k).padStart(2, '0');
+      const f = list[k];
+      info(`${k}/${n} Copying ${f}`);
+      const targetFn = `${k0}${path.extname(f)}`;
+      const targetPath = path.join(to, targetFn);
+      fs.copyFileSync(f, targetPath);
+      const kinfo = {
+        originalFilePath: f,
+        subPath: targetFn
+      };
+
+      try {
+        const exifInfo = await exifParser(targetPath);
+        kinfo.data = exifInfo;
+      } catch (e) {
+        warning(`Could not parse exif data for ${targetPath}`);
+      }
+      infos.push(kinfo);
+    }
+
+    fs.writeFileSync(path.join(to, indexFilename), JSON.stringify(infos));
+  } catch (e) {
+    console.error(e);
   }
-  return listing;
 }
 
 await yargs(process.argv.slice(2)).options({
@@ -141,54 +194,7 @@ await yargs(process.argv.slice(2)).options({
         default: []
       }
     },
-    async (options) => {
-      options = {
-        mimeTypePattern: ['image/*'],
-        quantity: 20,
-        ...options
-      };
-
-      try {
-        fs.statSync(options.from);
-        fs.statSync(options.to);
-
-        const list = await generateListingForPath(options.from, options);
-
-        if (list.length < 1) {
-          warning(`No files found in ${options.from}`);
-          process.exit(1);
-        }
-
-        info(`Cleaning ${options.to}`);
-        fsExtra.emptyDirSync(options.to);
-
-        const infos = [];
-        for (const k in list) {
-          const k0 = String(k).padStart(2, '0');
-          const f = list[k];
-          info(`${k}/${options.quantity} Copying ${f}`);
-          const targetFn = `${k0}${path.extname(f)}`;
-          const targetPath = path.join(options.to, targetFn);
-          fs.copyFileSync(f, targetPath);
-          const kinfo = {
-            originalFilePath: f,
-            subPath: targetFn
-          };
-
-          try {
-            const exifInfo = await exifParser(targetPath);
-            kinfo.data = exifInfo;
-          } catch (e) {
-            warning(`Could not parse exif data for ${targetPath}`);
-          }
-          infos.push(kinfo);
-        }
-
-        fs.writeFileSync(path.join(options.to, indexFilename), JSON.stringify(infos));
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    async (options) => generateListingForConfig(options)
   )
   .command(
     'concat [folders...]',
