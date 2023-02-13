@@ -21,7 +21,7 @@ human:
 photo-frame:
   quantity: 2
   sources:
-    test: 
+    test:
       path: tests/server/data/photos
       quantity: 5
 
