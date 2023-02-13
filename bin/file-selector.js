@@ -19,13 +19,31 @@
 import fs from 'fs';
 import path from 'path';
 import exifParser from './lib/exif-parser.js';
-import { log, info, warning } from './lib/logs.js';
 import { shuffleArray } from '../server/shuffle.js';
 import fsExtra from 'fs-extra';
 import { getFilesFromPathByMime, getWeightedFoldersFromPath } from './lib/files.js';
 import yargs from 'yargs';
 
 const indexFilename = 'index.json';
+
+
+/**
+ * Show an information
+ *
+ * @param {string} str to be shown
+ */
+export function info(str) {
+  process.stdout.write(`[I] ${str}\n`);
+}
+
+/**
+ * Show a warning
+ *
+ * @param {string} str to be shown
+ */
+export function warning(str) {
+  process.stdout.write(`[Warning] ${str}\n`);
+}
 
 /**
  * @typedef FolderConfig
@@ -53,8 +71,6 @@ const indexFilename = 'index.json';
  * @returns {Array<string>} is a list of files relative to folder
  */
 async function generateListingForPath(folder, folderConfig, n = folderConfig.quantity, previouslySelected = []) {
-  log(`Entering ${folder}`);
-
   // An array of strings:
   const folders = getWeightedFoldersFromPath(folder, folderConfig.excludes);
 
