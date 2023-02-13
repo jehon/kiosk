@@ -47,8 +47,9 @@ const DefaultStorage = 'var/photos';
 
 /**
  * @typedef CtxIndex
- * @param {Array<ImageDescription>} list of images
  * @param {string} context as the context name
+ * @param {Date} ts when generated
+ * @param {Array<ImageDescription>} list of images
  */
 
 /**
@@ -74,7 +75,7 @@ export function warning(str) {
  * @param {string} context of the config
  * @param {string} varRoot as abstract destination
  * @param {FolderConfig} config to be used
- * @returns {Promise<Array<ImageDescription>>} as the image descriptions, relative to context
+ * @returns {Promise<CtxIndex>} as the image descriptions, relative to context
  */
 async function generateListingForConfig(context, varRoot, config) {
   const excludes = config.excludes ?? [];
@@ -195,10 +196,14 @@ async function generateListingForConfig(context, varRoot, config) {
 
     fs.writeFileSync(indexPath, JSON.stringify(infos, null, 2));
 
-    return infos;
+    return {
+      context,
+      ts: new Date(),
+      list: infos
+    };
   } catch (e) {
     console.error(e);
-    return [];
+    return {};
   }
 }
 
@@ -235,10 +240,9 @@ initFromCommandLine(app)
   .then(async () => {
     const folders = app.getConfig('.sources', {});
     return Promise.all(Object.entries(folders)
-      .map(async ([context, fdata]) => ({
-        context: context,
-        list: await generateListingForConfig(context, app.getConfig('.storage', DefaultStorage), fdata)
-      })));
+      .map(async ([context, fConfig]) =>
+        await generateListingForConfig(context, app.getConfig('.storage', DefaultStorage), fConfig)
+      ));
   })
   .then(ctxIndexes =>
     mergeIndexes(
