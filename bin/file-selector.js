@@ -21,6 +21,7 @@ import { initFromCommandLine } from '../server/server-lib-config.js';
 import serverAppFactory from '../server/server-app.js';
 
 const IndexFilename = 'index.json';
+const DefaultStorage = 'var/photos';
 
 /**
  * @typedef FolderConfig
@@ -79,6 +80,7 @@ async function generateListingForConfig(context, varRoot, config) {
   const excludes = config.excludes ?? [];
   const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
   const from = config.path;
+  const alwaysNew = config.alwaysNew ?? false;
 
   const to = path.join(varRoot, context);
   const previouslySelected = [];
@@ -125,6 +127,7 @@ async function generateListingForConfig(context, varRoot, config) {
    * It will recurse to subfolders (up and down) until "n" files are found
    *
    * @param {string} pathname path
+   * @param {boolean} alwaysNew if it need to be empty sometimes
    * @returns {Array<string>} is a list of files relative to folder
    */
   const generateListingForPath = async function (pathname) {
@@ -172,7 +175,7 @@ async function generateListingForConfig(context, varRoot, config) {
 
     const list = await generateListingForPath(from);
 
-    if (list.length < 1) {
+    if (list.length < 1 && !alwaysNew) {
       warning(`No files found in ${from}`);
       // Try to load previous json file if exists
       return JSON.parse(fs.readFileSync(indexPath));
@@ -231,10 +234,12 @@ initFromCommandLine(app)
     return Promise.all(Object.entries(folders)
       .map(async ([context, fdata]) => ({
         context: context,
-        list: await generateListingForConfig(context, 'var/photo-frame', fdata)
+        list: await generateListingForConfig(context, app.getConfig('.storage', DefaultStorage), fdata)
       })));
   })
-  .then(ctxIndexes => mergeIndexes(
-    path.join('var/photo-frame', IndexFilename),
-    1,
-    ctxIndexes));
+  .then(ctxIndexes =>
+    mergeIndexes(
+      path.join(app.getConfig('.storage', DefaultStorage), IndexFilename),
+      app.getConfig('.quantity'),
+      ctxIndexes)
+  );
