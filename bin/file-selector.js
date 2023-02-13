@@ -22,7 +22,7 @@ import exifParser from './lib/exif-parser.js';
 import { log, info, warning } from './lib/logs.js';
 import { shuffleArray } from '../server/shuffle.js';
 import fsExtra from 'fs-extra';
-import { getFilesFromFolderByMime, getWeightedFoldersFromFolder } from './lib/files.js';
+import { getFilesFromPathByMime, getWeightedFoldersFromPath } from './lib/files.js';
 import yargs from 'yargs';
 
 const indexFilename = 'index.json';
@@ -56,7 +56,7 @@ async function generateListingForPath(folder, folderConfig, n = folderConfig.qua
   log(`Entering ${folder}`);
 
   // An array of strings:
-  const folders = getWeightedFoldersFromFolder(folder, folderConfig.excludes);
+  const folders = getWeightedFoldersFromPath(folder, folderConfig.excludes);
 
   const listing = [];
 
@@ -74,7 +74,7 @@ async function generateListingForPath(folder, folderConfig, n = folderConfig.qua
 
       /** @type {Array<string>} - list of max(n) filename with correct mimetype */
       const images = shuffleArray(
-        await getFilesFromFolderByMime(
+        await getFilesFromPathByMime(
           folder,
           folderConfig.excludes,
           folderConfig.mimeTypePattern
