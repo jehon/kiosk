@@ -174,3 +174,44 @@ export async function loadConfigFromFile(serverApp, configFiles = config.files) 
 
   return config;
 }
+
+/**
+ * Load all stuff from command line and default
+ *
+ * @param {module:server/ServerApp} app where to log
+ * @returns {object} the config loaded
+ */
+export async function initFromCommandLine(app) {
+  return resetConfig()
+    .then(() => loadConfigFromCommandLine(app))
+    .then((cmdConfig) => {
+      if (cmdConfig.devMode) {
+        enableDebugFor('kiosk:loggers');
+      }
+      return cmdConfig;
+    })
+    .then((cmdConfig) => loadConfigFromFile(app, [cmdConfig.file, 'etc/kiosk.yml']))
+    .then((config) => {
+      //
+      // Override with command line options
+      //
+      if (app.getConfig('server.devMode', false)) {
+        app.debug('Versions', process.versions);
+        app.info('Node version: ', process.versions['node']);
+      }
+
+      app.debug('Final config: ', config);
+
+      //
+      // Activate some loggers
+      //
+      if (config?.core?.loggers) {
+        for (const re of config.core.loggers) {
+          app.info('Enabling logging level due to configuration: ', re);
+          enableDebugFor(re);
+        }
+      }
+
+      return config;
+    });
+}
