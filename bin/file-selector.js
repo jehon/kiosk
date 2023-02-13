@@ -216,20 +216,28 @@ async function generateListingForConfig(context, varRoot, config) {
  * @returns {Array<ImageDescription>} merged
  */
 function mergeIndexes(targetIndex, quantity, indexes) {
-  const merged = [];
+  const merged = {
+    list: [],
+    ts: 0
+  };
   for (const fdata of indexes) {
-    merged.push(
-      ...fdata.list.map(f => ({
-        ...f,
-        subPath: path.join(fdata.context, f.subPath)
-      }))
-    );
+    if (fdata.list) {
+      merged.ts = Math.max(merged.ts, fdata.ts);
+
+      merged.list.push(
+        ...fdata.list.map(f => ({
+          ...f,
+          subPath: path.join(fdata.context, f.subPath)
+        }))
+      );
+    }
   }
 
   if (quantity > 0) {
-    merged.splice(quantity);
+    merged.list.splice(quantity);
   }
-  merged.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
+
+  merged.list.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
   fs.writeFileSync(targetIndex, JSON.stringify(merged, null, 2));
   return merged;
 }
