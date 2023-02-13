@@ -1,10 +1,5 @@
 #!/usr/bin/env node
 
-// Shellbang:
-//   #!/usr/bin/env -S node --experimental-loader 'data:text/javascript,let%20t%3D!0%3Bexport%20async%20function%20resolve(e%2Co%2Cn)%7Bconst%20r%3Dawait%20n(e%2Co)%3Breturn%20t%26%26(r.format%3D%22module%22%2Ct%3D!1)%2Cr%7D'
-//
-// 	Thanks to https://github.com/nodejs/node/issues/34049#issuecomment-1101720017
-
 /**
  *
  * Manage a list of <files> with
@@ -42,6 +37,13 @@ const indexFilename = 'index.json';
  */
 
 /**
+ * @typedef ImageDescription
+ * @param {string} originalFilePath - where the file was stored
+ * @param {string} subPath - relative to the index.json
+ * @param {object} data - from exif
+ */
+
+/**
  * Show an information
  *
  * @param {string} str to be shown
@@ -59,12 +61,12 @@ export function warning(str) {
   process.stdout.write(`[Warning] ${str}\n`);
 }
 
-
 /**
  *
  * @param {string} _context of the config
  * @param {string} varRoot as abstract destination
  * @param {FolderConfig} config to be used
+ * @returns {Promise<Array<ImageDescription>>} as the image descriptions, relative to context
  */
 async function generateListingForConfig(_context, varRoot, config) {
   const excludes = config.excludes ?? [];
@@ -74,8 +76,41 @@ async function generateListingForConfig(_context, varRoot, config) {
 
   const to = path.join(varRoot, context);
   const previouslySelected = [];
-  let n = config.quantity ?? 20;
+  const maxQuantity = config.quantity ?? 20;
 
+  let n = maxQuantity;
+  let index = 0;
+
+  /**
+   * Add file to list
+   *
+   * @param {string} filepath of the file to be added
+   * @returns {ImageDescription} as the description of the file
+   */
+  const addFile = async function (filepath) {
+    index++;
+    const paddedIndex = String(index).padStart(2, '0');
+    info(`${paddedIndex}/${maxQuantity} Copying ${filepath}`);
+
+    // Format: 00.ext
+    const targetFn = `${paddedIndex}${path.extname(filepath)}`;
+    const targetPath = path.join(to, targetFn);
+
+    fs.copyFileSync(filepath, targetPath);
+    const fileInfos = {
+      originalFilePath: filepath,
+      subPath: targetFn
+    };
+
+    try {
+      const exifInfo = await exifParser(targetPath);
+      fileInfos.data = exifInfo;
+    } catch (e) {
+      warning(`Could not parse exif data for ${targetPath}`);
+    }
+
+    return fileInfos;
+  };
 
   /**
    * Find "n" files in the folders and build up a list
@@ -88,6 +123,7 @@ async function generateListingForConfig(_context, varRoot, config) {
     // An array of strings:
     const folders = await getWeightedFoldersFromPath(pathname, excludes);
 
+    /** @type {ImageDescription} */
     const listing = [];
 
     while (folders.length > 0 && listing.length < n) {
@@ -95,34 +131,27 @@ async function generateListingForConfig(_context, varRoot, config) {
       const f = folders.shift();
 
       if (f == '.') {
-      // Special case: we take the pictures in the current folder
+        // Special case: we take the pictures in the current folder
+
         if (previouslySelected.includes(pathname)) {
-        // Don't take twice the same folder
+          // Don't take twice the same folder
           continue;
         }
         previouslySelected.push(pathname);
 
         /** @type {Array<string>} - list of max(n) filename with correct mimetype */
         const images = shuffleArray(
-          await getFilesFromPathByMime(
-            pathname,
-            excludes,
-            mimeTypePattern
-          )
+          await getFilesFromPathByMime(pathname, excludes, mimeTypePattern)
         );
 
         listing.push(
           ...images
-            .slice(0, Math.min(n,
-              images.length,
-              n - listing.length))
+            .slice(0, Math.min(n, images.length, n - listing.length))
             .map(filename => path.join(pathname, filename))
         );
-
-        continue;
       } else {
-
         // Take folders
+
         listing.push(...await generateListingForPath(path.join(pathname, f)));
       }
     }
@@ -145,27 +174,13 @@ async function generateListingForConfig(_context, varRoot, config) {
 
     const infos = [];
     for (const k in list) {
-      const k0 = String(k).padStart(2, '0');
       const f = list[k];
-      info(`${k}/${n} Copying ${f}`);
-      const targetFn = `${k0}${path.extname(f)}`;
-      const targetPath = path.join(to, targetFn);
-      fs.copyFileSync(f, targetPath);
-      const kinfo = {
-        originalFilePath: f,
-        subPath: targetFn
-      };
-
-      try {
-        const exifInfo = await exifParser(targetPath);
-        kinfo.data = exifInfo;
-      } catch (e) {
-        warning(`Could not parse exif data for ${targetPath}`);
-      }
-      infos.push(kinfo);
+      infos.push(await addFile(f));
     }
 
     fs.writeFileSync(path.join(to, indexFilename), JSON.stringify(infos));
+
+    return infos;
   } catch (e) {
     console.error(e);
   }
