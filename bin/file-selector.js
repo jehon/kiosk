@@ -78,6 +78,8 @@ async function generateListingForConfig(_context, varRoot, config) {
   const previouslySelected = [];
   const maxQuantity = config.quantity ?? 20;
 
+  const indexPath = path.join(to, indexFilename);
+
   let n = maxQuantity;
   let index = 0;
 
@@ -166,7 +168,8 @@ async function generateListingForConfig(_context, varRoot, config) {
 
     if (list.length < 1) {
       warning(`No files found in ${from}`);
-      process.exit(1);
+      // Try to load previous json file if exists
+      return JSON.parse(fs.readFileSync(indexPath));
     }
 
     info(`Cleaning ${to}`);
@@ -178,11 +181,12 @@ async function generateListingForConfig(_context, varRoot, config) {
       infos.push(await addFile(f));
     }
 
-    fs.writeFileSync(path.join(to, indexFilename), JSON.stringify(infos));
+    fs.writeFileSync(indexPath, JSON.stringify(infos));
 
     return infos;
   } catch (e) {
     console.error(e);
+    return [];
   }
 }
 
