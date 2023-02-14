@@ -81,12 +81,15 @@ clean:
 	rm -fr node_modules
 
 .PHONY: start
-start: build stop-previous
+start: build stop-previous var/photos/index.json
 	DEBUG="kiosk:loggers,$$DEBUG" node ./server/server.js -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
 
 .PHONY: start-prod
 start-prod: build stop-previous
 	node ./server/server.js -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+
+var/photos/index.json:
+	bin/file-selector.js -f tests/kiosk.yml
 
 stop-previous:
 	jh-kill-by-port 5454

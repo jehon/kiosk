@@ -22,7 +22,7 @@ photo-frame:
   quantity: 2
   sources:
     test:
-      path: tests/server/data/photos
+      path: tests/server/data/
       quantity: 5
 
 camera:

@@ -244,6 +244,7 @@ function mergeIndexes(targetIndex, quantity, indexes) {
   }
 
   merged.list.sort((a, b) => (a.date == b.date ? 0 : a.date > b.date ? 1 : -1));
+  fs.mkdirSync(path.dirname(targetIndex), { recursive: true });
   fs.writeFileSync(targetIndex, JSON.stringify(merged, null, 2));
   return merged;
 }
