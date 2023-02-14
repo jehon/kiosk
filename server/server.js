@@ -14,11 +14,5 @@ initFromCommandLine(app)
       enabledDebug: getEnabledDebug()
     });
   })
-  .then(() => {
-    return Promise.all([
-      import("../packages/camera/camera-server.mjs"),
-      import("../packages/photo-frame/photo-frame-server.mjs")
-    ]).then(() => {});
-  })
   .then(() => start(app))
   .then(() => app.info("GUI is started"));

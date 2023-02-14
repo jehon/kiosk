@@ -4,6 +4,28 @@ import { priorities } from "../../client/config.js";
 import { humanActiveStatus } from "../human/human-client.js";
 import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-image-loading.js";
 
+/**
+ * @typedef ImageData
+ * @param {string} subPath relative to the folderConfig home
+ * @param {object} data where the file has been defined
+ * @param {string} data.title from exiv
+ * @param {string} data.date from exiv
+ * @param {number} data.orientation from exiv
+ * @param {string} url calculated client-side
+ *
+ * {
+ *   subPath: 'f1/i1.png',
+ *   path: 'tests/server/data/photo-frame/f1/i1.png',
+ *   data: {
+ *	   title: 'Test title here',
+ *	   date: '2019-07-01 02:03:04',
+ *	   orientation: 0
+ * }
+ */
+
+const PhotoLibrairy = "/var/photos";
+const IndexFile = PhotoLibrairy + "/index.json";
+
 JehonImageLoading.setWaitingWheelUrl(
   "/node_modules/@jehon/img-loading/waiting.png"
 );
@@ -13,7 +35,7 @@ JehonImageLoading.settransitionTimeMs(500);
 Status (client)
 
 {
-	pictureIndex: int
+	index: int
 	active: boolean
 }
 
@@ -21,40 +43,59 @@ Status (client)
 
 const app = new ClientApp("photo-frame");
 
-// Select the next picture
 /**
+ * Get the index from the server
  *
+ * @returns {object} of the images
+ */
+export async function loadList() {
+  let index = [];
+  try {
+    index = await fetch(IndexFile).then((response) => response.json());
+    index.list.forEach((img) => {
+      img.url = PhotoLibrairy + "/" + img.subPath;
+    });
+  } catch (e) {
+    app.error(`Could not load from ${IndexFile}`, e);
+    // ok
+    return;
+  }
+
+  if (index.ts == app.getState()?.ts) {
+    return;
+  }
+
+  app.mergeState({
+    list: [],
+    ...index,
+    index: 0
+  });
+  return index;
+}
+
+/**
+ * Select the next picture
  */
 function autoMoveToNextImage() {
   const status = app.getState();
-  app.debug("autoMoveToNextImage", status.pictureIndex);
-  if (
-    !status.server ||
-    !status.server.listing ||
-    status.server.listing.length == 0
-  ) {
-    // Wait for a new list
-    return;
-  } else {
+  app.debug("autoMoveToNextImage", status.index);
+  if (status.list.length > 0) {
     next();
   }
 }
-
-// TODO: parameter + handle human interaction
-setInterval(() => autoMoveToNextImage(), 15 * 1000);
 
 /**
  * @returns {number} the next index
  */
 function next() {
   const status = app.getState();
-  status.pictureIndex++;
-  if (status.pictureIndex >= status.server.listing.length) {
-    status.pictureIndex = 0;
+  status.index++;
+  if (status.index >= status.list.length) {
+    status.index = 0;
   }
 
   app.setState(status);
-  return status.pictureIndex;
+  return status.index;
 }
 
 /**
@@ -62,13 +103,13 @@ function next() {
  */
 function prev() {
   const status = app.getState();
-  status.pictureIndex--;
-  if (status.pictureIndex < 0) {
-    status.pictureIndex = status.server.listing.length - 1;
+  status.index--;
+  if (status.index < 0) {
+    status.index = status.list.length - 1;
   }
 
   app.setState(status);
-  return status.pictureIndex;
+  return status.index;
 }
 
 class KioskPhotoFrameMainElement extends ClientElement {
@@ -194,10 +235,10 @@ class KioskPhotoFrameMainElement extends ClientElement {
       return;
     }
 
-    if (status.server.listing.length > 0) {
-      let photo = status.server.listing[status.pictureIndex];
+    if (status.list.length > 0) {
+      let photo = status.list[status.index];
 
-      app.debug("updatePicture", status.pictureIndex, photo);
+      app.debug("updatePicture", status.index, photo);
       this.#carouselInfos.innerHTML = `${photo.data.title ?? ""}<br>${(
         "" + (photo.data.date ?? "")
       ).substring(0, 10)}`;
@@ -221,9 +262,9 @@ customElements.define(
 
 app
   .setState({
-    pictureIndex: 0,
-    picturesList: [],
-    active: false
+    index: 0,
+    active: false,
+    list: []
   })
   .setMainElementBuilder(() => new KioskPhotoFrameMainElement())
   .menuBasedOnIcon("../packages/photo-frame/photo-frame.png")
@@ -231,20 +272,25 @@ app
 
 app.onStateChange((status, app) => {
   app.debug("Setting priorities according to listing");
-  if (!status || !status.server) {
+
+  if (!status) {
     return;
   }
-  if (status.server.hasList) {
+
+  if (status.list.length > 0) {
     app.setPriority(priorities.photoFrame.elevated);
   } else {
     app.setPriority(priorities.photoFrame.normal);
   }
 });
 
-humanActiveStatus.onChange((active) => {
-  const status = app.getState();
-  status.active = active;
-  app.setState(status);
-});
+humanActiveStatus.onChange((active) => app.mergeState({ active }));
 
 export default app;
+
+// Refresh list every... (TODO: parameter)
+setInterval(() => loadList(), 10 * 1000);
+loadList();
+
+// TODO: parameter + handle human interaction
+setInterval(() => autoMoveToNextImage(), 15 * 1000);
