@@ -38,6 +38,7 @@
     "css-loader": "6.7.3",
     "depcheck": "1.4.3",
     "eslint": "8.34.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-jasmine": "4.1.3",
     "eslint-plugin-jsdoc": "40.0.0",
@@ -53,6 +54,7 @@
     "kill-port": "2.0.1",
     "lint-staged": "13.1.2",
     "nock": "13.3.0",
+    "prettier": "2.8.4",
     "style-loader": "3.3.1",
     "stylelint": "15.1.0",
     "stylelint-config-standard": "30.0.1",
@@ -74,8 +76,8 @@
     "wdio": "wdio run wdio.conf.cjs"
   },
   "lint-staged": {
-    "*.{js,jsx}": "eslint",
-    "*.css": "stylelint"
+    "*.{js,jsx}": [ "eslint" ," prettier --list-different" ],
+    "*.css": [ "stylelint", "prettier --list-different" ]
   },
   "type": "module",
   "main": "main.cjs"

@@ -129,6 +129,7 @@ test-client-continuously: dependencies
 lint: dependencies
 	eslint .
 	stylelint **/*.css
+	prettier --list-different .
 
 .PHONY: lint-fix
 lint-fix: dependencies

@@ -10,7 +10,8 @@
 		"mkaufman.HTMLHint",
 		"nobuhito.printcode",
 		"gruntfuggly.todo-tree",
-		"meganrogge.template-string-converter"
+		"meganrogge.template-string-converter",
+		"esbenp.prettier-vscode"
 	],
 	"portsAttributes": {
 		"5454": {

@@ -1,0 +1,7 @@
+built/
+.*
+unused
+_*
+var/
+etc/
+tmp/
