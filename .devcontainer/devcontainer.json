@@ -11,7 +11,8 @@
 		"nobuhito.printcode",
 		"gruntfuggly.todo-tree",
 		"meganrogge.template-string-converter",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"cschleiden.vscode-github-actions"
 	],
 	"portsAttributes": {
 		"5454": {
