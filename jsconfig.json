@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "checkJs": false,
-    "module": "esnext",
-    "target": "es2018"
-  },
-  "exclude": ["**/node_modules/*", "**/unused/*", "**/common.es6/*"]
-}
