@@ -76,8 +76,14 @@
     "wdio": "wdio run wdio.conf.cjs"
   },
   "lint-staged": {
-    "*.{js,jsx}": [ "eslint" ," prettier --list-different" ],
-    "*.css": [ "stylelint", "prettier --list-different" ]
+    "*.{js,jsx}": [
+      "eslint",
+      " prettier --list-different"
+    ],
+    "*.css": [
+      "stylelint",
+      "prettier --list-different"
+    ]
   },
   "type": "module",
   "main": "main.cjs"
