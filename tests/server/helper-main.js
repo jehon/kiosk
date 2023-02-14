@@ -1,4 +1,3 @@
-
 /**
  * Count the number of included files
  *
@@ -12,7 +11,7 @@ export let fnCnt = 0;
  */
 export function fn(url) {
   fnCnt++;
-  return new URL(url).pathname.split('/').pop();
+  return new URL(url).pathname.split("/").pop();
 }
 
 // afterAll(function () {
@@ -21,8 +20,8 @@ export function fn(url) {
 // 		.toBe(36);
 // });
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
@@ -30,7 +29,7 @@ export const __dirname = dirname(fileURLToPath(import.meta.url));
  * @returns {Promise<void>} resolve after ms milliseconds
  */
 export async function waitMillis(ms) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), ms);
   });
 }

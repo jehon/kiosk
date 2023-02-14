@@ -1,10 +1,9 @@
-
 /**
  * @param {string} url is import.meta.url
  * @returns {string} test name
  */
 export function fn(url) {
-  return new URL(url).pathname.split('/').pop();
+  return new URL(url).pathname.split("/").pop();
 }
 
 /**
@@ -29,9 +28,21 @@ export function tick(options) {
     milliSeconds: 0,
     ...options
   };
-  jasmine.clock().tick((((
-    ((options.years * 365 + options.months * 30) + options.days * 24)
-    + options.hours * 60) + options.minutes) * 60 + options.seconds) * 1000 + options.milliSeconds);
+  jasmine
+    .clock()
+    .tick(
+      ((options.years * 365 +
+        options.months * 30 +
+        options.days * 24 +
+        options.hours * 60 +
+        options.minutes) *
+        60 +
+        options.seconds) *
+        1000 +
+        options.milliSeconds
+    );
 }
 
-document.querySelector('body').insertAdjacentHTML('beforeend', '<div id="main-application"></div>');
+document
+  .querySelector("body")
+  .insertAdjacentHTML("beforeend", '<div id="main-application"></div>');

@@ -1,45 +1,49 @@
-
 // Common elements
-import '../node_modules/@jehon/css-inherit/jehon-css-inherit.js';
+import "../node_modules/@jehon/css-inherit/jehon-css-inherit.js";
 // need import-maps support:: import '@jehon/css-inherit/jehon-css-inherit.js';
-import { getByPath } from '../node_modules/dot-path-value/dist/index.esm.js';
-import yaml from '../node_modules/js-yaml/dist/js-yaml.mjs';
+import { getByPath } from "../node_modules/dot-path-value/dist/index.esm.js";
+import yaml from "../node_modules/js-yaml/dist/js-yaml.mjs";
 
-import { registerApp, autoSelectApplication, selectApplication } from './client-lib-chooser.js';
-import ClientElement from './client-element.js';
-import App from '../common/app.js';
-import { clientLoggerFactory } from './client-customs.js';
-import { onServerMessage, sendToServer } from './client-server.js';
-import KioskTimedDiv from './elements/timed-div.js';
+import {
+  registerApp,
+  autoSelectApplication,
+  selectApplication
+} from "./client-lib-chooser.js";
+import ClientElement from "./client-element.js";
+import App from "../common/app.js";
+import { clientLoggerFactory } from "./client-customs.js";
+import { onServerMessage, sendToServer } from "./client-server.js";
+import KioskTimedDiv from "./elements/timed-div.js";
 
-const debugEl = document.querySelector('#debug');
+const debugEl = document.querySelector("#debug");
 
 // Top-Level-Await is not working in Karma/Jasmine:
 const config = {};
-export const waitForConfig = fetch('/etc/kiosk.yml')
-  .then(response => response.text())
-  .then(yml => yaml.load(yml))
-  .then(data => Object.assign(config, data));
+export const waitForConfig = fetch("/etc/kiosk.yml")
+  .then((response) => response.text())
+  .then((yml) => yaml.load(yml))
+  .then((data) => Object.assign(config, data));
 
 export class ClientApp extends App {
   priority = 0;
 
   constructor(name, initialState = {}) {
-    super(name,
-      (namespace) => clientLoggerFactory(namespace + ':client'),
+    super(
+      name,
+      (namespace) => clientLoggerFactory(namespace + ":client"),
       initialState
     );
 
-    this.info('Registering app', this.name, this);
+    this.info("Registering app", this.name, this);
 
-    onServerMessage(this.ctxize('.status'), (serverStatus) => {
-      this.debug('Server status updated to ', serverStatus);
+    onServerMessage(this.ctxize(".status"), (serverStatus) => {
+      this.debug("Server status updated to ", serverStatus);
       const status = this.getState();
       status.server = serverStatus;
       this.setState(status);
     });
 
-    sendToServer('history', this.ctxize('.status'));
+    sendToServer("history", this.ctxize(".status"));
     registerApp(this);
   }
 
@@ -49,10 +53,7 @@ export class ClientApp extends App {
   error(...args) {
     super.error(...args);
     if (debugEl) {
-      new KioskTimedDiv()
-        .withLevel('error')
-        .withJSON(args)
-        .in(debugEl);
+      new KioskTimedDiv().withLevel("error").withJSON(args).in(debugEl);
     }
   }
 
@@ -62,10 +63,7 @@ export class ClientApp extends App {
   info(...args) {
     super.info(...args);
     if (debugEl) {
-      new KioskTimedDiv()
-        .withLevel('info')
-        .withJSON(args)
-        .in(debugEl);
+      new KioskTimedDiv().withLevel("info").withJSON(args).in(debugEl);
     }
   }
 
@@ -75,10 +73,7 @@ export class ClientApp extends App {
   debug(...args) {
     super.debug(...args);
     if (debugEl) {
-      new KioskTimedDiv()
-        .withLevel('debug')
-        .withJSON(args)
-        .in(debugEl);
+      new KioskTimedDiv().withLevel("debug").withJSON(args).in(debugEl);
     }
   }
 
@@ -93,7 +88,7 @@ export class ClientApp extends App {
    * @param {*} def - a default value if config is not set
    * @returns {*} the required object
    */
-  getConfig(path = '', def = undefined) {
+  getConfig(path = "", def = undefined) {
     path = this.ctxize(path);
     if (path) {
       try {
@@ -183,22 +178,22 @@ export class ClientApp extends App {
     return this.menuElement;
   }
 
-  menuBasedOnIcon(url, text = '') {
+  menuBasedOnIcon(url, text = "") {
     if (!text) {
       text = this.name;
     }
-    let element = document.createElement('div');
-    element.classList.add('button');
-    element.classList.add('full-background-image');
+    let element = document.createElement("div");
+    element.classList.add("button");
+    element.classList.add("full-background-image");
     element.style.backgroundImage = `url('${url}')`;
     element.innerHTML = `<span>${text}</span>`;
-    element.addEventListener('click', () => selectApplication(this));
+    element.addEventListener("click", () => selectApplication(this));
     this.setMenuElement(element);
     return this;
   }
 
   setStatusElement(el) {
-    document.querySelector('#status-bar')?.append(this._linkElement(el));
+    document.querySelector("#status-bar")?.append(this._linkElement(el));
     return this;
   }
 }
@@ -208,18 +203,21 @@ export class ClientApp extends App {
  * @returns {HTMLElement} of the iFrame
  */
 export function iFrameBuilder(url) {
-  const iframe = document.createElement('iframe');
-  iframe.setAttribute('src', url);
+  const iframe = document.createElement("iframe");
+  iframe.setAttribute("src", url);
 
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy/microphone
   // iframe.setAttribute('allow', 'microphone; camera');
   // iframe.setAttribute('allow', 'microphone *');
-  iframe.setAttribute('allow', 'microphone *; camera *');
+  iframe.setAttribute("allow", "microphone *; camera *");
 
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
   // sandbox restrict to nothing, but extra attributes re-allow stuff
-  iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals');
+  iframe.setAttribute(
+    "sandbox",
+    "allow-forms allow-scripts allow-same-origin allow-modals"
+  );
 
   return iframe;
 }

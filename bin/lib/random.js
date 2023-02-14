@@ -1,4 +1,3 @@
-
 /**
  * @param {object} weightedList with weight
  * @returns {any} taken in random
@@ -48,6 +47,9 @@ export default function shuffleWeightedList(weightedList) {
  */
 export function shuffleArray(arr) {
   return shuffleWeightedList(
-    arr.reduce((acc, v) => { acc[v] = 1; return acc; }, {})
+    arr.reduce((acc, v) => {
+      acc[v] = 1;
+      return acc;
+    }, {})
   );
 }

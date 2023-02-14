@@ -1,8 +1,12 @@
+import { CHANNEL_HISTORY } from "../common/constants.js";
+import {
+  guiDispatchToBrowser,
+  guiLaunch,
+  guiOnClient,
+  guiPrepare
+} from "./server-lib-gui-browser.js";
 
-import { CHANNEL_HISTORY } from '../common/constants.js';
-import { guiDispatchToBrowser, guiLaunch, guiOnClient, guiPrepare } from './server-lib-gui-browser.js';
-
-export { expressApp } from './server-lib-gui-browser.js';
+export { expressApp } from "./server-lib-gui-browser.js";
 
 const historySent = new Map();
 
@@ -10,13 +14,13 @@ const historySent = new Map();
  * @param {module:server/ServerApp} serverApp for logging purpose
  */
 export async function start(serverApp) {
-  const logger = serverApp.childLogger('gui');
-  const devMode = serverApp.getConfig('server.devMode');
+  const logger = serverApp.childLogger("gui");
+  const devMode = serverApp.getConfig("server.devMode");
   if (devMode) {
-    logger.debug('Enabling dev mode');
+    logger.debug("Enabling dev mode");
   }
 
-  const url = 'client/index.html';
+  const url = "client/index.html";
   // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
   await guiPrepare(logger, devMode);

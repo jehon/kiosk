@@ -1,9 +1,8 @@
+import serverAppFactory from "../../server/server-app.js";
 
-import serverAppFactory from '../../server/server-app.js';
-
-import fs from 'fs';
-import path from 'path';
-import chokidar from 'chokidar';
+import fs from "fs";
+import path from "path";
+import chokidar from "chokidar";
 
 /**
  * @typedef ImageData
@@ -27,10 +26,10 @@ import chokidar from 'chokidar';
 /**
  * @type {module:server/ServerApp}
  */
-const app = serverAppFactory('photo-frame');
+const app = serverAppFactory("photo-frame");
 
 export default app;
-export const INDEX_FILENAME = 'index.json';
+export const INDEX_FILENAME = "index.json";
 
 /**
  *
@@ -52,7 +51,7 @@ export async function loadList(indexFile) {
   let listing = [];
   try {
     const txt = fs.readFileSync(indexFile);
-    listing = JSON.parse(txt).map(v => ({
+    listing = JSON.parse(txt).map((v) => ({
       ...v,
       url: v.subPath
     }));
@@ -68,20 +67,18 @@ export async function loadList(indexFile) {
   return listing;
 }
 
-let watcher = chokidar.watch(
-  [],
-  {
+let watcher = chokidar
+  .watch([], {
     persistent: false
-  }
-)
-// .on('all', (event, f, stat) => {
-// 	console.log({ e: 'all', event, f, stat });
-// })
-  .on('change', (f, _stat) => {
+  })
+  // .on('all', (event, f, stat) => {
+  // 	console.log({ e: 'all', event, f, stat });
+  // })
+  .on("change", (f, _stat) => {
     app.debug(`refreshing: ${f} modified`);
     loadList(f);
   })
-  .on('add', (f, _stat) => {
+  .on("add", (f, _stat) => {
     app.debug(`refreshing: ${f} added`);
     loadList(f);
   });
@@ -98,11 +95,11 @@ export function init() {
   });
 
   // In unit test, we don't have a config...
-  if (app.getConfig('.folder')) {
-    const f = path.join(app.getConfig('.folder'), INDEX_FILENAME);
+  if (app.getConfig(".folder")) {
+    const f = path.join(app.getConfig(".folder"), INDEX_FILENAME);
     app.debug(`Loading ${f}`);
     loadList(f);
-    watcher.unwatch('*');
+    watcher.unwatch("*");
     watcher.add(f);
   }
 

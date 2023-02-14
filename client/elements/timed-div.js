@@ -1,8 +1,7 @@
-
 export default class KioskTimedDiv extends HTMLElement {
-  #source = '';
-  #level = 'info';
-  #message = '';
+  #source = "";
+  #level = "info";
+  #message = "";
   #json = false;
 
   connectedCallback() {
@@ -53,23 +52,27 @@ export default class KioskTimedDiv extends HTMLElement {
    * @returns {this} for chaining
    */
   in(el) {
-
     const d = new Date();
-    const ts = ('00' + d.getHours()).substr(-2)
-            + ':'
-            + ('00' + d.getMinutes()).substr(-2)
-            + ':'
-            + ('00' + d.getSeconds()).substr(-2);
+    const ts =
+      ("00" + d.getHours()).substr(-2) +
+      ":" +
+      ("00" + d.getMinutes()).substr(-2) +
+      ":" +
+      ("00" + d.getSeconds()).substr(-2);
 
     this.innerHTML = `
             <div>${ts}: ${this.#level}: ${this.#source}</div>
-            ${this.#message ? `<div>${this.#message}</div>` : ''}
-            ${this.#json ? `<pre>${JSON.stringify(this.#json, null, 2)}</pre>` : ''}
+            ${this.#message ? `<div>${this.#message}</div>` : ""}
+            ${
+              this.#json
+                ? `<pre>${JSON.stringify(this.#json, null, 2)}</pre>`
+                : ""
+            }
         `;
 
-    el.insertAdjacentElement('afterbegin', this);
+    el.insertAdjacentElement("afterbegin", this);
     return this;
   }
 }
 
-customElements.define('kiosk-timed-div', KioskTimedDiv);
+customElements.define("kiosk-timed-div", KioskTimedDiv);

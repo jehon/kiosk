@@ -1,18 +1,16 @@
+import ctxFactory from "../../common/contextualize.js";
 
-import ctxFactory from '../../common/contextualize.js';
-
-import { fn } from './helper-main.js';
+import { fn } from "./helper-main.js";
 
 describe(fn(import.meta.url), () => {
+  it("should contextualize relative keys", () => {
+    const ctx = ctxFactory("test");
 
-  it('should contextualize relative keys', () => {
-    const ctx = ctxFactory('test');
+    expect(ctx(".brol")).toBe("test.brol");
+    expect(ctx("brol")).toBe("brol");
 
-    expect(ctx('.brol')).toBe('test.brol');
-    expect(ctx('brol')).toBe('brol');
-
-    expect(ctx('.')).toBe('test');
-    expect(ctx()).toBe('test');
+    expect(ctx(".")).toBe("test");
+    expect(ctx()).toBe("test");
   });
 
   // it('should contextualize functions', () => {

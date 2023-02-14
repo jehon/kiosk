@@ -1,10 +1,13 @@
+import {
+  selectApplication,
+  getApplicationList,
+  autoSelectApplication
+} from "../../client/client-lib-chooser.js";
+import { ClientApp, iFrameBuilder } from "../../client/client-app.js";
+import ClientElement from "../../client/client-element.js";
+import { humanActiveStatus } from "../human/human-client.js";
 
-import { selectApplication, getApplicationList, autoSelectApplication } from '../../client/client-lib-chooser.js';
-import { ClientApp, iFrameBuilder } from '../../client/client-app.js';
-import ClientElement from '../../client/client-element.js';
-import { humanActiveStatus } from '../human/human-client.js';
-
-const app = new ClientApp('menu', {
+const app = new ClientApp("menu", {
   applicationsList: []
 });
 
@@ -13,8 +16,10 @@ const app = new ClientApp('menu', {
  *
  * @param {object} config to insert
  */
-function init(config = app.getConfig('.')) {
-  document.querySelector('body').insertAdjacentHTML('beforeend', `
+function init(config = app.getConfig(".")) {
+  document.querySelector("body").insertAdjacentHTML(
+    "beforeend",
+    `
 <style>
 	body > #app-menu {
 		position: absolute;
@@ -34,14 +39,15 @@ function init(config = app.getConfig('.')) {
 <div id="app-menu" inactive>
 	<img src='static/menu.svg' />
 </div>
-`);
+`
+  );
 
-  const appMenuElement = document.querySelector('body > div#app-menu');
+  const appMenuElement = document.querySelector("body > div#app-menu");
   if (appMenuElement == null) {
-    throw 'registerAppMenu: #app-menu is null';
+    throw "registerAppMenu: #app-menu is null";
   }
 
-  appMenuElement.addEventListener('click', () => {
+  appMenuElement.addEventListener("click", () => {
     // Go to menu list application
     selectApplication(app);
   });
@@ -52,7 +58,7 @@ function init(config = app.getConfig('.')) {
       const ap = new ClientApp(a.name)
         .setMainElementBuilder(() => iFrameBuilder(a.url))
         .menuBasedOnIcon(a.icon, a.label);
-      if ('priority' in a) {
+      if ("priority" in a) {
         ap.setPriority(a.priority);
       }
     }
@@ -96,7 +102,7 @@ class KioskMenuMainElement extends ClientElement {
 			<div id='top'></div>
 		`;
 
-    this.#top = this.shadowRoot.querySelector('#top');
+    this.#top = this.shadowRoot.querySelector("#top");
     this.stateChanged();
   }
 
@@ -105,30 +111,31 @@ class KioskMenuMainElement extends ClientElement {
     /** @type {Array<ClientApp>} */
     const list = getApplicationList();
 
-    this.#top.innerHTML = '';
+    this.#top.innerHTML = "";
 
-    for (const a of list.filter((/** @type {ClientApp} */ a) => a.menuElement && a.mainElementBuilder)) {
-      a.menuElement.setAttribute('data-app', a.name);
+    for (const a of list.filter(
+      (/** @type {ClientApp} */ a) => a.menuElement && a.mainElementBuilder
+    )) {
+      a.menuElement.setAttribute("data-app", a.name);
       this.#top.appendChild(a.menuElement);
     }
   }
 }
-customElements.define('kiosk-menu-main-element', KioskMenuMainElement);
+customElements.define("kiosk-menu-main-element", KioskMenuMainElement);
 
-app
-  .setMainElementBuilder(() => new KioskMenuMainElement());
+app.setMainElementBuilder(() => new KioskMenuMainElement());
 
-humanActiveStatus.onChange(active => {
-  document.querySelectorAll('#app-menu').forEach(el => {
+humanActiveStatus.onChange((active) => {
+  document.querySelectorAll("#app-menu").forEach((el) => {
     if (active) {
-      el.removeAttribute('inactive');
+      el.removeAttribute("inactive");
     } else {
-      el.setAttribute('inactive', 'inactive');
+      el.setAttribute("inactive", "inactive");
     }
   });
   if (!active) {
     // Trigger a new calculation of the top app
-    app.debug('Back to auto select application');
+    app.debug("Back to auto select application");
     autoSelectApplication();
   }
 });

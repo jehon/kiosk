@@ -1,11 +1,12 @@
+import ClientElement from "../../client/client-element.js";
+import { ClientApp } from "../../client/client-app.js";
+import { priorities } from "../../client/config.js";
+import { humanActiveStatus } from "../human/human-client.js";
+import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-image-loading.js";
 
-import ClientElement from '../../client/client-element.js';
-import { ClientApp } from '../../client/client-app.js';
-import { priorities } from '../../client/config.js';
-import { humanActiveStatus } from '../human/human-client.js';
-import JehonImageLoading from '../../node_modules/@jehon/img-loading/jehon-image-loading.js';
-
-JehonImageLoading.setWaitingWheelUrl('/node_modules/@jehon/img-loading/waiting.png');
+JehonImageLoading.setWaitingWheelUrl(
+  "/node_modules/@jehon/img-loading/waiting.png"
+);
 JehonImageLoading.settransitionTimeMs(500);
 /*
 
@@ -18,7 +19,7 @@ Status (client)
 
 */
 
-const app = new ClientApp('photo-frame');
+const app = new ClientApp("photo-frame");
 
 // Select the next picture
 /**
@@ -26,8 +27,12 @@ const app = new ClientApp('photo-frame');
  */
 function autoMoveToNextImage() {
   const status = app.getState();
-  app.debug('autoMoveToNextImage', status.pictureIndex);
-  if (!status.server || !status.server.listing || status.server.listing.length == 0) {
+  app.debug("autoMoveToNextImage", status.pictureIndex);
+  if (
+    !status.server ||
+    !status.server.listing ||
+    status.server.listing.length == 0
+  ) {
     // Wait for a new list
     return;
   } else {
@@ -67,7 +72,6 @@ function prev() {
 }
 
 class KioskPhotoFrameMainElement extends ClientElement {
-
   /** @type {JehonImageLoading} */
   #carouselImg;
 
@@ -164,13 +168,17 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			</div>
 		</div>`;
 
-    this.#carouselImg = this.shadowRoot.querySelector('jehon-image-loading');
-    this.#carouselInfos = this.shadowRoot.querySelector('#infos');
+    this.#carouselImg = this.shadowRoot.querySelector("jehon-image-loading");
+    this.#carouselInfos = this.shadowRoot.querySelector("#infos");
 
-    this.shadowRoot.querySelector('#prev').addEventListener('click', () => prev());
-    this.shadowRoot.querySelector('#next').addEventListener('click', () => next());
+    this.shadowRoot
+      .querySelector("#prev")
+      .addEventListener("click", () => prev());
+    this.shadowRoot
+      .querySelector("#next")
+      .addEventListener("click", () => next());
 
-    this.addEventListener('wheel', (event) => {
+    this.addEventListener("wheel", (event) => {
       event.preventDefault();
       const d = event.deltaY;
       if (d < 0) {
@@ -186,26 +194,30 @@ class KioskPhotoFrameMainElement extends ClientElement {
       return;
     }
 
-
     if (status.server.listing.length > 0) {
       let photo = status.server.listing[status.pictureIndex];
 
-      app.debug('updatePicture', status.pictureIndex, photo);
-      this.#carouselInfos.innerHTML = `${photo.data.title ?? ''}<br>${('' + (photo.data.date ?? '')).substring(0, 10)}`;
+      app.debug("updatePicture", status.pictureIndex, photo);
+      this.#carouselInfos.innerHTML = `${photo.data.title ?? ""}<br>${(
+        "" + (photo.data.date ?? "")
+      ).substring(0, 10)}`;
       this.#carouselImg.loadAndDisplayImage(photo.url);
     }
 
-    this.shadowRoot.querySelectorAll('.hide-on-inactive').forEach(el => {
+    this.shadowRoot.querySelectorAll(".hide-on-inactive").forEach((el) => {
       if (status.active) {
-        el.removeAttribute('inactive');
+        el.removeAttribute("inactive");
       } else {
-        el.setAttribute('inactive', 'inactive');
+        el.setAttribute("inactive", "inactive");
       }
     });
   }
 }
 
-customElements.define('kiosk-photo-frame-main-element', KioskPhotoFrameMainElement);
+customElements.define(
+  "kiosk-photo-frame-main-element",
+  KioskPhotoFrameMainElement
+);
 
 app
   .setState({
@@ -214,23 +226,22 @@ app
     active: false
   })
   .setMainElementBuilder(() => new KioskPhotoFrameMainElement())
-  .menuBasedOnIcon('../packages/photo-frame/photo-frame.png')
+  .menuBasedOnIcon("../packages/photo-frame/photo-frame.png")
   .setPriority(priorities.photoFrame.normal);
 
-app
-  .onStateChange((status, app) => {
-    app.debug('Setting priorities according to listing');
-    if (!status || !status.server) {
-      return;
-    }
-    if (status.server.hasList) {
-      app.setPriority(priorities.photoFrame.elevated);
-    } else {
-      app.setPriority(priorities.photoFrame.normal);
-    }
-  });
+app.onStateChange((status, app) => {
+  app.debug("Setting priorities according to listing");
+  if (!status || !status.server) {
+    return;
+  }
+  if (status.server.hasList) {
+    app.setPriority(priorities.photoFrame.elevated);
+  } else {
+    app.setPriority(priorities.photoFrame.normal);
+  }
+});
 
-humanActiveStatus.onChange(active => {
+humanActiveStatus.onChange((active) => {
   const status = app.getState();
   status.active = active;
   app.setState(status);

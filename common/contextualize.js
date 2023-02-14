@@ -1,4 +1,3 @@
-
 /**
  * Create a function that will transform the parameter as a contextualized string
  *
@@ -13,10 +12,9 @@
  */
 export default function contextualize(context) {
   return function (key) {
-    if ((typeof (key) == 'string' && key[0] == '.')
-			|| (key === undefined)) {
+    if ((typeof key == "string" && key[0] == ".") || key === undefined) {
       // We are in a .* string, add context in front
-      if (key == '.' || key === undefined) {
+      if (key == "." || key === undefined) {
         return context;
       }
       return context + key;

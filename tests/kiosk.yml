@@ -8,8 +8,8 @@ core:
 
 test:
   value:
-      # client-app-test.js
-      something: for testing
+    # client-app-test.js
+    something: for testing
 
 server:
   expose:

@@ -1,9 +1,8 @@
+import { ClientApp } from "../../client/client-app.js";
+import Callback from "../../common/callback.js";
 
-import { ClientApp } from '../../client/client-app.js';
-import Callback from '../../common/callback.js';
-
-const app = new ClientApp('human');
-const body = document.querySelector('body');
+const app = new ClientApp("human");
+const body = document.querySelector("body");
 
 //
 //
@@ -15,7 +14,7 @@ const body = document.querySelector('body');
 export const debugActiveStatus = new Callback();
 
 let debugHook = null;
-window.addEventListener('contextmenu', () => {
+window.addEventListener("contextmenu", () => {
   if (debugHook) {
     clearTimeout(debugHook);
   }
@@ -28,16 +27,14 @@ window.addEventListener('contextmenu', () => {
 // initialize
 debugActiveStatus.emit(false);
 
-const debugEl = document.querySelector('#debug');
+const debugEl = document.querySelector("#debug");
 debugActiveStatus.onChange((dbg) => {
   if (dbg) {
-    debugEl.setAttribute('on', 'on');
+    debugEl.setAttribute("on", "on");
   } else {
-    debugEl.removeAttribute('on');
+    debugEl.removeAttribute("on");
   }
 });
-
-
 
 //
 //
@@ -49,14 +46,14 @@ debugActiveStatus.onChange((dbg) => {
 export const humanActiveStatus = new Callback();
 humanActiveStatus.onChange((status) => {
   if (status) {
-    body.style.cursor = '';
+    body.style.cursor = "";
   } else {
-    body.style.cursor = 'none';
+    body.style.cursor = "none";
   }
 });
 
 humanActiveStatus.onChange((status) => {
-  app.debug('Activity: ', status);
+  app.debug("Activity: ", status);
 });
 
 /**
@@ -78,7 +75,7 @@ let eraser = null;
  * @property {Date} time when it happened
  */
 const lastPosition = {};
-memorizePosition(new MouseEvent(''));
+memorizePosition(new MouseEvent(""));
 
 /**
  * @param {MouseEvent} e to be memorized
@@ -89,16 +86,17 @@ function memorizePosition(e) {
   lastPosition.time = new Date();
 }
 
-body.addEventListener('mousemove', e => {
+body.addEventListener("mousemove", (e) => {
   const now = new Date();
-  if ((now.getTime() - lastPosition.time.getTime()) > 1000) {
+  if (now.getTime() - lastPosition.time.getTime() > 1000) {
     // Last position is too old, let's start again
-    app.debug('Reset position');
+    app.debug("Reset position");
     memorizePosition(e);
   }
 
-  const dist2 = Math.pow(e.clientX - lastPosition.x, 2)
-		+ Math.pow(e.clientY - lastPosition.y, 2);
+  const dist2 =
+    Math.pow(e.clientX - lastPosition.x, 2) +
+    Math.pow(e.clientY - lastPosition.y, 2);
 
   // A big movement in a short time, it's an activity
   if (dist2 > Math.pow(50, 2)) {
@@ -110,6 +108,6 @@ body.addEventListener('mousemove', e => {
       clearTimeout(eraser);
       eraser = false;
       setActivity(false);
-    }, ((app.getState()?.server?.config ?? {})['inactivitySeconds'] ?? 60) * 1000);
+    }, ((app.getState()?.server?.config ?? {})["inactivitySeconds"] ?? 60) * 1000);
   }
 });

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // import secureRandom from 'secure-random-uniform';
 
@@ -7,7 +7,6 @@
  * @returns {any} taken in random
  */
 function takeOne(weightedList) {
-
   const sum = Object.values(weightedList).reduce((n, i) => n + i, 0);
 
   if (sum == 0) {
@@ -28,7 +27,6 @@ function takeOne(weightedList) {
   return Object.keys(weightedList).pop();
 }
 
-
 /**
  * @param {object} weightedList with weight
  * @returns {Array} weighted (top priority first => .shift())
@@ -47,13 +45,15 @@ export default function shuffle(weightedList) {
   return res;
 }
 
-
 /**
  * @param {Array} arr to be shuffled
  * @returns {Array} not wiehgted
  */
 export function shuffleArray(arr) {
   return shuffle(
-    arr.reduce((acc, v) => { acc[v] = 1; return acc; }, {})
+    arr.reduce((acc, v) => {
+      acc[v] = 1;
+      return acc;
+    }, {})
   );
 }

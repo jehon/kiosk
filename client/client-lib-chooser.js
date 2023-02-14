@@ -1,4 +1,3 @@
-
 let appId = 1;
 const applicationList = new Map();
 
@@ -13,7 +12,7 @@ const applicationList = new Map();
  * @param {module:client/ClientApp} b to be compared
  * @returns {number} to sort client application
  */
-const sortApplication = (a, b) => (b.priority - a.priority);
+const sortApplication = (a, b) => b.priority - a.priority;
 
 /**
  * Register the application
@@ -39,7 +38,9 @@ export function registerApp(newApp) {
  */
 export function getApplicationByName(name) {
   if (!applicationList.has(name)) {
-    throw `Unknown app: ${name}. Available: ${Array.from(applicationList.keys()).join(' ')}`;
+    throw `Unknown app: ${name}. Available: ${Array.from(
+      applicationList.keys()
+    ).join(" ")}`;
   }
   return applicationList.get(name);
 }
@@ -61,8 +62,9 @@ export function getApplicationList() {
  * @returns {module:client/ClientApp} the selected application
  */
 export function autoSelectApplication() {
-  const selectedApplication = getApplicationList()
-    .filter(a => a.mainElementBuilder && a.priority && a.priority >= 0)[0];
+  const selectedApplication = getApplicationList().filter(
+    (a) => a.mainElementBuilder && a.priority && a.priority >= 0
+  )[0];
   return renderApplication(selectedApplication);
 }
 
@@ -92,17 +94,21 @@ function renderApplication(newApplication) {
     return newApplication;
   }
 
-  const mainAppElement = document.querySelector('#main-application');
+  const mainAppElement = document.querySelector("#main-application");
   if (mainAppElement == null) {
-    throw 'registerMainContainer: #main-application is null';
+    throw "registerMainContainer: #main-application is null";
   }
 
   newApplication.debug(`I have been selected ${newApplication.toJSON()}`);
 
   // Reject not "main" application
-  if (!('mainElementBuilder' in newApplication)) {
-    newApplication.error(`... but I don't have a main (${newApplication.toJSON()})`);
-    mainAppElement.innerHTML = `<div>No main element available for app ${newApplication.name}: ${JSON.stringify(newApplication)}</div>`;
+  if (!("mainElementBuilder" in newApplication)) {
+    newApplication.error(
+      `... but I don't have a main (${newApplication.toJSON()})`
+    );
+    mainAppElement.innerHTML = `<div>No main element available for app ${
+      newApplication.name
+    }: ${JSON.stringify(newApplication)}</div>`;
     return currentApplication;
   }
   // Set it first, since buildMainElement could change priority
@@ -110,7 +116,7 @@ function renderApplication(newApplication) {
 
   // Ok, let's go !
   const el = newApplication.buildMainElement();
-  mainAppElement.innerHTML = '';
+  mainAppElement.innerHTML = "";
   mainAppElement.appendChild(el);
 
   return newApplication;

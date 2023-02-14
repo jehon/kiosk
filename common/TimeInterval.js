@@ -1,6 +1,4 @@
-
 export default class TimeInterval {
-
   iSecs;
 
   iTimer;
@@ -47,7 +45,7 @@ export default class TimeInterval {
       this.cb(this);
       this.logger.debug(`Running ${this.name} done`);
     } catch (e) {
-      this.logger.error('In every seconds: ', e, this.cb);
+      this.logger.error("In every seconds: ", e, this.cb);
     }
   }
 

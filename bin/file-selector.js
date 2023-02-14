@@ -11,21 +11,23 @@
  * - orientation
  */
 
-import fs from 'fs';
-import path from 'path';
-import exifParser from './lib/exif-parser.js';
-import { shuffleArray } from '../server/shuffle.js';
-import fsExtra from 'fs-extra';
-import { getFilesFromPathByMime, getWeightedFoldersFromPath } from './lib/files.js';
-import { initFromCommandLine } from '../server/server-lib-config.js';
-import serverAppFactory from '../server/server-app.js';
-import * as url from 'url';
+import fs from "fs";
+import path from "path";
+import exifParser from "./lib/exif-parser.js";
+import { shuffleArray } from "../server/shuffle.js";
+import fsExtra from "fs-extra";
+import {
+  getFilesFromPathByMime,
+  getWeightedFoldersFromPath
+} from "./lib/files.js";
+import { initFromCommandLine } from "../server/server-lib-config.js";
+import serverAppFactory from "../server/server-app.js";
+import * as url from "url";
 
-const IndexFilename = 'index.json';
-const DefaultStorage = 'var/photos';
+const IndexFilename = "index.json";
+const DefaultStorage = "var/photos";
 const __filename = url.fileURLToPath(import.meta.url);
 const prj_root = path.dirname(path.dirname(__filename));
-
 
 /**
  * @typedef FolderConfig
@@ -84,7 +86,7 @@ export function warning(str) {
  */
 async function generateListingForConfig(context, varRoot, config) {
   const excludes = config.excludes ?? [];
-  const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
+  const mimeTypePattern = config.mimeTypePattern ?? ["image/*"];
   const from = config.path;
   const alwaysNew = config.alwaysNew ?? false;
 
@@ -105,7 +107,7 @@ async function generateListingForConfig(context, varRoot, config) {
    */
   const addFile = async function (filepath) {
     index++;
-    const paddedIndex = String(index).padStart(2, '0');
+    const paddedIndex = String(index).padStart(2, "0");
     info(`${paddedIndex}/${maxQuantity} Copying ${filepath}`);
 
     // Format: 00.ext
@@ -143,10 +145,10 @@ async function generateListingForConfig(context, varRoot, config) {
     const listing = [];
 
     while (folders.length > 0 && listing.length < n) {
-    // Take the first one (top priority)
+      // Take the first one (top priority)
       const f = folders.shift();
 
-      if (f == '.') {
+      if (f == ".") {
         // Special case: we take the pictures in the current folder
 
         if (previouslySelected.includes(pathname)) {
@@ -163,12 +165,12 @@ async function generateListingForConfig(context, varRoot, config) {
         listing.push(
           ...images
             .slice(0, Math.min(n, images.length, n - listing.length))
-            .map(filename => path.join(pathname, filename))
+            .map((filename) => path.join(pathname, filename))
         );
       } else {
         // Take folders
 
-        listing.push(...await generateListingForPath(path.join(pathname, f)));
+        listing.push(...(await generateListingForPath(path.join(pathname, f))));
       }
     }
     return listing;
@@ -183,14 +185,14 @@ async function generateListingForConfig(context, varRoot, config) {
     const ctxInfos = {
       context,
       ts: Date.now(),
-      date: (new Date()).toISOString(),
+      date: new Date().toISOString(),
       list: []
     };
 
     if (list.length < 1 && !alwaysNew) {
       warning(`No files found in ${from}`);
       if (!alwaysNew) {
-      // Try to load previous json file if exists
+        // Try to load previous json file if exists
         return JSON.parse(fs.readFileSync(indexPath));
       }
     }
@@ -222,14 +224,14 @@ function mergeIndexes(targetIndex, quantity, indexes) {
   const merged = {
     list: [],
     ts: 0,
-    date: (new Date()).toISOString()
+    date: new Date().toISOString()
   };
   for (const fdata of indexes) {
     if (fdata.list) {
       merged.ts = Math.max(merged.ts, fdata.ts);
 
       merged.list.push(
-        ...fdata.list.map(f => ({
+        ...fdata.list.map((f) => ({
           ...f,
           subPath: path.join(fdata.context, f.subPath)
         }))
@@ -241,26 +243,33 @@ function mergeIndexes(targetIndex, quantity, indexes) {
     merged.list.splice(quantity);
   }
 
-  merged.list.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
+  merged.list.sort((a, b) => (a.date == b.date ? 0 : a.date > b.date ? 1 : -1));
   fs.writeFileSync(targetIndex, JSON.stringify(merged, null, 2));
   return merged;
 }
 
-const app = serverAppFactory('photo-frame');
+const app = serverAppFactory("photo-frame");
 
 initFromCommandLine(app)
   // since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
   .then(() => process.chdir(prj_root))
   .then(async () => {
-    const folders = app.getConfig('.sources', {});
-    return Promise.all(Object.entries(folders)
-      .map(async ([context, fConfig]) =>
-        await generateListingForConfig(context, app.getConfig('.storage', DefaultStorage), fConfig)
-      ));
+    const folders = app.getConfig(".sources", {});
+    return Promise.all(
+      Object.entries(folders).map(
+        async ([context, fConfig]) =>
+          await generateListingForConfig(
+            context,
+            app.getConfig(".storage", DefaultStorage),
+            fConfig
+          )
+      )
+    );
   })
-  .then(ctxIndexes =>
+  .then((ctxIndexes) =>
     mergeIndexes(
-      path.join(app.getConfig('.storage', DefaultStorage), IndexFilename),
-      app.getConfig('.quantity'),
-      ctxIndexes)
+      path.join(app.getConfig(".storage", DefaultStorage), IndexFilename),
+      app.getConfig(".quantity"),
+      ctxIndexes
+    )
   );

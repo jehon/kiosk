@@ -1,11 +1,13 @@
+import "./helper-electron.js";
+import { fn, tick } from "./helper-main.js";
 
-import './helper-electron.js';
-import { fn, tick } from './helper-main.js';
-
-import app, { KioskClockMainElement, init } from '../../packages/clock/clock-client.js';
+import app, {
+  KioskClockMainElement,
+  init
+} from "../../packages/clock/clock-client.js";
 
 describe(fn(import.meta.url), () => {
-  it('should react to events', function () {
+  it("should react to events", function () {
     expect(app).toBeDefined();
     new KioskClockMainElement();
   });
@@ -19,14 +21,13 @@ describe(fn(import.meta.url), () => {
     init(cfg);
   });
 
-  it('should trigger tickers', async function () {
+  it("should trigger tickers", async function () {
     jasmine.clock().withMock(function () {
-
       jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 1, 1));
       init({
-        'tickers': {
-          'clock-server-test-label': {
-            cron: '*/2 * * * *',
+        tickers: {
+          "clock-server-test-label": {
+            cron: "*/2 * * * *",
             duration: 1
           }
         }
@@ -40,19 +41,20 @@ describe(fn(import.meta.url), () => {
 
       expect(app.getState().currentTicker).toBeDefined();
       expect(app.getState().currentTicker).not.toBeNull();
-      expect(app.getState().currentTicker.context.name).toBe('clock-server-test-label');
+      expect(app.getState().currentTicker.context.name).toBe(
+        "clock-server-test-label"
+      );
     });
   });
 
-  it('should trigger past tickers according to duration', async function () {
+  it("should trigger past tickers according to duration", async function () {
     jasmine.clock().withMock(function () {
-
       jasmine.clock().mockDate(new Date(2019, 0, 1, 12, 0, 0));
       init({
-        'tickers': {
-          'clock-server-test-duration': {
+        tickers: {
+          "clock-server-test-duration": {
             // At 11:00
-            cron: '0 11 * * *',
+            cron: "0 11 * * *",
             // For 2 hours
             duration: 2 * 60 * 1000
           }
@@ -61,7 +63,9 @@ describe(fn(import.meta.url), () => {
 
       expect(app.getState().currentTicker).toBeDefined();
       expect(app.getState().currentTicker).not.toBeNull();
-      expect(app.getState().currentTicker.context.name).toBe('clock-server-test-duration');
+      expect(app.getState().currentTicker.context.name).toBe(
+        "clock-server-test-duration"
+      );
     });
   });
 });

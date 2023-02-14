@@ -1,4 +1,3 @@
-
 /* global WeakRef */
 
 /**
@@ -43,7 +42,7 @@ export default class Callback {
 
     // This returns the unsubscribe handler
     return () => {
-      this.#subscribers = this.#subscribers.filter(v => v !== callback);
+      this.#subscribers = this.#subscribers.filter((v) => v !== callback);
     };
   }
 
@@ -56,9 +55,13 @@ export default class Callback {
     this.#state = clone(newValue);
 
     // Remove null weakref
-    this.#subscribers = this.#subscribers.filter(v => (!(v instanceof WeakRef)) || !!v.deref());
+    this.#subscribers = this.#subscribers.filter(
+      (v) => !(v instanceof WeakRef) || !!v.deref()
+    );
 
     // Give away a copy of the value
-    return Promise.all(this.#subscribers.map(cb => cb(clone(newValue), clone(prevValue))));
+    return Promise.all(
+      this.#subscribers.map((cb) => cb(clone(newValue), clone(prevValue)))
+    );
   }
 }

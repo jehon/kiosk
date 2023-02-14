@@ -1,10 +1,9 @@
+import debugFactory from "debug";
+import chalk from "chalk";
 
-import debugFactory from 'debug';
-import chalk from 'chalk';
+import loggerFactory, { Logger } from "../common/logger.js";
 
-import loggerFactory, { Logger } from '../common/logger.js';
-
-export const loggersCreationStream = debugFactory('kiosk:loggers');
+export const loggersCreationStream = debugFactory("kiosk:loggers");
 
 /**
  * @param {Error} e - the error to be rendered
@@ -21,11 +20,18 @@ function loggerRenderError(e) {
  * @returns {string} the message formatted for display
  */
 function loggerGenerateMessage(level, ...args) {
-  return `[${level}] ` + args.map(v =>
-    (typeof (v) == 'object'
-      ? (v instanceof Error) ? loggerRenderError(v) : JSON.stringify(v)
-      : v)
-  ).join(' ');
+  return (
+    `[${level}] ` +
+    args
+      .map((v) =>
+        typeof v == "object"
+          ? v instanceof Error
+            ? loggerRenderError(v)
+            : JSON.stringify(v)
+          : v
+      )
+      .join(" ")
+  );
 }
 
 /**
@@ -33,25 +39,24 @@ function loggerGenerateMessage(level, ...args) {
  * @returns {Logger} built
  */
 export function serverLoggerFactory(namespace) {
-  return loggerFactory(namespace,
-    (namespace, level) => {
-      switch (level) {
-      case 'error': {
-        const dbg = debugFactory(namespace + '*');
-        return (...data) => dbg(chalk.red(loggerGenerateMessage('ERROR', ...data)));
+  return loggerFactory(namespace, (namespace, level) => {
+    switch (level) {
+      case "error": {
+        const dbg = debugFactory(namespace + "*");
+        return (...data) =>
+          dbg(chalk.red(loggerGenerateMessage("ERROR", ...data)));
       }
-      case 'debug': {
+      case "debug": {
         loggersCreationStream(`Creating debug logger ${namespace}`);
         const dbg = debugFactory(namespace);
-        return (...data) => dbg(loggerGenerateMessage('DEBUG', ...data));
+        return (...data) => dbg(loggerGenerateMessage("DEBUG", ...data));
       }
-      case 'info': {
-        const dbg = debugFactory(namespace + '*');
-        return (...data) => dbg(loggerGenerateMessage('INFO', ...data));
+      case "info": {
+        const dbg = debugFactory(namespace + "*");
+        return (...data) => dbg(loggerGenerateMessage("INFO", ...data));
       }
       default:
         break;
-      }
     }
-  );
+  });
 }

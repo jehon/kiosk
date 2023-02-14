@@ -1,5 +1,4 @@
-
-const { ipcRenderer } = require('electron');
+const { ipcRenderer } = require("electron");
 
 /**
  * @param {string} channel to be sent on

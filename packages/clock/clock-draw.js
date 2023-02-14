@@ -1,4 +1,3 @@
-
 export const circleRadius = 97;
 export const handLengths = {
   h: 55,
@@ -20,18 +19,22 @@ export const handLengths = {
  * @param {number} hours 0..12
  * @returns {number} the angle (radian) correspondign to the hours
  */
-export const angleFromHours = hours => hours * (Math.PI * 2 / 12) - Math.PI / 2;
+export const angleFromHours = (hours) =>
+  hours * ((Math.PI * 2) / 12) - Math.PI / 2;
 /**
  * @param {number} minutes 0..59
  * @returns {number} the angle (radian) correspondign to the minutes
  */
-export const angleFromMinutes = minutes => minutes * (Math.PI * 2 / 60) - Math.PI / 2;
+export const angleFromMinutes = (minutes) =>
+  minutes * ((Math.PI * 2) / 60) - Math.PI / 2;
 
 /**
  * @param {Date} time to draw
  * @returns {number} the angle (radian) correspondign to the seconds
  */
-export const angleMSFromTime = (time) => (angleFromMinutes(time.getMinutes()) + (time.getSeconds() * Math.PI * 2 / 60 / 60));
+export const angleMSFromTime = (time) =>
+  angleFromMinutes(time.getMinutes()) +
+  (time.getSeconds() * Math.PI * 2) / 60 / 60;
 
 /**
  * @param {number} r polar radius
@@ -55,7 +58,10 @@ export const polar2cartesianY = (r, theta) => r * Math.sin(theta);
  * @property {number} x coordonate
  * @property {number} y coordonate
  */
-export const polar2cartesian = (r, theta) => ({ x: polar2cartesianX(r, theta), y: polar2cartesianY(r, theta) });
+export const polar2cartesian = (r, theta) => ({
+  x: polar2cartesianX(r, theta),
+  y: polar2cartesianY(r, theta)
+});
 
 // Thanks to https://jsfiddle.net/upsidown/e6dx9oza/
 /**
@@ -73,7 +79,7 @@ export function describeArc(radius, startAngle, endAngle) {
     endAngle += Math.PI * 2;
   }
   // If more than half a tour, take the large arc
-  var largeArc = (endAngle > startAngle + Math.PI) ? 1 : 0;
+  var largeArc = endAngle > startAngle + Math.PI ? 1 : 0;
 
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
   //  A rx ry x-axis-rotation large-arc-flag sweep-flag x y
@@ -85,4 +91,3 @@ export function describeArc(radius, startAngle, endAngle) {
   const str = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} L 0 0 Z`;
   return str;
 }
-

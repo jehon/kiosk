@@ -1,12 +1,11 @@
+import Callback from "./callback.js";
+import contextualize from "./contextualize.js";
+import { Logger } from "./logger.js";
+import TimeInterval from "./TimeInterval.js";
+import { cloneDeep } from "../node_modules/lodash-es/lodash.js";
+import { ACTIVITY_SUB_CHANNEL } from "./constants.js";
 
-import Callback from './callback.js';
-import contextualize from './contextualize.js';
-import { Logger } from './logger.js';
-import TimeInterval from './TimeInterval.js';
-import { cloneDeep } from '../node_modules/lodash-es/lodash.js';
-import { ACTIVITY_SUB_CHANNEL } from './constants.js';
-
-import Cron from '../node_modules/croner/dist/croner.min.mjs';
+import Cron from "../node_modules/croner/dist/croner.min.mjs";
 
 let idGenerator = 1;
 
@@ -52,7 +51,7 @@ export default class App {
   }
 
   toJSON() {
-    return this.name + '#' + this.id;
+    return this.name + "#" + this.id;
   }
 
   //
@@ -106,7 +105,7 @@ export default class App {
 
   // TODO: obsolete
   addTimeInterval(cb, iSecs) {
-    return new TimeInterval(cb, iSecs, this.childLogger('time-interval'));
+    return new TimeInterval(cb, iSecs, this.childLogger("time-interval"));
   }
 
   //
@@ -173,12 +172,12 @@ export default class App {
    */
   cron(options) {
     if (!options.cron) {
-      return () => { };
+      return () => {};
     }
 
     options = {
       duration: 0,
-      onEnd: () => { },
+      onEnd: () => {},
       context: {},
       ...options
     };
@@ -212,7 +211,9 @@ export default class App {
     const now = new Date();
     now.setMilliseconds(0);
 
-    const scheduler = Cron(options.cron, () => { onCron(new Date()); });
+    const scheduler = Cron(options.cron, () => {
+      onCron(new Date());
+    });
 
     if (options.duration > 0) {
       //
@@ -224,12 +225,18 @@ export default class App {
       //    that time
       //
       const lookBackUpto = new Date(now);
-      lookBackUpto.setMinutes(lookBackUpto.getMinutes() - options.duration - 0.1);
+      lookBackUpto.setMinutes(
+        lookBackUpto.getMinutes() - options.duration - 0.1
+      );
       /** @type {Date} */
       const firstStart = scheduler.next(lookBackUpto);
 
       if (firstStart < now) {
-        this.debug(`Initiating past cron for ${options.cron} about ${firstStart.toISOString()} with duration ${options.duration}`);
+        this.debug(
+          `Initiating past cron for ${
+            options.cron
+          } about ${firstStart.toISOString()} with duration ${options.duration}`
+        );
         onCron(firstStart);
       }
     }
@@ -244,7 +251,7 @@ export default class App {
    * @param {function(): void} cb to be called
    */
   async onDate(date, cb) {
-    if (typeof (date) == 'string') {
+    if (typeof date == "string") {
       date = new Date(date);
     }
 
@@ -258,7 +265,9 @@ export default class App {
 
     const now = new Date();
     if (date < now) {
-      this.debug('onDate: but it was already in the past, triggering immediately');
+      this.debug(
+        "onDate: but it was already in the past, triggering immediately"
+      );
       return run();
     }
     Cron(date, run);

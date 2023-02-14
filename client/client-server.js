@@ -1,5 +1,7 @@
-
-import { guiOnServerMessage, guiSendToServer } from './client-server-browser.js';
+import {
+  guiOnServerMessage,
+  guiSendToServer
+} from "./client-server-browser.js";
 
 /**
  * @param {string} channel to be sent on

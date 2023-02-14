@@ -1,12 +1,9 @@
+import "./helper-electron.js";
 
-import './helper-electron.js';
+import "../../client/client-lib-chooser.js";
 
-import '../../client/client-lib-chooser.js';
-
-import { fn } from './helper-main.js';
+import { fn } from "./helper-main.js";
 
 describe(fn(import.meta.url), () => {
-  it('should add apps', function () {
-
-  });
+  it("should add apps", function () {});
 });

@@ -1,15 +1,14 @@
-
 /**
  * @readonly
  * @enum {string}
  */
 export const TriStates = {
   /** Could show the video feed */
-  READY: 'READY',
+  READY: "READY",
   /** Camera is up, but video feed is not ready */
-  UP_NOT_READY: 'UP_NOT_READY',
+  UP_NOT_READY: "UP_NOT_READY",
   /** Camera is completely down */
-  DOWN: 'DOWN'
+  DOWN: "DOWN"
 };
 Object.freeze(TriStates);
 
@@ -23,36 +22,40 @@ export class CameraAPI {
   constructor(app, config) {
     this.app = app;
     this.config = {
-      host: 'localhost',
+      host: "localhost",
       port: 80,
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       nbCheck: 2,
       ...this.defaultConfig(),
       ...config
     };
 
-    this.logger = app.childLogger('camera');
+    this.logger = app.childLogger("camera");
   }
 
-  defaultConfig() { return {}; }
+  defaultConfig() {
+    return {};
+  }
 
   /**
    * check if the camera is up and running
    *
    * @returns {Promise<void>} resolve if success, reject (with the fetch error if present) in any other case
    */
-  async check() { }
+  async check() {}
 
   /**
    * turn up the camera
    *
    * @returns {Promise<string>} with the url of the video
    */
-  async up() { return ''; }
+  async up() {
+    return "";
+  }
 
   /**
    * turn down the camera
    */
-  async down() { }
+  async down() {}
 }

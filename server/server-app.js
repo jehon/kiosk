@@ -1,18 +1,15 @@
+import App from "../common/app.js";
 
-import App from '../common/app.js';
-
-import getConfig from './server-lib-config.js';
-import { dispatchToBrowser } from './server-lib-gui.js';
-import { serverLoggerFactory } from './server-customs.js';
+import getConfig from "./server-lib-config.js";
+import { dispatchToBrowser } from "./server-lib-gui.js";
+import { serverLoggerFactory } from "./server-customs.js";
 
 export class ServerApp extends App {
   constructor(name) {
-    super(name,
-      (namespace) => serverLoggerFactory(namespace + ':server')
-    );
+    super(name, (namespace) => serverLoggerFactory(namespace + ":server"));
 
-    this.onStateChange(
-      (state) => dispatchToBrowser(this.ctxize('.status'), state)
+    this.onStateChange((state) =>
+      dispatchToBrowser(this.ctxize(".status"), state)
     );
   }
 
@@ -23,7 +20,7 @@ export class ServerApp extends App {
    * @param {*} [def] - the default value if the key is not found
    * @returns {object|any} the key or def(null) if it does not exists
    */
-  getConfig(opath = '.', def = null) {
+  getConfig(opath = ".", def = null) {
     return getConfig(this.ctxize(opath), def);
   }
 }

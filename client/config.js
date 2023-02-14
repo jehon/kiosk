@@ -1,4 +1,3 @@
-
 export const priorities = {
   camera: {
     elevated: 1000,

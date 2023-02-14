@@ -1,26 +1,25 @@
-
-import debugFactory from 'debug';
-import objectPath from 'object-path';
-import yargs from 'yargs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-import yaml from 'js-yaml';
-import deepMerge from 'deepmerge';
+import debugFactory from "debug";
+import objectPath from "object-path";
+import yargs from "yargs";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+import yaml from "js-yaml";
+import deepMerge from "deepmerge";
 
 let config = {};
 
 const enabledDebuggerFromEnv = process.env.DEBUG;
-let enabledDebugger = (enabledDebuggerFromEnv ? enabledDebuggerFromEnv : '').split(',');
+let enabledDebugger = (
+  enabledDebuggerFromEnv ? enabledDebuggerFromEnv : ""
+).split(",");
 
 /**
  *
  */
 export async function resetConfig() {
   config = {
-    files: [
-      'etc/kiosk.yml'
-    ],
+    files: ["etc/kiosk.yml"],
     server: {
       devMode: false,
       root: path.dirname(fileURLToPath(import.meta.url))
@@ -34,7 +33,7 @@ resetConfig();
  * @param {*} def - a default value if config is not set
  * @returns {*} the required object
  */
-export default function getConfig(path = '', def = undefined) {
+export default function getConfig(path = "", def = undefined) {
   if (path) {
     if (objectPath.has(config, path)) {
       const val = objectPath.get(config, path);
@@ -49,8 +48,8 @@ export default function getConfig(path = '', def = undefined) {
  * @param {string} path where to set
  * @param {*} val to be set
  */
-export function setConfig(path = '', val = {}) {
-  if (path == '') {
+export function setConfig(path = "", val = {}) {
+  if (path == "") {
     config = val;
     return;
   }
@@ -64,7 +63,7 @@ export function setConfig(path = '', val = {}) {
 export function enableDebugFor(name) {
   // Protect agains DEBUG not being defined
   enabledDebugger.push(name);
-  debugFactory.enable(enabledDebugger.join(','));
+  debugFactory.enable(enabledDebugger.join(","));
   return enabledDebugger;
 }
 
@@ -81,18 +80,18 @@ export function getEnabledDebug() {
  * @returns {Promise<object>} the parsed options
  */
 export async function loadConfigFromCommandLine(serverApp) {
-  const logger = serverApp.childLogger('config');
+  const logger = serverApp.childLogger("config");
   let myargs = yargs(process.argv.slice(2))
     .options({
-      'file': {
-        alias: 'f',
-        type: 'string',
-        describe: 'additionnal file configuration'
+      file: {
+        alias: "f",
+        type: "string",
+        describe: "additionnal file configuration"
       },
-      'devMode': {
-        alias: ['-d', '--dev-mode'],
-        type: 'boolean',
-        describe: 'activate the dev mode'
+      devMode: {
+        alias: ["-d", "--dev-mode"],
+        type: "boolean",
+        describe: "activate the dev mode"
       }
     })
     .help()
@@ -112,17 +111,17 @@ export async function loadConfigFromCommandLine(serverApp) {
   // Transform into config
 
   if (cmdLineOptions.devMode) {
-    setConfig('server.devMode', true);
+    setConfig("server.devMode", true);
   }
 
   if (cmdLineOptions.file) {
-    logger.debug('Adding configuration file at the end:', cmdLineOptions.file);
+    logger.debug("Adding configuration file at the end:", cmdLineOptions.file);
     config.files.unshift(cmdLineOptions.file);
   }
 
-  logger.debug('Command line parsed options: ', cmdLineOptions);
+  logger.debug("Command line parsed options: ", cmdLineOptions);
 
-  setConfig('commandLine', cmdLineOptions);
+  setConfig("commandLine", cmdLineOptions);
 
   return cmdLineOptions;
 }
@@ -132,14 +131,17 @@ export async function loadConfigFromCommandLine(serverApp) {
  * @param {Array<string>} configFiles in order, first one found will be loaded
  * @returns {Promise<object>} the current config
  */
-export async function loadConfigFromFile(serverApp, configFiles = config.files) {
-  const logger = serverApp.childLogger('config');
-  logger.debug('Received list of config files ' + configFiles.join(', '));
+export async function loadConfigFromFile(
+  serverApp,
+  configFiles = config.files
+) {
+  const logger = serverApp.childLogger("config");
+  logger.debug("Received list of config files " + configFiles.join(", "));
 
-  if (typeof (jasmine) != 'undefined') {
-    serverApp.info('Test mode: loading only tests/kiosk.yml');
+  if (typeof jasmine != "undefined") {
+    serverApp.info("Test mode: loading only tests/kiosk.yml");
     configFiles.length = 0;
-    configFiles[0] = 'tests/kiosk.yml';
+    configFiles[0] = "tests/kiosk.yml";
   }
 
   //
@@ -153,24 +155,24 @@ export async function loadConfigFromFile(serverApp, configFiles = config.files) 
       continue;
     }
     try {
-      logger.debug('Loading config file: ', f);
-      let txt = fs.readFileSync(f, 'utf8');
+      logger.debug("Loading config file: ", f);
+      let txt = fs.readFileSync(f, "utf8");
       if (txt) {
         const doc = yaml.load(txt);
         config = deepMerge(config, doc);
-        logger.debug('Loaded config file ' + f);
+        logger.debug("Loaded config file " + f);
         break;
       }
-      logger.error('Skipping empty config file ' + f);
+      logger.error("Skipping empty config file " + f);
     } catch (e) {
-      if (e && e.code == 'ENOENT') {
-        logger.debug('Config file not found ' + f);
+      if (e && e.code == "ENOENT") {
+        logger.debug("Config file not found " + f);
         continue;
       }
-      logger.error('Could not load ' + f, e);
+      logger.error("Could not load " + f, e);
     }
   }
-  logger.debug('Config object after loading files', config);
+  logger.debug("Config object after loading files", config);
 
   return config;
 }
@@ -186,28 +188,30 @@ export async function initFromCommandLine(app) {
     .then(() => loadConfigFromCommandLine(app))
     .then((cmdConfig) => {
       if (cmdConfig.devMode) {
-        enableDebugFor('kiosk:loggers');
+        enableDebugFor("kiosk:loggers");
       }
       return cmdConfig;
     })
-    .then((cmdConfig) => loadConfigFromFile(app, [cmdConfig.file, 'etc/kiosk.yml']))
+    .then((cmdConfig) =>
+      loadConfigFromFile(app, [cmdConfig.file, "etc/kiosk.yml"])
+    )
     .then((config) => {
       //
       // Override with command line options
       //
-      if (app.getConfig('server.devMode', false)) {
-        app.debug('Versions', process.versions);
-        app.info('Node version: ', process.versions['node']);
+      if (app.getConfig("server.devMode", false)) {
+        app.debug("Versions", process.versions);
+        app.info("Node version: ", process.versions["node"]);
       }
 
-      app.debug('Final config: ', config);
+      app.debug("Final config: ", config);
 
       //
       // Activate some loggers
       //
       if (config?.core?.loggers) {
         for (const re of config.core.loggers) {
-          app.info('Enabling logging level due to configuration: ', re);
+          app.info("Enabling logging level due to configuration: ", re);
           enableDebugFor(re);
         }
       }

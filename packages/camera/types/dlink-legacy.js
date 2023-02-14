@@ -13,9 +13,11 @@
   A   audio.cgi      audio   admin only?
  */
 
-const btoa = require('btoa');
-const { TriStates } = require('../constants.js');
-const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */(require('node-fetch'));
+const btoa = require("btoa");
+const { TriStates } = require("../constants.js");
+const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */ (
+  require("node-fetch")
+);
 
 /**
  * @type {module:packages/camera/CameraAPI}}
@@ -26,32 +28,33 @@ const cameraAPI = {
   },
 
   check: (config, _logger) => {
-    config.imageFeed = '/image.jpg';
-    config.videoFeed = '/video/mjpg.cgi';
-    config.audioFeed = '/audio.cgi';
+    config.imageFeed = "/image.jpg";
+    config.videoFeed = "/video/mjpg.cgi";
+    config.audioFeed = "/audio.cgi";
 
-    const url = `${config.host}${config.imageFeed}?random-no-cache=${(new Date).getTime()}`;
-    const authHeader = 'Basic ' + btoa(config.username + ':' + config.password);
+    const url = `${config.host}${
+      config.imageFeed
+    }?random-no-cache=${new Date().getTime()}`;
+    const authHeader = "Basic " + btoa(config.username + ":" + config.password);
 
     // app.debug(`checking "${url}"`);
     const headers = new fetch.Headers({
-      'Authorization': authHeader
+      Authorization: authHeader
     });
 
-    return fetch(url, { method: 'GET', headers: headers })
-      .then(response => {
-        /** @type {object} */
-        if (response.ok) {
-          return { state: TriStates.READY };
-        }
-        return {
-          state: TriStates.UP_NOT_READY,
-          message: response.status + ': ' + response.statusText
-        };
-      });
+    return fetch(url, { method: "GET", headers: headers }).then((response) => {
+      /** @type {object} */
+      if (response.ok) {
+        return { state: TriStates.READY };
+      }
+      return {
+        state: TriStates.UP_NOT_READY,
+        message: response.status + ": " + response.statusText
+      };
+    });
   },
 
-  generateFlow: function (_res) { }
+  generateFlow: function (_res) {}
 };
 
 module.exports = cameraAPI;

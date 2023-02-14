@@ -1,14 +1,13 @@
-
-import { tick } from '../client/helper-main.js';
-import { fn } from './helper-main.js';
+import { tick } from "../client/helper-main.js";
+import { fn } from "./helper-main.js";
 
 describe(fn(import.meta.url), () => {
-  it('should be true', () => {
+  it("should be true", () => {
     expect(true).toBeTruthy();
   });
 
-  describe('shoudl handle timeout', function () {
-    it('inside of test environment', () => {
+  describe("shoudl handle timeout", function () {
+    it("inside of test environment", () => {
       const mockDate = new Date(2019, 0, 1, 12, 10, 0);
       jasmine.clock().withMock(function () {
         jasmine.clock().mockDate(mockDate);

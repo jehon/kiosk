@@ -1,16 +1,15 @@
-
 // const webpack = require('webpack');
-import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
-const __dirname = path.dirname((new URL(import.meta.url)).pathname);
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const config = {
-  mode: 'development',
-  entry: './client/client.js',
+  mode: "development",
+  entry: "./client/client.js",
   output: {
-    path: path.resolve(__dirname, 'built'),
-    filename: 'bundle.js'
+    path: path.resolve(__dirname, "built"),
+    filename: "bundle.js"
   },
   experiments: {
     topLevelAwait: true
@@ -19,30 +18,26 @@ const config = {
     rules: [
       {
         test: /\.ts(x)?$/,
-        loader: 'ts-loader',
+        loader: "ts-loader",
         exclude: /node_modules/
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"]
       },
       {
         test: [/\.svg$/, /.gif$/],
-        use: 'file-loader'
+        use: "file-loader"
       }
     ]
   },
   resolve: {
-    extensions: [
-      '.tsx',
-      '.ts',
-      '.js'
-    ]
+    extensions: [".tsx", ".ts", ".js"]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: 'body',
-      template: 'client/index.html'
+      inject: "body",
+      template: "client/index.html"
     })
   ]
 };

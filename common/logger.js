@@ -1,4 +1,3 @@
-
 /**
  * Callback for logging stream
  *
@@ -18,10 +17,10 @@
  * @returns {string} the normalized namespace
  */
 export function loggerCanonizeNamespace(n) {
-  if (!n.startsWith('kiosk')) {
-    n = 'kiosk.' + n;
+  if (!n.startsWith("kiosk")) {
+    n = "kiosk." + n;
   }
-  return n.split('.').join(':').replace(/:+/g, ':');
+  return n.split(".").join(":").replace(/:+/g, ":");
 }
 
 export class Logger {
@@ -29,9 +28,9 @@ export class Logger {
   name;
 
   #streams = {
-    error: (..._args) => { },
-    debug: (..._args) => { },
-    info: (..._args) => { }
+    error: (..._args) => {},
+    debug: (..._args) => {},
+    info: (..._args) => {}
   };
 
   /** @type {LoggerStreamFunctionBuilder} */
@@ -40,7 +39,7 @@ export class Logger {
   /**
    * @type {function(string, string): LoggerStreamFunction} streamFactory to send the log
    */
-  static streamFactory = () => { };
+  static streamFactory = () => {};
 
   /**
    *
@@ -53,13 +52,16 @@ export class Logger {
 
     loggerMap.set(this.name, this);
 
-    this.#streams.debug = loggerStreamFunctionBuilder(this.name, 'debug');
-    this.#streams.info = loggerStreamFunctionBuilder(this.name, 'info');
-    this.#streams.error = loggerStreamFunctionBuilder(this.name, 'error');
+    this.#streams.debug = loggerStreamFunctionBuilder(this.name, "debug");
+    this.#streams.info = loggerStreamFunctionBuilder(this.name, "info");
+    this.#streams.error = loggerStreamFunctionBuilder(this.name, "error");
   }
 
   childLogger(name) {
-    return new Logger(this.name + ':' + name, this.#loggerStreamFunctionBuilder);
+    return new Logger(
+      this.name + ":" + name,
+      this.#loggerStreamFunctionBuilder
+    );
   }
 
   /**

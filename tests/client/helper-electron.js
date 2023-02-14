@@ -1,11 +1,10 @@
-
 window.require = function (mod) {
-  if (mod == 'electron') {
+  if (mod == "electron") {
     return {
       ipcRenderer: {
         on: function (channel, callback) {
           if (simulateIpcRendererSendMap.has(channel)) {
-            throw 'simulateIpcRendererSendMap: has already ' + channel;
+            throw "simulateIpcRendererSendMap: has already " + channel;
           }
           simulateIpcRendererSendMap.set(channel, callback);
         },

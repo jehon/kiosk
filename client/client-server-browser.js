@@ -1,5 +1,4 @@
-
-import { ROUTE_EVENTS, ROUTE_NOTIFY } from '../common/constants.js';
+import { ROUTE_EVENTS, ROUTE_NOTIFY } from "../common/constants.js";
 const eventSource = new EventSource(ROUTE_EVENTS);
 
 /**
@@ -8,9 +7,9 @@ const eventSource = new EventSource(ROUTE_EVENTS);
  */
 export async function guiSendToServer(channel, data) {
   return fetch(`${ROUTE_NOTIFY}/${channel}`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   });

@@ -1,7 +1,6 @@
-
-import { ClientApp } from './client-app.js';
-import { sendToServer } from './client-server.js';
-import '../node_modules/@jehon/img-loading/jehon-image-loading.js';
+import { ClientApp } from "./client-app.js";
+import { sendToServer } from "./client-server.js";
+import "../node_modules/@jehon/img-loading/jehon-image-loading.js";
 
 export default class ClientElement extends HTMLElement {
   /**
@@ -9,15 +8,17 @@ export default class ClientElement extends HTMLElement {
    *
    * @type {function(void):void}
    */
-  #appStateChangeListenerStopper = () => { };
+  #appStateChangeListenerStopper = () => {};
 
   /** @type {ClientApp} */
   #app;
-  get app() { return this.#app; }
+  get app() {
+    return this.#app;
+  }
 
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
   }
 
   init(app) {
@@ -27,7 +28,10 @@ export default class ClientElement extends HTMLElement {
 
   connectedCallback() {
     if (!this.#app) {
-      console.error('Need to call init() first', { app: this.#app, state: this.getState() });
+      console.error("Need to call init() first", {
+        app: this.#app,
+        state: this.getState()
+      });
       return;
     }
     sendToServer(this.#app?.getChannel(), { active: true });
@@ -44,11 +48,11 @@ export default class ClientElement extends HTMLElement {
 
   disconnectedCallback() {
     this.#appStateChangeListenerStopper();
-    this.#appStateChangeListenerStopper = () => { };
+    this.#appStateChangeListenerStopper = () => {};
 
     sendToServer(this.#app?.getChannel(), { active: false });
   }
 
-  ready() { }
-  stateChanged(_status) { }
+  ready() {}
+  stateChanged(_status) {}
 }
