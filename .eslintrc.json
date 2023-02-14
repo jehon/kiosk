@@ -24,23 +24,6 @@
     }
   },
   "rules": {
-    "template-curly-spacing": "off",
-    "indent": [
-      "error",
-      2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
-    "quotes": [
-      "error",
-      "single"
-    ],
-    "semi": [
-      "error",
-      "always"
-    ],
     "no-unused-vars": [
       "error",
       {
@@ -58,9 +41,7 @@
         ]
       }
     ],
-    "no-trailing-spaces": [
-      "error"
-    ],
+
     "no-warning-comments": [
       "error",
       {
