@@ -1,10 +1,5 @@
 #!/usr/bin/env node
 
-// Shellbang:
-//   #!/usr/bin/env -S node --experimental-loader 'data:text/javascript,let%20t%3D!0%3Bexport%20async%20function%20resolve(e%2Co%2Cn)%7Bconst%20r%3Dawait%20n(e%2Co)%3Breturn%20t%26%26(r.format%3D%22module%22%2Ct%3D!1)%2Cr%7D'
-//
-// 	Thanks to https://github.com/nodejs/node/issues/34049#issuecomment-1101720017
-
 /**
  *
  * Manage a list of <files> with
@@ -17,98 +12,20 @@
  */
 
 import fs from 'fs';
-import fsExtra from 'fs-extra';
-import mime from 'mime-types';
-import minimatch from 'minimatch';
 import path from 'path';
-import yargs from 'yargs';
 import exifParser from './lib/exif-parser.js';
+import { shuffleArray } from '../server/shuffle.js';
+import fsExtra from 'fs-extra';
+import { getFilesFromPathByMime, getWeightedFoldersFromPath } from './lib/files.js';
+import { initFromCommandLine } from '../server/server-lib-config.js';
+import serverAppFactory from '../server/server-app.js';
+import * as url from 'url';
 
-const indexFilename = 'index.json';
+const IndexFilename = 'index.json';
+const DefaultStorage = 'var/photos';
+const __filename = url.fileURLToPath(import.meta.url);
+const prj_root = path.dirname(path.dirname(__filename));
 
-let verbose = false;
-
-/**
- * Log something only if in verbose mode
- *
- * @param {string} str to write
- */
-function log(str) {
-  if (verbose) {
-    process.stdout.write(`[D] ${str}\n`);
-  }
-}
-
-/**
- * Show an information
- *
- * @param {string} str to be shown
- */
-function info(str) {
-  process.stdout.write(`[I] ${str}\n`);
-}
-
-/**
- * Show a warning
- *
- * @param {string} str to be shown
- */
-function warning(str) {
-  process.stdout.write(`[Warning] ${str}\n`);
-}
-
-/**
- * @param {object} weightedList with weight
- * @returns {any} taken in random
- */
-function takeOne(weightedList) {
-  const sum = Object.values(weightedList).reduce((n, i) => n + i, 0);
-
-  if (sum == 0) {
-    return Object.keys(weightedList).pop();
-  }
-
-  const r = Math.random() * sum;
-  // const r = secureRandom(sum);
-
-  let s = 0;
-  for (const k of Object.keys(weightedList)) {
-    s += weightedList[k];
-    if (r < s) {
-      return k;
-    }
-  }
-
-  return Object.keys(weightedList).pop();
-}
-
-/**
- * @param {object} weightedList with weight
- * @returns {Array} weighted (top priority first => .shift())
- */
-export default function shuffle(weightedList) {
-  const keys = Object.keys(weightedList);
-
-  const res = [];
-  const N = keys.length;
-  for (var i = 0; i < N; i++) {
-    const k = takeOne(weightedList);
-    delete weightedList[k];
-    res.push(k);
-  }
-
-  return res;
-}
-
-/**
- * @param {Array} arr to be shuffled
- * @returns {Array} not wiehgted
- */
-export function shuffleArray(arr) {
-  return shuffle(
-    arr.reduce((acc, v) => { acc[v] = 1; return acc; }, {})
-  );
-}
 
 /**
  * @typedef FolderConfig
@@ -126,284 +43,224 @@ export function shuffleArray(arr) {
  */
 
 /**
- * Test if a file match the pattern
- * (used to exclude files)
- *
- * @param {string} filename to be matched
- * @param {string} pattern to match
- * @returns {boolean} true if it match
+ * @typedef ImageDescription
+ * @param {string} originalFilePath - where the file was stored
+ * @param {string} subPath - relative to the index.json
+ * @param {object} data - from exif
  */
-function matchFile(filename, pattern) {
-  return minimatch(filename, pattern, {
-    nocase: true,
-    nocomment: true,
-    nonegate: true
-  });
+
+/**
+ * @typedef CtxIndex
+ * @param {string} context as the context name
+ * @param {Date} ts when generated
+ * @param {string} date when gerenated (readable)
+ * @param {Array<ImageDescription>} list of images
+ */
+
+/**
+ * Show an information
+ *
+ * @param {string} str to be shown
+ */
+export function info(str) {
+  process.stdout.write(`[I] ${str}\n`);
 }
 
 /**
- * Get all files of a folder
+ * Show a warning
  *
- * @param {string} folder relative to cwd or absolute
- * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
- * @returns {Array<string>} of file paths relative to folder
+ * @param {string} str to be shown
  */
-async function getFilesFromFolder(folder, excludes = []) {
-  return fs.readdirSync(folder)
-    .filter(file => !(file in ['.', '..']))
-    .filter(file => excludes.reduce((acc, val) => acc && !matchFile(file, val), true));
+export function warning(str) {
+  process.stdout.write(`[Warning] ${str}\n`);
 }
 
 /**
- * Get files of mimetype in a folder
  *
- * @param {string} folder relative to cwd or absolute
- * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
- * @param {string} mimeTypePattern to filter in (image/*)
- * @returns {Array<string>} of file paths relative to folder
+ * @param {string} context of the config
+ * @param {string} varRoot as abstract destination
+ * @param {FolderConfig} config to be used
+ * @returns {Promise<CtxIndex>} as the image descriptions, relative to context
  */
-async function getFilesFromFolderByMime(folder, excludes, mimeTypePattern) {
-  return (await getFilesFromFolder(folder, excludes))
-    .filter(f => {
-      let mt = mime.lookup(path.join(folder, f));
-      if (typeof (mt) != 'string') {
-        return false;
-      }
-      return mt.match(mimeTypePattern);
-    });
-}
+async function generateListingForConfig(context, varRoot, config) {
+  const excludes = config.excludes ?? [];
+  const mimeTypePattern = config.mimeTypePattern ?? ['image/*'];
+  const from = config.path;
+  const alwaysNew = config.alwaysNew ?? false;
 
-/**
- * Get subfolders out of a folder
- *
- * @param {string} folder relative to cwd or absolute
- * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
- * @returns {Array<string>} of folders (absolute)
- */
-async function getFoldersFromFolder(folder, excludes) {
-  return (await getFilesFromFolder(folder, excludes))
-    .filter(f => fs.statSync(path.join(folder, f)).isDirectory());
-}
+  const to = path.join(varRoot, context);
+  const previouslySelected = [];
+  const maxQuantity = config.quantity ?? 20;
 
-/**
- * Find "n" files in the folders and build up a list
- * It will recurse to subfolders (up and down) until "n" files are found
- *
- * @param {string} folder path
- * @param {FolderConfig} folderConfig where to search for
- * @param {number} n of files to take (will be updated with really taken count)
- * @param {Array<string>} previouslySelected is the list of previously visited folder
- * @returns {Array<string>} is a list of files relative to folder
- */
-async function generateListingForPath(folder, folderConfig, n = folderConfig.quantity, previouslySelected = []) {
-  log(`Entering ${folder}`);
+  const indexPath = path.join(to, IndexFilename);
 
-  //
-  // Shuffle will send back an array of strings
-  //   each string is the name of a folder (relative to folder)
-  //
-  const priorityFolders = {
-    '.': 1,
-    ...(await getFoldersFromFolder(folder, folderConfig.excludes))
-      .reduce((acc, v) => {
-        // Add the priority for the file
-        acc[v] = 1;
-        try {
-          const dfile = path.join(folder, v, 'kiosk.json');
-          if (fs.statSync(dfile)) {
-            const content = JSON.parse(fs.readFileSync(dfile));
-            if (content && content.priority) {
-              acc[v] = content.priority;
-            }
-          }
-        } catch (_e) {
-          // expected
-        }
-        return acc;
-      }, {})
+  let n = maxQuantity;
+  let index = 0;
+
+  /**
+   * Add file to list
+   *
+   * @param {string} filepath of the file to be added
+   * @returns {ImageDescription} as the description of the file
+   */
+  const addFile = async function (filepath) {
+    index++;
+    const paddedIndex = String(index).padStart(2, '0');
+    info(`${paddedIndex}/${maxQuantity} Copying ${filepath}`);
+
+    // Format: 00.ext
+    const targetFn = `${paddedIndex}${path.extname(filepath)}`;
+    const targetPath = path.join(to, targetFn);
+
+    fs.copyFileSync(filepath, targetPath);
+    const fileInfos = {
+      originalFilePath: filepath,
+      subPath: targetFn
+    };
+
+    try {
+      const exifInfo = await exifParser(targetPath);
+      fileInfos.data = exifInfo;
+    } catch (e) {
+      warning(`Could not parse exif data for ${targetPath}`);
+    }
+
+    return fileInfos;
   };
 
-  //
-  // We need an object here
-  // so that we can influence proportions of each times
-  //   key: folder name (relative to folder)
-  //   value: # of times this folder is taken into account in lottery
-  //            (once taken, it is removed)
-  //          default = 1
-  //
-  const folders = shuffle(priorityFolders);
+  /**
+   * Find "n" files in the folders and build up a list
+   * It will recurse to subfolders (up and down) until "n" files are found
+   *
+   * @param {string} pathname path
+   * @returns {Array<string>} is a list of files relative to folder
+   */
+  const generateListingForPath = async function (pathname) {
+    // An array of strings:
+    const folders = await getWeightedFoldersFromPath(pathname, excludes);
 
-  const listing = [];
+    /** @type {ImageDescription} */
+    const listing = [];
 
-  while (folders.length > 0 && listing.length < n) {
+    while (folders.length > 0 && listing.length < n) {
     // Take the first one (top priority)
-    const f = folders.shift();
+      const f = folders.shift();
 
-    if (f == '.') {
-      // Special case: we take the pictures in the current folder
-      if (previouslySelected.includes(folder)) {
-        // Don't take twice the same folder
-        continue;
+      if (f == '.') {
+        // Special case: we take the pictures in the current folder
+
+        if (previouslySelected.includes(pathname)) {
+          // Don't take twice the same folder
+          continue;
+        }
+        previouslySelected.push(pathname);
+
+        /** @type {Array<string>} - list of max(n) filename with correct mimetype */
+        const images = shuffleArray(
+          await getFilesFromPathByMime(pathname, excludes, mimeTypePattern)
+        );
+
+        listing.push(
+          ...images
+            .slice(0, Math.min(n, images.length, n - listing.length))
+            .map(filename => path.join(pathname, filename))
+        );
+      } else {
+        // Take folders
+
+        listing.push(...await generateListingForPath(path.join(pathname, f)));
       }
-      previouslySelected.push(folder);
-
-      /** @type {Array<string>} - list of max(n) filename with correct mimetype */
-      const images = shuffleArray(
-        await getFilesFromFolderByMime(
-          folder,
-          folderConfig.excludes,
-          folderConfig.mimeTypePattern
-        )
-      );
-
-      listing.push(
-        ...images
-          .slice(0, Math.min(n,
-            images.length,
-            n - listing.length))
-          .map(filename => path.join(folder, filename))
-      );
-      continue;
-    } else {
-
-      // Take folders
-      listing.push(...(await generateListingForPath(
-        path.join(folder, f),
-        folderConfig,
-        n - listing.length,
-        previouslySelected
-      )));
     }
+    return listing;
+  };
+
+  try {
+    fs.statSync(from);
+    fs.mkdirSync(to, { recursive: true });
+
+    const list = await generateListingForPath(from);
+
+    const ctxInfos = {
+      context,
+      ts: Date.now(),
+      date: (new Date()).toISOString(),
+      list: []
+    };
+
+    if (list.length < 1 && !alwaysNew) {
+      warning(`No files found in ${from}`);
+      if (!alwaysNew) {
+      // Try to load previous json file if exists
+        return JSON.parse(fs.readFileSync(indexPath));
+      }
+    }
+    info(`Cleaning ${to}`);
+    fsExtra.emptyDirSync(to);
+    for (const k in list) {
+      const f = list[k];
+      ctxInfos.list.push(await addFile(f));
+    }
+
+    fs.writeFileSync(indexPath, JSON.stringify(ctxInfos, null, 2));
+
+    return ctxInfos;
+  } catch (e) {
+    console.error(e);
+    return {};
   }
-  return listing;
 }
 
-await yargs(process.argv.slice(2)).options({
-  'verbose': {
-    alias: ['v'],
-    type: 'boolean',
-    default: false,
-    coerce: val => {
-      verbose = val;
-      return val;
+/**
+ * Merge various indexes from subfolders
+ *
+ * @param {string} targetIndex where to store the merged index
+ * @param {number} quantity to limit the global count
+ * @param {Array<Array<CtxIndex>>} indexes list of indexes (list, context)
+ * @returns {Array<ImageDescription>} merged
+ */
+function mergeIndexes(targetIndex, quantity, indexes) {
+  const merged = {
+    list: [],
+    ts: 0,
+    date: (new Date()).toISOString()
+  };
+  for (const fdata of indexes) {
+    if (fdata.list) {
+      merged.ts = Math.max(merged.ts, fdata.ts);
+
+      merged.list.push(
+        ...fdata.list.map(f => ({
+          ...f,
+          subPath: path.join(fdata.context, f.subPath)
+        }))
+      );
     }
-  },
-  'dryRun': {
-    alias: ['dry-run', 'n'],
-    type: 'boolean',
-    default: false,
-    coerce: (val) => {
-      if (val) {
-        console.info('Using dry run mode');
-      }
-      return val;
-    }
-  },
-  'to': {
-    type: 'string',
-    default: '.'
-  },
-  'quantity': {
-    type: 'number'
   }
-})
-  .command(
-    'select',
-    'Generate a listing',
-    {
-      'from': {
-        type: 'string',
-        required: true
-      },
-      'excludes': {
-        type: 'array',
-        default: []
-      }
-    },
-    async (options) => {
-      options = {
-        mimeTypePattern: ['image/*'],
-        quantity: 20,
-        ...options
-      };
 
-      try {
-        fs.statSync(options.from);
-        fs.statSync(options.to);
+  if (quantity > 0) {
+    merged.list.splice(quantity);
+  }
 
-        const list = await generateListingForPath(options.from, options);
+  merged.list.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
+  fs.writeFileSync(targetIndex, JSON.stringify(merged, null, 2));
+  return merged;
+}
 
-        if (list.length < 1) {
-          warning(`No files found in ${options.from}`);
-          process.exit(1);
-        }
+const app = serverAppFactory('photo-frame');
 
-        info(`Cleaning ${options.to}`);
-        fsExtra.emptyDirSync(options.to);
-
-        const infos = [];
-        for (const k in list) {
-          const k0 = String(k).padStart(2, '0');
-          const f = list[k];
-          info(`${k}/${options.quantity} Copying ${f}`);
-          const targetFn = `${k0}${path.extname(f)}`;
-          const targetPath = path.join(options.to, targetFn);
-          fs.copyFileSync(f, targetPath);
-          const kinfo = {
-            originalFilePath: f,
-            subPath: targetFn
-          };
-
-          try {
-            const exifInfo = await exifParser(targetPath);
-            kinfo.data = exifInfo;
-          } catch (e) {
-            warning(`Could not parse exif data for ${targetPath}`);
-          }
-          infos.push(kinfo);
-        }
-
-        fs.writeFileSync(path.join(options.to, indexFilename), JSON.stringify(infos));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  )
-  .command(
-    'concat [folders...]',
-    'Concat all separated files',
-    {
-      folders: {
-        type: 'array',
-        default: []
-      }
-    },
-    async (options) => {
-      const agglomerated = [];
-      for (const folder of options.folders) {
-        const ifile = path.join(folder, indexFilename);
-        try {
-          const fdata = JSON.parse(fs.readFileSync(ifile));
-          agglomerated.push(
-            ...fdata.map(f => ({
-              ...f,
-              subPath: path.join(folder, f.subPath)
-            }))
-          );
-        } catch (e) {
-          warning(`No index.json found at ${ifile}: ${e}`);
-        }
-      }
-
-      if (options.quantity) {
-        agglomerated.splice(options.quantity, agglomerated.length);
-      }
-      agglomerated.sort((a, b) => ((a.date == b.date) ? 0 : ((a.date > b.date) ? 1 : -1)));
-      fs.writeFileSync(path.join(options.to, indexFilename), JSON.stringify(agglomerated, null, 2));
-    }
-  )
-  .recommendCommands()
-  .strict()
-  .help()
-  .alias('help', 'h')
-  .argv;
+initFromCommandLine(app)
+  // since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
+  .then(() => process.chdir(prj_root))
+  .then(async () => {
+    const folders = app.getConfig('.sources', {});
+    return Promise.all(Object.entries(folders)
+      .map(async ([context, fConfig]) =>
+        await generateListingForConfig(context, app.getConfig('.storage', DefaultStorage), fConfig)
+      ));
+  })
+  .then(ctxIndexes =>
+    mergeIndexes(
+      path.join(app.getConfig('.storage', DefaultStorage), IndexFilename),
+      app.getConfig('.quantity'),
+      ctxIndexes)
+  );
