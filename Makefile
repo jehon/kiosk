@@ -14,13 +14,13 @@ pull-request: clean test
 #
 #
 ROOT   ?= $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+TEST_CONFIG = tests/kiosk.yml
 
 #
 #
 # Generic configuration
 #
 #
-KIOSK_CONFIG ?= $(ROOT)/etc/kiosk.yml
 
 # https://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_7.html
 # https://stackoverflow.com/a/26936855/1954789
@@ -33,7 +33,7 @@ PATH := $(NPM_BIN):$(PATH)
 dump:
 	$(info ROOT:         $(ROOT))
 	$(info PATH:         $(PATH))
-	$(info KIOSK_CONFIG: $(KIOSK_CONFIG))
+	$(info TEST_CONFIG:  $(TEST_CONFIG))
 	type firefox 2>/dev/null || echo "Firefox not found"
 #
 #
@@ -71,15 +71,18 @@ clean:
 	rm -fr node_modules
 
 .PHONY: start
-start: build stop-previous var/photos/index.json
-	node ./server/server.js -f tests/kiosk.yml
+start: build stop-previous var/photos/index.json var/fire
+	node ./server/server.js -f $(TEST_CONFIG)
 
 .PHONY: start-prod
 start-prod: build stop-previous
-	node ./server/server.js -f etc/kiosk.yml
+	node ./server/server.js
 
-var/photos/index.json:
-	bin/file-selector.js -f tests/kiosk.yml
+var/photos/index.json: tests/data/photo-frame/
+	bin/file-selector.js -f $(TEST_CONFIG)
+
+var/fire: tests/data/fire/flower.webm
+	bin/movie-selector $(TEST_CONFIG)
 
 stop-previous:
 	jh-kill-by-port 5454

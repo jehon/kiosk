@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+
+SWD="$(realpath "$( dirname "${BASH_SOURCE[0]}")")"
+
+cd "$SWD/.." >/dev/null
+
+CONF="${1:-etc/kiosk.yml}"
+
+echo "Using configuration file: $CONF"
+
+pwd 
+MOVIE="$( cat "$CONF" \
+    | python -c 'import sys, yaml, json; print(json.dumps(yaml.safe_load(sys.stdin.read())))' \
+    | jq -r ".fire.path"
+)"
+
+STORAGE="var/fire"
+
+echo "Store $MOVIE into $STORAGE"
+mkdir -p "$( dirname "$STORAGE" )"
+
+rsync "$MOVIE" "$STORAGE"
