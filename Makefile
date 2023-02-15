@@ -71,18 +71,24 @@ clean:
 	rm -fr node_modules
 
 .PHONY: start
-start: build stop-previous var/photos/index.json var/fire
+start: start-pre
 	node ./server/server.js -f $(TEST_CONFIG)
 
 .PHONY: start-prod
-start-prod: build stop-previous
+start-prod: start-pre
 	node ./server/server.js
 
-var/photos/index.json: tests/data/photo-frame/
-	bin/file-selector.js -f $(TEST_CONFIG)
+.PHONY: start-pre
+start-pre: build \
+	stop-previous \
+	var/photos/index.json \
+	var/fire
 
-var/fire: tests/data/fire/flower.webm
-	bin/movie-selector $(TEST_CONFIG)
+var/photos/index.json: bin/photos-selector.js
+	bin/photos-selector.js -f $(TEST_CONFIG)
+
+var/fire: bin/fire-selector
+	bin/fire-selector $(TEST_CONFIG)
 
 stop-previous:
 	jh-kill-by-port 5454
