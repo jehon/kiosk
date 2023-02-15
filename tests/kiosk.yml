@@ -3,6 +3,10 @@
 core:
   port: 5454
 
+test:
+  value:
+    something: for testing
+
 photo-frame:
   quantity: 2
   sources:
@@ -44,5 +48,5 @@ fire:
   cron: "0 30 18 * * *" # At 18:30:00
   # cron: "*/30 * * * * *" # Every minute
   duration: 0.25 # 15 seconds
-  url: "/tests/data/fire/flower.webm"
-  type: "video/webm"
+  type: video/webm
+  path: tests/data/fire/flower.webm
