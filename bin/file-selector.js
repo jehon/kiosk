@@ -20,8 +20,7 @@ import {
   getFilesFromPathByMime,
   getWeightedFoldersFromPath
 } from "./lib/files.js";
-import { initFromCommandLine } from "../server/server-lib-config.js";
-import serverAppFactory from "../server/server-app.js";
+import getConfig, { initFromCommandLine } from "../server/server-lib-config.js";
 import * as url from "url";
 
 const IndexFilename = "index.json";
@@ -249,28 +248,25 @@ function mergeIndexes(targetIndex, quantity, indexes) {
   return merged;
 }
 
-const app = serverAppFactory("photo-frame");
+await initFromCommandLine();
 
-initFromCommandLine()
-  // since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
-  .then(() => process.chdir(prj_root))
-  .then(async () => {
-    const folders = app.getConfig(".sources", {});
-    return Promise.all(
-      Object.entries(folders).map(
-        async ([context, fConfig]) =>
-          await generateListingForConfig(
-            context,
-            app.getConfig(".storage", DefaultStorage),
-            fConfig
-          )
+// since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
+await process.chdir(prj_root);
+
+const folders = getConfig("photo-frame.sources", {});
+const ctxIndexes = await Promise.all(
+  Object.entries(folders).map(
+    async ([context, fConfig]) =>
+      await generateListingForConfig(
+        context,
+        getConfig("photo-frame.storage", DefaultStorage),
+        fConfig
       )
-    );
-  })
-  .then((ctxIndexes) =>
-    mergeIndexes(
-      path.join(app.getConfig(".storage", DefaultStorage), IndexFilename),
-      app.getConfig(".quantity"),
-      ctxIndexes
-    )
-  );
+  )
+);
+
+mergeIndexes(
+  path.join(getConfig("photo-frame.storage", DefaultStorage), IndexFilename),
+  getConfig("photo-frame.quantity"),
+  ctxIndexes
+);
