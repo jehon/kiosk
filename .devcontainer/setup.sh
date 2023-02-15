@@ -29,4 +29,5 @@ apt update
 apt_install xvfb jehon-service-kiosk \
     firefox-esr \
     chromium \
-    exiftool
+	ffmpeg exiftool gettext-base \
+	build-essential
