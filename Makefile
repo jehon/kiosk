@@ -60,16 +60,6 @@ define git-files
 	$(shell git ls-files --cached --modified --others --full-name "$(ROOT)/$(1)" )
 endef
 
-computer-setup:
-	sudo apt -y install exiftool chromium-browser
-	mkdir -p etc/
-	if [ -r "$(KIOSK_CONFIG)" ]; then \
-		ln -f -s $(KIOSK_CONFIG) etc/; \
-	fi
-	type exiftool
-# chromium must be not a snap because jenkins run out of home folder
-	type chromium || type chromium-browser
-
 ######################
 #
 # Runtime

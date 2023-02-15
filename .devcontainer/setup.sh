@@ -28,4 +28,5 @@ apt_install jehon-hardware-docker
 apt update
 apt_install xvfb jehon-service-kiosk \
     firefox-esr \
-    chromium
+    chromium \
+    exiftool
