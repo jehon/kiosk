@@ -107,7 +107,7 @@ async function generateListingForConfig(context, varRoot, config) {
   const addFile = async function (filepath) {
     index++;
     const paddedIndex = String(index).padStart(2, "0");
-    info(`${paddedIndex}/${maxQuantity} Copying ${filepath}`);
+    info(`Select: ${paddedIndex}/${maxQuantity} Copying ${filepath}`);
 
     // Format: 00.ext
     const targetFn = `${paddedIndex}${path.extname(filepath)}`;
@@ -198,6 +198,9 @@ async function generateListingForConfig(context, varRoot, config) {
     info(`Cleaning ${to}`);
     fsExtra.emptyDirSync(to);
     for (const k in list) {
+      if (index >= maxQuantity) {
+        break;
+      }
       const f = list[k];
       ctxInfos.list.push(await addFile(f));
     }
@@ -240,6 +243,15 @@ function mergeIndexes(targetIndex, quantity, indexes) {
 
   if (quantity > 0) {
     merged.list.splice(quantity);
+  }
+
+  for (const i in merged.list) {
+    const k = merged.list[i];
+    info(
+      `Merge: ${String(i).padStart(2, "0")}/${merged.list.length} Keeping ${
+        k.originalFilePath
+      }`
+    );
   }
 
   merged.list.sort((a, b) => (a.date == b.date ? 0 : a.date > b.date ? 1 : -1));
