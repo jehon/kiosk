@@ -1,4 +1,4 @@
-import shuffle from "../../common/shuffle.js";
+import shuffle from "../../client/lib/shuffle.js";
 import { fn } from "./helper-main.js";
 
 describe(fn(import.meta.url), () => {

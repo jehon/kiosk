@@ -1,4 +1,4 @@
-import ctxFactory from "../../common/contextualize.js";
+import ctxFactory from "../../client/lib/contextualize.js";
 
 import { fn } from "./helper-main.js";
 

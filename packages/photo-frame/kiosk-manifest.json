@@ -1,5 +1,0 @@
-{
-  "api": 1,
-  "server": "photo-frame-server.js",
-  "client": "photo-frame-client.js"
-}

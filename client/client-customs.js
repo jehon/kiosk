@@ -1,4 +1,4 @@
-import loggerFactory, { Logger } from "../common/logger.js";
+import loggerFactory, { Logger } from "./lib/logger.js";
 
 /**
  * @param {string} name of the logger

@@ -1,4 +1,4 @@
-import Callback from "../../common/callback.js";
+import Callback from "../../client/lib/callback.js";
 
 import { fn } from "./helper-main.js";
 

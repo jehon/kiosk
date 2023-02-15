@@ -13,14 +13,14 @@
 
 import fs from "fs";
 import path from "path";
-import exifParser from "../common/exif-parser.js";
-import { shuffleArray } from "../common/shuffle.js";
+import exifParser from "./lib/exif-parser.js";
+import { shuffleArray } from "./lib/shuffle.js";
 import fsExtra from "fs-extra";
 import {
   getFilesFromPathByMime,
   getWeightedFoldersFromPath
-} from "../common/files.js";
-import getConfig from "../common/command-line-config.js";
+} from "./lib/files.js";
+import getConfig from "./lib/command-line-config.js";
 import * as url from "url";
 
 const IndexFilename = "index.json";

@@ -1,4 +1,4 @@
-import { Logger } from "../../common/logger.js";
+import { Logger } from "../../client/lib/logger.js";
 import { fn } from "./helper-main.js";
 
 export const records = [];

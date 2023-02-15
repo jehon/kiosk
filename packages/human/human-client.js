@@ -1,5 +1,5 @@
 import { ClientApp } from "../../client/client-app.js";
-import Callback from "../../common/callback.js";
+import Callback from "../../client/lib/callback.js";
 
 const app = new ClientApp("human");
 const body = document.querySelector("body");

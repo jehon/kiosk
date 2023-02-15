@@ -10,7 +10,7 @@ import {
   selectApplication
 } from "./client-lib-chooser.js";
 import ClientElement from "./client-element.js";
-import App from "../common/app.js";
+import App from "./lib/app.js";
 import { clientLoggerFactory } from "./client-customs.js";
 import KioskTimedDiv from "./elements/timed-div.js";
 
