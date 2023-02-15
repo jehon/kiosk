@@ -15,7 +15,7 @@ import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-img-l
  *
  * {
  *   subPath: 'f1/i1.png',
- *   path: 'tests/server/data/photo-frame/f1/i1.png',
+ *   path: 'tests/data/photo-frame/f1/i1.png',
  *   data: {
  *	   title: 'Test title here',
  *	   date: '2019-07-01 02:03:04',
