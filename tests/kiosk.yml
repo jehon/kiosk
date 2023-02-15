@@ -1,18 +1,7 @@
 ---
+
 core:
   port: 5454
-
-test:
-  value:
-    # client-app-test.js
-    something: for testing
-
-server:
-  expose:
-    - /var/cache/jehon/
-
-human:
-  inactivitySeconds: 15
 
 photo-frame:
   quantity: 2
