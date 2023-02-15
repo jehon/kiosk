@@ -82,11 +82,11 @@ clean:
 
 .PHONY: start
 start: build stop-previous var/photos/index.json
-	node ./server/server.js -f tests/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	node ./server/server.js -f tests/kiosk.yml
 
 .PHONY: start-prod
 start-prod: build stop-previous
-	node ./server/server.js -f etc/kiosk.yml --dev-mode 2>&1 | grep -v ":ERROR:"
+	node ./server/server.js -f etc/kiosk.yml
 
 var/photos/index.json:
 	bin/file-selector.js -f tests/kiosk.yml
