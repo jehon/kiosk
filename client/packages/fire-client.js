@@ -96,7 +96,7 @@ export class KioskFireMainElement extends ClientElement {
       url = "../" + url;
     }
     if (this.#videoSource.getAttribute("src") != url) {
-      this.#videoSource.setAttribute("src", url);
+      this.#videoSource.setAttribute("src", "/var/fire");
       this.#videoSource.setAttribute("type", status.config.type);
       this.#video.oncanplay = () => this.#video.play();
     }
