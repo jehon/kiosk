@@ -2,7 +2,7 @@ import ClientElement from "../../client/client-element.js";
 import { ClientApp } from "../../client/client-app.js";
 import { priorities } from "../../client/config.js";
 
-import { TriStates } from "./constants.js";
+import { TriStates } from "./camera-constants.js";
 
 const app = new ClientApp("camera");
 

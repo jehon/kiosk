@@ -1,6 +1,6 @@
 import getConfig, { _setConfig } from "../../server/server-lib-config.js";
 import app, { init, _check } from "../../packages/camera/camera-server.mjs";
-import { TriStates } from "../../packages/camera/constants.js";
+import { TriStates } from "../../packages/camera/camera-constants.js";
 
 import { fn } from "./helper-main.js";
 

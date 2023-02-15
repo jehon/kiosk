@@ -1,5 +1,5 @@
 import serverAppFactory from "../../server/server-app.js";
-import { TriStates } from "./constants.js";
+import { TriStates } from "./camera-constants.js";
 import cameraGeneric from "./types/foscam-r2m.js";
 
 /**

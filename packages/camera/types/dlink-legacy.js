@@ -14,7 +14,7 @@
  */
 
 const btoa = require("btoa");
-const { TriStates } = require("../constants.js");
+const { TriStates } = require("../camera-constants.js");
 const fetch = /** @type {function(string, *):Promise} */ /** @type {*} */ (
   require("node-fetch")
 );

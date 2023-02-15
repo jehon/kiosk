@@ -2,7 +2,7 @@ import ChildProcess from "child_process";
 import fetch from "node-fetch";
 
 import { expressApp } from "../../../server/server-lib-gui.js";
-import { CameraAPI } from "../constants.js";
+import { CameraAPI } from "../camera-constants.js";
 
 const publicUrl = "/camera/video.mp4";
 
