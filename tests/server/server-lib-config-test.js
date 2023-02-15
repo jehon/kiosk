@@ -1,6 +1,6 @@
 import serverAppFactory from "../../server/server-app.js";
 import getConfig, {
-  setConfig,
+  _setConfig,
   loadConfigFromFile,
   resetConfig
 } from "../../server/server-lib-config.js";
@@ -13,7 +13,7 @@ describe(fn(import.meta.url), () => {
 
   beforeEach(() => {
     backupConfig = getConfig();
-    setConfig("", {
+    _setConfig("", {
       test: {
         a: 123
       }
@@ -21,7 +21,7 @@ describe(fn(import.meta.url), () => {
   });
 
   afterEach(() => {
-    setConfig("", backupConfig);
+    _setConfig("", backupConfig);
   });
 
   it("should read values", () => {
@@ -37,7 +37,7 @@ describe(fn(import.meta.url), () => {
   it("should get/Set", function () {
     expect(getConfig("test.getset")).toBeUndefined();
     expect(getConfig("test.getset", 456)).toBe(456);
-    setConfig("test.getset", 123);
+    _setConfig("test.getset", 123);
 
     expect(getConfig("test.getset")).toBe(123);
   });

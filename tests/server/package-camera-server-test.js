@@ -1,4 +1,4 @@
-import getConfig, { setConfig } from "../../server/server-lib-config.js";
+import getConfig, { _setConfig } from "../../server/server-lib-config.js";
 import app, { init, _check } from "../../packages/camera/camera-server.mjs";
 import { TriStates } from "../../packages/camera/constants.js";
 
@@ -15,7 +15,7 @@ describe(fn(import.meta.url), () => {
     beforeConfig = getConfig("");
 
     // install our config and mock
-    setConfig("camera", {
+    _setConfig("camera", {
       intervalSeconds: -1,
       nbCheck: 2,
       hardware: {
@@ -40,7 +40,7 @@ describe(fn(import.meta.url), () => {
 
   afterAll(() => {
     // restore config
-    setConfig("", beforeConfig);
+    _setConfig("", beforeConfig);
     nock.restore();
   });
 
