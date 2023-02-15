@@ -98,3 +98,5 @@ export async function initFromCommandLine() {
 
   return config;
 }
+
+await initFromCommandLine();

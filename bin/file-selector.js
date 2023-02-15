@@ -20,9 +20,7 @@ import {
   getFilesFromPathByMime,
   getWeightedFoldersFromPath
 } from "../common/files.js";
-import getConfig, {
-  initFromCommandLine
-} from "../common/command-line-config.js";
+import getConfig from "../common/command-line-config.js";
 import * as url from "url";
 
 const IndexFilename = "index.json";
@@ -261,8 +259,6 @@ function mergeIndexes(targetIndex, quantity, indexes) {
   fs.writeFileSync(targetIndex, JSON.stringify(merged, null, 2));
   return merged;
 }
-
-await initFromCommandLine();
 
 // since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
 await process.chdir(prj_root);
