@@ -1,5 +1,3 @@
-import "./helper-electron.js";
-
 import app from "../../client/packages/camera-client.js";
 
 import { fn } from "./helper-main.js";

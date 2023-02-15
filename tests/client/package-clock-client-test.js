@@ -1,4 +1,3 @@
-import "./helper-electron.js";
 import { fn, tick } from "./helper-main.js";
 
 import app, {

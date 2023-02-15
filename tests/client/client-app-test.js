@@ -1,5 +1,3 @@
-import "./helper-electron.js";
-
 import { ClientApp, waitForConfig } from "../../client/client-app.js";
 
 import { fn, tick } from "./helper-main.js";
