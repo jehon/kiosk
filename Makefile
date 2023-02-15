@@ -114,8 +114,8 @@ built/index.html: $(shell find client packages common) package.json
 test: dependencies
 	karma start tests/client/karma.conf.cjs --single-run
 
-.PHONY: test-client-continuously
-test-client-continuously: dependencies
+.PHONY: test-continuously
+test-continuously: dependencies
 	karma start tests/client/karma.conf.cjs
 
 .PHONY: lint
