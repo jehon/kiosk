@@ -1,6 +1,6 @@
 import App from "../common/app.js";
 
-import getConfig from "./server-lib-config.js";
+import getConfig from "../common/command-line-config.js";
 import { serverLoggerFactory } from "./server-customs.js";
 
 export class ServerApp extends App {

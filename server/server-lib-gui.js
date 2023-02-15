@@ -1,5 +1,5 @@
 import Express from "express";
-import getConfig from "./server-lib-config.js";
+import getConfig from "../common/command-line-config.js";
 
 export const expressApp = Express();
 export let expressAppListener;
