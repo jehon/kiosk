@@ -1,4 +1,3 @@
-import debugFactory from "debug";
 import objectPath from "object-path";
 import yargs from "yargs";
 import path from "path";
@@ -8,11 +7,6 @@ import yaml from "js-yaml";
 import deepMerge from "deepmerge";
 
 let config = {};
-
-const enabledDebuggerFromEnv = process.env.DEBUG;
-let enabledDebugger = (
-  enabledDebuggerFromEnv ? enabledDebuggerFromEnv : ""
-).split(",");
 
 /**
  *
@@ -55,17 +49,6 @@ export function setConfig(path = "", val = {}) {
   objectPath.set(config, path, val);
 }
 
-/**
- * @param {string} name to be enabled above env
- * @returns {Array<string>} the final regexp
- */
-export function enableDebugFor(name) {
-  // Protect agains DEBUG not being defined
-  enabledDebugger.push(name);
-  debugFactory.enable(enabledDebugger.join(","));
-  return enabledDebugger;
-}
-
 // istanbul-ignore-next
 /**
  * @param {module:server/ServerApp} serverApp where to log
@@ -95,16 +78,10 @@ export async function loadConfigFromCommandLine(serverApp) {
 
   const cmdLineOptions = await myargs.argv;
 
-  // Transform into config
-
   if (cmdLineOptions.file) {
     logger.debug("Adding configuration file at the end:", cmdLineOptions.file);
     config.files.unshift(cmdLineOptions.file);
   }
-
-  logger.debug("Command line parsed options: ", cmdLineOptions);
-
-  setConfig("commandLine", cmdLineOptions);
 
   return cmdLineOptions;
 }
@@ -171,20 +148,5 @@ export async function initFromCommandLine(app) {
     .then(() => loadConfigFromCommandLine(app))
     .then((cmdConfig) =>
       loadConfigFromFile(app, [cmdConfig.file, "etc/kiosk.yml"])
-    )
-    .then((config) => {
-      app.debug("Final config: ", config);
-
-      //
-      // Activate some loggers
-      //
-      if (config?.core?.loggers) {
-        for (const re of config.core.loggers) {
-          app.info("Enabling logging level due to configuration: ", re);
-          enableDebugFor(re);
-        }
-      }
-
-      return config;
-    });
+    );
 }
