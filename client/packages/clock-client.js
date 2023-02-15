@@ -1,6 +1,6 @@
-import ClientElement from "../../client/client-element.js";
-import { ClientApp } from "../../client/client-app.js";
-import { priorities } from "../../client/config.js";
+import ClientElement from "../client-element.js";
+import { ClientApp } from "../client-app.js";
+import { priorities } from "../config.js";
 import {
   angleFromHours,
   angleFromMinutes,

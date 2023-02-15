@@ -17,7 +17,6 @@ module.exports = function (config) {
       { pattern: "tests/client/*-test.js", type: "module", watched: true },
       { pattern: "tests/client/*.js", watched: true, included: false },
       { pattern: "client/*.js", watched: true, included: false },
-      { pattern: "packages/**/*.js", watched: true, included: false },
       { pattern: "**/*", watched: false, included: false }
     ],
 

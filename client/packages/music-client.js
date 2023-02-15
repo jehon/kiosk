@@ -1,5 +1,5 @@
-import { ClientApp, iFrameBuilder } from "../../client/client-app.js";
-import { priorities } from "../../client/config.js";
+import { ClientApp, iFrameBuilder } from "../client-app.js";
+import { priorities } from "../config.js";
 
 const app = new ClientApp("music");
 

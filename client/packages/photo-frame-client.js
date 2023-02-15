@@ -1,8 +1,8 @@
-import ClientElement from "../../client/client-element.js";
-import { ClientApp } from "../../client/client-app.js";
-import { priorities } from "../../client/config.js";
-import { humanActiveStatus } from "../human/human-client.js";
-import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-image-loading.js";
+import ClientElement from "../client-element.js";
+import { ClientApp } from "../client-app.js";
+import { priorities } from "../config.js";
+import { humanActiveStatus } from "./human-client.js";
+import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-img-loading.js";
 
 /**
  * @typedef ImageData

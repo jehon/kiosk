@@ -2,10 +2,10 @@ import {
   selectApplication,
   getApplicationList,
   autoSelectApplication
-} from "../../client/client-lib-chooser.js";
-import { ClientApp, iFrameBuilder } from "../../client/client-app.js";
-import ClientElement from "../../client/client-element.js";
-import { humanActiveStatus } from "../human/human-client.js";
+} from "../client-lib-chooser.js";
+import { ClientApp, iFrameBuilder } from "../client-app.js";
+import ClientElement from "../client-element.js";
+import { humanActiveStatus } from "./human-client.js";
 
 const app = new ClientApp("menu", {
   applicationsList: []

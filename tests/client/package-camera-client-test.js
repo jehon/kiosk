@@ -1,9 +1,9 @@
 import "./helper-electron.js";
 
-import app from "../../packages/camera/camera-client.js";
+import app from "../../client/packages/camera-client.js";
 
 import { fn } from "./helper-main.js";
-import { TriStates } from "../../packages/camera/camera-constants.js";
+import { TriStates } from "../../client/packages/camera-constants.js";
 import { priorities } from "../../client/config.js";
 
 describe(fn(import.meta.url), () => {

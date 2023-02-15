@@ -4,7 +4,7 @@ import { fn, tick } from "./helper-main.js";
 import app, {
   KioskClockMainElement,
   init
-} from "../../packages/clock/clock-client.js";
+} from "../../client/packages/clock-client.js";
 
 describe(fn(import.meta.url), () => {
   it("should react to events", function () {
