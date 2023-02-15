@@ -66,13 +66,6 @@ export function enableDebugFor(name) {
   return enabledDebugger;
 }
 
-/**
- * @returns {Array<string>} the enabled debuggers
- */
-export function getEnabledDebug() {
-  return enabledDebugger;
-}
-
 // istanbul-ignore-next
 /**
  * @param {module:server/ServerApp} serverApp where to log
