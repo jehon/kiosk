@@ -30,15 +30,15 @@ clock:
     #   duration: 0.25
 
 menu:
-  - name: "Meteo"
-    url: "http://www.meteo.be"
-    icon: "http://www.meteo.be/meteo/html/2011/img/weather_klein/300.png"
-    label: "Météo"
+  - name: Meteo
+    url: http://www.meteo.be
+    icon: http://www.meteo.be/meteo/html/2011/img/weather_klein/300.png
+    label: Météo
 
-  - name: "BuienAlarm"
-    url: "https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083"
-    icon: "https://www.buienalarm.be/favicon.ico"
-    label: "Buien Alarm"
+  - name: BuienAlarm
+    url: https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083
+    icon: https://www.buienalarm.be/favicon.ico
+    label: Buien Alarm
 
 fire:
   cron: "0 30 18 * * *" # At 18:30:00
