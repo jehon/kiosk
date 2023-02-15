@@ -15,6 +15,7 @@ getConfig("server.expose", []).forEach((element) => {
 });
 
 expressApp.use("/client/", Express.static("built"));
+expressApp.get("/etc/kiosk.yml", (req, res) => res.json(getConfig()));
 expressApp.use(Express.static("."));
 
 expressApp.get("/", (req, res) => res.redirect("client/index.html"));
