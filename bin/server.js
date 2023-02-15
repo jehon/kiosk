@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import Express from "express";
-import getConfig from "../client/lib/command-line-config.js";
+import getConfig from "./lib/command-line-config.js";
 
 export const expressApp = Express();
 

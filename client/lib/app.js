@@ -2,9 +2,9 @@ import Callback from "./callback.js";
 import contextualize from "./contextualize.js";
 import { Logger } from "./logger.js";
 import TimeInterval from "./TimeInterval.js";
-import { cloneDeep } from "../node_modules/lodash-es/lodash.js";
+import { cloneDeep } from "../../node_modules/lodash-es/lodash.js";
 
-import Cron from "../node_modules/croner/dist/croner.min.mjs";
+import Cron from "../../node_modules/croner/dist/croner.min.mjs";
 
 let idGenerator = 1;
 
