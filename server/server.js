@@ -2,7 +2,6 @@ import Express from "express";
 import getConfig from "../common/command-line-config.js";
 
 export const expressApp = Express();
-export let expressAppListener;
 
 const url = "client/index.html";
 
@@ -24,14 +23,10 @@ expressApp.use(Express.static("."));
 expressApp.get("/", (req, res) => res.redirect(url));
 const port = getConfig("core.port", 5454);
 
-await new Promise((resolve) => {
-  expressAppListener = expressApp.listen(port, function () {
-    // Thanks to https://stackoverflow.com/a/29075664/1954789
-    console.info(
-      `Listening on port ${this.address().port} (link: 'http://localhost:${
-        this.address().port
-      }')!`
-    );
-    resolve(port);
-  });
+expressApp.listen(port, function () {
+  // Thanks to https://stackoverflow.com/a/29075664/1954789
+  const finalPort = this.address().port;
+  console.info(
+    `Listening on port ${finalPort} (link: 'http://localhost:${finalPort}')!`
+  );
 });
