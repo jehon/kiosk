@@ -1,16 +1,11 @@
 import App from "../common/app.js";
 
 import getConfig from "./server-lib-config.js";
-import { dispatchToBrowser } from "./server-lib-gui.js";
 import { serverLoggerFactory } from "./server-customs.js";
 
 export class ServerApp extends App {
   constructor(name) {
     super(name, (namespace) => serverLoggerFactory(namespace + ":server"));
-
-    this.onStateChange((state) =>
-      dispatchToBrowser(this.ctxize(".status"), state)
-    );
   }
 
   /**

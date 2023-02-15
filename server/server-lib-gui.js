@@ -1,12 +1,6 @@
-import {
-  guiDispatchToBrowser,
-  guiLaunch,
-  guiPrepare
-} from "./server-lib-gui-browser.js";
+import { guiLaunch, guiPrepare } from "./server-lib-gui-browser.js";
 
 export { expressApp } from "./server-lib-gui-browser.js";
-
-const historySent = new Map();
 
 /**
  * @param {module:server/ServerApp} serverApp for logging purpose
@@ -24,13 +18,4 @@ export async function start(serverApp) {
   await guiPrepare(logger, devMode);
 
   await guiLaunch(logger, devMode, url);
-}
-
-/**
- * @param {string} eventName to be sent
- * @param {object} data to be sent
- */
-export function dispatchToBrowser(eventName, data) {
-  historySent.set(eventName, data);
-  guiDispatchToBrowser(eventName, data);
 }

@@ -1,11 +1,8 @@
 import Express from "express";
 import { Logger } from "../common/logger.js";
 import getConfig from "./server-lib-config.js";
-import SSE from "express-sse"; // https://www.npmjs.com/package/express-sse
-import { ROUTE_EVENTS } from "../common/constants.js";
 
 export const expressApp = Express();
-const sse = new SSE();
 export let expressAppListener;
 
 let startupTime = Date.now();
@@ -28,17 +25,6 @@ export async function guiPrepare(logger, devMode) {
       }
     });
   }
-
-  // Fix: TypeError: res.flush is not a function
-  //   Thanks to https://github.com/dpskvn/express-sse/issues/28#issuecomment-812827462
-  expressApp.use(
-    ROUTE_EVENTS,
-    (req, res, next) => {
-      res.flush = () => {};
-      next();
-    },
-    sse.init
-  );
 
   // to support JSON-encoded bodies
   expressApp.use(
@@ -76,12 +62,4 @@ export async function guiLaunch(_logger, _devMode, _url) {
       resolve(port);
     });
   });
-}
-
-/**
- * @param {string} eventName to be sent
- * @param {object} data to be sent
- */
-export function guiDispatchToBrowser(eventName, data) {
-  sse.send(data, eventName);
 }

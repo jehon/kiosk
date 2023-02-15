@@ -12,7 +12,6 @@ import {
 import ClientElement from "./client-element.js";
 import App from "../common/app.js";
 import { clientLoggerFactory } from "./client-customs.js";
-import { onServerMessage } from "./client-server.js";
 import KioskTimedDiv from "./elements/timed-div.js";
 
 const debugEl = document.querySelector("#debug");
@@ -35,13 +34,6 @@ export class ClientApp extends App {
     );
 
     this.info("Registering app", this.name, this);
-
-    onServerMessage(this.ctxize(".status"), (serverStatus) => {
-      this.debug("Server status updated to ", serverStatus);
-      const status = this.getState();
-      status.server = serverStatus;
-      this.setState(status);
-    });
 
     registerApp(this);
   }
