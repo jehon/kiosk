@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import Express from "express";
 import getConfig from "../common/command-line-config.js";
 

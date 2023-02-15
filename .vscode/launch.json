@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch server (prod)",
-            "program": "${workspaceFolder}/server/server.js",
+            "program": "${workspaceFolder}/bin/server.js",
             "args": [
                 "-f",
                 "etc/kiosk.yml"

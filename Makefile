@@ -72,11 +72,11 @@ clean:
 
 .PHONY: start
 start: start-pre
-	node ./server/server.js -f $(TEST_CONFIG)
+	bin/server.js -f $(TEST_CONFIG)
 
 .PHONY: start-prod
 start-prod: start-pre
-	node ./server/server.js
+	bin/server.js
 
 .PHONY: start-pre
 start-pre: build \
