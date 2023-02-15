@@ -3,7 +3,6 @@ import contextualize from "./contextualize.js";
 import { Logger } from "./logger.js";
 import TimeInterval from "./TimeInterval.js";
 import { cloneDeep } from "../node_modules/lodash-es/lodash.js";
-import { ACTIVITY_SUB_CHANNEL } from "./constants.js";
 
 import Cron from "../node_modules/croner/dist/croner.min.mjs";
 
@@ -153,10 +152,6 @@ export default class App {
    */
   onStateChange(cb) {
     return this.#stateCallback.onChange((state) => cb(state, this));
-  }
-
-  getChannel(ch = ACTIVITY_SUB_CHANNEL) {
-    return this.name + ch;
   }
 
   /**
