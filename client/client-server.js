@@ -1,15 +1,4 @@
-import {
-  guiOnServerMessage,
-  guiSendToServer
-} from "./client-server-browser.js";
-
-/**
- * @param {string} channel to be sent on
- * @param {*} data to be sent
- */
-export async function sendToServer(channel, data) {
-  return guiSendToServer(channel, data);
-}
+import { guiOnServerMessage } from "./client-server-browser.js";
 
 /**
  *

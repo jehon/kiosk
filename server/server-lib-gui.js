@@ -1,8 +1,6 @@
-import { CHANNEL_HISTORY } from "../common/constants.js";
 import {
   guiDispatchToBrowser,
   guiLaunch,
-  guiOnClient,
   guiPrepare
 } from "./server-lib-gui-browser.js";
 
@@ -25,25 +23,7 @@ export async function start(serverApp) {
 
   await guiPrepare(logger, devMode);
 
-  // // Enable history
-  onClient(CHANNEL_HISTORY, (context) => {
-    if (!historySent.has(context)) {
-      logger.debug(`Requested history for ${context}, but that is not found`);
-      return;
-    }
-    // We use this directly, to avoid setting the history again
-    guiDispatchToBrowser(context, historySent.get(context));
-  });
-
   await guiLaunch(logger, devMode, url);
-}
-
-/**
- * @param {string} channel to listen to
- * @param {function(any):void} cb with message
- */
-export function onClient(channel, cb) {
-  guiOnClient(channel, cb);
 }
 
 /**

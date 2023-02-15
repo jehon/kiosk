@@ -2,16 +2,12 @@ import Express from "express";
 import { Logger } from "../common/logger.js";
 import getConfig from "./server-lib-config.js";
 import SSE from "express-sse"; // https://www.npmjs.com/package/express-sse
-import { ROUTE_EVENTS, ROUTE_NOTIFY } from "../common/constants.js";
+import { ROUTE_EVENTS } from "../common/constants.js";
 
 export const expressApp = Express();
 const sse = new SSE();
 export let expressAppListener;
 
-/**
- * @type {Map<string, Array<Function>>}
- */
-const listeners = new Map();
 let startupTime = Date.now();
 
 /**
@@ -50,16 +46,6 @@ export async function guiPrepare(logger, devMode) {
       strict: false
     })
   );
-  expressApp.post(`${ROUTE_NOTIFY}/:channel`, (req, res) => {
-    const channel = req.params.channel;
-    const data = req.body;
-    if (listeners.has(channel)) {
-      for (const cb of listeners.get(channel)) {
-        cb(data);
-      }
-    }
-    return res.send("Treated");
-  });
 
   getConfig("server.expose", []).forEach((element) => {
     logger.debug(`Exposing ${element}}`);
@@ -98,15 +84,4 @@ export async function guiLaunch(_logger, _devMode, _url) {
  */
 export function guiDispatchToBrowser(eventName, data) {
   sse.send(data, eventName);
-}
-
-/**
- * @param {string} channel to listen to
- * @param {function(any):void} cb with message
- */
-export function guiOnClient(channel, cb) {
-  if (!listeners.has(channel)) {
-    listeners.set(channel, []);
-  }
-  listeners.get(channel).push(cb);
 }

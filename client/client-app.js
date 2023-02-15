@@ -12,7 +12,7 @@ import {
 import ClientElement from "./client-element.js";
 import App from "../common/app.js";
 import { clientLoggerFactory } from "./client-customs.js";
-import { onServerMessage, sendToServer } from "./client-server.js";
+import { onServerMessage } from "./client-server.js";
 import KioskTimedDiv from "./elements/timed-div.js";
 
 const debugEl = document.querySelector("#debug");
@@ -43,7 +43,6 @@ export class ClientApp extends App {
       this.setState(status);
     });
 
-    sendToServer("history", this.ctxize(".status"));
     registerApp(this);
   }
 

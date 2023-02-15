@@ -1,5 +1,4 @@
 import { ClientApp } from "./client-app.js";
-import { sendToServer } from "./client-server.js";
 import "../node_modules/@jehon/img-loading/jehon-image-loading.js";
 
 export default class ClientElement extends HTMLElement {
@@ -34,7 +33,6 @@ export default class ClientElement extends HTMLElement {
       });
       return;
     }
-    sendToServer(this.#app?.getChannel(), { active: true });
 
     this.#appStateChangeListenerStopper();
     this.#appStateChangeListenerStopper = this.#app.onStateChange((state) => {
@@ -49,8 +47,6 @@ export default class ClientElement extends HTMLElement {
   disconnectedCallback() {
     this.#appStateChangeListenerStopper();
     this.#appStateChangeListenerStopper = () => {};
-
-    sendToServer(this.#app?.getChannel(), { active: false });
   }
 
   ready() {}
