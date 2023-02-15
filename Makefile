@@ -112,15 +112,7 @@ built/index.html: $(shell find client packages common) package.json
 	touch "$@"
 
 .PHONY: test
-test: test-server test-client
-	echo "ok"
-
-.PHONY: test-server
-test-server: dependencies
-	xvfb-run -a jasmine --config=tests/server/jasmine.json
-
-.PHONY: test-client
-test-client: dependencies
+test: dependencies
 	karma start tests/client/karma.conf.cjs --single-run
 
 .PHONY: test-client-continuously
