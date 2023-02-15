@@ -5,11 +5,9 @@ export const expressApp = Express();
 export let expressAppListener;
 
 /**
- * @param {module:server/ServerApp} serverApp for logging purpose
+ *
  */
-export async function start(serverApp) {
-  const logger = serverApp.childLogger("gui");
-
+export async function start() {
   const url = "client/index.html";
   // const url = `http://localhost:${app.getConfig('.webserver.port')}/client/index.html`;
 
@@ -21,7 +19,6 @@ export async function start(serverApp) {
   );
 
   getConfig("server.expose", []).forEach((element) => {
-    logger.debug(`Exposing ${element}}`);
     expressApp.use(element, Express.static(element));
   });
   expressApp.use("/client/", Express.static("built"));
@@ -34,7 +31,7 @@ export async function start(serverApp) {
   await new Promise((resolve) => {
     expressAppListener = expressApp.listen(port, function () {
       // Thanks to https://stackoverflow.com/a/29075664/1954789
-      logger.info(
+      console.info(
         `Listening on port ${this.address().port} (link: 'http://localhost:${
           this.address().port
         }')!`
