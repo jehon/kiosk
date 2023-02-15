@@ -6,20 +6,12 @@ import fs from "fs";
 import yaml from "js-yaml";
 import deepMerge from "deepmerge";
 
-let config = {};
-
-/**
- *
- */
-export async function resetConfig() {
-  config = {
-    files: ["etc/kiosk.yml"],
-    server: {
-      root: path.dirname(fileURLToPath(import.meta.url))
-    }
-  };
-}
-resetConfig();
+let config = {
+  files: ["etc/kiosk.yml"],
+  server: {
+    root: path.dirname(fileURLToPath(import.meta.url))
+  }
+};
 
 /**
  * @param {string} path to be found
@@ -51,11 +43,9 @@ export function setConfig(path = "", val = {}) {
 
 // istanbul-ignore-next
 /**
- * @param {module:server/ServerApp} serverApp where to log
  * @returns {Promise<object>} the parsed options
  */
-export async function loadConfigFromCommandLine(serverApp) {
-  const logger = serverApp.childLogger("config");
+async function loadConfigFromCommandLine() {
   let myargs = yargs(process.argv.slice(2))
     .options({
       file: {
@@ -79,7 +69,6 @@ export async function loadConfigFromCommandLine(serverApp) {
   const cmdLineOptions = await myargs.argv;
 
   if (cmdLineOptions.file) {
-    logger.debug("Adding configuration file at the end:", cmdLineOptions.file);
     config.files.unshift(cmdLineOptions.file);
   }
 
@@ -87,19 +76,12 @@ export async function loadConfigFromCommandLine(serverApp) {
 }
 
 /**
- * @param {module:server/ServerApp} serverApp where to log
  * @param {Array<string>} configFiles in order, first one found will be loaded
  * @returns {Promise<object>} the current config
  */
-export async function loadConfigFromFile(
-  serverApp,
-  configFiles = config.files
-) {
-  const logger = serverApp.childLogger("config");
-  logger.debug("Received list of config files " + configFiles.join(", "));
-
+export async function loadConfigFromFile(configFiles = config.files) {
   if (typeof jasmine != "undefined") {
-    serverApp.info("Test mode: loading only tests/kiosk.yml");
+    console.info("Test mode: loading only tests/kiosk.yml");
     configFiles.length = 0;
     configFiles[0] = "tests/kiosk.yml";
   }
@@ -115,38 +97,31 @@ export async function loadConfigFromFile(
       continue;
     }
     try {
-      logger.debug("Loading config file: ", f);
       let txt = fs.readFileSync(f, "utf8");
       if (txt) {
         const doc = yaml.load(txt);
         config = deepMerge(config, doc);
-        logger.debug("Loaded config file " + f);
         break;
       }
-      logger.error("Skipping empty config file " + f);
+      console.error("Skipping empty config file " + f);
     } catch (e) {
       if (e && e.code == "ENOENT") {
-        logger.debug("Config file not found " + f);
+        console.error("Config file not found " + f);
         continue;
       }
-      logger.error("Could not load " + f, e);
+      console.error("Could not load " + f, e);
     }
   }
-  logger.debug("Config object after loading files", config);
-
   return config;
 }
 
 /**
  * Load all stuff from command line and default
  *
- * @param {module:server/ServerApp} app where to log
  * @returns {object} the config loaded
  */
-export async function initFromCommandLine(app) {
-  return resetConfig()
-    .then(() => loadConfigFromCommandLine(app))
-    .then((cmdConfig) =>
-      loadConfigFromFile(app, [cmdConfig.file, "etc/kiosk.yml"])
-    );
+export async function initFromCommandLine() {
+  return loadConfigFromCommandLine().then((cmdConfig) =>
+    loadConfigFromFile([cmdConfig.file, "etc/kiosk.yml"])
+  );
 }

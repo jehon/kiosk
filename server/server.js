@@ -4,6 +4,4 @@ import { initFromCommandLine } from "./server-lib-config.js";
 
 const app = serverAppFactory("core");
 
-initFromCommandLine(app)
-  .then(() => start(app))
-  .then(() => app.info("GUI is started"));
+initFromCommandLine().then(() => start(app));

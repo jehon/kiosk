@@ -251,7 +251,7 @@ function mergeIndexes(targetIndex, quantity, indexes) {
 
 const app = serverAppFactory("photo-frame");
 
-initFromCommandLine(app)
+initFromCommandLine()
   // since we can pass config file from cmdline, we need to wait for config to be loaded before chdir
   .then(() => process.chdir(prj_root))
   .then(async () => {
