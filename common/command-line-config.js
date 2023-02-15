@@ -41,12 +41,13 @@ export function _setConfig(path = "", val = {}) {
   objectPath.set(config, path, val);
 }
 
-// istanbul-ignore-next
 /**
- * @returns {Promise<object>} the parsed options
+ * Load all stuff from command line and default
+ *
+ * @returns {object} the config loaded
  */
-async function loadConfigFromCommandLine() {
-  let myargs = yargs(process.argv.slice(2))
+export async function initFromCommandLine() {
+  const cmdLineOptions = yargs(process.argv.slice(2))
     .options({
       file: {
         alias: "f",
@@ -56,7 +57,7 @@ async function loadConfigFromCommandLine() {
       }
     })
     .help()
-    .recommendCommands();
+    .recommendCommands().argv;
 
   //
   // Caution: we can not enable "strict()" mode
@@ -67,19 +68,10 @@ async function loadConfigFromCommandLine() {
   // myargs = myargs.strict();
   //
 
-  const cmdLineOptions = await myargs.argv;
-
   if (cmdLineOptions.file) {
     config.file = cmdLineOptions.file;
   }
 
-  return cmdLineOptions;
-}
-
-/**
- * @returns {Promise<object>} the current config
- */
-export async function loadConfigFromFile() {
   if (typeof jasmine != "undefined") {
     console.info("Test mode: loading only tests/kiosk.yml");
     config.file = "tests/kiosk.yml";
@@ -103,15 +95,6 @@ export async function loadConfigFromFile() {
       console.error("Could not load " + config.file, e);
     }
   }
-  return config;
-}
 
-/**
- * Load all stuff from command line and default
- *
- * @returns {object} the config loaded
- */
-export async function initFromCommandLine() {
-  await loadConfigFromCommandLine();
-  return await loadConfigFromFile();
+  return config;
 }
