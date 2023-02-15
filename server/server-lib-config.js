@@ -21,7 +21,6 @@ export async function resetConfig() {
   config = {
     files: ["etc/kiosk.yml"],
     server: {
-      devMode: false,
       root: path.dirname(fileURLToPath(import.meta.url))
     }
   };
@@ -87,11 +86,6 @@ export async function loadConfigFromCommandLine(serverApp) {
         alias: "f",
         type: "string",
         describe: "additionnal file configuration"
-      },
-      devMode: {
-        alias: ["-d", "--dev-mode"],
-        type: "boolean",
-        describe: "activate the dev mode"
       }
     })
     .help()
@@ -109,10 +103,6 @@ export async function loadConfigFromCommandLine(serverApp) {
   const cmdLineOptions = await myargs.argv;
 
   // Transform into config
-
-  if (cmdLineOptions.devMode) {
-    setConfig("server.devMode", true);
-  }
 
   if (cmdLineOptions.file) {
     logger.debug("Adding configuration file at the end:", cmdLineOptions.file);
@@ -186,24 +176,10 @@ export async function loadConfigFromFile(
 export async function initFromCommandLine(app) {
   return resetConfig()
     .then(() => loadConfigFromCommandLine(app))
-    .then((cmdConfig) => {
-      if (cmdConfig.devMode) {
-        enableDebugFor("kiosk:loggers");
-      }
-      return cmdConfig;
-    })
     .then((cmdConfig) =>
       loadConfigFromFile(app, [cmdConfig.file, "etc/kiosk.yml"])
     )
     .then((config) => {
-      //
-      // Override with command line options
-      //
-      if (app.getConfig("server.devMode", false)) {
-        app.debug("Versions", process.versions);
-        app.info("Node version: ", process.versions["node"]);
-      }
-
       app.debug("Final config: ", config);
 
       //

@@ -47,6 +47,5 @@ describe(fn(import.meta.url), () => {
     await loadConfigFromFile(app, ["tests/kiosk.yml"]);
 
     expect(getConfig("server.root")).not.toBeNull();
-    expect(getConfig("server.devMode")).toBeFalse();
   });
 });

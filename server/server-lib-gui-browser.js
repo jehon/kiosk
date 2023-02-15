@@ -5,27 +5,10 @@ import getConfig from "./server-lib-config.js";
 export const expressApp = Express();
 export let expressAppListener;
 
-let startupTime = Date.now();
-
 /**
  * @param {Logger} logger for messages
- * @param {boolean} devMode to enable de
  */
-export async function guiPrepare(logger, devMode) {
-  if (devMode) {
-    // simulate delay response
-    // Thanks to https://stackoverflow.com/a/46976128/1954789
-    expressApp.use((req, res, next) => {
-      // We delay only if not initial startup
-      if (Date.now() - startupTime < 10000) {
-        next();
-      } else {
-        // Wait 2 second at any request
-        setTimeout(() => next(), 2000);
-      }
-    });
-  }
-
+export async function guiPrepare(logger) {
   // to support JSON-encoded bodies
   expressApp.use(
     Express.json({
@@ -43,18 +26,17 @@ export async function guiPrepare(logger, devMode) {
 }
 
 /**
- * @param {Logger} _logger to log debug
- * @param {boolean} _devMode to enable de
- * @param {string} _url to be loaded
+ * @param {Logger} logger to log debug
+ * @param {string} url to be loaded
  */
-export async function guiLaunch(_logger, _devMode, _url) {
-  expressApp.get("/", (req, res) => res.redirect(_url));
+export async function guiLaunch(logger, url) {
+  expressApp.get("/", (req, res) => res.redirect(url));
   const port = getConfig("core.port", 5454);
 
   await new Promise((resolve) => {
     expressAppListener = expressApp.listen(port, function () {
       // Thanks to https://stackoverflow.com/a/29075664/1954789
-      _logger.info(
+      logger.info(
         `Listening on port ${this.address().port} (link: 'http://localhost:${
           this.address().port
         }')!`

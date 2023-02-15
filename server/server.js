@@ -10,7 +10,6 @@ const app = serverAppFactory("core");
 initFromCommandLine(app)
   .then(() => {
     app.setState({
-      devMode: app.getConfig("server.devMode", false),
       enabledDebug: getEnabledDebug()
     });
   })
