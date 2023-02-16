@@ -6,12 +6,15 @@ shopt -s nullglob
 
 SWD="$(realpath "$( dirname "${BASH_SOURCE[0]}")")"
 
-cd "$SWD/.."
+if [ -n "$1" ]; then
+    CONF="$( realpath "$1" )"
+fi
+CONF="${CONF:-etc/kiosk.yml}"
 
-CONF="${1:-etc/kiosk.yml}"
+cd "/.."
 
 echo "* Updating photos"
-./bin/photos-selector.js -f "$CONF"
+"$SWD"/photos-selector.js -f "$CONF"
 
 echo "* Updating fire"
-./bin/fire-selector "$CONF"
+"$SWD"/fire-selector "$CONF"
