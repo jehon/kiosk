@@ -196,7 +196,7 @@ export default class App {
       }
 
       if (options.duration) {
-        this.onDate(stats.end, () => options.onEnd(options.context, stats));
+        this.#onDate(stats.end, () => options.onEnd(options.context, stats));
       }
     };
 
@@ -245,7 +245,7 @@ export default class App {
    * @param {Date} date the date on which the promise will be resolved
    * @param {function(): void} cb to be called
    */
-  async onDate(date, cb) {
+  async #onDate(date, cb) {
     if (typeof date == "string") {
       date = new Date(date);
     }
