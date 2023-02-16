@@ -1,4 +1,4 @@
-import { ClientApp, waitForConfig } from "../../client/client-app.js";
+import { ClientApp } from "../../client/client-app.js";
 
 import { fn, tick } from "./helper-main.js";
 
@@ -161,8 +161,6 @@ describe(fn(import.meta.url), () => {
   });
 
   it("should handle config", async function () {
-    await waitForConfig;
-
     const app = new ClientApp("test");
 
     expect(app.getConfig("test.value.something"))
