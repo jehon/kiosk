@@ -17,11 +17,9 @@ import KioskTimedDiv from "./elements/timed-div.js";
 const debugEl = document.querySelector("#debug");
 
 // Top-Level-Await is not working in Karma/Jasmine:
-const config = {};
-export const waitForConfig = fetch("/etc/kiosk.yml")
+const config = await fetch("/etc/kiosk.yml")
   .then((response) => response.text())
-  .then((yml) => yaml.load(yml))
-  .then((data) => Object.assign(config, data));
+  .then((yml) => yaml.load(yml));
 
 export class ClientApp extends App {
   priority = 0;
