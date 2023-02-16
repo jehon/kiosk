@@ -11,7 +11,6 @@ import {
 } from "./client-lib-chooser.js";
 import ClientElement from "./client-element.js";
 import App from "./lib/app.js";
-import loggerFactory from "./lib/logger.js";
 
 // Top-Level-Await is not working in Karma/Jasmine:
 const config = await fetch("/etc/kiosk.yml")
@@ -27,11 +26,13 @@ export class ClientApp extends App {
   constructor(name, initialState = {}) {
     super(
       name,
-      (name) =>
-        loggerFactory(name, (namespace, level) => (...data) => {
-          /* eslint-disable no-console */
-          console[level](namespace, `[${level.toUpperCase()}]`, ...data);
-        }),
+      (namespace, level) =>
+        (...data) =>
+          /* eslint-disable no-console */ console[level](
+            namespace,
+            `[${level.toUpperCase()}]`,
+            ...data
+          ),
       initialState
     );
 

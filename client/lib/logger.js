@@ -33,9 +33,6 @@ export class Logger {
     info: (..._args) => {}
   };
 
-  /** @type {LoggerStreamFunctionBuilder} */
-  #loggerStreamFunctionBuilder;
-
   /**
    * @type {function(string, string): LoggerStreamFunction} streamFactory to send the log
    */
@@ -48,9 +45,6 @@ export class Logger {
    */
   constructor(name, loggerStreamFunctionBuilder) {
     this.name = loggerCanonizeNamespace(name);
-    this.#loggerStreamFunctionBuilder = loggerStreamFunctionBuilder;
-
-    loggerMap.set(this.name, this);
 
     this.#streams.debug = loggerStreamFunctionBuilder(this.name, "debug");
     this.#streams.info = loggerStreamFunctionBuilder(this.name, "info");
@@ -89,22 +83,4 @@ export class Logger {
     this.#streams.debug(...data);
     return this;
   }
-}
-
-/**
- * For dynamic loggers
- */
-const loggerMap = new Map();
-// const loggersCreationStream = debugFactory('kiosk:loggers');
-
-/**
- * @param {string} namespace to be created
- * @param {LoggerStreamFunctionBuilder} loggerStreamFunctionBuilder for building a new one
- * @returns {Logger} created
- */
-export default function loggerFactory(namespace, loggerStreamFunctionBuilder) {
-  if (loggerMap.has(namespace)) {
-    return loggerMap.get(namespace);
-  }
-  return new Logger(namespace, loggerStreamFunctionBuilder);
 }

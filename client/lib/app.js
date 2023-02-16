@@ -14,15 +14,9 @@ let idGenerator = 1;
  * @property {number} duration in minutes
  */
 
-export default class App {
+export default class App extends Logger {
   /** @type {number} */
   id;
-
-  /** @type {string}  */
-  name;
-
-  /** @type {Logger} */
-  logger;
 
   /** @type {function(string): string} */
   ctxize;
@@ -41,54 +35,15 @@ export default class App {
    * @param {*} initialState to initialize the state
    */
   constructor(name, loggerFactory, initialState) {
+    super(name, loggerFactory);
     this.id = idGenerator++;
     this.name = name;
-    this.logger = loggerFactory(this.name);
     this.ctxize = contextualize(name);
     this.#stateCallback = new Callback(initialState);
   }
 
   toJSON() {
     return this.name + "#" + this.id;
-  }
-
-  //
-  //
-  // Logging functions
-  //
-  //
-
-  /**
-   * Log an error
-   *
-   * @param  {...any} data - what to print
-   * @returns {this} this
-   */
-  error(...data) {
-    this.logger.error(...data);
-    return this;
-  }
-
-  /**
-   * Log an info
-   *
-   * @param  {...any} data - what to print
-   * @returns {this} this
-   */
-  info(...data) {
-    this.logger.info(...data);
-    return this;
-  }
-
-  /**
-   * Log a debug message
-   *
-   * @param  {...any} data - what to print
-   * @returns {this} this
-   */
-  debug(...data) {
-    this.logger.debug(...data);
-    return this;
   }
 
   //
