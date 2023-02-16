@@ -69,6 +69,7 @@ endef
 clean:
 	rm -fr parts tmp
 	rm -fr node_modules
+	rm -fr built
 
 .PHONY: start
 start: build stop-previous
