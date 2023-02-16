@@ -50,10 +50,8 @@
 //   constructor(...args) {
 //     super(...args);
 
-//     const routelogger = this.app.childLogger("route");
-
 //     expressApp.get(publicUrl, (_req, res) => {
-//       routelogger.debug(`received connection for ${publicUrl}`);
+//       this.debug(`received connection for ${publicUrl}`);
 //       //
 //       // HTML 5: browser support
 //       //     https://en.wikipedia.org/wiki/HTML5_video#Browser_support
@@ -83,7 +81,7 @@
 //         "-c:v copy -movflags frag_keyframe+empty_moov -an -r 1 -f ismv";
 
 //       const cmd = `ffmpeg -rtsp_transport tcp -i rtsp://${this.config.username}:${this.config.password}@${this.config.host}:${this.config.port}/videoSub ${convert} -`;
-//       routelogger.debug("ffmpeg command: ", cmd);
+//       this.debug("ffmpeg command: ", cmd);
 
 //       const cmdArray = cmd.split(" ");
 //       const ffmpeg = ChildProcess.spawn(cmdArray[0], cmdArray.splice(1), {
@@ -94,7 +92,7 @@
 //       ffmpeg.stdio[1].pipe(res);
 
 //       res.on("close", () => {
-//         routelogger.debug("Http flow ended, killing ffmpeg");
+//         this.debug("Http flow ended, killing ffmpeg");
 //         ffmpeg.kill();
 //       });
 //     });
@@ -104,20 +102,20 @@
 //     const url = getUrl("health check", this.app, this.config, {
 //       cmd: "getDevInfo"
 //     });
-//     this.logger.debug("checking ", { url, config: this.config });
+//     this.debug("checking ", { url, config: this.config });
 
 //     return fetch(url, { method: "GET" }).then(
 //       (response) => {
-//         this.logger.debug("Check done", response.statusText);
+//         this.debug("Check done", response.statusText);
 //         if (!response.ok) {
 //           this.app.debug("Check response error", response);
 //           throw new Error(response.status + ": " + response.statusText);
 //         }
-//         this.logger.debug("Check successfull");
+//         this.debug("Check successfull");
 //         return true;
 //       },
 //       (err) => {
-//         this.logger.debug("Camera in error", err);
+//         this.debug("Camera in error", err);
 //         throw err;
 //       }
 //     );

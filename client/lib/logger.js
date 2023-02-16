@@ -57,13 +57,6 @@ export class Logger {
     this.#streams.error = loggerStreamFunctionBuilder(this.name, "error");
   }
 
-  childLogger(name) {
-    return new Logger(
-      this.name + ":" + name,
-      this.#loggerStreamFunctionBuilder
-    );
-  }
-
   /**
    * Log an error
    *

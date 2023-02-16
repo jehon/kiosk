@@ -17,23 +17,6 @@ describe(fn(import.meta.url), () => {
     app.debug("debug");
   });
 
-  it("should extend", function () {
-    const appMain = new ClientApp("test");
-    const logger = appMain.childLogger("child");
-
-    expect(logger.name).toBe("kiosk:test:client:child");
-    logger.info("info");
-    logger.error("error");
-    logger.debug("debug");
-
-    const logger2 = logger.childLogger("grandchild");
-
-    expect(logger2.name).toBe("kiosk:test:client:child:grandchild");
-    logger2.info("info");
-    logger2.error("error");
-    logger2.debug("debug");
-  });
-
   it("should handle simple cron", function () {
     let runs = 0;
     let calledWith = {};

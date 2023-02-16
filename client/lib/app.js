@@ -91,10 +91,6 @@ export default class App {
     return this;
   }
 
-  childLogger(subLoggerName) {
-    return this.logger.childLogger(subLoggerName);
-  }
-
   //
   //
   // Status

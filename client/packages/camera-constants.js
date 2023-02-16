@@ -30,12 +30,22 @@ export class CameraAPI {
       ...this.defaultConfig(),
       ...config
     };
-
-    this.logger = app.childLogger("camera");
   }
 
   defaultConfig() {
     return {};
+  }
+
+  debug(...args) {
+    this.app.debug(...args);
+  }
+
+  info(...args) {
+    this.app.info(...args);
+  }
+
+  log(...args) {
+    this.app.log(...args);
   }
 
   /**
