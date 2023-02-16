@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+shopt -s nullglob
+
+SWD="$(realpath "$( dirname "${BASH_SOURCE[0]}")")"
+
+cd "$SWD/.."
+
+CONF="${1:-etc/kiosk.yml}"
+
+echo "* Updating photos"
+./bin/photos-selector.js -f "$CONF"
+
+echo "* Updating fire"
+./bin/fire-selector "$CONF"
