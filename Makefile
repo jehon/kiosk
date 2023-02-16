@@ -79,12 +79,6 @@ start: build stop-previous
 start-prod: build stop-previous
 	bin/server.js
 
-var/photos/index.json: bin/photos-selector.js
-	bin/photos-selector.js -f $(TEST_CONFIG)
-
-var/fire: bin/fire-selector
-	bin/fire-selector $(TEST_CONFIG)
-
 stop-previous:
 	jh-kill-by-port 5454
 
@@ -103,14 +97,18 @@ build: built/index.html \
 		var/fire \
 		built/importmap.json
 
-	@true
+var/photos/index.json: bin/photos-selector.js
+	bin/photos-selector.js -f $(TEST_CONFIG)
 
-built/index.html: $(shell find client) package.json
+var/fire: bin/fire-selector
+	bin/fire-selector $(TEST_CONFIG)
+
+built/index.html: node_modules/.packages-installed.json $(shell find client) package.json
 	npm run build
 	touch "$@"
 
 built/importmap.json: node_modules/.packages-installed.json
-	$(NPM_BIN)/importly < package-lock.json > "node_modules/importmap.json"
+	$(NPM_BIN)/importly < package-lock.json > built/importmap.json
 
 .PHONY: test
 test: dependencies
