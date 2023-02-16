@@ -12,9 +12,6 @@ import {
 import ClientElement from "./client-element.js";
 import App from "./lib/app.js";
 import { clientLoggerFactory } from "./client-customs.js";
-import KioskTimedDiv from "./elements/timed-div.js";
-
-const debugEl = document.querySelector("#debug");
 
 // Top-Level-Await is not working in Karma/Jasmine:
 const config = await fetch("/etc/kiosk.yml")
@@ -37,36 +34,6 @@ export class ClientApp extends App {
     this.info("Registering app", this.name, this);
 
     registerApp(this);
-  }
-
-  /**
-   * @override
-   */
-  error(...args) {
-    super.error(...args);
-    if (debugEl) {
-      new KioskTimedDiv().withLevel("error").withJSON(args).in(debugEl);
-    }
-  }
-
-  /**
-   * @override
-   */
-  info(...args) {
-    super.info(...args);
-    if (debugEl) {
-      new KioskTimedDiv().withLevel("info").withJSON(args).in(debugEl);
-    }
-  }
-
-  /**
-   * @override
-   */
-  debug(...args) {
-    super.debug(...args);
-    if (debugEl) {
-      new KioskTimedDiv().withLevel("debug").withJSON(args).in(debugEl);
-    }
   }
 
   //

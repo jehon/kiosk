@@ -6,38 +6,6 @@ const body = document.querySelector("body");
 
 //
 //
-// DEBUG
-//
-//   status is boolean
-//
-
-export const debugActiveStatus = new Callback();
-
-let debugHook = null;
-window.addEventListener("contextmenu", () => {
-  if (debugHook) {
-    clearTimeout(debugHook);
-  }
-  debugHook = setTimeout(() => {
-    debugActiveStatus.emit(false);
-  }, 5 * 1000);
-  debugActiveStatus.emit(true);
-});
-
-// initialize
-debugActiveStatus.emit(false);
-
-const debugEl = document.querySelector("#debug");
-debugActiveStatus.onChange((dbg) => {
-  if (dbg) {
-    debugEl.setAttribute("on", "on");
-  } else {
-    debugEl.removeAttribute("on");
-  }
-});
-
-//
-//
 // ACTIVITY
 //
 //   status is boolean
