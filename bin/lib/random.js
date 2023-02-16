@@ -1,3 +1,7 @@
+"use strict";
+
+// import secureRandom from 'secure-random-uniform';
+
 /**
  * @param {object} weightedList with weight
  * @returns {any} taken in random
@@ -27,7 +31,7 @@ function takeOne(weightedList) {
  * @param {object} weightedList with weight
  * @returns {Array} weighted (top priority first => .shift())
  */
-export default function shuffleWeightedList(weightedList) {
+export function shuffleWeightedList(weightedList) {
   const keys = Object.keys(weightedList);
 
   const res = [];
@@ -47,6 +51,7 @@ export default function shuffleWeightedList(weightedList) {
  */
 export function shuffleArray(arr) {
   return shuffleWeightedList(
+    // We put a weight of 1 to each
     arr.reduce((acc, v) => {
       acc[v] = 1;
       return acc;

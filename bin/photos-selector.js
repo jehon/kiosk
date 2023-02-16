@@ -14,7 +14,7 @@
 import fs from "fs";
 import path from "path";
 import exifParser from "./lib/exif-parser.js";
-import { shuffleArray } from "./lib/shuffle.js";
+import { shuffleArray } from "./lib/random.js";
 import fsExtra from "fs-extra";
 import {
   getFilesFromPathByMime,

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import mime from "mime-types";
 import minimatch from "minimatch";
-import shuffleWeightedList from "./random.js";
+import { shuffleWeightedList } from "./random.js";
 
 /**
  * Test if a file match the pattern
@@ -65,7 +65,7 @@ export async function getFilesFromPathByMime(
  * @param {Array<string>} excludes to be excluded (by minimatch *.*, ...)
  * @returns {Array<string>} of folders (absolute)
  */
-export async function getFoldersFromPath(pathname, excludes) {
+async function getFoldersFromPath(pathname, excludes) {
   return (await getFilesFromPath(pathname, excludes)).filter((f) =>
     fs.statSync(path.join(pathname, f)).isDirectory()
   );
