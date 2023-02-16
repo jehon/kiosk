@@ -1,5 +1,4 @@
 var/
-common.es6/
 *.tmp
 tmp/
 node_modules/
