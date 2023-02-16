@@ -94,20 +94,23 @@ dependencies: node_modules/.packages-installed.json
 node_modules/.packages-installed.json: package.json
 	npm ci
 	$(NPM_BIN)/browserslist --update-db
-	$(NPM_BIN)/importly < package-lock.json > "built/importmap.json"
 	touch package-lock.json
 	touch "$@"
 	
 .PHONY: build
-build: built/index.html\
+build: built/index.html \
 		var/photos/index.json \
-		var/fire
+		var/fire \
+		built/importmap.json
 
 	@true
 
 built/index.html: $(shell find client) package.json
 	npm run build
 	touch "$@"
+
+built/importmap.json: node_modules/.packages-installed.json
+	$(NPM_BIN)/importly < package-lock.json > "node_modules/importmap.json"
 
 .PHONY: test
 test: dependencies
