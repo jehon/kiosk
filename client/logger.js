@@ -51,7 +51,7 @@ export class Logger {
    */
   debug(...data) {
     // eslint-disable-next-line
-    console.debug(this.debug, ...data);
+    console.debug(this.name, ...data);
     return this;
   }
 }
