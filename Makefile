@@ -71,18 +71,12 @@ clean:
 	rm -fr node_modules
 
 .PHONY: start
-start: start-pre
+start: build stop-previous
 	bin/server.js -f $(TEST_CONFIG)
 
 .PHONY: start-prod
-start-prod: start-pre
+start-prod: build stop-previous
 	bin/server.js
-
-.PHONY: start-pre
-start-pre: build \
-	stop-previous \
-	var/photos/index.json \
-	var/fire
 
 var/photos/index.json: bin/photos-selector.js
 	bin/photos-selector.js -f $(TEST_CONFIG)
@@ -104,7 +98,11 @@ node_modules/.packages-installed.json: package.json
 	touch "$@"
 	
 .PHONY: build
-build: built/index.html
+build: built/index.html\
+		var/photos/index.json \
+		var/fire
+
+	@true
 
 built/index.html: $(shell find client) package.json
 	npm run build
