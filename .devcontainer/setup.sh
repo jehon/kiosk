@@ -30,4 +30,5 @@ apt_install xvfb jehon-service-kiosk \
     firefox-esr \
     chromium \
 	ffmpeg exiftool gettext-base \
-	build-essential
+	build-essential \
+    python3 jq
