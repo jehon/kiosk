@@ -4,8 +4,16 @@ import { Logger } from "./logger.js";
 import { cloneDeep } from "../../node_modules/lodash-es/lodash.js";
 
 import Cron from "../../node_modules/croner/dist/croner.min.mjs";
+import { autoSelectApplication } from "../client-lib-chooser.js";
+import { getByPath } from "../node_modules/dot-path-value/dist/index.esm.js";
+import yaml from "../node_modules/js-yaml/dist/js-yaml.mjs";
 
 let idGenerator = 1;
+
+// Top-Level-Await is not working in Karma/Jasmine:
+const config = await fetch("/etc/kiosk.yml")
+  .then((response) => response.text())
+  .then((yml) => yaml.load(yml));
 
 /**
  * @typedef {object} CronStats send for cron
@@ -31,11 +39,10 @@ export default class App extends Logger {
   /**
    *
    * @param {string} name of the app
-   * @param {function(string): Logger} loggerFactory to build up loggers
    * @param {*} initialState to initialize the state
    */
-  constructor(name, loggerFactory, initialState) {
-    super(name, loggerFactory);
+  constructor(name, initialState) {
+    super(name);
     this.id = idGenerator++;
     this.name = name;
     this.ctxize = contextualize(name);
@@ -92,6 +99,39 @@ export default class App extends Logger {
   onStateChange(cb) {
     return this.#stateCallback.onChange((state) => cb(state, this));
   }
+
+  //
+  //
+  // Configuration
+  //
+  //
+  /**
+   * @param {string} path to be found
+   * @param {*} def - a default value if config is not set
+   * @returns {*} the required object
+   */
+  getConfig(path = "", def = undefined) {
+    path = this.ctxize(path);
+    if (path) {
+      try {
+        return getByPath(config, path) ?? def;
+      } catch (_e) {
+        return def;
+      }
+    }
+    return JSON.parse(JSON.stringify(config));
+  }
+
+  dispatchAppChanged() {
+    autoSelectApplication();
+    return this;
+  }
+
+  //
+  //
+  // CRON
+  //
+  //
 
   /**
    * Program a cron scheduler

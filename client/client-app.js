@@ -1,21 +1,9 @@
 // Common elements
 import "../node_modules/@jehon/css-inherit/jehon-css-inherit.js";
 // need import-maps support:: import '@jehon/css-inherit/jehon-css-inherit.js';
-import { getByPath } from "../node_modules/dot-path-value/dist/index.esm.js";
-import yaml from "../node_modules/js-yaml/dist/js-yaml.mjs";
-
-import {
-  registerApp,
-  autoSelectApplication,
-  selectApplication
-} from "./client-lib-chooser.js";
+import { registerApp, selectApplication } from "./client-lib-chooser.js";
 import ClientElement from "./client-element.js";
 import App from "./lib/app.js";
-
-// Top-Level-Await is not working in Karma/Jasmine:
-const config = await fetch("/etc/kiosk.yml")
-  .then((response) => response.text())
-  .then((yml) => yaml.load(yml));
 
 /**
  * Application
@@ -24,49 +12,11 @@ export class ClientApp extends App {
   priority = 0;
 
   constructor(name, initialState = {}) {
-    super(
-      name,
-      (namespace, level) =>
-        (...data) =>
-          /* eslint-disable no-console */ console[level](
-            namespace,
-            `[${level.toUpperCase()}]`,
-            ...data
-          ),
-      initialState
-    );
+    super(name, initialState);
 
     this.info("Registering app", this.name, this);
 
     registerApp(this);
-  }
-
-  //
-  //
-  // Configuration
-  //
-  //
-
-  /**
-   * @param {string} path to be found
-   * @param {*} def - a default value if config is not set
-   * @returns {*} the required object
-   */
-  getConfig(path = "", def = undefined) {
-    path = this.ctxize(path);
-    if (path) {
-      try {
-        return getByPath(config, path) ?? def;
-      } catch (_e) {
-        return def;
-      }
-    }
-    return JSON.parse(JSON.stringify(config));
-  }
-
-  dispatchAppChanged() {
-    autoSelectApplication();
-    return this;
   }
 
   /**
