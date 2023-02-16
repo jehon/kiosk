@@ -3,7 +3,7 @@
 set -o errexit
 set -o pipefail
 
-SWD="$(realpath "$( dirname "${BASH_SOURCE[0]}")")"
+SWD="$(dirname "$( realpath "${BASH_SOURCE[0]}")")"
 
 cd "$SWD/.." >/dev/null
 
