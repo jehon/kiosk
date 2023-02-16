@@ -1,14 +1,3 @@
-/**
- * @param {string} n - non normalized namespace
- * @returns {string} the normalized namespace
- */
-export function loggerCanonizeNamespace(n) {
-  if (!n.startsWith("kiosk")) {
-    n = "kiosk." + n;
-  }
-  return n.split(".").join(":").replace(/:+/g, ":");
-}
-
 export class Logger {
   /** @type {string} */
   name;
