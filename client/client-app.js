@@ -3,7 +3,7 @@ import "../node_modules/@jehon/css-inherit/jehon-css-inherit.js";
 // need import-maps support:: import '@jehon/css-inherit/jehon-css-inherit.js';
 import { registerApp, selectApplication } from "./client-lib-chooser.js";
 import ClientElement from "./client-element.js";
-import App from "./lib/app.js";
+import App from "./app.js";
 
 /**
  * Application
