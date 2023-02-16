@@ -15,5 +15,5 @@ if [ -z "$KEY" ]; then
 fi
 
 cat "$CONF" \
-    | python -c 'import sys, yaml, json; print(json.dumps(yaml.safe_load(sys.stdin.read())))' \
+    | python3 -c 'import sys, yaml, json; print(json.dumps(yaml.safe_load(sys.stdin.read())))' \
     | jq -r "$KEY"
