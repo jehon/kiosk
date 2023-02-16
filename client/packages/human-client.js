@@ -6,6 +6,16 @@ const body = document.querySelector("body");
 
 //
 //
+// DEBUG
+//
+//   status is boolean
+//
+window.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+});
+
+//
+//
 // ACTIVITY
 //
 //   status is boolean
