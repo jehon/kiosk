@@ -5,6 +5,7 @@ import { priorities } from "../config.js";
 import { TriStates } from "./camera-constants.js";
 
 const app = new ClientApp("camera");
+const CameraIcon = "./packages/camera.png";
 
 // TODO: manage http errors
 
@@ -51,7 +52,7 @@ export class KioskCameraMainElement extends ClientElement {
         this.shadowRoot.innerHTML = `
 					<video style="width: 95%; height: 95%" 
 							autoplay=1 muted preload="none"
-							poster="../packages/camera/camera.png" 
+							poster="${CameraIcon}" 
 						>
 						<source src="${this.actualUrl}"></source>
 						Your browser does not support the video tag.
@@ -81,7 +82,7 @@ export class KioskCameraStatusElement extends ClientElement {
 					object-fit: contain;
 				}
 			</style>
-			<img src="../packages/camera/camera.png" />
+			<img src="${CameraIcon}" />
 		`;
   }
 
@@ -110,7 +111,7 @@ customElements.define("kiosk-camera-status-element", KioskCameraStatusElement);
 app
   .setState({ code: TriStates.DOWN })
   .setMainElementBuilder(() => new KioskCameraMainElement())
-  .menuBasedOnIcon("../packages/camera/camera.png")
+  .menuBasedOnIcon(CameraIcon)
   .setStatusElement(new KioskCameraStatusElement());
 
 app.onStateChange((status, app) => {
