@@ -31,4 +31,4 @@ apt_install xvfb jehon-service-kiosk \
     chromium \
 	ffmpeg exiftool gettext-base \
 	build-essential \
-    python3 jq
+    python3 python3-yaml jq
