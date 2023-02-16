@@ -21,6 +21,9 @@ const config = await fetch("/etc/kiosk.yml")
   .then((response) => response.text())
   .then((yml) => yaml.load(yml));
 
+/**
+ * Application
+ */
 export class ClientApp extends App {
   priority = 0;
 
