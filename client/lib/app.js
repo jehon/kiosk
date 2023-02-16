@@ -1,7 +1,6 @@
 import Callback from "./callback.js";
 import contextualize from "./contextualize.js";
 import { Logger } from "./logger.js";
-import TimeInterval from "./TimeInterval.js";
 import { cloneDeep } from "../../node_modules/lodash-es/lodash.js";
 
 import Cron from "../../node_modules/croner/dist/croner.min.mjs";
@@ -94,17 +93,6 @@ export default class App {
 
   childLogger(subLoggerName) {
     return this.logger.childLogger(subLoggerName);
-  }
-
-  //
-  //
-  // Time functions
-  //
-  //
-
-  // TODO: obsolete
-  addTimeInterval(cb, iSecs) {
-    return new TimeInterval(cb, iSecs, this.childLogger("time-interval"));
   }
 
   //
