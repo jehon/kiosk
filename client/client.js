@@ -1,4 +1,3 @@
-import "./client-app.js";
 import { autoSelectApplication } from "./client-lib-chooser.js";
 
 //
