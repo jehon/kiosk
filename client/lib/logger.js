@@ -1,18 +1,4 @@
 /**
- * Callback for logging stream
- *
- * @callback LoggerStreamFunction
- * @param {*} args - to be logged
- */
-
-/**
- * @callback LoggerStreamFunctionBuilder
- * @param {string} namespace
- * @param {string} level
- * @returns {LoggerStreamFunction} built
- */
-
-/**
  * @param {string} n - non normalized namespace
  * @returns {string} the normalized namespace
  */
@@ -27,28 +13,12 @@ export class Logger {
   /** @type {string} */
   name;
 
-  #streams = {
-    error: (..._args) => {},
-    debug: (..._args) => {},
-    info: (..._args) => {}
-  };
-
-  /**
-   * @type {function(string, string): LoggerStreamFunction} streamFactory to send the log
-   */
-  static streamFactory = () => {};
-
   /**
    *
    * @param {string} name of the logger
-   * @param {LoggerStreamFunctionBuilder} loggerStreamFunctionBuilder to send the log
    */
-  constructor(name, loggerStreamFunctionBuilder) {
-    this.name = loggerCanonizeNamespace(name);
-
-    this.#streams.debug = loggerStreamFunctionBuilder(this.name, "debug");
-    this.#streams.info = loggerStreamFunctionBuilder(this.name, "info");
-    this.#streams.error = loggerStreamFunctionBuilder(this.name, "error");
+  constructor(name) {
+    this.name = name;
   }
 
   /**
@@ -58,7 +28,7 @@ export class Logger {
    * @returns {Logger} this
    */
   error(...data) {
-    this.#streams.error(...data);
+    console.error(this.name, ...data);
     return this;
   }
 
@@ -69,7 +39,7 @@ export class Logger {
    * @returns {Logger} this
    */
   info(...data) {
-    this.#streams.info(...data);
+    console.info(this.name, ...data);
     return this;
   }
 
@@ -80,7 +50,8 @@ export class Logger {
    * @returns {Logger} this
    */
   debug(...data) {
-    this.#streams.debug(...data);
+    // eslint-disable-next-line
+    console.debug(this.debug, ...data);
     return this;
   }
 }
