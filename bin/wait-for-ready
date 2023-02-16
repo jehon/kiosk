@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+shopt -s nullglob
+
+SWD="$(realpath "$( dirname "${BASH_SOURCE[0]}")")"
+
+/usr/bin/jh-wait 30 "nc -z 127.0.0.1 5454"
