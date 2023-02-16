@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+shopt -s nullglob
+
+SWD="$(realpath "$( dirname "${BASH_SOURCE[0]}")")"
+
+CONF="$1"
+KEY="$2"
+
+if [ -z "$KEY" ]; then
+    echo "Usage: $0 [CONF] [KEY]" >&2
+    exit 1
+fi
+
+cat "$CONF" \
+    | python -c 'import sys, yaml, json; print(json.dumps(yaml.safe_load(sys.stdin.read())))' \
+    | jq -r "$KEY"
