@@ -13,7 +13,6 @@ photo-frame:
       path: tests/data/
       quantity: 5
 
-
 fire:
   cron: "0 30 18 * * *" # At 18:30:00
   # cron: "*/30 * * * * *" # Every minute
