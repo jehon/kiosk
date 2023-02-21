@@ -9,7 +9,10 @@ SWD="$(dirname "$( realpath "${BASH_SOURCE[0]}")")"
 if [ -n "$1" ]; then
     CONF="$( realpath "$1" )"
 fi
-CONF="${CONF:-etc/kiosk.yml}"
+
+CONF="${CONF:-"$SWD/../etc/kiosk.yml"}"
+CONF="$( realpath "$CONF" )"
+echo "* Using configuration: $CONF"
 
 cd "/.."
 
