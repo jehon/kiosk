@@ -191,8 +191,17 @@ async function generateListingForConfig(context, varRoot, config) {
     if (list.length < 1 && !alwaysNew) {
       warning(`No files found in ${from}`);
       if (!alwaysNew) {
-        // Try to load previous json file if exists
-        return JSON.parse(fs.readFileSync(indexPath));
+        try {
+          // Try to load previous json file if exists
+          return JSON.parse(fs.readFileSync(indexPath));
+        } catch (e) {
+          if (e && e.code == "NOENT") {
+            // Expected: when previous index does not exists
+            true;
+          } else {
+            throw e;
+          }
+        }
       }
     }
     info(`Cleaning ${to}`);
