@@ -16,8 +16,8 @@ echo "* Using configuration: $CONF"
 
 cd "/.."
 
-echo "* Updating photos"
-"$SWD"/photos-selector.js -f "$CONF"
-
 echo "* Updating fire"
 "$SWD"/fire-selector "$CONF"
+
+echo "* Updating photos"
+"$SWD"/photos-selector.js -f "$CONF"
