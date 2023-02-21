@@ -3,6 +3,8 @@
 set -o errexit
 set -o pipefail
 
+. jh-lib
+
 SWD="$(dirname "$( realpath "${BASH_SOURCE[0]}")")"
 
 cd "$SWD/.." >/dev/null
@@ -17,4 +19,8 @@ STORAGE="var/fire"
 echo "Store $MOVIE into $STORAGE"
 mkdir -p "$( dirname "$STORAGE" )"
 
-rsync "$MOVIE" "$STORAGE"
+if [ -z "$DAEMON" ]; then
+    rsync -i "$MOVIE" "$STORAGE"
+else
+    rsync -i --progress "$MOVIE" "$STORAGE"
+fi
