@@ -92,7 +92,7 @@ node_modules/.packages-installed.json: package.json
 	touch "$@"
 	
 .PHONY: build
-build: built/index.html \
+build: \
 		var/photos/index.json \
 		var/fire \
 		built/importmap.json
@@ -102,10 +102,6 @@ var/photos/index.json: bin/photos-selector.js
 
 var/fire: bin/fire-selector
 	bin/fire-selector $(TEST_CONFIG)
-
-built/index.html: node_modules/.packages-installed.json $(shell find client) package.json
-	npm run build
-	touch "$@"
 
 built/importmap.json: node_modules/.packages-installed.json
 	$(NPM_BIN)/importly < package-lock.json > built/importmap.json

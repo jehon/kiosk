@@ -12,7 +12,6 @@ expressApp.use(
   })
 );
 
-expressApp.use("/client/", Express.static("built"));
 expressApp.get("/etc/kiosk.yml", (req, res) => res.json(getConfig()));
 expressApp.use(Express.static("."));
 
