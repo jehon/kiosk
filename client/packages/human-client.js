@@ -22,23 +22,19 @@ window.addEventListener("contextmenu", (e) => {
 //
 
 export const humanActiveStatus = new Callback();
-humanActiveStatus.onChange((status) => {
-  if (status) {
+humanActiveStatus.onChange((isActive) => {
+  if (isActive) {
     body.style.cursor = "";
   } else {
     body.style.cursor = "none";
   }
 });
 
-humanActiveStatus.onChange((status) => {
-  app.debug("Activity: ", status);
-});
-
 /**
- * @param {boolean} activity to be set (true if current activity)
+ * @param {boolean} isActive to be set (true if current activity)
  */
-function setActivity(activity = true) {
-  humanActiveStatus.emit(activity);
+function setActivity(isActive = true) {
+  humanActiveStatus.emit(isActive);
 }
 
 // Initialize to false
