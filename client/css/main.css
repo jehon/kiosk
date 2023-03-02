@@ -32,28 +32,23 @@ body > #main-application > * {
 
 /*******************************
 *
-* Debug
+* Menu
 *
 */
 
-#debug {
-  display: none;
-
+body > #app-menu {
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 200;
-
-  color: white;
-  background-color: gray;
-
-  max-height: 100%;
-  max-width: 50%;
-  overflow: auto;
+  top: var(--generic-space);
+  left: var(--generic-space);
+  z-index: 1000;
 }
 
-#debug[on] {
-  display: block;
+body > #app-menu > img {
+  width: 40px;
+}
+
+body > #app-menu[inactive] {
+  display: none;
 }
 
 /*******************************
