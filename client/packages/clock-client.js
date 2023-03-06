@@ -250,7 +250,7 @@ customElements.define("kiosk-clock-main-element", KioskClockMainElement);
 
 app
   .setMainElementBuilder(() => new KioskClockMainElement())
-  .menuBasedOnIcon("../packages/clock/clock.png");
+  .menuBasedOnIcon("./packages/clock.png");
 
 app.onStateChange((status) => {
   if (status.currentTicker) {

@@ -68,7 +68,7 @@ export class KioskFireMainElement extends ClientElement {
 				}
 			</style>
 			<video autoplay muted loop controls
-					poster='../packages/fire/fire.jpg'
+					poster='./packages/fire/fire.jpg'
 					crossorigin='anonymous'
 					x-fullscreen
 				>
@@ -113,7 +113,7 @@ customElements.define("kiosk-fire-main-element", KioskFireMainElement);
 
 app
   .setMainElementBuilder(() => new KioskFireMainElement())
-  .menuBasedOnIcon("../packages/fire/fire.jpg");
+  .menuBasedOnIcon("./packages/fire.jpg");
 
 app.onStateChange((status) => {
   if (status.currentTicker) {

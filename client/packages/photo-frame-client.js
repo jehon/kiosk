@@ -267,7 +267,7 @@ app
     list: []
   })
   .setMainElementBuilder(() => new KioskPhotoFrameMainElement())
-  .menuBasedOnIcon("../packages/photo-frame/photo-frame.png")
+  .menuBasedOnIcon("./packages/photo-frame.png")
   .setPriority(priorities.photoFrame.normal);
 
 app.onStateChange((status) => {
