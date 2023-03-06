@@ -42,7 +42,7 @@ clock:
 menu:
   - name: Meteo
     url: http://www.meteo.be
-    icon: https://commons.wikimedia.org/wiki/GNOME_Desktop_icons#/media/File:Gnome-weather-few-clouds.svg
+    icon: https://upload.wikimedia.org/wikipedia/commons/5/57/Gnome-weather-few-clouds.svg
     label: Météo
 
   - name: BuienAlarm
