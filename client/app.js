@@ -2,18 +2,25 @@ import Callback from "./callback.js";
 import contextualize from "./contextualize.js";
 import { Logger } from "./logger.js";
 import { cloneDeep } from "../node_modules/lodash-es/lodash.js";
+import yaml from "../node_modules/js-yaml/dist/js-yaml.mjs";
 
 import Cron from "../node_modules/croner/dist/croner.min.mjs";
 import { autoSelectApplication } from "./client-lib-chooser.js";
 import { getByPath } from "../node_modules/dot-path-value/dist/index.esm.js";
-import yaml from "../node_modules/js-yaml/dist/js-yaml.mjs";
 
 let idGenerator = 1;
 
-// Top-Level-Await is not working in Karma/Jasmine:
-const config = await fetch("/etc/kiosk.yml")
-  .then((response) => response.text())
-  .then((yml) => yaml.load(yml));
+// Top-Level-Await is not working in Karma/Jasmine
+let config = {};
+
+/**
+ * Load the config
+ */
+export async function loadConfig() {
+  config = await fetch("/etc/kiosk.yml")
+    .then((response) => response.text())
+    .then((yml) => yaml.load(yml));
+}
 
 /**
  * @typedef {object} CronStats send for cron

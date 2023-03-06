@@ -1,4 +1,10 @@
 import { autoSelectApplication } from "./client-lib-chooser.js";
+import { loadConfig } from "./app.js";
+
+//
+// Top-Level-Await is not working in Karma/Jasmine
+//
+await loadConfig();
 
 //
 // Load other packages

@@ -4,13 +4,15 @@ import app, {
   KioskClockMainElement,
   init
 } from "../../client/packages/clock-client.js";
+import { loadConfig } from "../../client/app.js";
 
 describe(fn(import.meta.url), () => {
+  beforeEach(async () => loadConfig());
+
   it("should react to events", function () {
     expect(app).toBeDefined();
     new KioskClockMainElement();
   });
-
   let cfg;
   beforeAll(() => {
     cfg = app.getConfig();
@@ -34,7 +36,6 @@ describe(fn(import.meta.url), () => {
 
       expect(app.getState().currentTicker).toBeDefined();
       expect(app.getState().currentTicker).toBeNull();
-
       // Jump 1 minute
       tick({ minutes: 1 });
 
