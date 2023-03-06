@@ -252,7 +252,7 @@ app
   .setMainElementBuilder(() => new KioskClockMainElement())
   .menuBasedOnIcon("../packages/clock/clock.png");
 
-app.onStateChange((status, app) => {
+app.onStateChange((status) => {
   if (status.currentTicker) {
     app.setPriority(priorities.clock.elevated);
   } else {

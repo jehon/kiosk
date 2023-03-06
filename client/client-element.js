@@ -49,6 +49,15 @@ export default class ClientElement extends HTMLElement {
     this.#appStateChangeListenerStopper = () => {};
   }
 
+  /**
+   * Called when ready
+   */
   ready() {}
+
+  /**
+   * Called by the parent app
+   *
+   * @param {any} _status of the app
+   */
   stateChanged(_status) {}
 }

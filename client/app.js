@@ -93,7 +93,7 @@ export default class App extends Logger {
   }
 
   /**
-   * @param {function(object, App):void} cb to listen for change
+   * @param {function(object):void} cb to listen for change
    * @returns {function(void):void} to stop the listener
    */
   onStateChange(cb) {
@@ -111,10 +111,10 @@ export default class App extends Logger {
    * @returns {*} the required object
    */
   getConfig(path = "", def = undefined) {
-    path = this.ctxize(path);
-    if (path) {
+    const cpath = this.ctxize(path);
+    if (cpath) {
       try {
-        return getByPath(config, path) ?? def;
+        return getByPath(config, cpath) ?? def;
       } catch (_e) {
         return def;
       }

@@ -270,7 +270,7 @@ app
   .menuBasedOnIcon("../packages/photo-frame/photo-frame.png")
   .setPriority(priorities.photoFrame.normal);
 
-app.onStateChange((status, app) => {
+app.onStateChange((status) => {
   app.debug("Setting priorities according to listing");
 
   if (!status) {

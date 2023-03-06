@@ -114,7 +114,7 @@ app
   .menuBasedOnIcon(CameraIcon)
   .setStatusElement(new KioskCameraStatusElement());
 
-app.onStateChange((status, app) => {
+app.onStateChange((status) => {
   app.debug("Status received", status);
   if (!status || !status.server) {
     return;

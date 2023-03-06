@@ -115,7 +115,7 @@ app
   .setMainElementBuilder(() => new KioskFireMainElement())
   .menuBasedOnIcon("../packages/fire/fire.jpg");
 
-app.onStateChange((status, app) => {
+app.onStateChange((status) => {
   if (status.currentTicker) {
     app.setPriority(priorities.fire.elevated);
   } else {
