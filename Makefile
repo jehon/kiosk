@@ -104,6 +104,7 @@ var/fire: bin/fire-selector
 	bin/fire-selector $(TEST_CONFIG)
 
 built/importmap.json: node_modules/.packages-installed.json
+	mkdir $(dir $@)
 	$(NPM_BIN)/importly < package-lock.json > built/importmap.json
 
 .PHONY: test
