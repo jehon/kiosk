@@ -21,23 +21,19 @@ jobs:
     - name: make dump
       uses: devcontainers/ci@v0.3
       with:
-        push: never
         runCmd: make dump
 
     - name: make build
       uses: devcontainers/ci@v0.3
       with:
-        push: never
         runCmd: make build
 
     - name: make lint
       uses: devcontainers/ci@v0.3
       with:
-        push: never
         runCmd: make lint
 
     - name: make test
       uses: devcontainers/ci@v0.3
       with:
-        push: never
         runCmd: make test
