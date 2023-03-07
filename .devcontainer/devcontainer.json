@@ -3,17 +3,21 @@
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"extensions": [
-		"dbaeumer.vscode-eslint",
-		"EditorConfig.EditorConfig",
-		"ecmel.vscode-html-css",
-		"mkaufman.HTMLHint",
-		"nobuhito.printcode",
-		"gruntfuggly.todo-tree",
-		"meganrogge.template-string-converter",
-		"esbenp.prettier-vscode",
-		"cschleiden.vscode-github-actions"
-	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"EditorConfig.EditorConfig",
+				"ecmel.vscode-html-css",
+				"mkaufman.HTMLHint",
+				"nobuhito.printcode",
+				"gruntfuggly.todo-tree",
+				"meganrogge.template-string-converter",
+				"esbenp.prettier-vscode",
+				"cschleiden.vscode-github-actions"
+			]
+		}
+	},
 	"portsAttributes": {
 		"5454": {
 			"label": "browser"
