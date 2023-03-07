@@ -18,34 +18,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - id: start
-      name: dc start
-      uses: jehon/actions-devcontainer@main
-      with:
-        action: start
-
     - name: make dump
-      uses: jehon/actions-devcontainer@main
+      uses: devcontainers/ci@v0.3
       with:
-        run: make dump
+        push: never
+        runCmd: make dump
 
     - name: make build
-      uses: jehon/actions-devcontainer@main
+      uses: devcontainers/ci@v0.3
       with:
-        run: make build
-
-    - name: make test
-      uses: jehon/actions-devcontainer@main
-      with:
-        run: make test
+        push: never
+        runCmd: make build
 
     - name: make lint
-      uses: jehon/actions-devcontainer@main
+      uses: devcontainers/ci@v0.3
       with:
-        run: make lint
+        push: never
+        runCmd: make lint
 
-    - name: dc stop
-      uses: jehon/actions-devcontainer@main
-      if: always()
+    - name: make test
+      uses: devcontainers/ci@v0.3
       with:
-        action: stop
+        push: never
+        runCmd: make test
