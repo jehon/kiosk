@@ -1,5 +1,4 @@
 import { ClientApp } from "./client-app.js";
-import "../node_modules/@jehon/img-loading/jehon-image-loading.js";
 
 export default class ClientElement extends HTMLElement {
   /**
