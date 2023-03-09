@@ -7,7 +7,6 @@
   "license": "ISC",
   "dependencies": {
     "@jehon/css-inherit": "0.1.1",
-    "@jehon/img-loading": "0.4.2",
     "btoa": "1.2.1",
     "croner": "6.0.2",
     "deepmerge": "4.3.0",

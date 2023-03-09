@@ -2,7 +2,6 @@ import ClientElement from "../client-element.js";
 import { ClientApp } from "../client-app.js";
 import { priorities } from "../config.js";
 import { humanActiveStatus } from "./human-client.js";
-import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-img-loading.js";
 
 /**
  * @typedef ImageData
@@ -26,10 +25,6 @@ import JehonImageLoading from "../../node_modules/@jehon/img-loading/jehon-img-l
 const PhotoLibrairy = "/var/photos";
 const IndexFile = PhotoLibrairy + "/index.json";
 
-JehonImageLoading.setWaitingWheelUrl(
-  "/node_modules/@jehon/img-loading/waiting.png"
-);
-JehonImageLoading.settransitionTimeMs(500);
 /*
 
 Status (client)
@@ -113,8 +108,8 @@ function prev() {
 }
 
 class KioskPhotoFrameMainElement extends ClientElement {
-  /** @type {JehonImageLoading} */
-  #carouselImg;
+  /** @type {HTMLElement} */
+  #carousel;
 
   /** @type {HTMLElement} */
   #carouselInfos;
@@ -127,20 +122,30 @@ class KioskPhotoFrameMainElement extends ClientElement {
 				display: none;
 			}
 
-			#myCarousel {
+			#carousel {
 				position: relative;
 				width: 100%;
 				height: 100%;
 			}
 
-			/* image */
-			#myCarousel > jehon-image-loading {
+      /* background image */
+      #carousel > img[background]  {
+				position: absolute;
+				top: 0;
+				left: 0;
+
+        z-index: -1;
+      }
+
+			/* image - front */
+			#carousel > img {
 				width: 100%;
 				height: 100%;
 				object-fit: contain;
+        background-color: black;
 			}
 
-			/* commands */
+      /* commands */
 			#overlay {
 				position: absolute;
 				top: 0;
@@ -199,9 +204,10 @@ class KioskPhotoFrameMainElement extends ClientElement {
 				object-fit: contain;
 			}
 		</style>
-		<div id="myCarousel">
-			<jehon-image-loading></jehon-image-loading>
-			<div id="overlay">
+		<div id="carousel">
+      <img background src="/client/packages/photo-frame.png" />
+      <img carousel src="/client/packages/photo-frame.png" />
+      <div id="overlay">
 				<div style="grid-area: left"   id="prev"   class="hide-on-inactive">&lt;</div>
 				<div style="grid-area: right"  id="next"   class="hide-on-inactive">&gt;</div>
 				<div style="grid-area: bottom" id="infos"  ></div>
@@ -209,7 +215,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 			</div>
 		</div>`;
 
-    this.#carouselImg = this.shadowRoot.querySelector("jehon-image-loading");
+    this.#carousel = this.shadowRoot.querySelector("#carousel");
     this.#carouselInfos = this.shadowRoot.querySelector("#infos");
 
     this.shadowRoot
@@ -231,18 +237,29 @@ class KioskPhotoFrameMainElement extends ClientElement {
   }
 
   stateChanged(status) {
-    if (!this.#carouselImg) {
+    if (!this.#carousel) {
       return;
     }
 
     if (status.list.length > 0) {
-      let photo = status.list[status.index];
+      let nextPhotoInfos = status.list[status.index];
 
-      app.debug("updatePicture", status.index, photo);
-      this.#carouselInfos.innerHTML = `${photo.data.title ?? ""}<br>${(
-        "" + (photo.data.date ?? "")
-      ).substring(0, 10)}`;
-      this.#carouselImg.loadAndDisplayImage(photo.url);
+      /* Build up the next image */
+      const nextImg = document.createElement("img");
+      nextImg.setAttribute("src", nextPhotoInfos.url);
+      nextImg.setAttribute("carousel", "carousel");
+      this.#carousel.insertAdjacentElement("beforeend", nextImg);
+
+      setTimeout(
+        () => {
+          this.#carousel.querySelector("img[carousel]").remove();
+
+          this.#carouselInfos.innerHTML = `${
+            nextPhotoInfos.data.title ?? ""
+          }<br>${("" + (nextPhotoInfos.data.date ?? "")).substring(0, 10)}`;
+        },
+        status.active ? 0 : 1000
+      );
     }
 
     this.shadowRoot.querySelectorAll(".hide-on-inactive").forEach((el) => {
