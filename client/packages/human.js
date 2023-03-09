@@ -41,24 +41,25 @@ let eraser = null;
  * @property {number} y where it happened
  * @property {Date} time when it happened
  */
-const lastPosition = {};
-memorizePosition(new MouseEvent(""));
+const lastPosition = {
+  x: 0,
+  y: 0,
+  time: new Date()
+};
+
+body.addEventListener("mousemove", (e) => resetHuman(e));
 
 /**
- * @param {MouseEvent} e to be memorized
+ *
+ * @param {MouseEvent} e as mouse event
  */
-function memorizePosition(e) {
-  lastPosition.x = e.clientX;
-  lastPosition.y = e.clientY;
-  lastPosition.time = new Date();
-}
-
-body.addEventListener("mousemove", (e) => {
+export function resetHuman(e = new MouseEvent()) {
   const now = new Date();
   if (now.getTime() - lastPosition.time.getTime() > 1000) {
     // Last position is too old, let's start again
-    app.debug("Reset position");
-    memorizePosition(e);
+    lastPosition.x = e.clientX;
+    lastPosition.y = e.clientY;
+    lastPosition.time = new Date();
   }
 
   const dist2 =
@@ -77,4 +78,4 @@ body.addEventListener("mousemove", (e) => {
       humanActiveStatus.emit(false);
     }, app.getConfig(".inactivitySeconds", 60) * 1000);
   }
-});
+}
