@@ -1,7 +1,7 @@
 import ClientElement from "../client-element.js";
 import { ClientApp } from "../client-app.js";
 import { priorities } from "../config.js";
-import { humanActiveStatus } from "./human-client.js";
+import { humanActiveStatus } from "./human.js";
 
 /**
  * @typedef ImageData

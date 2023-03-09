@@ -5,7 +5,7 @@ import {
 } from "../client-lib-chooser.js";
 import { ClientApp, iFrameBuilder } from "../client-app.js";
 import ClientElement from "../client-element.js";
-import { humanActiveStatus } from "./human-client.js";
+import { humanActiveStatus } from "./human.js";
 
 const app = new ClientApp("menu", {
   applicationsList: []

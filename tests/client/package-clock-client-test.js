@@ -3,7 +3,7 @@ import { fn, tick } from "./helper-main.js";
 import app, {
   KioskClockMainElement,
   init
-} from "../../client/packages/clock-client.js";
+} from "../../client/packages/clock.js";
 import { loadConfig } from "../../client/app.js";
 
 describe(fn(import.meta.url), () => {

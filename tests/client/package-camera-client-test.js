@@ -1,4 +1,4 @@
-// import app from "../../client/packages/camera-client.js";
+// import app from "../../client/packages/camera.js";
 
 // import { fn } from "./helper-main.js";
 // import { TriStates } from "../../client/packages/camera-constants.js";

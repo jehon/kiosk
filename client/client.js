@@ -10,13 +10,13 @@ await loadConfig();
 // Load other packages
 //
 await Promise.all([
-  import("./packages/menu-client.js"),
-  import("./packages/human-client.js"),
-  import("./packages/camera-client.js"),
-  import("./packages/clock-client.js"),
-  import("./packages/fire-client.js"),
-  import("./packages/music-client.js"),
-  import("./packages/photo-frame-client.js")
+  import("./packages/menu.js"),
+  import("./packages/human.js"),
+  import("./packages/camera.js"),
+  import("./packages/clock.js"),
+  import("./packages/fire.js"),
+  import("./packages/music.js"),
+  import("./packages/photo-frame.js")
 ]);
 
 await autoSelectApplication();
