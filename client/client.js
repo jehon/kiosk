@@ -12,7 +12,6 @@ await loadConfig();
 await Promise.all([
   import("./packages/menu.js"),
   import("./packages/human.js"),
-  import("./packages/camera.js"),
   import("./packages/clock.js"),
   import("./packages/fire.js"),
   import("./packages/music.js"),
