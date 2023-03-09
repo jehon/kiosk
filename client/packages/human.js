@@ -30,15 +30,8 @@ humanActiveStatus.onChange((isActive) => {
   }
 });
 
-/**
- * @param {boolean} isActive to be set (true if current activity)
- */
-function setActivity(isActive = true) {
-  humanActiveStatus.emit(isActive);
-}
-
 // Initialize to false
-setActivity(false);
+humanActiveStatus.emit(false);
 
 let eraser = null;
 
@@ -74,14 +67,14 @@ body.addEventListener("mousemove", (e) => {
 
   // A big movement in a short time, it's an activity
   if (dist2 > Math.pow(50, 2)) {
-    setActivity(true);
+    humanActiveStatus.emit(true);
 
     // Reprogram the 'down' activity
     clearTimeout(eraser);
     eraser = setTimeout(() => {
       clearTimeout(eraser);
       eraser = false;
-      setActivity(false);
-    }, ((app.getState()?.server?.config ?? {})["inactivitySeconds"] ?? 60) * 1000);
+      humanActiveStatus.emit(false);
+    }, app.getConfig(".inactivitySeconds", 60) * 1000);
   }
 });
