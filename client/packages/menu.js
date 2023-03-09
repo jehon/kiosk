@@ -82,7 +82,6 @@ appMenuElement.addEventListener("click", () => {
 });
 
 for (const a of app.getConfig(".")) {
-  app.debug(`Registering app by menu: ${a.name}`, a);
   const ap = new ClientApp(a.name)
     .setMainElementBuilder(() => iFrameBuilder(a.url))
     .menuBasedOnIcon(a.icon, a.label);
@@ -103,7 +102,6 @@ humanActiveStatus.onChange((active) => {
   });
   if (!active) {
     // Trigger a new calculation of the top app
-    app.debug("Back to auto select application");
     autoSelectApplication();
   }
 });

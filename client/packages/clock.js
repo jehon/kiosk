@@ -38,7 +38,6 @@ export function init(config = app.getConfig(".", {})) {
   if (config.tickers) {
     for (const l of Object.keys(config.tickers)) {
       const oneTickerConfig = config.tickers[l];
-      app.debug("Programming:", l, oneTickerConfig);
       registeredCron.push(
         app.cron({
           cron: oneTickerConfig.cron,

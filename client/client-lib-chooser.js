@@ -99,8 +99,6 @@ function renderApplication(newApplication) {
     throw "registerMainContainer: #main-application is null";
   }
 
-  newApplication.debug(`I have been selected ${newApplication.toJSON()}`);
-
   // Reject not "main" application
   if (!("mainElementBuilder" in newApplication)) {
     newApplication.error(

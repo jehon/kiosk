@@ -16,7 +16,6 @@ describe(fn(import.meta.url), () => {
     expect(app.name).toBe("test");
     app.info("info");
     app.error("error");
-    app.debug("debug");
   });
 
   it("should handle simple cron", function () {

@@ -36,10 +36,6 @@ export class CameraAPI {
     return {};
   }
 
-  debug(...args) {
-    this.app.debug(...args);
-  }
-
   info(...args) {
     this.app.info(...args);
   }

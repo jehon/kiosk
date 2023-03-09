@@ -73,7 +73,6 @@ export async function loadList() {
  */
 function autoMoveToNextImage() {
   const status = app.getState();
-  app.debug("autoMoveToNextImage", status.index);
   if (status.list.length > 0) {
     next();
   }
@@ -288,13 +287,7 @@ app
   .setPriority(priorities.photoFrame.normal);
 
 app.onStateChange((status) => {
-  app.debug("Setting priorities according to listing");
-
-  if (!status) {
-    return;
-  }
-
-  if (status.list.length > 0) {
+  if (status && status.list.length > 0) {
     app.setPriority(priorities.photoFrame.elevated);
   } else {
     app.setPriority(priorities.photoFrame.normal);

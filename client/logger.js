@@ -31,16 +31,4 @@ export class Logger {
     console.info(this.name, ...data);
     return this;
   }
-
-  /**
-   * Log a debug message
-   *
-   * @param  {...any} data - what to print
-   * @returns {Logger} this
-   */
-  debug(...data) {
-    // eslint-disable-next-line
-    console.debug(this.name, ...data);
-    return this;
-  }
 }

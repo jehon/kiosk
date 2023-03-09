@@ -11,9 +11,6 @@ export class ClientApp extends App {
 
   constructor(name, initialState = {}) {
     super(name, initialState);
-
-    this.info("Registering app", this.name, this);
-
     registerApp(this);
   }
 

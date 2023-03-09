@@ -213,7 +213,7 @@ export default class App extends Logger {
       const firstStart = scheduler.nextRun(lookBackUpto);
 
       if (firstStart < now) {
-        this.debug(
+        this.info(
           `Initiating past cron for ${
             options.cron
           } about ${firstStart.toISOString()} with duration ${options.duration}`
@@ -246,7 +246,7 @@ export default class App extends Logger {
 
     const now = new Date();
     if (date < now) {
-      this.debug(
+      this.info(
         "onDate: but it was already in the past, triggering immediately"
       );
       return run();

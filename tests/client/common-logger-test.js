@@ -19,7 +19,6 @@ describe(fn(import.meta.url), () => {
     expect(logger.name).toBe("test");
 
     logger.info("info");
-    logger.debug("debug");
   });
 
   it("should not throw", function () {
@@ -27,6 +26,5 @@ describe(fn(import.meta.url), () => {
 
     logger.error("an error in logs");
     logger.info("an info in logs");
-    logger.debug("a debug in logs should not be visible");
   });
 });
