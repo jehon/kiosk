@@ -94,8 +94,7 @@ node_modules/.packages-installed.json: package.json
 .PHONY: build
 build: \
 		var/photos/index.json \
-		var/fire \
-		built/importmap.json
+		var/fire
 
 var/photos/index.json: bin/photos-selector.js
 	bin/photos-selector.js -f $(TEST_CONFIG)
