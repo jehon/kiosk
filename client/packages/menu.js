@@ -82,7 +82,7 @@ appMenuElement.addEventListener("click", () => {
 });
 
 for (const a of app.getConfig(".", [])) {
-  const ap = new ClientApp(a.name)
+  const ap = new ClientApp(a.label)
     .setMainElementBuilder(() => iFrameBuilder(a.url))
     .menuBasedOnIcon(a.icon, a.label);
   if ("priority" in a) {

@@ -40,12 +40,10 @@ clock:
     #   duration: 0.25
 
 menu:
-  - name: Meteo
+  - label: Météo
     url: http://www.meteo.be
     icon: https://upload.wikimedia.org/wikipedia/commons/5/57/Gnome-weather-few-clouds.svg
-    label: Météo
 
-  - name: BuienAlarm
+  - label: Buien Alarm
     url: https://www.buienalarm.be/ciney-wallonie-belgique/@50.29565,5.10083
     icon: https://www.buienalarm.be/favicon.ico
-    label: Buien Alarm
