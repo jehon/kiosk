@@ -81,7 +81,7 @@ appMenuElement.addEventListener("click", () => {
   selectApplication(app);
 });
 
-for (const a of app.getConfig(".")) {
+for (const a of app.getConfig(".", [])) {
   const ap = new ClientApp(a.name)
     .setMainElementBuilder(() => iFrameBuilder(a.url))
     .menuBasedOnIcon(a.icon, a.label);
