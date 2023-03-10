@@ -1,4 +1,9 @@
 ---
+
+#
+# Test config
+#
+
 core:
   port: 5454
 
