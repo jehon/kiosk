@@ -109,11 +109,17 @@ async function generateListingForConfig(context, varRoot, config) {
     const paddedIndex = String(index).padStart(2, "0");
     info(`Select: ${paddedIndex}/${maxQuantity} Copying ${filepath}`);
 
+    /**
+     * Copy files...
+     */
     // Format: 00.ext
     const targetFn = `${paddedIndex}${path.extname(filepath)}`;
     const targetPath = path.join(to, targetFn);
-
     fs.copyFileSync(filepath, targetPath);
+
+    /**
+     * Build up file infos
+     */
     const fileInfos = {
       originalFilePath: filepath,
       subPath: targetFn
