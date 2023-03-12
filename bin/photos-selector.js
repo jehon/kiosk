@@ -22,6 +22,7 @@ import {
 } from "./lib/files.js";
 import getConfig from "./lib/command-line-config.js";
 import * as url from "url";
+import { execFileSync } from "child_process";
 
 const IndexFilename = "index.json";
 const DefaultStorage = "var/photos";
@@ -111,11 +112,22 @@ async function generateListingForConfig(context, varRoot, config) {
 
     /**
      * Copy files...
+     *
+     * We use the ImageMagick convert tool
+     *
+     * https://legacy.imagemagick.org/Usage/resize/#resize
+     *
+     * convert <source> -resize 800x600\> <index>.jpg
      */
-    // Format: 00.ext
-    const targetFn = `${paddedIndex}${path.extname(filepath)}`;
+    const targetFn = `${paddedIndex}.jpg`;
     const targetPath = path.join(to, targetFn);
     fs.copyFileSync(filepath, targetPath);
+    execFileSync("/usr/bin/convert", [
+      filepath,
+      "-resize",
+      "1280x720>",
+      targetPath
+    ]);
 
     /**
      * Build up file infos
