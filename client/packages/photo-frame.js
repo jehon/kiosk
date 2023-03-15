@@ -142,6 +142,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 				height: 100%;
 				object-fit: contain;
         background-color: black;
+        opacity: 99%;
 			}
 
       /* commands */
