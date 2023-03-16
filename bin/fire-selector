@@ -3,6 +3,7 @@
 set -o errexit
 set -o pipefail
 
+# shellcheck source=/usr/bin/jh-lib
 . jh-lib
 
 SWD="$(dirname "$( realpath "${BASH_SOURCE[0]}")")"
