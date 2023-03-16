@@ -31,4 +31,5 @@ apt_install xvfb jehon-service-kiosk \
     chromium \
 	ffmpeg exiftool gettext-base \
 	build-essential \
+    imagemagick-6.q16 \
     python3 python3-yaml jq
