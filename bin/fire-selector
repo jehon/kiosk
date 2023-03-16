@@ -20,7 +20,7 @@ echo "Store $MOVIE into $STORAGE"
 mkdir -p "$( dirname "$STORAGE" )"
 
 if [ -z "$DAEMON" ]; then
-    rsync -i --progress "$MOVIE" "$STORAGE"
+    rsync --times --itemize-changes --progress "$MOVIE" "$STORAGE"
 else
-    rsync -i "$MOVIE" "$STORAGE"
+    rsync --times --itemize-changes "$MOVIE" "$STORAGE"
 fi
