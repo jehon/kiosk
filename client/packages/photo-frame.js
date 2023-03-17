@@ -258,7 +258,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
             nextPhotoInfos.data.title ?? ""
           }<br>${("" + (nextPhotoInfos.data.date ?? "")).substring(0, 10)}`;
         },
-        status.active ? 0 : 1000
+        status.active ? 0 : app.getConfig(".transitionSecs", 5) * 1000
       );
     }
 
