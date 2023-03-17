@@ -2,6 +2,7 @@ import ClientElement from "../client-element.js";
 import { ClientApp } from "../client-app.js";
 import { priorities } from "../config.js";
 import { humanActiveStatus } from "./human.js";
+import "./photo-frame-image.js";
 
 /**
  * @typedef ImageData
@@ -127,17 +128,8 @@ class KioskPhotoFrameMainElement extends ClientElement {
 				height: 100%;
 			}
 
-      /* background image */
-      #carousel > img[background]  {
-				position: absolute;
-				top: 0;
-				left: 0;
-
-        z-index: -1;
-      }
-
 			/* image - front */
-			#carousel > img {
+			#carousel > photo-frame-image {
 				width: 100%;
 				height: 100%;
 				object-fit: contain;
@@ -170,53 +162,22 @@ class KioskPhotoFrameMainElement extends ClientElement {
 
 			#overlay > * {
 				place-self: center;
-				text-shadow: 1px 1px 2px black, 0 0 1em grey, 0 0 0.2em grey
+				text-shadow: 1px 1px 2px black, 0 0 1em grey, 0 0 0.2em grey;
 			}
 
 			#prev, #next {
 				font-size: 40px;
 			}
-
-			#infos {
-				text-align: center;
-				vertical-align: middle;
-			}
-
-			#thumbs {
-				grid-area: center;
-
-				position: absolute;
-
-				max-height: 50px;
-				margin-bottom: 0.5rem;
-			}
-
-			#thumbs > .active {
-				background-color: gray;
-				border-radius: 2px;
-				border: solid 2px gray;
-			}
-
-			#thumbs > #thumbnail {
-				display: block;
-				height: 100%;
-				width: 100%;
-				object-fit: contain;
-			}
 		</style>
 		<div id="carousel">
-      <img background src="/client/packages/photo-frame.png" />
-      <img carousel src="/client/packages/photo-frame.png" />
       <div id="overlay">
 				<div style="grid-area: left"   id="prev"   class="hide-on-inactive">&lt;</div>
 				<div style="grid-area: right"  id="next"   class="hide-on-inactive">&gt;</div>
-				<div style="grid-area: bottom" id="infos"  ></div>
-				<div style="grid-area: center" id="thumbs" class="hide-on-inactive"></div>
 			</div>
+      <photo-frame-image src="/client/packages/photo-frame.png"></photo-frame-image>
 		</div>`;
 
     this.#carousel = this.shadowRoot.querySelector("#carousel");
-    this.#carouselInfos = this.shadowRoot.querySelector("#infos");
 
     this.shadowRoot
       .querySelector("#prev")
@@ -245,18 +206,19 @@ class KioskPhotoFrameMainElement extends ClientElement {
       let nextPhotoInfos = status.list[status.index];
 
       /* Build up the next image */
-      const nextImg = document.createElement("img");
+      const nextImg = document.createElement("photo-frame-image");
       nextImg.setAttribute("src", nextPhotoInfos.url);
-      nextImg.setAttribute("carousel", "carousel");
+      nextImg.setAttribute("title", nextPhotoInfos.data.title);
+      nextImg.setAttribute("date", nextPhotoInfos.data.date.substring(0, 10));
       this.#carousel.insertAdjacentElement("beforeend", nextImg);
 
       setTimeout(
         () => {
-          this.#carousel.querySelector("img[carousel]").remove();
-
-          this.#carouselInfos.innerHTML = `${
-            nextPhotoInfos.data.title ?? ""
-          }<br>${("" + (nextPhotoInfos.data.date ?? "")).substring(0, 10)}`;
+          for (const k of Array.from(
+            this.#carousel.querySelectorAll("photo-frame-image")
+          ).slice(0, -1)) {
+            k.remove();
+          }
         },
         status.active ? 0 : app.getConfig(".transitionSecs", 5) * 1000
       );
