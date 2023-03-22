@@ -216,7 +216,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
         () => {
           for (const k of Array.from(
             this.#carousel.querySelectorAll("photo-frame-image")
-          ).slice(0, -1)) {
+          ).slice(0, -2)) {
             k.remove();
           }
         },
