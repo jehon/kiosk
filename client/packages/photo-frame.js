@@ -207,7 +207,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
 
       /* Build up the next image */
       const nextImg = document.createElement("photo-frame-image");
-      nextImg.setAttribute("src", nextPhotoInfos.url);
+      nextImg.setAttribute("src", `${nextPhotoInfos.url}?ts=${status.ts}`);
       nextImg.setAttribute("title", nextPhotoInfos.data.title);
       nextImg.setAttribute("date", nextPhotoInfos.data.date.substring(0, 10));
       this.#carousel.insertAdjacentElement("beforeend", nextImg);
