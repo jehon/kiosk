@@ -47,7 +47,9 @@ const app = new ClientApp("photo-frame");
 export async function loadList() {
   let index = [];
   try {
-    index = await fetch(IndexFile).then((response) => response.json());
+    index = await fetch(`${IndexFile}?ts=${Date.now()}`).then((response) =>
+      response.json()
+    );
     index.list.forEach((img) => {
       img.url = PhotoLibrairy + "/" + img.subPath;
     });
@@ -216,7 +218,7 @@ class KioskPhotoFrameMainElement extends ClientElement {
         () => {
           for (const k of Array.from(
             this.#carousel.querySelectorAll("photo-frame-image")
-          ).slice(0, -2)) {
+          ).slice(0, -1)) {
             k.remove();
           }
         },
