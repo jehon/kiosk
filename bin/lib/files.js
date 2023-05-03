@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import mime from "mime-types";
-import minimatch from "minimatch";
+import { minimatch } from "minimatch";
 import { shuffleWeightedList } from "./random.js";
 
 /**
