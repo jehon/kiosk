@@ -92,15 +92,15 @@ node_modules/.packages-installed.json: package.json
 	touch "$@"
 	
 .PHONY: build
-build: \
+build: node_modules/.packages-installed.json \
 		var/photos/index.json \
 		var/fire
 
-var/photos/index.json: bin/photos-selector.js
-	bin/photos-selector.js -f $(TEST_CONFIG)
+var/photos/index.json: bin/photos-selector.js node_modules/.packages-installed.json
+	$< -f $(TEST_CONFIG)
 
-var/fire: bin/fire-selector
-	bin/fire-selector $(TEST_CONFIG)
+var/fire: bin/fire-selector node_modules/.packages-installed.json 
+	$< $(TEST_CONFIG)
 
 built/importmap.json: node_modules/.packages-installed.json
 	mkdir $(dir $@)
