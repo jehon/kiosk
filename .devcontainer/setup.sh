@@ -3,9 +3,7 @@
 set -o errexit
 set -o pipefail
 
-export DEBIAN_FRONTEND=noninteractive 
-
-find /etc/apt
+export DEBIAN_FRONTEND=noninteractive
 
 ls -l /etc/apt/sources.list.d
 
@@ -29,7 +27,7 @@ apt update
 apt_install xvfb jehon-service-kiosk \
     firefox-esr \
     chromium \
-	ffmpeg exiftool gettext-base \
-	build-essential \
+    ffmpeg exiftool gettext-base \
+    build-essential \
     imagemagick-6.q16 \
     python3 python3-yaml jq
