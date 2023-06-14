@@ -8,7 +8,7 @@
   "dependencies": {
     "@jehon/css-inherit": "0.1.1",
     "btoa": "1.2.1",
-    "croner": "6.0.3",
+    "croner": "6.0.4",
     "deepmerge": "4.3.1",
     "dot-path-value": "0.0.10",
     "express": "4.18.2",
