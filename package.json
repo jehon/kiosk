@@ -28,7 +28,7 @@
     "@types/jasmine": "4.3.3",
     "css-loader": "6.8.1",
     "depcheck": "1.4.3",
-    "eslint": "8.42.0",
+    "eslint": "8.43.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-cypress": "2.13.3",
     "eslint-plugin-jasmine": "4.1.3",
