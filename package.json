@@ -35,7 +35,7 @@
     "eslint-plugin-jsdoc": "46.2.6",
     "husky": "8.0.3",
     "importly": "0.2.0",
-    "jasmine": "5.0.1",
+    "jasmine": "5.0.2",
     "jasmine-core": "5.0.1",
     "karma": "6.4.2",
     "karma-chrome-launcher": "^3.1.1",
