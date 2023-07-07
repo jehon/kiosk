@@ -45,7 +45,7 @@
     "lint-staged": "13.2.2",
     "nock": "13.3.1",
     "prettier": "2.8.8",
-    "stylelint": "15.8.0",
+    "stylelint": "15.10.1",
     "stylelint-config-standard": "33.0.0"
   },
   "engines": {
